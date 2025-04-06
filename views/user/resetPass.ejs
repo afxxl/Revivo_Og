@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Reset Password</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      body {
+        background-image: url("/Images/images/OLD_PAPER_TEXTURE.jpg");
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+      }
+
+      .error-message {
+        color: #B91C1C;
+        font-size: 0.75rem;
+        margin-top: 0.25rem;
+        display: none;
+      }
+
+      .input-group:focus-within {
+        border-color: #2C2C2C;
+      }
+
+      /* Animation for form appearance */
+      @keyframes formFade {
+        from { opacity: 0; transform: translateY(-20px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+
+      .animate-form {
+        animation: formFade 0.5s ease-out;
+      }
+    </style>
+  </head>
+  <body>
+    <%-include("../../views/partials/user/header")%>
+
+    <div class="min-h-screen flex items-center justify-center p-4 mt-20">
+      <div class="max-w-md w-full backdrop-blur-sm bg-white/30 rounded-lg p-8 space-y-6 shadow-lg animate-form">
+        <!-- Title -->
+        <div class="text-center space-y-2">
+          <h1 class="text-3xl font-henny text-[#2C2C2C]">Reset Password</h1>
+          <p class="text-sm text-[#2C2C2C]/70">Enter your email address and we'll send you a link to reset your password.</p>
+        </div>
+
+        <!-- Form -->
+        <form id="resetForm" class="space-y-6" action="/sendResetOtp" method="POST">
+          <!-- Email Input -->
+          <div class="space-y-4">
+            <div class="input-group">
+              <input
+                type="email"
+                id="email"
+                name="email"
+                placeholder="Email"
+                class="w-full p-3 border-b-2 border-[#2C2C2C]/50 bg-transparent focus:outline-none focus:border-[#2C2C2C] transition-colors"
+              />
+              <div id="error1" class="error-message"></div>
+            </div>
+
+            <%if(typeof message !== 'undefined' && message){%>
+              <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded-md">
+                <%=message%>
+              </div>
+            <%}%>
+
+            <!-- Submit Button -->
+            <button
+              type="submit"
+              class="w-full bg-[#2C2C2C] text-white py-3 rounded-md hover:bg-[#1a1a1a] transition-colors font-medium flex items-center justify-center gap-2"
+            >
+              <span>Send OTP</span>
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
+              </svg>
+            </button>
+          </div>
+        </form>
+
+        <!-- Back to Login Link -->
+        <p class="text-center text-sm text-[#2C2C2C]/70">
+          Remember your password?
+          <a href="/login" class="text-[#2C2C2C] hover:underline font-medium">Back to Login</a>
+        </p>
+      </div>
+    </div>
+
+    <script>
+      const emailid = document.getElementById("email");
+      const error1 = document.getElementById("error1");
+      const resetForm = document.getElementById("resetForm");
+
+      function emailValidateChecking() {
+        const emailVal = emailid.value;
+        const emailpattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+        if (!emailpattern.test(emailVal)) {
+          error1.style.display = "block";
+          error1.innerHTML = "Invalid email format";
+          return false;
+        } else {
+          error1.style.display = "none";
+          return true;
+        }
+      }
+
+      resetForm.addEventListener("submit", function(e) {
+        e.preventDefault();
+
+        const isEmailValid = emailValidateChecking();
+
+        if (isEmailValid) {
+          console.log("Form submitted successfully!");
+          this.submit();
+        } else {
+          console.log("Form validation failed!");
+        }
+      });
+
+      // Optional: Add loading state to button when form is submitted
+      resetForm.addEventListener("submit", function() {
+        const button = this.querySelector('button[type="submit"]');
+        button.innerHTML = `
+          <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+          <span>Sending...</span>
+        `;
+        button.disabled = true;
+      });
+    </script>
+  </body>
+</html>

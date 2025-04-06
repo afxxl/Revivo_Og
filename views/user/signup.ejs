@@ -1,0 +1,373 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Create Account</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      body {
+        background-image: url("/Images/images/OLD_PAPER_TEXTURE.jpg");
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+      }
+
+      .error-message {
+        color: #B91C1C;
+        font-size: 0.75rem;
+        margin-top: 0.25rem;
+        display: none;
+      }
+
+      .input-group:focus-within {
+        border-color: #2C2C2C;
+      }
+
+      .password-strength {
+        height: 4px;
+        transition: all 0.3s;
+        margin-top: 0.5rem;
+        border-radius: 2px;
+      }
+
+      .requirement {
+        transition: color 0.3s ease;
+      }
+    </style>
+  </head>
+  <body>
+    <%-include("../../views/partials/user/header")%>
+
+    <div class="min-h-screen flex items-center justify-center p-4 mt-20">
+      <div class="max-w-md w-full backdrop-blur-sm bg-white/30 rounded-lg p-8 space-y-6 shadow-lg">
+        <!-- Title -->
+        <h1 class="text-3xl font-henny text-center text-[#2C2C2C] mb-8">
+          Create Account
+        </h1>
+
+        <!-- Form -->
+        <form id="signform" class="space-y-6" action="/signup" method="POST">
+          <!-- Input fields with improved styling -->
+          <div class="space-y-4">
+            <div class="input-group">
+              <input
+                type="text"
+                id="name"
+                name="name"
+                placeholder="Username"
+                class="w-full p-3 border-b-2 border-[#2C2C2C]/50 bg-transparent focus:outline-none focus:border-[#2C2C2C] transition-colors"
+              />
+              <div id="error1" class="error-message"></div>
+            </div>
+
+            <div class="input-group">
+              <input
+                type="email"
+                id="email"
+                name="email"
+                placeholder="Email"
+                class="w-full p-3 border-b-2 border-[#2C2C2C]/50 bg-transparent focus:outline-none focus:border-[#2C2C2C] transition-colors"
+              />
+              <div id="error2" class="error-message"></div>
+            </div>
+
+            <div class="input-group">
+              <input
+                type="tel"
+                id="phone"
+                name="phone"
+                placeholder="Phone Number"
+                class="w-full p-3 border-b-2 border-[#2C2C2C]/50 bg-transparent focus:outline-none focus:border-[#2C2C2C] transition-colors"
+              />
+              <div id="error3" class="error-message"></div>
+            </div>
+
+            <div class="relative">
+              <input
+                type="password"
+                id="password"
+                name="password"
+                placeholder="Password"
+                class="w-full p-3 border-b-2 border-[#2C2C2C]/50 bg-transparent focus:outline-none focus:border-[#2C2C2C] transition-colors"
+              />
+              <button type="button" class="absolute right-3 top-3 text-[#2C2C2C]/50">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-6 w-6"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                  />
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                  />
+                </svg>
+              </button>
+              <div class="password-strength bg-[#2C2C2C]/10"></div>
+              <div id="error4" class="error-message"></div>
+            </div>
+
+            <div class="relative">
+              <input
+                type="password"
+                id="confirmPassword"
+                name="confirmPassword"
+                placeholder="Confirm Password"
+                class="w-full p-3 border-b-2 border-[#2C2C2C]/50 bg-transparent focus:outline-none focus:border-[#2C2C2C] transition-colors"
+              />
+
+              <button type="button" class="absolute right-3 top-3 text-[#2C2C2C]/50">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-6 w-6"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                  />
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                  />
+                </svg>
+              </button>
+
+              <div id="error5" class="error-message"></div>
+            </div>
+
+            <!-- Backend Error Message -->
+            <%if(typeof message !== 'undefined' && message){%>
+                <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded-md">
+                    <%=message%>
+                </div>
+            <%}%>
+
+            <!-- Add this after the password input fields in signup.ejs -->
+            <div class="text-xs text-[#2C2C2C]/70 space-y-1">
+                <p class="requirement" data-requirement="length">• At least 8 characters</p>
+                <p class="requirement" data-requirement="uppercase">• At least one uppercase letter</p>
+                <p class="requirement" data-requirement="lowercase">• At least one lowercase letter</p>
+                <p class="requirement" data-requirement="number">• At least one number</p>
+                <p class="requirement" data-requirement="special">• At least one special character</p>
+            </div>
+
+            <div class="relative">
+              <input
+                type="checkbox"
+                id="terms"
+                name="terms"
+                class="w-4 h-4 border-2 border-[#2C2C2C] rounded accent-[#2C2C2C]"
+                required
+              />
+              <label for="terms" class="ml-3 text-sm text-[#2C2C2C]/70">
+                I agree to the <a href="#" class="text-[#2C2C2C] hover:underline">terms</a> &
+                <a href="#" class="text-[#2C2C2C] hover:underline">policy</a>
+              </label>
+            </div>
+
+            <!-- Submit Button -->
+            <button
+              type="submit"
+              class="w-full bg-[#2C2C2C] text-white py-3 rounded-md hover:bg-[#1a1a1a] transition-colors font-medium"
+            >
+              Create Account
+            </button>
+          </div>
+        </form>
+
+        <!-- Divider with improved styling -->
+        <div class="relative my-8">
+          <div class="absolute inset-0 flex items-center">
+            <div class="w-full border-t border-[#2C2C2C]/30"></div>
+          </div>
+          <div class="relative flex justify-center text-sm">
+            <span class="px-4 bg-transparent text-[#2C2C2C]/70">Or continue with</span>
+          </div>
+        </div>
+
+        <!-- Google Sign In with improved styling -->
+        <a href="/auth/google"
+          class="w-full flex items-center justify-center gap-3 border-2 border-[#2C2C2C] p-3 rounded-md hover:bg-[#2C2C2C]/10 transition-colors"
+        >
+          <img
+            src="https://www.svgrepo.com/show/475656/google-color.svg"
+            alt="Google logo"
+            class="h-5 w-5"
+          />
+          <span class="text-[#2C2C2C]">Sign in with Google</span>
+        </a>
+
+        <!-- Sign In Link -->
+        <p class="text-center text-sm text-[#2C2C2C]/70 mt-6">
+          Already have an account?
+          <a href="/login" class="text-[#2C2C2C] hover:underline font-medium">Sign in</a>
+        </p>
+      </div>
+    </div>
+
+    <script>
+      // Toggle password visibility
+      document.querySelectorAll('input[type="password"]').forEach((input) => {
+        const button = input.nextElementSibling;
+        button.addEventListener("click", () => {
+          input.type = input.type === "password" ? "text" : "password";
+        });
+      });
+
+      const nameid = document.getElementById("name");
+      const emailid = document.getElementById("email");
+      const phoneid = document.getElementById("phone");
+
+const password = document.getElementById("password");
+const confirm = document.getElementById("confirmPassword");
+      const error1 = document.getElementById("error1");
+      const error2 = document.getElementById("error2");
+      const error3 = document.getElementById("error3");
+      const error4 = document.getElementById("error4");
+      const error5 = document.getElementById("error5");
+      const signform = document.getElementById("signform");
+
+
+function nameValidateChecking() {
+  const nameVal = nameid.value;
+  const namepattern = /^[A-Za-z\s]+$/;
+
+  if (nameVal.trim() === "") {
+    error1.style.display = "block";
+    error1.innerHTML = "Please enter a valid name";
+    return false;
+  } else if (!namepattern.test(nameVal)) {
+    error1.style.display = "block";
+    error1.innerHTML = "Name can only contain alphabets and spaces";
+    return false;
+  } else {
+    error1.style.display = "none";
+    return true;
+  }
+}
+
+function emailValidateChecking() {
+  const emailVal = emailid.value;
+  const emailpattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+  if (!emailpattern.test(emailVal)) {
+    error2.style.display = "block";
+    error2.innerHTML = "Invalid format for email";
+    return false;
+  } else {
+    error2.style.display = "none";
+    return true;
+  }
+}
+
+function phoneValidateChecking() {
+  const phoneVal = phoneid.value;
+
+  if (phoneVal.trim() === "") {
+    error3.style.display = "block";
+    error3.innerHTML = "Enter a valid phone number";
+    return false;
+  } else if (phoneVal.length !== 10) {
+    error3.style.display = "block";
+    error3.innerHTML = "Enter 10 digits";
+    return false;
+  } else {
+    error3.style.display = "none";
+    return true;
+  }
+}
+
+const strengthBar = document.querySelector('.password-strength');
+const requirements = document.querySelectorAll('.requirement');
+
+function checkPasswordStrength(password) {
+  let strength = 0;
+  const patterns = {
+    length: password.length >= 8,
+    uppercase: /[A-Z]/.test(password),
+    lowercase: /[a-z]/.test(password),
+    number: /[0-9]/.test(password),
+    special: /[^A-Za-z0-9]/.test(password)
+  };
+
+  Object.entries(patterns).forEach(([key, valid]) => {
+    const requirement = document.querySelector(`[data-requirement="${key}"]`);
+    if (valid) {
+      strength++;
+      requirement.style.color = '#2C2C2C';
+    } else {
+      requirement.style.color = '#2C2C2C/70';
+    }
+  });
+
+  const colors = ['#EF4444', '#F59E0B', '#10B981', '#059669'];
+  strengthBar.style.width = `${(strength / 5) * 100}%`;
+  strengthBar.style.backgroundColor = colors[strength - 1] || colors[0];
+
+  return strength >= 4;
+}
+
+function passValidateChecking() {
+    const passVal = password.value;
+    const confirmVal = confirm.value;
+    
+    if (!checkPasswordStrength(passVal)) {
+      error4.style.display = "block";
+      error4.innerHTML = "Password does not meet requirements";
+      return false;
+    }
+
+    if (passVal !== confirmVal) {
+      error5.style.display = "block";
+      error5.innerHTML = "Passwords do not match";
+      return false;
+    }
+
+    error4.style.display = "none";
+    error5.style.display = "none";
+    return true;
+}
+
+      // Form validation
+
+signform.addEventListener("submit", function (e) {
+  e.preventDefault();
+
+  const isNameValid = nameValidateChecking();
+  const isEmailValid = emailValidateChecking();
+  const isPhoneValid = phoneValidateChecking();
+  const isPasswordValid = passValidateChecking();
+
+  if (isNameValid && isEmailValid && isPhoneValid && isPasswordValid) {
+    console.log("Form submitted successfully!");
+    this.submit();
+  } else {
+    console.log("Form validation failed!");
+  }
+});
+
+// Add input event listener for real-time password strength
+password.addEventListener('input', function() {
+  checkPasswordStrength(this.value);
+});
+   </script>
+  </body>
+</html>

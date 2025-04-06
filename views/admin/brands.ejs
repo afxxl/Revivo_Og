@@ -1,0 +1,591 @@
+<%- include('../partials/admin/admin-header.ejs') %>
+<%- include('../partials/admin/admin-sidebar', {currentPage: 'brands'}) %>
+
+<style> 
+/* Cropper.js overrides */
+.cropper-view-box,
+.cropper-face {
+    border-radius: 50%;
+}
+
+.cropper-container {
+    margin: 0 auto;
+}
+
+.cropper-modal {
+    background-color: #fff;
+    opacity: 1;
+}
+
+.cropper-line,
+.cropper-point {
+    background-color: #6C7559;
+}
+
+.cropper-view-box {
+    outline: 1px solid #6C7559;
+    outline-color: rgba(108, 117, 89, 0.75);
+}
+</style>
+
+
+<!-- Main Content -->
+
+
+
+<div class="flex-1 overflow-auto p-3 md:p-6 pt-20">
+    <!-- Header Section -->
+    <div class="p-4 md:p-6 bg-white shadow-sm">
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+            <h1 class="text-2xl font-semibold text-gray-800">Brands</h1>
+            <button onclick="openAddModal()" 
+                    class="px-4 py-2 bg-[#6C7559] hover:bg-[#5a6349] text-white rounded-lg text-sm">
+                Add New Brand
+            </button>
+        </div>
+        <!-- Search Bar -->
+        <div class="relative w-full mt-4">
+            <input type="text" 
+                   placeholder="Search brands..." 
+                   class="w-full pl-10 pr-4 py-2 md:py-3 text-sm md:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#6C7559] focus:border-transparent shadow-sm"
+                   onkeyup="searchBrands(this.value)">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <svg class="w-4 h-4 md:w-5 md:h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                </svg>
+            </div>
+        </div>
+    </div>
+
+    <!-- Desktop View: Table Layout -->
+    <div class="hidden md:block overflow-x-auto m-6">
+        <table class="w-full whitespace-nowrap bg-white rounded-lg shadow">
+            <thead>
+                <tr class="bg-gray-50 text-left">
+                    <th class="px-6 py-3 text-xs font-medium text-gray-500 uppercase">Brand Image</th>
+                    <th class="px-6 py-3 text-xs font-medium text-gray-500 uppercase">Brand Name</th>
+                    <th class="px-6 py-3 text-xs font-medium text-gray-500 uppercase">Status</th>
+                    <th class="px-6 py-3 text-xs font-medium text-gray-500 uppercase">Actions</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-200">
+                <% data.forEach(function(brand) { %>
+                    <tr class="hover:bg-gray-50">
+                        <td class="px-6 py-4">
+                            <% if (brand.brandImage && brand.brandImage.length > 0) { %>
+                                <img src="<%= brand.brandImage[0] %>" 
+                                     alt="<%= brand.brandName %>" 
+                                     class="h-10 w-10 object-cover rounded-full bg-gray-50"
+                                     onerror="this.onerror=null;this.src='/images/default-brand.png'">
+                            <% } else { %>
+                                <img src="/images/default-brand.png" 
+                                     alt="Default" 
+                                     class="h-10 w-10 object-cover rounded-full bg-gray-50">
+                            <% } %>
+                        </td>
+                        <td class="px-6 py-4 text-sm text-gray-900"><%= brand.brandName %></td>
+                        <td class="px-6 py-4 text-sm">
+                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
+                                <%= brand.isActive ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' %>">
+                                <%= brand.isActive ? 'Active' : 'Inactive' %>
+                            </span>
+                        </td>
+<td class="px-6 py-4 text-sm">
+    <div class="flex items-center space-x-3">
+        <!-- Edit Button -->
+        <a href="/admin/editBrand/<%= brand._id %>" class="text-blue-600 hover:text-blue-800">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                      d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+            </svg>
+        </a>
+        <!-- Toggle Button -->
+        <a href="/admin/toggleBrand/<%= brand._id %>" class="toggle-brand text-gray-600 hover:text-gray-800">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                      d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+            </svg>
+        </a>
+        <!-- Delete Button -->
+        <a href="/admin/deleteBrand/<%= brand._id %>" class="delete-brand text-red-600 hover:text-red-800">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                      d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+            </svg>
+        </a>
+    </div>
+</td>
+                        
+                    </tr>
+                <% }); %>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Mobile View: Card Layout -->
+    <div class="md:hidden space-y-4 m-4">
+        <% data.forEach(function(brand) { %>
+            <div class="bg-white p-4 rounded-lg shadow">
+                <div class="flex items-center space-x-4">
+                    <% if (brand.brandImage && brand.brandImage.length > 0) { %>
+                        <img src="<%= brand.brandImage[0] %>" 
+                             alt="<%= brand.brandName %>" 
+                             class="h-12 w-12 object-cover rounded-full bg-gray-50"
+                             onerror="this.onerror=null;this.src='/images/default-brand.png'">
+                    <% } else { %>
+                        <img src="/images/default-brand.png" 
+                             alt="Default" 
+                             class="h-12 w-12 object-cover rounded-full bg-gray-50">
+                    <% } %>
+                    <div class="flex-1">
+                        <h3 class="font-medium text-gray-900"><%= brand.brandName %></h3>
+                    </div>
+                    <span class="px-2 py-1 text-xs font-semibold rounded-full 
+                        <%= brand.isActive ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' %>">
+                        <%= brand.isActive ? 'Active' : 'Inactive' %>
+                    </span>
+                </div>
+<div class="mt-4 flex justify-end space-x-3">
+    <!-- Edit Button -->
+    <a href="/admin/editBrand/<%= brand._id %>" class="text-blue-600 hover:text-blue-800 p-2">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                  d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+        </svg>
+    </a>
+    <!-- Toggle Button -->
+    <a href="/admin/toggleBrand/<%= brand._id %>" class="toggle-brand text-gray-600 hover:text-gray-800 p-2">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                  d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+        </svg>
+    </a>
+    <!-- Delete Button -->
+    <a href="/admin/deleteBrand/<%= brand._id %>" class="delete-brand text-red-600 hover:text-red-800 p-2">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                  d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+        </svg>
+    </a>
+</div>
+
+            </div>
+        <% }); %>
+    </div>
+
+    <!-- Add Brand Modal -->
+    <div id="addModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden">
+        <div class="min-h-screen flex items-center justify-center p-4">
+            <div class="bg-white rounded-lg p-6 max-w-md w-full mx-4 relative">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-xl font-semibold text-gray-900">Add New Brand</h3>
+                    <button type="button" onclick="closeAddModal()" class="text-gray-400 hover:text-gray-500">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                        </svg>
+                    </button>
+                </div>
+                <form id="brandForm" method="POST" enctype="multipart/form-data" class="space-y-4">
+                    <div>
+                        <label for="brandName" class="block text-sm font-medium text-gray-700 mb-1">Brand Name</label>
+                        <input type="text" 
+                               id="brandName" 
+                               name="name" 
+                               required
+                               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#6C7559] focus:border-transparent">
+                        <p id="name-error" class="error-message text-red-500 text-sm mt-1 hidden"></p>
+                    </div>
+<!-- Replace the existing image input section with this -->
+<div>
+    <label for="brandImage" class="block text-sm font-medium text-gray-700 mb-1">Brand Image</label>
+    <input type="file" 
+           id="brandImage" 
+           name="image" 
+           accept="image/*" 
+           class="hidden"
+           required>
+    
+    <!-- Cropper container -->
+    <div class="mt-2">
+        <div id="imagePreviewContainer" class="hidden">
+            <div class="relative" style="max-height: 300px;">
+                <img id="imagePreview" class="max-w-full max-h-64" alt="Preview">
+            </div>
+            <div class="mt-2 flex space-x-2">
+                <button type="button" id="cropBtn" class="px-3 py-1 bg-[#6C7559] text-white text-sm rounded hidden">
+                    Crop Image
+                </button>
+                <button type="button" id="cancelCropBtn" class="px-3 py-1 bg-gray-300 text-gray-700 text-sm rounded hidden">
+                    Cancel
+                </button>
+            </div>
+        </div>
+        
+        <!-- Upload button that triggers file input -->
+        <button type="button" id="uploadTrigger" 
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#6C7559] focus:border-transparent">
+            Choose Image
+        </button>
+    </div>
+    <p id="image-error" class="error-message text-red-500 text-sm mt-1 hidden"></p>
+</div>
+                                        <div class="flex justify-end space-x-4 mt-6">
+                        <button type="button" 
+                                onclick="closeAddModal()"
+                                class="px-4 py-2 text-sm text-gray-600 hover:text-gray-800 font-medium">
+                            Cancel
+                        </button>
+                        <button type="submit" 
+                                class="px-4 py-2 bg-[#6C7559] hover:bg-[#5a6349] text-white rounded-lg text-sm">
+                            Add Brand
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pagination -->
+    <% if (totalPages > 1) { %>
+        <div class="flex justify-center items-center space-x-2 my-6">
+            <% for(let i = 1; i <= totalPages; i++) { %>
+                <a href="?page=<%= i %>" 
+                   class="px-3 py-1 rounded <%= currentPage === i ? 'bg-[#6C7559] text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300' %>">
+                    <%= i %>
+                </a>
+            <% } %>
+        </div>
+    <% } %>
+</div>
+
+<!-- Modal and Form Handling Script -->
+<script>
+    // Modal Functions
+    function openAddModal() {
+        document.getElementById('addModal').classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeAddModal() {
+        document.getElementById('addModal').classList.add('hidden');
+        document.body.style.overflow = 'auto';
+        resetBrandForm();
+    }
+
+    // Close modal when clicking outside or pressing Escape
+    document.getElementById('addModal').addEventListener('click', function(e) {
+        if (e.target === this) closeAddModal();
+    });
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') closeAddModal();
+    });
+
+    // Form Handling
+    document.getElementById('brandForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        if (!validateBrandForm()) return;
+
+        const formData = new FormData(this);
+        
+        try {
+            const response = await fetch('/admin/addBrand', {
+                method: 'POST',
+                body: formData
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.error || 'Failed to add brand');
+            }
+
+            Swal.fire({
+                icon: 'success',
+                title: 'Success!',
+                text: 'Brand added successfully',
+                confirmButtonColor: '#6C7559'
+            }).then(() => {
+                window.location.reload();
+            });
+
+        } catch (error) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error!',
+                text: error.message,
+                confirmButtonColor: '#6C7559'
+            });
+        }
+    });
+
+    // Form Validation
+function validateBrandForm() {
+    let isValid = true;
+    const name = document.getElementById('brandName').value.trim();
+    const imageInput = document.getElementById('brandImage');
+
+    // Clear previous errors
+    document.querySelectorAll('.error-message').forEach(el => {
+        el.classList.add('hidden');
+    });
+
+    // Validate name
+    if (!name) {
+        displayError('name-error', 'Brand name is required');
+        isValid = false;
+    } else if (!/^[a-zA-Z0-9\s]+$/.test(name)) {
+        displayError('name-error', 'Brand name can only contain letters, numbers and spaces');
+        isValid = false;
+    }
+
+    // Validate image
+    if (!imageInput.files || imageInput.files.length === 0) {
+        displayError('image-error', 'Brand image is required');
+        isValid = false;
+    }
+
+    return isValid;
+}
+        function displayError(elementId, message) {
+        const element = document.getElementById(elementId);
+        element.textContent = message;
+        element.classList.remove('hidden');
+    }
+function resetBrandForm() {
+    document.getElementById('brandForm').reset();
+    document.querySelectorAll('.error-message').forEach(el => {
+        el.classList.add('hidden');
+    });
+    
+    // Reset cropper and preview
+    const imagePreviewContainer = document.getElementById('imagePreviewContainer');
+    imagePreviewContainer.classList.add('hidden');
+    
+    if (cropper) {
+        cropper.destroy();
+        cropper = null;
+    }
+    
+    document.getElementById('cropBtn').classList.add('hidden');
+    document.getElementById('cancelCropBtn').classList.add('hidden');
+}
+    
+
+    // Toggle Brand Status with Confirmation
+    document.querySelectorAll('.toggle-brand').forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            const url = this.getAttribute('href');
+            
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You're about to change the status of this brand",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#6C7559',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, change it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    fetch(url, {
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Success!',
+                            text: data.message || 'Brand status updated',
+                            confirmButtonColor: '#6C7559'
+                        }).then(() => {
+                            window.location.reload();
+                        });
+                    })
+                    .catch(error => {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error!',
+                            text: error.message,
+                            confirmButtonColor: '#6C7559'
+                        });
+                    });
+                }
+            });
+        });
+    });
+
+// Add this to your existing script section
+document.querySelectorAll('.delete-brand').forEach(link => {
+    link.addEventListener('click', function(e) {
+        e.preventDefault();
+        const url = this.getAttribute('href');
+        
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#6C7559',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                fetch(url, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Deleted!',
+                        text: data.message || 'Brand has been deleted',
+                        confirmButtonColor: '#6C7559'
+                    }).then(() => {
+                        window.location.reload();
+                    });
+                })
+                .catch(error => {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error!',
+                        text: error.message,
+                        confirmButtonColor: '#6C7559'
+                    });
+                });
+            }
+        });
+    });
+});
+// Add these variables at the top of your script section
+let cropper;
+let originalImageFile;
+
+// Image Cropping Functionality
+document.getElementById('uploadTrigger').addEventListener('click', function() {
+    document.getElementById('brandImage').click();
+});
+
+document.getElementById('brandImage').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    // Validate image type
+    if (!file.type.match('image.*')) {
+        displayError('image-error', 'Only image files are allowed');
+        return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = function(event) {
+        const imagePreview = document.getElementById('imagePreview');
+        const imagePreviewContainer = document.getElementById('imagePreviewContainer');
+        const cropBtn = document.getElementById('cropBtn');
+        const cancelCropBtn = document.getElementById('cancelCropBtn');
+
+        imagePreview.src = event.target.result;
+        imagePreviewContainer.classList.remove('hidden');
+        cropBtn.classList.remove('hidden');
+        cancelCropBtn.classList.remove('hidden');
+
+        // Initialize cropper
+        if (cropper) {
+            cropper.destroy();
+        }
+        
+        cropper = new Cropper(imagePreview, {
+            aspectRatio: 1, // Square aspect ratio
+            viewMode: 1,
+            autoCropArea: 0.8,
+            responsive: true,
+            guides: false
+        });
+
+        // Store the original file
+        originalImageFile = file;
+    };
+    reader.readAsDataURL(file);
+});
+
+// Crop button handler
+document.getElementById('cropBtn').addEventListener('click', function() {
+    if (cropper) {
+        // Get the cropped canvas
+        const canvas = cropper.getCroppedCanvas({
+            width: 500,
+            height: 500,
+            minWidth: 256,
+            minHeight: 256,
+            maxWidth: 2000,
+            maxHeight: 2000,
+            fillColor: '#fff',
+            imageSmoothingEnabled: true,
+            imageSmoothingQuality: 'high',
+        });
+
+        // Convert canvas to blob
+        canvas.toBlob((blob) => {
+            // Create a new File object from the blob
+            const croppedFile = new File([blob], originalImageFile.name, {
+                type: 'image/jpeg',
+                lastModified: Date.now()
+            });
+
+            // Create a new DataTransfer object and add the file
+            const dataTransfer = new DataTransfer();
+            dataTransfer.items.add(croppedFile);
+            
+            // Update the file input with the cropped file
+            const fileInput = document.getElementById('brandImage');
+            fileInput.files = dataTransfer.files;
+
+            // Hide the cropper controls
+            document.getElementById('cropBtn').classList.add('hidden');
+            document.getElementById('cancelCropBtn').classList.add('hidden');
+
+            // Destroy the cropper
+            cropper.destroy();
+            cropper = null;
+        }, 'image/jpeg', 0.9); // 0.9 is the quality (0-1)
+    }
+});
+
+// Cancel crop button handler
+document.getElementById('cancelCropBtn').addEventListener('click', function() {
+    const imagePreviewContainer = document.getElementById('imagePreviewContainer');
+    const fileInput = document.getElementById('brandImage');
+    
+    if (cropper) {
+        cropper.destroy();
+        cropper = null;
+    }
+    
+    imagePreviewContainer.classList.add('hidden');
+    fileInput.value = ''; // Clear the file input
+});
+
+function searchBrands(query) {
+    window.location.href = `/admin/brands?search=${encodeURIComponent(query)}`;
+}
+
+</script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
+<%- include('../partials/admin/admin-footer') %>

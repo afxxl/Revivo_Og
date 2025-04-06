@@ -1,0 +1,581 @@
+<%- include('../partials/admin/admin-header.ejs') %>
+<%- include('../partials/admin/admin-sidebar.ejs', {currentPage: 'products'}) %>
+
+<style>
+  .product-image {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 4px;
+  }
+  .status-badge {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+    border-radius: 0.25rem;
+    font-weight: 600;
+  }
+  .in-stock {
+    background-color: #D1FAE5;
+    color: #065F46;
+  }
+  .out-of-stock {
+    background-color: #FEE2E2;
+    color: #B91C1C;
+  }
+
+  .cropper-view-box,
+  .cropper-face {
+    border-radius: 5px;
+  }
+
+  .cropper-container {
+    margin: 0 auto;
+  }
+
+  .cropper-modal {
+    background-color: #fff;
+    opacity: 1;
+  }
+
+  .cropper-line,
+  .cropper-point {
+    background-color: #6C7559;
+  }
+
+  .cropper-view-box {
+    outline: 1px solid #6C7559;
+    outline-color: rgba(108, 117, 89, 0.75);
+  }
+
+  #image-preview-container {
+    max-height: 400px;
+    margin-top: 1rem;
+  }
+
+  #image-preview {
+    max-width: 100%;
+    max-height: 300px;
+  }
+
+  .existing-images {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+
+  .existing-image {
+    position: relative;
+    width: 100px;
+    height: 100px;
+  }
+
+  .existing-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 4px;
+  }
+
+  .delete-image {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background: #ef4444;
+    color: white;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 12px;
+  }
+</style>
+
+<div class="flex-1 overflow-auto p-3 md:p-6 pt-20">
+  <div class="p-4 md:p-6 bg-white shadow-sm">
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+      <h1 class="text-2xl font-semibold text-gray-800">Edit Product</h1>
+    </div>
+  </div>
+
+  <div class="bg-white rounded-lg shadow p-6 mt-6">
+    <form id="editProductForm" action="/admin/updateProduct/<%= product._id %>" method="POST" enctype="multipart/form-data" class="space-y-4">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="space-y-4">
+          <div>
+            <label for="productName" class="block text-sm font-medium text-gray-700 mb-1">Product Name*</label>
+            <input type="text" id="productName" name="productName" value="<%= product.productName %>" required
+                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#6C7559] focus:border-transparent">
+            <p id="productName-error" class="error-message text-red-500 text-sm mt-1 hidden"></p>
+          </div>
+
+          <div>
+            <label for="brand" class="block text-sm font-medium text-gray-700 mb-1">Brand*</label>
+            <select id="brand" name="brand" required
+                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#6C7559] focus:border-transparent">
+              <option value="">Select Brand</option>
+              <% brands.forEach(brand => { %>
+                <option value="<%= brand._id %>" <%= product.brand.toString() === brand._id.toString() ? 'selected' : '' %>>
+                  <%= brand.brandName %>
+                </option>
+              <% }); %>
+            </select>
+            <p id="brand-error" class="error-message text-red-500 text-sm mt-1 hidden"></p>
+          </div>
+
+          <div>
+            <label for="category" class="block text-sm font-medium text-gray-700 mb-1">Category*</label>
+            <select id="category" name="category" required
+                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#6C7559] focus:border-transparent">
+              <option value="">Select Category</option>
+              <% categories.forEach(category => { %>
+                <option value="<%= category._id %>" <%= product.category.toString() === category._id.toString() ? 'selected' : '' %>>
+                  <%= category.name %>
+                </option>
+              <% }); %>
+            </select>
+            <p id="category-error" class="error-message text-red-500 text-sm mt-1 hidden"></p>
+          </div>
+
+          <div>
+            <label for="size" class="block text-sm font-medium text-gray-700 mb-1">Size*</label>
+            <input type="text" id="size" name="size" value="<%= product.size %>" required
+                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#6C7559] focus:border-transparent">
+            <p id="size-error" class="error-message text-red-500 text-sm mt-1 hidden"></p>
+          </div>
+
+          <div>
+            <label for="condition" class="block text-sm font-medium text-gray-700 mb-1">Condition*</label>
+            <select id="condition" name="condition" required
+                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#6C7559] focus:border-transparent">
+              <option value="">Select Condition</option>
+              <option value="Like New" <%= product.condition === 'Like New' ? 'selected' : '' %>>Like New</option>
+              <option value="Gently Used" <%= product.condition === 'Gently Used' ? 'selected' : '' %>>Gently Used</option>
+              <option value="Fair Condition" <%= product.condition === 'Fair Condition' ? 'selected' : '' %>>Fair Condition</option>
+            </select>
+            <p id="condition-error" class="error-message text-red-500 text-sm mt-1 hidden"></p>
+          </div>
+        </div>
+
+        <div class="space-y-4">
+          <div>
+            <label for="regularPrice" class="block text-sm font-medium text-gray-700 mb-1">Regular Price*</label>
+            <input type="number" id="regularPrice" name="regularPrice" value="<%= product.regularPrice %>" min="0" step="0.01" required
+                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#6C7559] focus:border-transparent">
+            <p id="regularPrice-error" class="error-message text-red-500 text-sm mt-1 hidden"></p>
+          </div>
+
+          <div>
+            <label for="salesPrice" class="block text-sm font-medium text-gray-700 mb-1">Sale Price*</label>
+            <input type="number" id="salesPrice" name="salesPrice" value="<%= product.salesPrice %>" min="0" step="0.01" required
+                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#6C7559] focus:border-transparent">
+            <p id="salesPrice-error" class="error-message text-red-500 text-sm mt-1 hidden"></p>
+          </div>
+
+          <div>
+            <label for="productOffer" class="block text-sm font-medium text-gray-700 mb-1">Product Offer (%)</label>
+            <input type="number" id="productOffer" name="productOffer" value="<%= product.productOffer %>" min="0" max="100" step="1"
+                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#6C7559] focus:border-transparent">
+            <p id="productOffer-error" class="error-message text-red-500 text-sm mt-1 hidden"></p>
+          </div>
+
+          <div>
+            <label for="stock" class="block text-sm font-medium text-gray-700 mb-1">Stock Quantity*</label>
+            <input type="number" id="stock" name="stock" value="<%= product.stock %>" min="0" required
+                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#6C7559] focus:border-transparent">
+            <p id="stock-error" class="error-message text-red-500 text-sm mt-1 hidden"></p>
+          </div>
+
+          <div>
+            <label for="quantity" class="block text-sm font-medium text-gray-700 mb-1">Quantity*</label>
+            <input type="number" id="quantity" name="quantity" value="<%= product.quantity %>" min="0" required
+                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#6C7559] focus:border-transparent">
+            <p id="quantity-error" class="error-message text-red-500 text-sm mt-1 hidden"></p>
+          </div>
+
+          <div>
+            <label for="status" class="block text-sm font-medium text-gray-700 mb-1">Status*</label>
+            <select id="status" name="status" required
+                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#6C7559] focus:border-transparent">
+              <option value="Available" <%= product.status === 'Available' ? 'selected' : '' %>>Available</option>
+              <option value="Out of stock" <%= product.status === 'Out of stock' ? 'selected' : '' %>>Out of stock</option>
+              <option value="Discontinued" <%= product.status === 'Discontinued' ? 'selected' : '' %>>Discontinued</option>
+            </select>
+            <p id="status-error" class="error-message text-red-500 text-sm mt-1 hidden"></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label for="description" class="block text-sm font-medium text-gray-700 mb-1">Description*</label>
+          <textarea id="description" name="description" rows="3" required
+                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#6C7559] focus:border-transparent"><%= product.description %></textarea>
+          <p id="description-error" class="error-message text-red-500 text-sm mt-1 hidden"></p>
+        </div>
+
+        <div class="space-y-2">
+          <div class="flex items-center">
+            <input type="checkbox" id="isFeatured" name="isFeatured" <%= product.isFeatured ? 'checked' : '' %>
+                   class="w-4 h-4 text-[#6C7559] border-gray-300 rounded focus:ring-[#6C7559]">
+            <label for="isFeatured" class="ml-2 text-sm text-gray-700">Featured Product</label>
+          </div>
+          <div class="flex items-center">
+            <input type="checkbox" id="isNew" name="isNew" <%= product.isNew ? 'checked' : '' %>
+                   class="w-4 h-4 text-[#6C7559] border-gray-300 rounded focus:ring-[#6C7559]">
+            <label for="isNew" class="ml-2 text-sm text-gray-700">Mark as New</label>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Existing Images</label>
+        <div class="existing-images">
+          <% product.productImage.forEach((image, index) => { %>
+            <div class="existing-image">
+              <img src="<%= image %>" alt="Product Image <%= index + 1 %>">
+              <div class="delete-image" onclick="deleteExistingImage('<%= image %>')">×</div>
+            </div>
+          <% }); %>
+        </div>
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Add New Images</label>
+        <div class="mt-1 flex items-center">
+          <input type="file" id="images" name="images" multiple accept="image/*" class="hidden">
+          <button type="button" id="uploadTrigger" 
+                  class="px-3 py-2 border border-gray-300 rounded-md shadow-sm text-sm leading-4 font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#6C7559]">
+            Upload Images
+          </button>
+          <span id="file-chosen" class="ml-2 text-sm text-gray-500">No files chosen</span>
+        </div>
+        
+        <div id="image-preview-container" class="hidden">
+          <div class="relative">
+            <img id="image-preview-cropper" class="max-w-full max-h-64" alt="Preview">
+          </div>
+          <div class="mt-2 flex space-x-2">
+            <button type="button" id="cropBtn" class="px-3 py-1 bg-[#6C7559] text-white text-sm rounded hidden">
+              Crop Image
+            </button>
+            <button type="button" id="cancelCropBtn" class="px-3 py-1 bg-gray-300 text-gray-700 text-sm rounded hidden">
+              Cancel
+            </button>
+          </div>
+        </div>
+        
+        <div id="thumbnail-preview" class="mt-2 grid grid-cols-3 gap-2 hidden">
+        </div>
+
+        <p id="images-error" class="error-message text-red-500 text-sm mt-1 hidden"></p>
+      </div>
+
+      <div class="flex justify-end space-x-4 mt-6">
+        <a href="/admin/products" 
+           class="px-4 py-2 text-sm text-gray-600 hover:text-gray-800 font-medium">
+          Cancel
+        </a>
+        <button type="submit" 
+                class="px-4 py-2 bg-[#6C7559] hover:bg-[#5a6349] text-white rounded-lg text-sm">
+          Update Product
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
+<script>
+  let cropper;
+  let originalImageFile;
+  let currentFileIndex = 0;
+  let croppedImages = [];
+  let deletedImages = [];
+
+  // Image Cropping Functionality
+  document.getElementById('uploadTrigger').addEventListener('click', function() {
+    document.getElementById('images').click();
+  });
+
+  document.getElementById('images').addEventListener('change', function(e) {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+
+    processImage(files[0]);
+  });
+
+  function processImage(file) {
+    if (!file.type.match('image.*')) {
+      displayError('images-error', 'Only image files are allowed');
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = function(event) {
+      const imagePreview = document.getElementById('image-preview-cropper');
+      const imagePreviewContainer = document.getElementById('image-preview-container');
+      const cropBtn = document.getElementById('cropBtn');
+      const cancelCropBtn = document.getElementById('cancelCropBtn');
+      const thumbnailPreview = document.getElementById('thumbnail-preview');
+
+      imagePreview.src = event.target.result;
+      imagePreviewContainer.classList.remove('hidden');
+      cropBtn.classList.remove('hidden');
+      cancelCropBtn.classList.remove('hidden');
+      thumbnailPreview.classList.add('hidden');
+
+      if (cropper) {
+        cropper.destroy();
+      }
+      
+      cropper = new Cropper(imagePreview, {
+        aspectRatio: 1,
+        viewMode: 1,
+        autoCropArea: 0.8,
+        responsive: true,
+        guides: false
+      });
+
+      originalImageFile = file;
+    };
+    reader.readAsDataURL(file);
+  }
+
+  document.getElementById('cropBtn').addEventListener('click', function() {
+    if (cropper) {
+      const canvas = cropper.getCroppedCanvas({
+        width: 800,
+        height: 800,
+        minWidth: 400,
+        minHeight: 400,
+        maxWidth: 2000,
+        maxHeight: 2000,
+        fillColor: '#fff',
+        imageSmoothingEnabled: true,
+        imageSmoothingQuality: 'high',
+      });
+
+      canvas.toBlob((blob) => {
+        const croppedFile = new File([blob], originalImageFile.name, {
+          type: 'image/jpeg',
+          lastModified: Date.now()
+        });
+
+        croppedImages.push(croppedFile);
+        updateThumbnailPreview(croppedFile);
+        
+        document.getElementById('cropBtn').classList.add('hidden');
+        document.getElementById('cancelCropBtn').classList.add('hidden');
+        document.getElementById('image-preview-container').classList.add('hidden');
+
+        cropper.destroy();
+        cropper = null;
+        
+        document.getElementById('file-chosen').textContent = 
+          croppedImages.length + ' image(s) selected';
+        
+        const fileInput = document.getElementById('images');
+        if (currentFileIndex < fileInput.files.length - 1) {
+          currentFileIndex++;
+          processImage(fileInput.files[currentFileIndex]);
+        } else {
+          updateFileInput();
+        }
+      }, 'image/jpeg', 0.9);
+    }
+  });
+
+  function updateThumbnailPreview(file) {
+    const thumbnailPreview = document.getElementById('thumbnail-preview');
+    thumbnailPreview.classList.remove('hidden');
+    
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      const img = document.createElement('img');
+      img.src = e.target.result;
+      img.className = 'w-full h-24 object-cover rounded';
+      thumbnailPreview.appendChild(img);
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function updateFileInput() {
+    const dataTransfer = new DataTransfer();
+    croppedImages.forEach(file => {
+      dataTransfer.items.add(file);
+    });
+    
+    const fileInput = document.getElementById('images');
+    fileInput.files = dataTransfer.files;
+  }
+
+  document.getElementById('cancelCropBtn').addEventListener('click', function() {
+    const imagePreviewContainer = document.getElementById('image-preview-container');
+    const fileInput = document.getElementById('images');
+    
+    if (cropper) {
+      cropper.destroy();
+      cropper = null;
+    }
+    
+    imagePreviewContainer.classList.add('hidden');
+    fileInput.value = '';
+    document.getElementById('file-chosen').textContent = 'No files chosen';
+    document.getElementById('thumbnail-preview').innerHTML = '';
+    document.getElementById('images-error').classList.add('hidden');
+    croppedImages = [];
+    currentFileIndex = 0;
+  });
+
+  function deleteExistingImage(imagePath) {
+    deletedImages.push(imagePath);
+    const imageElement = event.target.parentElement;
+    imageElement.remove();
+  }
+
+  document.getElementById('editProductForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    clearErrorMessages();
+    
+    let isValid = true;
+    
+    const productName = document.getElementById('productName').value.trim();
+    const brand = document.getElementById('brand').value;
+    const category = document.getElementById('category').value;
+    const size = document.getElementById('size').value;
+    const condition = document.getElementById('condition').value;
+    const regularPrice = document.getElementById('regularPrice').value;
+    const salesPrice = document.getElementById('salesPrice').value;
+    const stock = document.getElementById('stock').value;
+    const quantity = document.getElementById('quantity').value;
+    const status = document.getElementById('status').value;
+    const description = document.getElementById('description').value.trim();
+    const fileInput = document.getElementById('images');
+    
+    // Count total images (remaining existing images + new images)
+    const existingImages = document.querySelectorAll('.existing-image');
+    const remainingImages = existingImages.length;
+    const newImages = croppedImages.length;
+    const totalImages = remainingImages + newImages;
+    
+    if (!productName) {
+      displayError('productName-error', 'Product name is required');
+      isValid = false;
+    }
+    
+    if (!brand) {
+      displayError('brand-error', 'Please select a brand');
+      isValid = false;
+    }
+    
+    if (!category) {
+      displayError('category-error', 'Please select a category');
+      isValid = false;
+    }
+    
+    if (!size) {
+      displayError('size-error', 'Size is required');
+      isValid = false;
+    }
+    
+    if (!condition) {
+      displayError('condition-error', 'Please select a condition');
+      isValid = false;
+    }
+    
+    if (!regularPrice || parseFloat(regularPrice) <= 0) {
+      displayError('regularPrice-error', 'Please enter a valid price');
+      isValid = false;
+    }
+    
+    if (!salesPrice || parseFloat(salesPrice) <= 0) {
+      displayError('salesPrice-error', 'Please enter a valid sale price');
+      isValid = false;
+    }
+    
+    if (!stock || parseInt(stock) < 0) {
+      displayError('stock-error', 'Please enter a valid stock quantity');
+      isValid = false;
+    }
+    
+    if (!quantity || parseInt(quantity) < 0) {
+      displayError('quantity-error', 'Please enter a valid quantity');
+      isValid = false;
+    }
+    
+    if (!status) {
+      displayError('status-error', 'Please select a status');
+      isValid = false;
+    }
+    
+    if (!description) {
+      displayError('description-error', 'Description is required');
+      isValid = false;
+    }
+
+    // Image validation
+    if (totalImages < 3) {
+      displayError('images-error', 'At least 3 images are required (including existing and new images)');
+      isValid = false;
+    }
+    
+    if (!isValid) {
+      return;
+    }
+    
+    const formData = new FormData(this);
+    formData.append('deletedImages', JSON.stringify(deletedImages));
+    
+    fetch(this.action, {
+      method: 'POST',
+      body: formData
+    })
+    .then(response => {
+      if (!response.ok) {
+        return response.json().then(err => { throw err; });
+      }
+      return response.json();
+    })
+    .then(data => {
+      Swal.fire({
+        icon: 'success',
+        title: 'Success!',
+        text: data.message || 'Product updated successfully',
+        confirmButtonColor: '#6C7559'
+      }).then(() => {
+        window.location.href = '/admin/products';
+      });
+    })
+    .catch(error => {
+      Swal.fire({
+        icon: 'error',
+        title: 'Error!',
+        text: error.error || 'Failed to update product',
+        confirmButtonColor: '#6C7559'
+      });
+    });
+  });
+
+  function displayError(elementId, message) {
+    const element = document.getElementById(elementId);
+    if (element) {
+      element.textContent = message;
+      element.classList.remove('hidden');
+    }
+  }
+
+  function clearErrorMessages() {
+    document.querySelectorAll('.error-message').forEach(el => {
+      el.textContent = '';
+      el.classList.add('hidden');
+    });
+  }
+</script>
+
+<%- include('../partials/admin/admin-footer.ejs') %> 
+<%- include('../partials/admin/admin-footer.ejs') %> 

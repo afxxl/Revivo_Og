@@ -1,0 +1,246 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+      body {
+        background-image: url("/Images/images/OLD_PAPER_TEXTURE.jpg");
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+      }
+
+      .error-message {
+        color: #B91C1C;
+        font-size: 0.75rem;
+        margin-top: 0.25rem;
+        display: none;
+      }
+
+      .input-group:focus-within {
+        border-color: #2C2C2C;
+      }
+
+      @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(-10px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+
+      .animate-fade-in {
+        animation: fadeIn 0.3s ease-out;
+      }
+
+      @keyframes fadeOut {
+        from { opacity: 1; transform: translateY(0); }
+        to { opacity: 0; transform: translateY(-10px); }
+      }
+
+      .animate-fade-out {
+        animation: fadeOut 0.3s ease-out;
+      }
+    </style>
+  </head>
+  <body>
+    <%-include("../../views/partials/user/header")%>
+
+    <div class="min-h-screen flex items-center justify-center p-4 mt-20">
+      <div class="max-w-md w-full backdrop-blur-sm bg-white/30 rounded-lg p-8 space-y-6 shadow-lg">
+        <!-- Title -->
+        <h1 class="text-3xl font-henny text-center text-[#2C2C2C] mb-8">
+          Login
+        </h1>
+
+        <!-- Form -->
+        <form id="loginform" class="space-y-6" action="/login" method="POST">
+          <!-- Input fields -->
+          <div class="space-y-4">
+            <div class="input-group">
+              <input
+                type="email"
+                id="email"
+                name="email"
+                placeholder="Email"
+                class="w-full p-3 border-b-2 border-[#2C2C2C]/50 bg-transparent focus:outline-none focus:border-[#2C2C2C] transition-colors"
+              />
+              <div id="error1" class="error-message"></div>
+            </div>
+
+            <div class="relative">
+              <input
+                type="password"
+                id="password"
+                name="password"
+                placeholder="Password"
+                class="w-full p-3 border-b-2 border-[#2C2C2C]/50 bg-transparent focus:outline-none focus:border-[#2C2C2C] transition-colors"
+              />
+
+              <button type="button" class="absolute right-3 top-3 text-gray-400">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-6 w-6"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                  />
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                  />
+                </svg>
+              </button>
+
+              <div id="error2" class="error-message"></div>
+
+            </div>
+            <%if(typeof message !== 'undefined' && message){%>
+            <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded-md flex items-center justify-between animate-fade-in">
+                <div class="flex items-center">
+                    <!-- Error Icon -->
+                    <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
+                    </svg>
+                    <!-- Message Text -->
+                    <p><%=message%></p>
+                </div>
+                <!-- Close Button -->
+                <button onclick="this.parentElement.remove()" class="text-red-700 hover:text-red-800 transition-colors">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>
+            <%}%>
+
+            <!-- Forgot Password Link -->
+            <div class="flex justify-end">
+              <a href="/forgot-password" class="text-sm text-[#2C2C2C] hover:underline">
+                Forgot Password?
+              </a>
+            </div>
+
+            <!-- Submit Button -->
+            <button
+              type="submit"
+              class="w-full bg-[#2C2C2C] text-white py-3 rounded-md hover:bg-[#1a1a1a] transition-colors font-medium"
+            >
+              Login
+            </button>
+          </div>
+        </form>
+
+        <!-- Divider -->
+        <div class="relative my-8">
+          <div class="absolute inset-0 flex items-center">
+            <div class="w-full border-t border-[#2C2C2C]/30"></div>
+          </div>
+          <div class="relative flex justify-center text-sm">
+            <span class="px-4 bg-transparent text-[#2C2C2C]/70">Or continue with</span>
+          </div>
+        </div>
+
+        <!-- Google Sign In -->
+        <a href="/auth/google"
+          class="w-full flex items-center justify-center gap-3 border-2 border-[#2C2C2C] p-3 rounded-md hover:bg-[#2C2C2C]/10 transition-colors"
+        >
+          <img
+            src="https://www.svgrepo.com/show/475656/google-color.svg"
+            alt="Google logo"
+            class="h-5 w-5"
+          />
+          <span class="text-[#2C2C2C]">Sign in with Google</span>
+        </a>
+
+        <!-- Sign Up Link -->
+        <p class="text-center text-sm text-[#2C2C2C]/70 mt-6">
+          Don't have an account?
+          <a href="/signup" class="text-[#2C2C2C] hover:underline font-medium">Create Account</a>
+        </p>
+      </div>
+    </div>
+
+    <script>
+      // Toggle password visibility
+      document.querySelectorAll('input[type="password"]').forEach((input) => {
+        const button = input.nextElementSibling;
+        button.addEventListener("click", () => {
+          input.type = input.type === "password" ? "text" : "password";
+        });
+      });
+
+      const emailid = document.getElementById("email");
+      const password = document.getElementById("password");
+      const error1 = document.getElementById("error1");
+      const error2 = document.getElementById("error2");
+      const loginform = document.getElementById("loginform");
+
+      function emailValidateChecking() {
+        const emailVal = emailid.value;
+        const emailpattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+        if (!emailpattern.test(emailVal)) {
+          error1.style.display = "block";
+          error1.innerHTML = "Invalid email format";
+          return false;
+        } else {
+          error1.style.display = "none";
+          return true;
+        }
+      }
+
+      function passwordValidateChecking() {
+        const passVal = password.value;
+
+        if (passVal.trim() === "") {
+          error2.style.display = "block";
+          error2.innerHTML = "Password is required";
+          return false;
+        } else {
+          error2.style.display = "none";
+          return true;
+        }
+      }
+
+      loginform.addEventListener("submit", function(e) {
+        e.preventDefault();
+
+        const isEmailValid = emailValidateChecking();
+        const isPasswordValid = passwordValidateChecking();
+
+        if (isEmailValid && isPasswordValid) {
+          console.log("Form submitted successfully!");
+          this.submit();
+        } else {
+          console.log("Form validation failed!");
+        }
+      });
+
+      // Auto-hide message after 5 seconds
+      if(document.querySelector('.bg-red-100')) {
+        setTimeout(() => {
+          const messageDiv = document.querySelector('.bg-red-100');
+          if(messageDiv) {
+            messageDiv.classList.add('animate-fade-out');
+            setTimeout(() => messageDiv.remove(), 300);
+          }
+        }, 5000);
+      }
+    </script>
+
+    <% if (typeof script !== 'undefined') { %>
+      <%- script %>
+    <% } %>
+  </body>
+</html>

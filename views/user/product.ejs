@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <title><%= product.productName %> | REVIVO</title>
+    <link href="/css/styles.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Henny+Penny&family=Playfair+Display:wght@400;500;600&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+      .product-gallery-thumbnail {
+        transition: all 0.3s ease;
+      }
+      .product-gallery-thumbnail:hover {
+        transform: scale(1.05);
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      }
+      .product-gallery-thumbnail.active {
+        border-color: #2C2C2C;
+      }
+      .section-heading {
+        font-family: 'Playfair Display', serif;
+        font-weight: 500;
+        letter-spacing: 0.05em;
+        position: relative;
+        display: inline-block;
+      }
+      .section-heading::after {
+        content: '';
+        position: absolute;
+        bottom: -8px;
+        left: 0;
+        width: 60px;
+        height: 2px;
+        background-color: #f8c78d;
+        transition: width 0.3s ease;
+      }
+      .section-heading:hover::after {
+        width: 100%;
+      }
+      .font-playfair {
+        font-family: 'Playfair Display', serif;
+      }
+      .font-montserrat {
+        font-family: 'Montserrat', sans-serif;
+      }
+      .font-henny {
+        font-family: 'Henny Penny', cursive;
+      }
+    </style>
+  </head>
+
+  <body class="bg-[#f8f7f5]">
+    <%- include('../partials/user/header.ejs') %>
+
+    <!-- Product Detail Section -->
+    <section class="py-12">
+      <div class="container mx-auto px-4 max-w-7xl">
+        <!-- Breadcrumb Navigation -->
+        <div class="mb-6 font-montserrat text-sm text-[#2C2C2C]/70">
+          <a href="/" class="hover:text-[#f8c78d]">Home</a> / 
+          <a href="/shop" class="hover:text-[#f8c78d]">Shop</a> / 
+          <span class="text-[#2C2C2C]"><%= product.productName %></span>
+        </div>
+
+        <div class="flex flex-col lg:flex-row gap-12">
+          <!-- Product Gallery -->
+          <div class="lg:w-1/2">
+            <!-- Main Image -->
+            <div class="bg-white p-4 rounded-lg shadow-sm mb-4">
+              <img 
+                id="mainProductImage"
+                src="<%= product.productImage[0] %>" 
+                alt="<%= product.productName %>"
+                class="w-full h-auto object-contain max-h-[500px]"
+                onerror="this.src='/Images/placeholder.jpg'"
+              >
+            </div>
+
+            <!-- Thumbnail Gallery -->
+            <div class="flex gap-3 overflow-x-auto py-2">
+              <% product.productImage.forEach((image, index) => { %>
+                <div 
+                  class="product-gallery-thumbnail flex-shrink-0 w-20 h-20 bg-white border border-[#e0dcd4] rounded-md p-1 cursor-pointer <%= index === 0 ? 'active' : '' %>"
+                  onclick="changeMainImage('<%= image %>', this)"
+                >
+                  <img 
+                    src="<%= image %>" 
+                    alt="Thumbnail <%= index + 1 %>"
+                    class="w-full h-full object-contain"
+                    onerror="this.src='/Images/placeholder.jpg'"
+                  >
+                </div>
+              <% }); %>
+            </div>
+          </div>
+
+          <!-- Product Info -->
+          <div class="lg:w-1/2">
+            <div class="bg-white p-6 rounded-lg shadow-sm">
+              <!-- Category & Brand -->
+              <div class="mb-4">
+                <span class="text-xs text-[#2C2C2C]/60 font-montserrat">
+                  <%= product.category?.name || 'Vintage' %> / <%= product.brand?.brandName || 'Generic' %>
+                </span>
+              </div>
+
+              <!-- Product Name -->
+              <h1 class="text-3xl font-playfair mb-4 text-[#2C2C2C]"><%= product.productName %></h1>
+
+              <!-- Price -->
+              <div class="mb-6">
+                <p class="text-2xl font-montserrat font-medium text-[#2C2C2C]">$<%= product.salesPrice %> COP</p>
+                <% if (product.originalPrice) { %>
+                  <p class="text-[#2C2C2C]/60 text-sm font-montserrat line-through">$<%= product.originalPrice %> COP</p>
+                <% } %>
+              </div>
+
+              <!-- Condition & Size -->
+              <div class="mb-6 grid grid-cols-2 gap-4">
+                <div>
+                  <p class="text-xs text-[#2C2C2C]/60 font-montserrat mb-1">Condition</p>
+                  <p class="font-montserrat"><%= product.condition %></p>
+                </div>
+                <div>
+                  <p class="text-xs text-[#2C2C2C]/60 font-montserrat mb-1">Size</p>
+                  <p class="font-montserrat"><%= product.size %></p>
+                </div>
+              </div>
+
+              <!-- Stock Status -->
+              <div class="mb-6">
+                <p class="text-sm font-montserrat <%= product.stock > 0 ? 'text-green-600' : 'text-red-600' %>">
+                  <%= product.stock > 0 ? 'In Stock' : 'Out of Stock' %>
+                </p>
+              </div>
+
+              <!-- Add to Cart Button -->
+              <button 
+                onclick="addToCart('<%= product._id %>')"
+                class="w-full py-3 bg-[#2C2C2C] text-white rounded-md hover:bg-[#1a1a1a] transition-colors font-montserrat mb-6"
+                <%= product.stock <= 0 ? 'disabled' : '' %>
+              >
+                <%= product.stock > 0 ? 'Add to Cart' : 'Out of Stock' %>
+              </button>
+
+              <!-- Description -->
+              <div class="mb-6">
+                <h3 class="text-lg font-playfair mb-3 section-heading">Description</h3>
+                <p class="text-[#2C2C2C]/80 font-montserrat leading-relaxed"><%= product.description %></p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <%- include('../partials/user/footer.ejs') %>
+
+    <script>
+      // Change main product image when thumbnail is clicked
+      function changeMainImage(src, element) {
+        document.getElementById('mainProductImage').src = src;
+        
+        // Remove active class from all thumbnails
+        document.querySelectorAll('.product-gallery-thumbnail').forEach(thumb => {
+          thumb.classList.remove('active');
+        });
+        
+        // Add active class to clicked thumbnail
+        element.classList.add('active');
+      }
+
+      // Enhanced addToCart function with toast notifications
+      async function addToCart(productId) {
+        try {
+          const response = await fetch('/add-to-cart', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ productId }),
+          });
+
+          const data = await response.json();
+
+          if (data.success) {
+            showToast('Added to cart successfully!', 'success');
+          } else {
+            throw new Error(data.message || 'Failed to add to cart');
+          }
+        } catch (error) {
+          console.error('Error adding to cart:', error);
+          showToast(error.message || 'Failed to add to cart', 'error');
+        }
+      }
+
+      // Enhanced toast notification
+      function showToast(message, type = 'success') {
+        const toast = document.createElement('div');
+        toast.className = `fixed bottom-4 right-4 ${type === 'success' ? 'bg-[#2C2C2C]' : 'bg-red-500'} text-white px-6 py-3 rounded-lg shadow-xl transform translate-y-0 opacity-100 transition-all duration-300 z-50 flex items-center`;
+        
+        const icon = document.createElement('span');
+        icon.className = 'mr-2';
+        icon.innerHTML = type === 'success' 
+          ? '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>'
+          : '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>';
+        
+        const text = document.createElement('span');
+        text.textContent = message;
+        text.className = 'font-montserrat';
+        
+        toast.appendChild(icon);
+        toast.appendChild(text);
+        document.body.appendChild(toast);
+
+        setTimeout(() => {
+          toast.classList.add('translate-y-full', 'opacity-0');
+          setTimeout(() => toast.remove(), 300);
+        }, 3000);
+      }
+    </script>
+  </body>
+</html>

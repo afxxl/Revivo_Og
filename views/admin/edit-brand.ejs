@@ -1,0 +1,249 @@
+<%- include('../partials/admin/admin-header.ejs') %>
+<%- include('../partials/admin/admin-sidebar', {currentPage: 'brands'}) %>
+
+<style>
+/* Reuse the same cropper styles from your add brand modal */
+.cropper-view-box,
+.cropper-face {
+    border-radius: 50%;
+}
+.cropper-container {
+    margin: 0 auto;
+}
+.cropper-modal {
+    background-color: #fff;
+    opacity: 1;
+}
+.cropper-line,
+.cropper-point {
+    background-color: #6C7559;
+}
+.cropper-view-box {
+    outline: 1px solid #6C7559;
+    outline-color: rgba(108, 117, 89, 0.75);
+}
+</style>
+
+<!-- Main Content -->
+<div class="flex-1 overflow-auto p-3 md:p-6 pt-20">
+    <div class="max-w-2xl mx-auto bg-white rounded-lg shadow p-6">
+        <div class="flex justify-between items-center mb-6">
+            <h1 class="text-2xl font-semibold text-gray-800">Edit Brand</h1>
+            <a href="/admin/brands" class="text-gray-500 hover:text-gray-700">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+            </a>
+        </div>
+
+        <form id="editBrandForm" action="/admin/updateBrand/<%= brand._id %>" method="POST" enctype="multipart/form-data" class="space-y-6">
+            <div>
+                <label for="brandName" class="block text-sm font-medium text-gray-700 mb-1">Brand Name</label>
+                <input type="text" 
+                       id="brandName" 
+                       name="name" 
+                       value="<%= brand.brandName %>"
+                       required
+                       class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#6C7559] focus:border-transparent">
+                <p id="name-error" class="error-message text-red-500 text-sm mt-1 hidden"></p>
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Current Image</label>
+                <% if (brand.brandImage && brand.brandImage.length > 0) { %>
+                    <img src="<%= brand.brandImage[0] %>" 
+                         alt="Current Brand Image" 
+                         class="h-20 w-20 object-cover rounded-full bg-gray-50 mb-2"
+                         onerror="this.onerror=null;this.src='/images/default-brand.png'">
+                <% } else { %>
+                    <img src="/images/default-brand.png" 
+                         alt="Default Brand Image" 
+                         class="h-20 w-20 object-cover rounded-full bg-gray-50 mb-2">
+                <% } %>
+            </div>
+
+            <div>
+                <label for="brandImage" class="block text-sm font-medium text-gray-700 mb-1">Change Image (optional)</label>
+                <input type="file" 
+                       id="brandImage" 
+                       name="image" 
+                       accept="image/*" 
+                       class="hidden">
+                
+                <!-- Cropper container (same as add brand) -->
+                <div class="mt-2">
+                    <div id="imagePreviewContainer" class="hidden">
+                        <div class="relative" style="max-height: 300px;">
+                            <img id="imagePreview" class="max-w-full max-h-64" alt="Preview">
+                        </div>
+                        <div class="mt-2 flex space-x-2">
+                            <button type="button" id="cropBtn" class="px-3 py-1 bg-[#6C7559] text-white text-sm rounded hidden">
+                                Crop Image
+                            </button>
+                            <button type="button" id="cancelCropBtn" class="px-3 py-1 bg-gray-300 text-gray-700 text-sm rounded hidden">
+                                Cancel
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <button type="button" id="uploadTrigger" 
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#6C7559] focus:border-transparent">
+                        Change Image
+                    </button>
+                </div>
+                <p id="image-error" class="error-message text-red-500 text-sm mt-1 hidden"></p>
+            </div>
+
+            <div class="flex justify-end space-x-4">
+                <a href="/admin/brands" class="px-4 py-2 text-sm text-gray-600 hover:text-gray-800 font-medium">
+                    Cancel
+                </a>
+                <button type="submit" class="px-4 py-2 bg-[#6C7559] hover:bg-[#5a6349] text-white rounded-lg text-sm">
+                    Update Brand
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+// Same cropper functionality as your add brand form
+let cropper;
+let originalImageFile;
+
+document.getElementById('uploadTrigger').addEventListener('click', function() {
+    document.getElementById('brandImage').click();
+});
+
+document.getElementById('brandImage').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    if (!file.type.match('image.*')) {
+        displayError('image-error', 'Only image files are allowed');
+        return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = function(event) {
+        const imagePreview = document.getElementById('imagePreview');
+        const imagePreviewContainer = document.getElementById('imagePreviewContainer');
+        const cropBtn = document.getElementById('cropBtn');
+        const cancelCropBtn = document.getElementById('cancelCropBtn');
+
+        imagePreview.src = event.target.result;
+        imagePreviewContainer.classList.remove('hidden');
+        cropBtn.classList.remove('hidden');
+        cancelCropBtn.classList.remove('hidden');
+
+        if (cropper) {
+            cropper.destroy();
+        }
+        
+        cropper = new Cropper(imagePreview, {
+            aspectRatio: 1,
+            viewMode: 1,
+            autoCropArea: 0.8,
+            responsive: true,
+            guides: false
+        });
+
+        originalImageFile = file;
+    };
+    reader.readAsDataURL(file);
+});
+
+document.getElementById('cropBtn').addEventListener('click', function() {
+    if (cropper) {
+        const canvas = cropper.getCroppedCanvas({
+            width: 500,
+            height: 500,
+            minWidth: 256,
+            minHeight: 256,
+            maxWidth: 2000,
+            maxHeight: 2000,
+            fillColor: '#fff',
+            imageSmoothingEnabled: true,
+            imageSmoothingQuality: 'high',
+        });
+
+        canvas.toBlob((blob) => {
+            const croppedFile = new File([blob], originalImageFile.name, {
+                type: 'image/jpeg',
+                lastModified: Date.now()
+            });
+
+            const dataTransfer = new DataTransfer();
+            dataTransfer.items.add(croppedFile);
+            
+            const fileInput = document.getElementById('brandImage');
+            fileInput.files = dataTransfer.files;
+
+            document.getElementById('cropBtn').classList.add('hidden');
+            document.getElementById('cancelCropBtn').classList.add('hidden');
+            cropper.destroy();
+            cropper = null;
+        }, 'image/jpeg', 0.9);
+    }
+});
+
+document.getElementById('cancelCropBtn').addEventListener('click', function() {
+    const imagePreviewContainer = document.getElementById('imagePreviewContainer');
+    const fileInput = document.getElementById('brandImage');
+    
+    if (cropper) {
+        cropper.destroy();
+        cropper = null;
+    }
+    
+    imagePreviewContainer.classList.add('hidden');
+    fileInput.value = '';
+});
+
+// Form submission handling
+document.getElementById('editBrandForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    const formData = new FormData(this);
+    
+    try {
+        const response = await fetch(this.action, {
+            method: 'POST',
+            body: formData
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.error || 'Failed to update brand');
+        }
+
+        Swal.fire({
+            icon: 'success',
+            title: 'Success!',
+            text: data.message || 'Brand updated successfully',
+            confirmButtonColor: '#6C7559' }).then(() => {
+            window.location.href = '/admin/brands';
+        });
+
+    } catch (error) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Error!',
+            text: error.message,
+            confirmButtonColor: '#6C7559'
+        });
+    }
+});
+
+function displayError(elementId, message) {
+    const element = document.getElementById(elementId);
+    element.textContent = message;
+    element.classList.remove('hidden');
+}
+</script>
+
+<%- include('../partials/admin/admin-footer') %>

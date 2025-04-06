@@ -1,0 +1,261 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Create Account</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Only needed for AJAX and SweetAlert -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+      body {
+        background-image: url("/Images/images/OLD_PAPER_TEXTURE.jpg");
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+      }
+    </style>
+  </head>
+  <body>
+    <%-include("../../views/partials/user/header")%>
+    <div class="min-h-screen flex items-center justify-center bg-transparent">
+      <div
+        class="max-w-md w-full p-6 bg-white/60 backdrop-blur-sm rounded-lg shadow-lg"
+      >
+        <div class="text-center mb-8">
+          <h2 class="text-2xl font-henny mb-2 text-[#2C2C2C]">Enter OTP</h2>
+          <p class="text-[#2C2C2C]/70 text-sm">
+            Please enter the OTP sent to your registered email id
+          </p>
+        </div>
+
+        <form onsubmit="return validateOTPForm()" class="space-y-6">
+          <input type="hidden" name="otp" id="finalOtp" />
+          <div class="flex justify-center space-x-4">
+            <input
+              type="text"
+              maxlength="1"
+              class="w-12 h-12 text-center border-b-2 border-[#2C2C2C] bg-transparent focus:outline-none focus:border-[#1a1a1a] text-xl"
+              required
+            />
+            <input
+              type="text"
+              maxlength="1"
+              class="w-12 h-12 text-center border-b-2 border-[#2C2C2C] bg-transparent focus:outline-none focus:border-[#1a1a1a] text-xl"
+              required
+            />
+            <input
+              type="text"
+              maxlength="1"
+              class="w-12 h-12 text-center border-b-2 border-[#2C2C2C] bg-transparent focus:outline-none focus:border-[#1a1a1a] text-xl"
+              required
+            />
+            <input
+              type="text"
+              maxlength="1"
+              class="w-12 h-12 text-center border-b-2 border-[#2C2C2C] bg-transparent focus:outline-none focus:border-[#1a1a1a] text-xl"
+              required
+            />
+            <input
+              type="text"
+              maxlength="1"
+              class="w-12 h-12 text-center border-b-2 border-[#2C2C2C] bg-transparent focus:outline-none focus:border-[#1a1a1a] text-xl"
+              required
+            />
+            <input
+              type="text"
+              maxlength="1"
+              class="w-12 h-12 text-center border-b-2 border-[#2C2C2C] bg-transparent focus:outline-none focus:border-[#1a1a1a] text-xl"
+              required
+            />
+          </div>
+
+          <!-- Timer -->
+          <div class="text-center text-sm text-[#2C2C2C]/70">
+            <span id="timer">00:30</span>
+          </div>
+
+          <button
+            type="submit"
+            class="w-full bg-[#2C2C2C] text-white py-2 rounded-md hover:bg-[#1a1a1a] transition-colors"
+          >
+            Verify Code
+          </button>
+        </form>
+
+        <div class="text-center mt-4">
+          <p class="text-sm text-[#2C2C2C]/70">
+            Haven't got the otp yet?
+            <a
+              href="#"
+              id="resendLink"
+              class="text-[#2C2C2C] hover:text-[#1a1a1a] transition-colors hidden"
+              onclick="return resendOtp()"
+              >Resend OTP</a
+            >
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const inputs = document.querySelectorAll('input[type="text"]');
+      const finalOtpInput = document.getElementById("finalOtp");
+      const resendLink = document.getElementById("resendLink");
+      const timerElement = document.getElementById("timer");
+      let timeLeft = 30;
+      let timerInterval;
+
+      inputs.forEach((input, index) => {
+        input.addEventListener("input", function () {
+          if (this.value.length === 1 && index < inputs.length - 1) {
+            inputs[index + 1].focus();
+          }
+          const otpValue = Array.from(inputs)
+            .map((input) => input.value)
+            .join("");
+          finalOtpInput.value = otpValue;
+        });
+
+        input.addEventListener("keydown", function (e) {
+          if (e.key === "Backspace" && !this.value && index > 0) {
+            inputs[index - 1].focus();
+          }
+        });
+      });
+
+      function startTimer() {
+        timeLeft = 30;
+        resendLink.classList.add("hidden");
+        
+        inputs.forEach(input => {
+          input.disabled = false;
+          input.classList.remove('bg-[#2C2C2C]/10');
+        });
+        
+        clearInterval(timerInterval);
+        
+        timerInterval = setInterval(function() {
+          const minutes = Math.floor(timeLeft / 60);
+          const seconds = timeLeft % 60;
+          timerElement.textContent = `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
+          
+          if (timeLeft <= 0) {
+            clearInterval(timerInterval);
+            resendLink.classList.remove("hidden");
+            inputs.forEach(input => {
+              input.disabled = true;
+              input.classList.add('bg-[#2C2C2C]/10'); 
+            });
+            inputs.forEach(input => input.value = '');
+            finalOtpInput.value = '';
+            
+            Swal.fire({
+              icon: 'warning',
+              title: 'OTP Expired',
+              text: 'Please click on resend OTP to get a new code',
+              confirmButtonColor: '#2C2C2C'
+            });
+          }
+          timeLeft--;
+        }, 1000);
+      }
+
+      window.onload = function() {
+        startTimer();
+      }
+
+      function resendOtp() {
+        $.ajax({
+          type: "POST",
+          url: "/resend-otp",
+          success: function(response) {
+            if (response.success) {
+              Swal.fire({
+                icon: "success",
+                title: "OTP Resent Successfully",
+                showConfirmButton: false,
+                timer: 1500
+              });
+              startTimer(); // This will re-enable inputs
+              // Clear input fields
+              inputs.forEach(input => input.value = '');
+              finalOtpInput.value = '';
+            } else {
+              Swal.fire({
+                icon: "error",
+                title: "Error",
+                text: response.message || "Failed to resend OTP"
+              });
+            }
+          },
+          error: function(xhr) {
+            Swal.fire({
+              icon: "error",
+              title: "Error",
+              text: xhr.responseJSON?.message || "An unexpected error occurred"
+            });
+          }
+        });
+        return false;
+      }
+
+      // Form validation and submission
+      function validateOTPForm() {
+        const otpValue = finalOtpInput.value;
+
+        if (otpValue.length !== 6) {
+          Swal.fire({
+            icon: "error",
+            title: "Invalid OTP",
+            text: "Please enter all 6 digits",
+          });
+          return false;
+        }
+
+        $.ajax({
+          type: "POST",
+          url: "/verify-otp",
+          data: { otp: otpValue },
+          success: function (response) {
+            if (response.success) {
+              Swal.fire({
+                icon: "success",
+                title: "OTP Verified Successfully",
+                showConfirmButton: false,
+                timer: 1500,
+              }).then(() => {
+                window.location.href = response.redirectUrl;
+              });
+            } else {
+              Swal.fire({
+                icon: "error",
+                title: "Error",
+                text: response.message || "Invalid OTP",
+              });
+            }
+          },
+          error: function (xhr, status, error) {
+            Swal.fire({
+              icon: "error",
+              title: "Error",
+              text:
+                xhr.responseJSON?.message || "Invalid OTP, please try again",
+            });
+          },
+        });
+        return false;
+      }
+    </script>
+  </body>
+</html>
+
+<style>
+  @import url("https://fonts.googleapis.com/css2?family=Henny+Penny&display=swap");
+
+  .font-henny {
+    font-family: "Henny Penny", cursive;
+  }
+</style>

@@ -1,0 +1,238 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Verify OTP</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+      body {
+        background-image: url("/Images/images/OLD_PAPER_TEXTURE.jpg");
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+      }
+
+      .otp-input {
+        width: 40px;
+        height: 40px;
+        padding: 5px;
+        margin: 0 5px;
+        text-align: center;
+        border-radius: 4px;
+        border: 2px solid rgba(44, 44, 44, 0.5);
+        background: transparent;
+        font-size: 1.2rem;
+        transition: all 0.3s;
+      }
+
+      .otp-input:focus {
+        outline: none;
+        border-color: #2C2C2C;
+        box-shadow: 0 0 0 2px rgba(44, 44, 44, 0.2);
+      }
+
+      @keyframes shake {
+        0%, 100% { transform: translateX(0); }
+        25% { transform: translateX(-5px); }
+        75% { transform: translateX(5px); }
+      }
+
+      .shake {
+        animation: shake 0.5s ease-in-out;
+      }
+
+      .disabled {
+        background-color: rgba(44, 44, 44, 0.1);
+        border-color: rgba(44, 44, 44, 0.3);
+        color: rgba(44, 44, 44, 0.5);
+      }
+    </style>
+  </head>
+  <body>
+    <%-include("../../views/partials/user/header")%>
+
+    <div class="min-h-screen flex items-center justify-center p-4 mt-20">
+      <div class="max-w-md w-full backdrop-blur-sm bg-white/30 rounded-lg p-8 space-y-6 shadow-lg">
+        <!-- Title -->
+        <div class="text-center space-y-2">
+          <h1 class="text-3xl font-henny text-[#2C2C2C]">Verify OTP</h1>
+          <p class="text-sm text-[#2C2C2C]/70">Enter the verification code sent to your email</p>
+        </div>
+
+        <!-- Form -->
+        <form id="otpForm" class="space-y-6" action="/verifyResetOtp" method="POST">
+          <!-- Hidden input for combined OTP -->
+          <input type="hidden" name="otp" id="otpHidden">
+
+          <!-- OTP Input Fields -->
+          <div class="flex justify-center space-x-2">
+            <input type="text" class="otp-input" maxlength="1" pattern="[0-9]" inputmode="numeric">
+            <input type="text" class="otp-input" maxlength="1" pattern="[0-9]" inputmode="numeric">
+            <input type="text" class="otp-input" maxlength="1" pattern="[0-9]" inputmode="numeric">
+            <input type="text" class="otp-input" maxlength="1" pattern="[0-9]" inputmode="numeric">
+            <input type="text" class="otp-input" maxlength="1" pattern="[0-9]" inputmode="numeric">
+            <input type="text" class="otp-input" maxlength="1" pattern="[0-9]" inputmode="numeric">
+          </div>
+
+          <!-- Timer and Resend -->
+          <div class="text-center space-y-2">
+            <p class="text-sm text-[#2C2C2C]/70">Time remaining: <span id="timer" class="font-medium text-[#2C2C2C]">30</span>s</p>
+            <a href="#" id="resendLink" class="text-[#2C2C2C] hover:text-[#1a1a1a] text-sm hidden">Resend OTP</a>
+          </div>
+
+          <%if(typeof message !== 'undefined' && message){%>
+            <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded-md">
+              <%=message%>
+            </div>
+          <%}%>
+
+          <!-- Submit Button -->
+          <button
+            type="submit"
+            class="w-full bg-[#2C2C2C] text-white py-3 rounded-md hover:bg-[#1a1a1a] transition-colors font-medium"
+          >
+            Verify OTP
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <script>
+      let timerInterval;
+      let timeLeft = 30;
+
+      function startTimer() {
+        const timerElement = document.getElementById('timer');
+        const resendLink = document.getElementById('resendLink');
+        
+        clearInterval(timerInterval);
+        timeLeft = 30;
+        resendLink.classList.add('hidden');
+        
+        // Enable inputs when timer starts
+        inputs.forEach(input => {
+          input.disabled = false;
+          input.classList.remove('bg-[#2C2C2C]/10');
+        });
+        
+        timerInterval = setInterval(() => {
+          timeLeft--;
+          timerElement.textContent = timeLeft;
+          
+          if (timeLeft <= 0) {
+            clearInterval(timerInterval);
+            resendLink.classList.remove('hidden');
+            // Disable and clear inputs when timer expires
+            inputs.forEach(input => {
+              input.disabled = true;
+              input.value = '';
+              input.classList.add('bg-[#2C2C2C]/10');
+            });
+            otpHidden.value = '';
+            
+            // Replace the div message with SweetAlert
+            Swal.fire({
+              icon: 'warning',
+              title: 'OTP Expired',
+              text: 'Please click on resend OTP to get a new code',
+              confirmButtonColor: '#2C2C2C'
+            });
+          }
+        }, 1000);
+      }
+
+      // Start timer when page loads
+      window.onload = startTimer;
+
+      // Handle OTP input
+      const inputs = document.querySelectorAll('.otp-input');
+      const form = document.getElementById('otpForm');
+      const otpHidden = document.getElementById('otpHidden');
+
+      inputs.forEach((input, index) => {
+        input.addEventListener('keyup', (e) => {
+          const value = e.target.value;
+          
+          if (value.length === 1 && index < inputs.length - 1) {
+            inputs[index + 1].focus();
+          }
+          
+          if (e.key === 'Backspace' && index > 0) {
+            inputs[index - 1].focus();
+          }
+          
+          // Combine OTP values
+          const otp = Array.from(inputs).map(input => input.value).join('');
+          otpHidden.value = otp;
+        });
+      });
+
+      // Handle resend
+      document.getElementById('resendLink').addEventListener('click', async (e) => {
+        e.preventDefault();
+        try {
+          const response = await fetch('/resend-reset-otp', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            }
+          });
+          
+          const data = await response.json();
+          
+          if (data.success) {
+            // Show success message
+            Swal.fire({
+              icon: 'success',
+              title: 'OTP Resent Successfully',
+              showConfirmButton: false,
+              timer: 1500
+            });
+
+            // Clear all inputs
+            inputs.forEach(input => {
+              input.value = '';
+              input.disabled = false;
+              input.classList.remove('bg-[#2C2C2C]/10');
+            });
+            otpHidden.value = '';
+            
+            // Restart timer
+            startTimer();
+          } else {
+            Swal.fire({
+              icon: 'error',
+              title: 'Error',
+              text: data.message || 'Failed to resend OTP',
+              confirmButtonColor: '#2C2C2C'
+            });
+          }
+        } catch (error) {
+          console.error('Error resending OTP:', error);
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'An unexpected error occurred',
+            confirmButtonColor: '#2C2C2C'
+          });
+        }
+      });
+
+      // Form submission
+      form.addEventListener('submit', (e) => {
+        const otp = otpHidden.value;
+        if (otp.length !== 6 || !/^\d+$/.test(otp)) {
+          e.preventDefault();
+          inputs.forEach(input => input.classList.add('shake'));
+          setTimeout(() => {
+            inputs.forEach(input => input.classList.remove('shake'));
+          }, 500);
+        }
+      });
+    </script>
+  </body>
+</html>
