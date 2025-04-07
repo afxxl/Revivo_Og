@@ -47,21 +47,16 @@
 <body>
     <div class="min-h-screen flex items-center justify-center p-4">
         <div class="w-full max-w-4xl flex rounded-lg shadow-lg overflow-hidden">
-            <!-- Left side - Login Form -->
             <div class="w-full md:w-1/2 p-8 backdrop-blur-sm bg-white/30">
                 <div class="space-y-6 animate-fade-in">
-                    <!-- Logo/Brand -->
                     <h1 class="text-3xl font-henny text-[#6C7559]">Revivo</h1>
                     
-                    <!-- Welcome Text -->
                     <div class="space-y-2">
                         <p class="text-gray-600">Welcome back !!!</p>
                         <h2 class="text-3xl font-semibold text-gray-800">Login</h2>
                     </div>
 
-                    <!-- Login Form -->
                     <form action="/admin/login" method="POST" class="space-y-6">
-                        <!-- Email Input -->
                         <div class="space-y-2">
                             <label class="text-sm text-gray-600">Email</label>
                             <input 
@@ -73,7 +68,6 @@
                             >
                         </div>
 
-                        <!-- Password Input -->
                         <div class="space-y-2">
                             <label class="text-sm text-gray-600">Password</label>
                             <div class="relative">
@@ -97,14 +91,12 @@
                             </div>
                         </div>
 
-                        <!-- Error Message -->
                         <% if(typeof message !== 'undefined' && message) { %>
                             <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded-md">
                                 <%= message %>
                             </div>
                         <% } %>
 
-                        <!-- Login Button -->
                         <button 
                             type="submit" 
                             class="w-full bg-[#6C7559] text-white py-3 px-6 rounded-md hover:bg-[#5a6349] transition-colors flex items-center justify-center gap-2"
@@ -118,27 +110,20 @@
                 </div>
             </div>
 
-            <!-- Right side - SVG Illustration -->
             <div class="hidden md:block md:w-1/2 illustration-bg p-8">
                 <div class="h-full flex flex-col items-center justify-center space-y-6">
-                    <!-- Shopping Cart Icon -->
                     <div class="text-[#6C7559] animate-bounce">
                         <svg class="w-24 h-24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
                         </svg>
                     </div>
                     
-                    <!-- Decorative Elements -->
                     <div class="flex space-x-4">
-                        <!-- Sage Green -->
                         <div class="w-16 h-16 rounded-full bg-[#7C8B6F] bg-opacity-90 shadow-lg transform hover:scale-110 transition-transform duration-300"></div>
-                        <!-- Warm Beige -->
                         <div class="w-16 h-16 rounded-full bg-[#D4C8B0] bg-opacity-90 shadow-lg transform hover:scale-110 transition-transform duration-300"></div>
-                        <!-- Deep Olive -->
                         <div class="w-16 h-16 rounded-full bg-[#5F694D] bg-opacity-90 shadow-lg transform hover:scale-110 transition-transform duration-300"></div>
                     </div>
 
-                    <!-- Admin Text -->
                     <div class="text-center">
                         <h3 class="text-2xl font-henny text-[#6C7559]">Admin Panel</h3>
                         <p class="text-gray-600 mt-2">Manage your store with ease</p>

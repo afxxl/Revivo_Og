@@ -46,16 +46,19 @@
       .font-henny {
         font-family: 'Henny Penny', cursive;
       }
+      .trust-badge {
+        background-color: #f8f7f5;
+        border-radius: 6px;
+        padding: 8px 12px;
+      }
     </style>
   </head>
 
   <body class="bg-[#f8f7f5]">
     <%- include('../partials/user/header.ejs') %>
 
-    <!-- Product Detail Section -->
     <section class="py-12">
       <div class="container mx-auto px-4 max-w-7xl">
-        <!-- Breadcrumb Navigation -->
         <div class="mb-6 font-montserrat text-sm text-[#2C2C2C]/70">
           <a href="/" class="hover:text-[#f8c78d]">Home</a> / 
           <a href="/shop" class="hover:text-[#f8c78d]">Shop</a> / 
@@ -63,9 +66,7 @@
         </div>
 
         <div class="flex flex-col lg:flex-row gap-12">
-          <!-- Product Gallery -->
           <div class="lg:w-1/2">
-            <!-- Main Image -->
             <div class="bg-white p-4 rounded-lg shadow-sm mb-4">
               <img 
                 id="mainProductImage"
@@ -76,7 +77,6 @@
               >
             </div>
 
-            <!-- Thumbnail Gallery -->
             <div class="flex gap-3 overflow-x-auto py-2">
               <% product.productImage.forEach((image, index) => { %>
                 <div 
@@ -92,30 +92,84 @@
                 </div>
               <% }); %>
             </div>
+
+            <div class="mt-6 grid grid-cols-2 gap-3">
+              <div class="trust-badge flex items-center gap-2">
+                <div class="text-[#2C2C2C]">
+                  <i class="fas fa-shield-alt"></i>
+                </div>
+                <div>
+                  <p class="text-xs font-montserrat font-medium">100% Authentic</p>
+                  <p class="text-xs text-[#2C2C2C]/70">Quality Guaranteed</p>
+                </div>
+              </div>
+              <div class="trust-badge flex items-center gap-2">
+                <div class="text-[#2C2C2C]">
+                  <i class="fas fa-truck"></i>
+                </div>
+                <div>
+                  <p class="text-xs font-montserrat font-medium">Free Shipping</p>
+                  <p class="text-xs text-[#2C2C2C]/70">On orders over $50</p>
+                </div>
+              </div>
+              <div class="trust-badge flex items-center gap-2">
+                <div class="text-[#2C2C2C]">
+                  <i class="fas fa-undo"></i>
+                </div>
+                <div>
+                  <p class="text-xs font-montserrat font-medium">Easy Returns</p>
+                  <p class="text-xs text-[#2C2C2C]/70">14-Day Policy</p>
+                </div>
+              </div>
+              <div class="trust-badge flex items-center gap-2">
+                <div class="text-[#2C2C2C]">
+                  <i class="fas fa-money-bill-wave"></i>
+                </div>
+                <div>
+                  <p class="text-xs font-montserrat font-medium">Cash on Delivery</p>
+                  <p class="text-xs text-[#2C2C2C]/70">Pay when received</p>
+                </div>
+              </div>
+            </div>
           </div>
 
-          <!-- Product Info -->
           <div class="lg:w-1/2">
             <div class="bg-white p-6 rounded-lg shadow-sm">
-              <!-- Category & Brand -->
               <div class="mb-4">
                 <span class="text-xs text-[#2C2C2C]/60 font-montserrat">
                   <%= product.category?.name || 'Vintage' %> / <%= product.brand?.brandName || 'Generic' %>
                 </span>
               </div>
 
-              <!-- Product Name -->
               <h1 class="text-3xl font-playfair mb-4 text-[#2C2C2C]"><%= product.productName %></h1>
 
-              <!-- Price -->
+              <div class="flex items-center mb-4">
+                <div class="flex text-[#f8c78d] mr-2">
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star-half-alt"></i>
+                </div>
+                <span class="text-sm text-[#2C2C2C]/70 font-montserrat">4.8 (124 Reviews)</span>
+              </div>
+
               <div class="mb-6">
-                <p class="text-2xl font-montserrat font-medium text-[#2C2C2C]">$<%= product.salesPrice %> COP</p>
+                <p class="text-2xl font-montserrat font-medium text-[#2C2C2C]">$<%= product.salesPrice %></p>
                 <% if (product.originalPrice) { %>
-                  <p class="text-[#2C2C2C]/60 text-sm font-montserrat line-through">$<%= product.originalPrice %> COP</p>
+                  <p class="text-[#2C2C2C]/60 text-sm font-montserrat line-through">$<%= product.originalPrice %></p>
                 <% } %>
               </div>
 
-              <!-- Condition & Size -->
+              <% if (product.stock > 0 && product.stock < 10) { %>
+                <div class="mb-4 bg-[#fff8f0] p-3 rounded-lg">
+                  <p class="text-sm font-montserrat text-[#2C2C2C]">
+                    <i class="fas fa-exclamation-circle text-[#f8c78d] mr-1"></i>
+                    Only <%= product.stock %> left in stock - order soon!
+                  </p>
+                </div>
+              <% } %>
+
               <div class="mb-6 grid grid-cols-2 gap-4">
                 <div>
                   <p class="text-xs text-[#2C2C2C]/60 font-montserrat mb-1">Condition</p>
@@ -127,14 +181,23 @@
                 </div>
               </div>
 
-              <!-- Stock Status -->
               <div class="mb-6">
                 <p class="text-sm font-montserrat <%= product.stock > 0 ? 'text-green-600' : 'text-red-600' %>">
+                  <i class="<%= product.stock > 0 ? 'fas fa-check-circle' : 'fas fa-times-circle' %> mr-1"></i>
                   <%= product.stock > 0 ? 'In Stock' : 'Out of Stock' %>
                 </p>
               </div>
 
-              <!-- Add to Cart Button -->
+              <div class="mb-6">
+                <label class="text-xs text-[#2C2C2C]/60 font-montserrat mb-1 block">Quantity</label>
+                <div class="flex items-center border border-[#e0dcd4] rounded-md w-32">
+                  <button class="px-3 py-2 text-[#2C2C2C]" onclick="decreaseQuantity()">-</button>
+                  <input type="number" id="quantity" value="1" min="1" max="<%= product.stock %>" 
+                         class="w-full text-center border-x border-[#e0dcd4] py-2 font-montserrat">
+                  <button class="px-3 py-2 text-[#2C2C2C]" onclick="increaseQuantity()">+</button>
+                </div>
+              </div>
+
               <button 
                 onclick="addToCart('<%= product._id %>')"
                 class="w-full py-3 bg-[#2C2C2C] text-white rounded-md hover:bg-[#1a1a1a] transition-colors font-montserrat mb-6"
@@ -143,10 +206,58 @@
                 <%= product.stock > 0 ? 'Add to Cart' : 'Out of Stock' %>
               </button>
 
-              <!-- Description -->
+              <div class="mb-6 p-3 bg-[#f8f7f5] rounded-lg border border-[#e0dcd4]">
+                <div class="flex items-center justify-center gap-2">
+                  <i class="fas fa-lock text-[#2C2C2C]"></i>
+                  <p class="text-sm font-montserrat">Secure Checkout</p>
+                </div>
+              </div>
+
               <div class="mb-6">
                 <h3 class="text-lg font-playfair mb-3 section-heading">Description</h3>
                 <p class="text-[#2C2C2C]/80 font-montserrat leading-relaxed"><%= product.description %></p>
+              </div>
+
+              <div class="mb-6">
+                <h3 class="text-lg font-playfair mb-3 section-heading">Product Details</h3>
+                <ul class="text-[#2C2C2C]/80 font-montserrat leading-relaxed space-y-2">
+                  <li class="flex items-start">
+                    <i class="fas fa-check text-[#f8c78d] mr-2 mt-1 text-xs"></i>
+                    <span>Authentic vintage item carefully curated</span>
+                  </li>
+                  <li class="flex items-start">
+                    <i class="fas fa-check text-[#f8c78d] mr-2 mt-1 text-xs"></i>
+                    <span>Professional cleaning and inspection</span>
+                  </li>
+                  <li class="flex items-start">
+                    <i class="fas fa-check text-[#f8c78d] mr-2 mt-1 text-xs"></i>
+                    <span>Eco-friendly packaging</span>
+                  </li>
+                </ul>
+              </div>
+
+              <div class="mb-6">
+                <h3 class="text-lg font-playfair mb-3 section-heading">Shipping & Returns</h3>
+                <div class="space-y-3">
+                  <div class="flex items-start gap-3">
+                    <div class="text-[#2C2C2C] mt-1">
+                      <i class="fas fa-shipping-fast"></i>
+                    </div>
+                    <div>
+                      <p class="text-sm font-montserrat font-medium">Fast Delivery</p>
+                      <p class="text-xs text-[#2C2C2C]/70">Typically ships within 1-2 business days</p>
+                    </div>
+                  </div>
+                  <div class="flex items-start gap-3">
+                    <div class="text-[#2C2C2C] mt-1">
+                      <i class="fas fa-undo"></i>
+                    </div>
+                    <div>
+                      <p class="text-sm font-montserrat font-medium">Easy Returns</p>
+                      <p class="text-xs text-[#2C2C2C]/70">14-day return policy for unused items</p>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -157,34 +268,59 @@
     <%- include('../partials/user/footer.ejs') %>
 
     <script>
-      // Change main product image when thumbnail is clicked
       function changeMainImage(src, element) {
         document.getElementById('mainProductImage').src = src;
         
-        // Remove active class from all thumbnails
         document.querySelectorAll('.product-gallery-thumbnail').forEach(thumb => {
           thumb.classList.remove('active');
         });
         
-        // Add active class to clicked thumbnail
         element.classList.add('active');
       }
 
-      // Enhanced addToCart function with toast notifications
+      function increaseQuantity() {
+        const quantityInput = document.getElementById('quantity');
+        const max = parseInt(quantityInput.max);
+        let value = parseInt(quantityInput.value);
+        if (value < max) {
+          quantityInput.value = value + 1;
+        }
+      }
+
+      function decreaseQuantity() {
+        const quantityInput = document.getElementById('quantity');
+        let value = parseInt(quantityInput.value);
+        if (value > 1) {
+          quantityInput.value = value - 1;
+        }
+      }
+
       async function addToCart(productId) {
+        const quantity = document.getElementById('quantity').value;
+        
         try {
           const response = await fetch('/add-to-cart', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ productId }),
+            body: JSON.stringify({ 
+              productId,
+              quantity: parseInt(quantity)
+            }),
           });
 
           const data = await response.json();
 
           if (data.success) {
             showToast('Added to cart successfully!', 'success');
+            if (data.cartCount) {
+              const cartCountElements = document.querySelectorAll('.cart-count');
+              cartCountElements.forEach(el => {
+                el.textContent = data.cartCount;
+                el.classList.remove('hidden');
+              });
+            }
           } else {
             throw new Error(data.message || 'Failed to add to cart');
           }
@@ -194,7 +330,6 @@
         }
       }
 
-      // Enhanced toast notification
       function showToast(message, type = 'success') {
         const toast = document.createElement('div');
         toast.className = `fixed bottom-4 right-4 ${type === 'success' ? 'bg-[#2C2C2C]' : 'bg-red-500'} text-white px-6 py-3 rounded-lg shadow-xl transform translate-y-0 opacity-100 transition-all duration-300 z-50 flex items-center`;

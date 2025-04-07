@@ -8,7 +8,6 @@ const newArrivalsController = require("../controllers/user/newArrivalsController
 
 router.get("/pageNotFound", userController.pageNotFound);
 
-router.get("/pageNotFound", userController.pageNotFound);
 router.get("/", userController.loadHomepage);
 router.get("/signup", userController.loadSignUpPage);
 router.post("/signup", userController.signup);

@@ -42,14 +42,11 @@
 
     <div class="min-h-screen flex items-center justify-center p-4 mt-20">
       <div class="max-w-md w-full backdrop-blur-sm bg-white/30 rounded-lg p-8 space-y-6 shadow-lg">
-        <!-- Title -->
         <h1 class="text-3xl font-henny text-center text-[#2C2C2C] mb-8">
           Create Account
         </h1>
 
-        <!-- Form -->
         <form id="signform" class="space-y-6" action="/signup" method="POST">
-          <!-- Input fields with improved styling -->
           <div class="space-y-4">
             <div class="input-group">
               <input
@@ -153,14 +150,12 @@
               <div id="error5" class="error-message"></div>
             </div>
 
-            <!-- Backend Error Message -->
             <%if(typeof message !== 'undefined' && message){%>
                 <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded-md">
                     <%=message%>
                 </div>
             <%}%>
 
-            <!-- Add this after the password input fields in signup.ejs -->
             <div class="text-xs text-[#2C2C2C]/70 space-y-1">
                 <p class="requirement" data-requirement="length">• At least 8 characters</p>
                 <p class="requirement" data-requirement="uppercase">• At least one uppercase letter</p>
@@ -183,7 +178,6 @@
               </label>
             </div>
 
-            <!-- Submit Button -->
             <button
               type="submit"
               class="w-full bg-[#2C2C2C] text-white py-3 rounded-md hover:bg-[#1a1a1a] transition-colors font-medium"
@@ -193,7 +187,6 @@
           </div>
         </form>
 
-        <!-- Divider with improved styling -->
         <div class="relative my-8">
           <div class="absolute inset-0 flex items-center">
             <div class="w-full border-t border-[#2C2C2C]/30"></div>
@@ -203,7 +196,6 @@
           </div>
         </div>
 
-        <!-- Google Sign In with improved styling -->
         <a href="/auth/google"
           class="w-full flex items-center justify-center gap-3 border-2 border-[#2C2C2C] p-3 rounded-md hover:bg-[#2C2C2C]/10 transition-colors"
         >
@@ -215,7 +207,6 @@
           <span class="text-[#2C2C2C]">Sign in with Google</span>
         </a>
 
-        <!-- Sign In Link -->
         <p class="text-center text-sm text-[#2C2C2C]/70 mt-6">
           Already have an account?
           <a href="/login" class="text-[#2C2C2C] hover:underline font-medium">Sign in</a>
@@ -224,7 +215,6 @@
     </div>
 
     <script>
-      // Toggle password visibility
       document.querySelectorAll('input[type="password"]').forEach((input) => {
         const button = input.nextElementSibling;
         button.addEventListener("click", () => {
@@ -346,7 +336,6 @@ function passValidateChecking() {
     return true;
 }
 
-      // Form validation
 
 signform.addEventListener("submit", function (e) {
   e.preventDefault();
@@ -364,7 +353,6 @@ signform.addEventListener("submit", function (e) {
   }
 });
 
-// Add input event listener for real-time password strength
 password.addEventListener('input', function() {
   checkPasswordStrength(this.value);
 });

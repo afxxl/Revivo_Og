@@ -2,59 +2,94 @@
 <%- include('../partials/admin/admin-sidebar.ejs', {currentPage: 'products'}) %>
 
 <style>
+  .cropper-container {
+    width: 100% !important;
+    height: 500px !important;
+    margin: 0 auto;
+    background-color: #f8f9fa;
+  }
+
+  .cropper-modal {
+    background-color: white !important;
+    opacity: 0.7 !important;
+  }
+
+  .cropper-view-box {
+    outline: 2px solid #FFA500;
+    outline-color: rgba(255, 165, 0, 0.8);
+    box-shadow: 0 0 0 1px #fff, 0 0 0 2px #FFA500;
+  }
+
+  .cropper-line {
+    background-color: #FFA500 !important;
+  }
+
+  .cropper-point {
+    width: 14px !important;
+    height: 14px !important;
+    background-color: #FFA500 !important; 
+    border: 2px solid white; 
+    opacity: 1 !important;
+  }
+
+  .cropper-point.point-se {
+    right: -7px !important;
+    bottom: -7px !important;
+  }
+
+  .cropper-dashed {
+    border-color: rgba(255, 255, 255, 0.5) !important;
+  }
+
   .product-image {
     width: 60px;
     height: 60px;
     object-fit: cover;
     border-radius: 4px;
   }
+
   .status-badge {
     padding: 0.25rem 0.5rem;
     font-size: 0.75rem;
     border-radius: 0.25rem;
     font-weight: 600;
   }
+
   .in-stock {
     background-color: #D1FAE5;
     color: #065F46;
   }
+
   .out-of-stock {
     background-color: #FEE2E2;
     color: #B91C1C;
   }
 
-  .cropper-view-box,
-  .cropper-face {
-    border-radius: 5px;
+  .upload-area {
+    transition: all 0.3s ease;
+    border: 2px dashed #d1d5db;
   }
 
-  .cropper-container {
-    margin: 0 auto;
+  .upload-area:hover {
+    border-color: #6C7559;
+    background-color: #f8f7f5;
   }
 
-  .cropper-modal {
-    background-color: #fff;
-    opacity: 1;
+  .crop-control-btn {
+    border: 1px solid #d1d5db;
+    transition: all 0.2s ease;
   }
 
-  .cropper-line,
-  .cropper-point {
-    background-color: #6C7559;
+  .crop-control-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
   }
 
-  .cropper-view-box {
-    outline: 1px solid #6C7559;
-    outline-color: rgba(108, 117, 89, 0.75);
-  }
-
-  #image-preview-container {
-    max-height: 400px;
-    margin-top: 1rem;
-  }
-
-  #image-preview {
-    max-width: 100%;
-    max-height: 300px;
+  @media (prefers-color-scheme: dark) {
+    .cropper-view-box {
+      outline-color: #FFA500;
+      box-shadow: 0 0 0 1px #000, 0 0 0 2px #FFA500;
+    }
   }
 
   .existing-images {
@@ -91,6 +126,31 @@
     justify-content: center;
     cursor: pointer;
     font-size: 12px;
+  }
+
+  #image-preview-container {
+    max-height: 500px;
+    margin-top: 1rem;
+  }
+
+  #image-preview-cropper {
+    max-width: 100%;
+    max-height: 500px;
+  }
+
+  #thumbnail-preview {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 0.5rem;
+    margin-top: 1rem;
+  }
+
+  #thumbnail-preview img {
+    width: 100%;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 0.25rem;
+    border: 1px solid #e5e7eb;
   }
 </style>
 
@@ -248,27 +308,44 @@
         <div class="mt-1 flex items-center">
           <input type="file" id="images" name="images" multiple accept="image/*" class="hidden">
           <button type="button" id="uploadTrigger" 
-                  class="px-3 py-2 border border-gray-300 rounded-md shadow-sm text-sm leading-4 font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#6C7559]">
-            Upload Images
+                  class="px-4 py-2 border-2 border-dashed border-gray-300 rounded-lg hover:border-[#6C7559] transition-colors upload-area w-full">
+            <div class="flex flex-col items-center justify-center text-gray-500">
+              <i class="fas fa-cloud-upload-alt text-4xl mb-3"></i>
+              <p class="font-medium text-lg">Click to upload product images</p>
+              <p class="text-sm mt-1">Recommended: Square images (1000×1000 pixels)</p>
+              <p class="text-xs mt-1 text-gray-400">JPG, PNG, or WEBP (max 10MB each)</p>
+            </div>
           </button>
-          <span id="file-chosen" class="ml-2 text-sm text-gray-500">No files chosen</span>
+          <span id="file-chosen" class="ml-2 text-sm text-gray-500 hidden">No files chosen</span>
         </div>
         
         <div id="image-preview-container" class="hidden">
-          <div class="relative">
-            <img id="image-preview-cropper" class="max-w-full max-h-64" alt="Preview">
+          <div class="relative w-full" style="height: 500px; background-color: #f3f4f6;">
+            <img id="image-preview-cropper" class="max-w-full max-h-full" alt="Preview">
           </div>
-          <div class="mt-2 flex space-x-2">
-            <button type="button" id="cropBtn" class="px-3 py-1 bg-[#6C7559] text-white text-sm rounded hidden">
-              Crop Image
+          <div class="mt-4 flex flex-wrap gap-3 justify-center">
+            <button type="button" id="zoomInBtn" class="px-4 py-2 bg-gray-100 rounded-lg crop-control-btn">
+              <i class="fas fa-search-plus mr-2 text-gray-700"></i>Zoom In
             </button>
-            <button type="button" id="cancelCropBtn" class="px-3 py-1 bg-gray-300 text-gray-700 text-sm rounded hidden">
-              Cancel
+            <button type="button" id="zoomOutBtn" class="px-4 py-2 bg-gray-100 rounded-lg crop-control-btn">
+              <i class="fas fa-search-minus mr-2 text-gray-700"></i>Zoom Out
+            </button>
+            <button type="button" id="rotateBtn" class="px-4 py-2 bg-gray-100 rounded-lg crop-control-btn">
+              <i class="fas fa-undo mr-2 text-gray-700"></i>Rotate
+            </button>
+            <button type="button" id="resetBtn" class="px-4 py-2 bg-gray-100 rounded-lg crop-control-btn">
+              <i class="fas fa-sync-alt mr-2 text-gray-700"></i>Reset
+            </button>
+            <button type="button" id="cropBtn" class="px-4 py-2 bg-[#6C7559] hover:bg-[#5a6349] text-white rounded-lg">
+              <i class="fas fa-crop mr-2"></i>Apply Crop
+            </button>
+            <button type="button" id="cancelCropBtn" class="px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded-lg">
+              <i class="fas fa-times mr-2"></i>Cancel
             </button>
           </div>
         </div>
         
-        <div id="thumbnail-preview" class="mt-2 grid grid-cols-3 gap-2 hidden">
+        <div id="thumbnail-preview" class="mt-4 grid grid-cols-3 gap-2 hidden">
         </div>
 
         <p id="images-error" class="error-message text-red-500 text-sm mt-1 hidden"></p>
@@ -288,8 +365,11 @@
   </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
 <script>
   let cropper;
   let originalImageFile;
@@ -297,7 +377,54 @@
   let croppedImages = [];
   let deletedImages = [];
 
-  // Image Cropping Functionality
+  function initCropper(imageElement) {
+    return new Cropper(imageElement, {
+      aspectRatio: 1,
+      viewMode: 1,
+      autoCropArea: 0.8,
+      minContainerWidth: 500,
+      minContainerHeight: 500,
+      minCanvasWidth: 500,
+      minCanvasHeight: 500,
+      minCropBoxWidth: 200,
+      minCropBoxHeight: 200,
+      responsive: true,
+      restore: true,
+      guides: false,
+      center: true,
+      highlight: false,
+      cropBoxMovable: true,
+      cropBoxResizable: true,
+      toggleDragModeOnDblclick: false,
+      background: '#f3f4f6',
+      checkCrossOrigin: false,
+      checkOrientation: false,
+      modal: true,
+      dragMode: 'move',
+      ready: function() {
+        const imageData = this.cropper.getImageData();
+        if (isDarkImage(imageData)) {
+          enhanceDarkImageVisibility();
+        }
+      }
+    });
+  }
+
+  function isDarkImage(imageData) {
+    return imageData.naturalWidth < imageData.width || imageData.naturalHeight < imageData.height;
+  }
+
+  function enhanceDarkImageVisibility() {
+    document.querySelectorAll('.cropper-line').forEach(line => {
+      line.style.backgroundColor = '#FFA500';
+    });
+    document.querySelectorAll('.cropper-point').forEach(point => {
+      point.style.backgroundColor = '#FFA500';
+      point.style.border = '2px solid white';
+    });
+    document.querySelector('.cropper-view-box').style.outline = '2px solid #FFA500';
+  }
+
   document.getElementById('uploadTrigger').addEventListener('click', function() {
     document.getElementById('images').click();
   });
@@ -306,12 +433,23 @@
     const files = e.target.files;
     if (!files || files.length === 0) return;
 
+    croppedImages = [];
+    currentFileIndex = 0;
+    document.getElementById('thumbnail-preview').innerHTML = '';
+    document.getElementById('thumbnail-preview').classList.add('hidden');
+    
     processImage(files[0]);
   });
 
   function processImage(file) {
-    if (!file.type.match('image.*')) {
-      displayError('images-error', 'Only image files are allowed');
+    const validTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+    if (!validTypes.includes(file.type)) {
+      displayError('images-error', 'Please upload valid images (JPEG, PNG, GIF, or WEBP)');
+      return;
+    }
+
+    if (file.size > 10 * 1024 * 1024) { 
+      displayError('images-error', 'Image must be less than 10MB');
       return;
     }
 
@@ -319,75 +457,69 @@
     reader.onload = function(event) {
       const imagePreview = document.getElementById('image-preview-cropper');
       const imagePreviewContainer = document.getElementById('image-preview-container');
-      const cropBtn = document.getElementById('cropBtn');
-      const cancelCropBtn = document.getElementById('cancelCropBtn');
-      const thumbnailPreview = document.getElementById('thumbnail-preview');
-
+      
       imagePreview.src = event.target.result;
       imagePreviewContainer.classList.remove('hidden');
-      cropBtn.classList.remove('hidden');
-      cancelCropBtn.classList.remove('hidden');
-      thumbnailPreview.classList.add('hidden');
+      
+      ['zoomInBtn', 'zoomOutBtn', 'rotateBtn', 'resetBtn', 'cropBtn', 'cancelCropBtn'].forEach(id => {
+        document.getElementById(id).classList.remove('hidden');
+      });
 
       if (cropper) {
         cropper.destroy();
       }
       
-      cropper = new Cropper(imagePreview, {
-        aspectRatio: 1,
-        viewMode: 1,
-        autoCropArea: 0.8,
-        responsive: true,
-        guides: false
-      });
-
+      cropper = initCropper(imagePreview);
       originalImageFile = file;
     };
     reader.readAsDataURL(file);
   }
 
   document.getElementById('cropBtn').addEventListener('click', function() {
-    if (cropper) {
-      const canvas = cropper.getCroppedCanvas({
-        width: 800,
-        height: 800,
-        minWidth: 400,
-        minHeight: 400,
-        maxWidth: 2000,
-        maxHeight: 2000,
-        fillColor: '#fff',
-        imageSmoothingEnabled: true,
-        imageSmoothingQuality: 'high',
+    if (!cropper) return;
+
+    const canvas = cropper.getCroppedCanvas({
+      width: 1000,
+      height: 1000,
+      minWidth: 800,
+      minHeight: 800,
+      maxWidth: 2000,
+      maxHeight: 2000,
+      fillColor: '#fff',
+      imageSmoothingEnabled: true,
+      imageSmoothingQuality: 'high'
+    });
+
+    canvas.toBlob((blob) => {
+      const croppedFile = new File([blob], originalImageFile.name, {
+        type: 'image/jpeg',
+        lastModified: Date.now()
       });
 
-      canvas.toBlob((blob) => {
-        const croppedFile = new File([blob], originalImageFile.name, {
-          type: 'image/jpeg',
-          lastModified: Date.now()
-        });
+      croppedImages.push(croppedFile);
+      updateThumbnailPreview(croppedFile);
+      
+      ['zoomInBtn', 'zoomOutBtn', 'rotateBtn', 'resetBtn', 'cropBtn', 'cancelCropBtn'].forEach(id => {
+        document.getElementById(id).classList.add('hidden');
+      });
+      
+      document.getElementById('image-preview-container').classList.add('hidden');
 
-        croppedImages.push(croppedFile);
-        updateThumbnailPreview(croppedFile);
-        
-        document.getElementById('cropBtn').classList.add('hidden');
-        document.getElementById('cancelCropBtn').classList.add('hidden');
-        document.getElementById('image-preview-container').classList.add('hidden');
-
-        cropper.destroy();
-        cropper = null;
-        
-        document.getElementById('file-chosen').textContent = 
-          croppedImages.length + ' image(s) selected';
-        
-        const fileInput = document.getElementById('images');
-        if (currentFileIndex < fileInput.files.length - 1) {
-          currentFileIndex++;
-          processImage(fileInput.files[currentFileIndex]);
-        } else {
-          updateFileInput();
-        }
-      }, 'image/jpeg', 0.9);
-    }
+      cropper.destroy();
+      cropper = null;
+      
+      document.getElementById('file-chosen').textContent = 
+        croppedImages.length + ' image(s) selected';
+      document.getElementById('file-chosen').classList.remove('hidden');
+      
+      const fileInput = document.getElementById('images');
+      if (currentFileIndex < fileInput.files.length - 1) {
+        currentFileIndex++;
+        processImage(fileInput.files[currentFileIndex]);
+      } else {
+        updateFileInput();
+      }
+    }, 'image/jpeg', 0.9);
   });
 
   function updateThumbnailPreview(file) {
@@ -415,21 +547,44 @@
   }
 
   document.getElementById('cancelCropBtn').addEventListener('click', function() {
-    const imagePreviewContainer = document.getElementById('image-preview-container');
-    const fileInput = document.getElementById('images');
-    
     if (cropper) {
       cropper.destroy();
       cropper = null;
     }
     
-    imagePreviewContainer.classList.add('hidden');
-    fileInput.value = '';
+    document.getElementById('image-preview-container').classList.add('hidden');
+    document.getElementById('images').value = '';
     document.getElementById('file-chosen').textContent = 'No files chosen';
+    document.getElementById('file-chosen').classList.add('hidden');
     document.getElementById('thumbnail-preview').innerHTML = '';
+    document.getElementById('thumbnail-preview').classList.add('hidden');
     document.getElementById('images-error').classList.add('hidden');
     croppedImages = [];
     currentFileIndex = 0;
+  });
+
+  document.getElementById('zoomInBtn').addEventListener('click', function() {
+    if (cropper) {
+      cropper.zoom(0.1);
+    }
+  });
+
+  document.getElementById('zoomOutBtn').addEventListener('click', function() {
+    if (cropper) {
+      cropper.zoom(-0.1);
+    }
+  });
+
+  document.getElementById('rotateBtn').addEventListener('click', function() {
+    if (cropper) {
+      cropper.rotate(90);
+    }
+  });
+
+  document.getElementById('resetBtn').addEventListener('click', function() {
+    if (cropper) {
+      cropper.reset();
+    }
   });
 
   function deleteExistingImage(imagePath) {
@@ -438,7 +593,7 @@
     imageElement.remove();
   }
 
-  document.getElementById('editProductForm').addEventListener('submit', function(e) {
+  document.getElementById('editProductForm').addEventListener('submit', async function(e) {
     e.preventDefault();
     clearErrorMessages();
     
@@ -457,7 +612,6 @@
     const description = document.getElementById('description').value.trim();
     const fileInput = document.getElementById('images');
     
-    // Count total images (remaining existing images + new images)
     const existingImages = document.querySelectorAll('.existing-image');
     const remainingImages = existingImages.length;
     const newImages = croppedImages.length;
@@ -518,7 +672,6 @@
       isValid = false;
     }
 
-    // Image validation
     if (totalImages < 3) {
       displayError('images-error', 'At least 3 images are required (including existing and new images)');
       isValid = false;
@@ -531,17 +684,18 @@
     const formData = new FormData(this);
     formData.append('deletedImages', JSON.stringify(deletedImages));
     
-    fetch(this.action, {
-      method: 'POST',
-      body: formData
-    })
-    .then(response => {
+    try {
+      const response = await fetch(this.action, {
+        method: 'POST',
+        body: formData
+      });
+
+      const data = await response.json();
+
       if (!response.ok) {
-        return response.json().then(err => { throw err; });
+        throw new Error(data.error || 'Failed to update product');
       }
-      return response.json();
-    })
-    .then(data => {
+
       Swal.fire({
         icon: 'success',
         title: 'Success!',
@@ -550,15 +704,15 @@
       }).then(() => {
         window.location.href = '/admin/products';
       });
-    })
-    .catch(error => {
+
+    } catch (error) {
       Swal.fire({
         icon: 'error',
         title: 'Error!',
-        text: error.error || 'Failed to update product',
+        text: error.message,
         confirmButtonColor: '#6C7559'
       });
-    });
+    }
   });
 
   function displayError(elementId, message) {
@@ -577,5 +731,4 @@
   }
 </script>
 
-<%- include('../partials/admin/admin-footer.ejs') %> 
-<%- include('../partials/admin/admin-footer.ejs') %> 
+<%- include('../partials/admin/admin-footer.ejs') %>

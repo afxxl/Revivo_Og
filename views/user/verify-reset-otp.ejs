@@ -57,18 +57,14 @@
 
     <div class="min-h-screen flex items-center justify-center p-4 mt-20">
       <div class="max-w-md w-full backdrop-blur-sm bg-white/30 rounded-lg p-8 space-y-6 shadow-lg">
-        <!-- Title -->
         <div class="text-center space-y-2">
           <h1 class="text-3xl font-henny text-[#2C2C2C]">Verify OTP</h1>
           <p class="text-sm text-[#2C2C2C]/70">Enter the verification code sent to your email</p>
         </div>
 
-        <!-- Form -->
         <form id="otpForm" class="space-y-6" action="/verifyResetOtp" method="POST">
-          <!-- Hidden input for combined OTP -->
           <input type="hidden" name="otp" id="otpHidden">
 
-          <!-- OTP Input Fields -->
           <div class="flex justify-center space-x-2">
             <input type="text" class="otp-input" maxlength="1" pattern="[0-9]" inputmode="numeric">
             <input type="text" class="otp-input" maxlength="1" pattern="[0-9]" inputmode="numeric">
@@ -78,7 +74,6 @@
             <input type="text" class="otp-input" maxlength="1" pattern="[0-9]" inputmode="numeric">
           </div>
 
-          <!-- Timer and Resend -->
           <div class="text-center space-y-2">
             <p class="text-sm text-[#2C2C2C]/70">Time remaining: <span id="timer" class="font-medium text-[#2C2C2C]">30</span>s</p>
             <a href="#" id="resendLink" class="text-[#2C2C2C] hover:text-[#1a1a1a] text-sm hidden">Resend OTP</a>
@@ -90,7 +85,6 @@
             </div>
           <%}%>
 
-          <!-- Submit Button -->
           <button
             type="submit"
             class="w-full bg-[#2C2C2C] text-white py-3 rounded-md hover:bg-[#1a1a1a] transition-colors font-medium"
@@ -113,7 +107,6 @@
         timeLeft = 30;
         resendLink.classList.add('hidden');
         
-        // Enable inputs when timer starts
         inputs.forEach(input => {
           input.disabled = false;
           input.classList.remove('bg-[#2C2C2C]/10');
@@ -126,7 +119,6 @@
           if (timeLeft <= 0) {
             clearInterval(timerInterval);
             resendLink.classList.remove('hidden');
-            // Disable and clear inputs when timer expires
             inputs.forEach(input => {
               input.disabled = true;
               input.value = '';
@@ -134,7 +126,6 @@
             });
             otpHidden.value = '';
             
-            // Replace the div message with SweetAlert
             Swal.fire({
               icon: 'warning',
               title: 'OTP Expired',
@@ -145,10 +136,8 @@
         }, 1000);
       }
 
-      // Start timer when page loads
       window.onload = startTimer;
 
-      // Handle OTP input
       const inputs = document.querySelectorAll('.otp-input');
       const form = document.getElementById('otpForm');
       const otpHidden = document.getElementById('otpHidden');
@@ -165,13 +154,11 @@
             inputs[index - 1].focus();
           }
           
-          // Combine OTP values
           const otp = Array.from(inputs).map(input => input.value).join('');
           otpHidden.value = otp;
         });
       });
 
-      // Handle resend
       document.getElementById('resendLink').addEventListener('click', async (e) => {
         e.preventDefault();
         try {
@@ -185,7 +172,6 @@
           const data = await response.json();
           
           if (data.success) {
-            // Show success message
             Swal.fire({
               icon: 'success',
               title: 'OTP Resent Successfully',
@@ -193,7 +179,6 @@
               timer: 1500
             });
 
-            // Clear all inputs
             inputs.forEach(input => {
               input.value = '';
               input.disabled = false;
@@ -201,7 +186,6 @@
             });
             otpHidden.value = '';
             
-            // Restart timer
             startTimer();
           } else {
             Swal.fire({
@@ -222,7 +206,6 @@
         }
       });
 
-      // Form submission
       form.addEventListener('submit', (e) => {
         const otp = otpHidden.value;
         if (otp.length !== 6 || !/^\d+$/.test(otp)) {

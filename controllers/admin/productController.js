@@ -182,7 +182,6 @@ const deleteProduct = async (req, res) => {
   try {
     const productId = req.params.id;
 
-    // Find the product to get image paths
     const product = await Product.findById(productId);
     if (!product) {
       return res.status(404).json({
@@ -191,10 +190,8 @@ const deleteProduct = async (req, res) => {
       });
     }
 
-    // Delete the product
     await Product.findByIdAndDelete(productId);
 
-    // Delete associated images from the filesystem
     if (product.productImage && product.productImage.length > 0) {
       product.productImage.forEach((imagePath) => {
         const fullPath = path.join(__dirname, "../../public", imagePath);
@@ -265,7 +262,6 @@ const updateProduct = async (req, res) => {
       isNew,
     } = req.body;
 
-    // Validate brand and category IDs
     if (!mongoose.Types.ObjectId.isValid(brand)) {
       return res.status(400).json({
         success: false,
@@ -280,7 +276,6 @@ const updateProduct = async (req, res) => {
       });
     }
 
-    // Check if brand and category exist
     const brandExists = await Brand.exists({ _id: brand });
     if (!brandExists) {
       return res.status(400).json({
@@ -297,7 +292,6 @@ const updateProduct = async (req, res) => {
       });
     }
 
-    // Validate numeric fields
     if (
       isNaN(regularPrice) ||
       isNaN(salesPrice) ||
@@ -310,7 +304,6 @@ const updateProduct = async (req, res) => {
       });
     }
 
-    // Get the existing product
     const existingProduct = await Product.findById(productId);
     if (!existingProduct) {
       return res.status(404).json({
@@ -319,7 +312,6 @@ const updateProduct = async (req, res) => {
       });
     }
 
-    // Handle deleted images
     let deletedImages = [];
     try {
       deletedImages = JSON.parse(req.body.deletedImages || "[]");
@@ -327,7 +319,6 @@ const updateProduct = async (req, res) => {
       console.error("Error parsing deletedImages:", error);
     }
 
-    // Delete the files from the filesystem
     deletedImages.forEach((imagePath) => {
       const fullPath = path.join(__dirname, "../../public", imagePath);
       if (fs.existsSync(fullPath)) {
@@ -335,12 +326,10 @@ const updateProduct = async (req, res) => {
       }
     });
 
-    // Filter out deleted images from the existing images
     const remainingImages = existingProduct.productImage.filter(
       (image) => !deletedImages.includes(image),
     );
 
-    // Handle new images
     let newImages = [];
     if (req.files && req.files.length > 0) {
       newImages = req.files.map(
@@ -348,12 +337,9 @@ const updateProduct = async (req, res) => {
       );
     }
 
-    // Combine remaining and new images
     const updatedImages = [...remainingImages, ...newImages];
 
-    // Validate total number of images
     if (updatedImages.length < 3) {
-      // Clean up newly uploaded files if validation fails
       if (req.files && req.files.length > 0) {
         req.files.forEach((file) => {
           fs.unlink(file.path, () => {});
@@ -396,7 +382,6 @@ const updateProduct = async (req, res) => {
   } catch (error) {
     console.error("Update Product Error:", error);
 
-    // Clean up uploaded files if there was an error
     if (req.files && req.files.length > 0) {
       req.files.forEach((file) => {
         fs.unlink(file.path, () => {});

@@ -12,7 +12,6 @@
 
 <%- include('../partials/user/header.ejs', { title: title }) %>
 
-<!-- Brand Hero Section -->
 <section class="relative py-16 bg-[#f8f7f5]">
   <div class="container mx-auto px-4">
     <div class="flex flex-col md:flex-row items-center gap-8">
@@ -27,7 +26,6 @@
       <div class="w-full md:w-3/4 text-center md:text-left">
         <h1 class="text-4xl font-henny text-[#2C2C2C] mb-4"><%= brand.brandName %></h1>
         
-        <!-- Brand Status and Info -->
         <div class="flex items-center space-x-4 mb-4">
           <% if (brand.isActive) { %>
             <span class="px-3 py-1 bg-green-100 text-green-800 text-xs font-montserrat rounded-full">Active</span>
@@ -39,7 +37,6 @@
           </span>
         </div>
         
-        <!-- Dynamic Brand Description -->
         <div class="bg-white/70 p-4 rounded-lg border border-[#e0dcd4]/50">
           <h3 class="font-playfair text-lg text-[#2C2C2C] mb-2">About <%= brand.brandName %></h3>
           <p class="text-[#2C2C2C]/80 font-montserrat text-sm">
@@ -65,7 +62,6 @@
   </div>
 </section>
 
-<!-- Products Section -->
 <section class="py-12 bg-white">
   <div class="container mx-auto px-4">
     <div class="flex items-center justify-between mb-8">
@@ -78,7 +74,6 @@
       <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
         <% products.forEach(product => { %>
           <div class="product-card group relative bg-white border border-[#e0dcd4]/50 p-4 hover:shadow-lg transition-all duration-300 rounded-md">
-            <!-- Product Image -->
             <div class="relative aspect-[1/1] overflow-hidden mb-4 bg-white/20 group-hover:shadow-md transition-all">
               <a href="/product/<%= product._id %>">
                 <img src="<%= product.productImage[0] || '/Images/placeholder.jpg' %>" 
@@ -93,7 +88,6 @@
               </div>
             </div>
             
-            <!-- Product Info -->
             <div class="px-2">
               <div class="mb-2">
                 <span class="text-xs text-[#2C2C2C]/60 font-montserrat"><%= product.category?.name || 'Vintage' %></span>
@@ -105,9 +99,9 @@
               
               <div class="flex items-center justify-between">
                 <div>
-                  <p class="text-[#333] text-sm font-montserrat">$<%= product.salesPrice %> COP</p>
+                  <p class="text-[#333] text-sm font-montserrat">$<%= product.salesPrice %> $</p>
                   <% if (product.originalPrice) { %>
-                    <p class="text-[#333]/60 text-xs font-montserrat line-through">$<%= product.originalPrice %> COP</p>
+                    <p class="text-[#333]/60 text-xs font-montserrat line-through">$<%= product.originalPrice %> $</p>
                   <% } %>
                 </div>
                 <button onclick="addToCart('<%= product._id %>')"
@@ -142,7 +136,6 @@
 <%- include('../partials/user/footer.ejs') %>
 
 <script>
-  // Reuse your existing addToCart and showToast functions
   async function addToCart(productId) {
     try {
       const response = await fetch('/add-to-cart', {

@@ -19,9 +19,7 @@
 </style>
 
 
-<!-- Main Content -->
 <div class="flex-1 overflow-auto p-3 md:p-6 pt-20">
-    <!-- Header Section -->
     <div class="p-4 md:p-6 bg-white shadow-sm">
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
             <h1 class="text-2xl font-semibold text-gray-800">Categories</h1>
@@ -30,7 +28,6 @@
                 Add New Category
             </button>
         </div>
-        <!-- Search Bar -->
         <div class="relative w-full mt-4">
             <input type="text" 
                    placeholder="Search categories..." 
@@ -44,7 +41,6 @@
         </div>
     </div>
 
-    <!-- Desktop View: Table Layout -->
     <div class="hidden md:block overflow-x-auto m-6">
         <table class="w-full whitespace-nowrap bg-white rounded-lg shadow">
             <thead>
@@ -144,7 +140,6 @@
         </div>
     <% }); %>
 </div>
-        <!-- Pagination -->
     <% if (totalPages > 1) { %>
         <div class="flex justify-center items-center space-x-2 my-6">
             <% for(let i = 1; i <= totalPages; i++) { %>
@@ -157,7 +152,6 @@
     <% } %>
 </div>
 
-<!-- Add Category Modal -->
 <div id="addModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden">
     <div class="min-h-screen flex items-center justify-center p-4">
         <div class="bg-white rounded-lg p-6 max-w-md w-full mx-4 relative">
@@ -203,7 +197,6 @@
     </div>
 </div>
 
-<!-- Simple Modal Toggle Script -->
 <script>
     function openAddModal() {
         document.getElementById('addModal').classList.remove('hidden');
@@ -215,14 +208,12 @@
         document.body.style.overflow = 'auto'; // Restore scrolling
     }
 
-    // Close modal when clicking outside
     document.getElementById('addModal').addEventListener('click', function(e) {
         if (e.target === this) {
             closeAddModal();
         }
     });
 
-    // Close modal when pressing Escape key
     document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape') {
             closeAddModal();
@@ -318,7 +309,6 @@ if (imageInput && imageInput.files.length > 0) {
         });
     }
 
-// Handle toggle category status
 document.querySelectorAll('a[href^="/admin/toggleCategory/"]').forEach(link => {
     link.addEventListener('click', function(e) {
         e.preventDefault();

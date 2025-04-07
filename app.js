@@ -51,7 +51,6 @@ app.listen(process.env.PORT, () => {
 app.use("/", userRouter);
 app.use("/admin", adminRouter);
 
-// Create uploads directory if it doesn't exist
 const uploadDir = path.join(__dirname, "public", "uploads", "re-image");
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });

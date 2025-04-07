@@ -49,17 +49,16 @@ const limits = {
   files: 10,
 };
 
-// Create separate upload instances
 const uploadBrand = multer({
   storage: brandStorage,
   fileFilter: fileFilter,
-  limits: { fileSize: limits.fileSize }, // Single file for brand
+  limits: { fileSize: limits.fileSize },
 });
 
 const uploadProduct = multer({
   storage: productStorage,
   fileFilter: fileFilter,
-  limits: limits, // Multiple files with higher limits for products
+  limits: limits,
 });
 
 const categoryStorage = multer.diskStorage({
@@ -75,13 +74,12 @@ const categoryStorage = multer.diskStorage({
   },
 });
 
-// Export the configured upload instances
 module.exports = {
-  uploadBrand: uploadBrand.single("image"), // For single brand image
-  uploadProduct: uploadProduct.array("images", 10), // For multiple product images
+  uploadBrand: uploadBrand.single("image"),
+  uploadProduct: uploadProduct.array("images", 10),
   uploadCategory: multer({
     storage: categoryStorage,
     fileFilter: fileFilter,
     limits: { fileSize: limits.fileSize },
-  }).single("categoryImage"), // Single file for category
+  }).single("categoryImage"),
 };

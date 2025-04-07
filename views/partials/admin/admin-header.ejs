@@ -28,10 +28,8 @@
     </style>
 </head>
 <body>
-    <!-- Top Navigation Bar -->
     <div class="fixed top-0 left-0 right-0 h-16 bg-white shadow-sm z-40">
         <div class="flex justify-between items-center h-full px-6 ml-16 md:ml-64">
-            <!-- Left side - Page Title (for mobile) -->
             <div class="md:hidden font-semibold text-gray-800">
                 Dashboard
             </div>
@@ -47,7 +45,6 @@
                     </div>
                 </div>
 
-                <!-- Logout Button -->
                 <button onclick="confirmLogout()" 
                         class="px-3 py-1.5 bg-red-500 hover:bg-red-600 text-white rounded-lg transition-colors duration-200 flex items-center space-x-2">
                     <span class="hidden md:inline text-sm">Logout</span>
@@ -60,7 +57,6 @@
         </div>
     </div>
 
-    <!-- Logout Confirmation Modal -->
     <div id="logoutModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center">
         <div class="bg-white rounded-lg p-6 max-w-sm mx-4">
             <h3 class="text-xl font-semibold text-gray-900 mb-4">Confirm Logout</h3>
@@ -89,14 +85,12 @@
             document.getElementById('logoutModal').classList.add('hidden');
         }
 
-        // Close modal when clicking outside
         document.getElementById('logoutModal').addEventListener('click', function(e) {
             if (e.target === this) {
                 closeLogoutModal();
             }
         });
 
-        // Close modal on escape key
         document.addEventListener('keydown', function(e) {
             if (e.key === 'Escape') {
                 closeLogoutModal();

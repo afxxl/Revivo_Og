@@ -2,7 +2,44 @@
 <%- include('../partials/admin/admin-sidebar', {currentPage: 'products'}) %>
 
 <style>
+.cropper-container {
+    width: 100% !important;
+    height: 500px !important;
+    margin: 0 auto;
+    background-color: #f8f9fa;
+}
 
+.cropper-modal {
+    background-color: white !important;
+    opacity: 0.7 !important;
+}
+
+.cropper-view-box {
+    outline: 2px solid #FFA500;
+    outline-color: rgba(255, 165, 0, 0.8);
+    box-shadow: 0 0 0 1px #fff, 0 0 0 2px #FFA500;
+}
+
+.cropper-line {
+    background-color: #FFA500 !important; 
+}
+
+.cropper-point {
+    width: 14px !important;
+    height: 14px !important;
+    background-color: #FFA500 !important; 
+    border: 2px solid white;
+    opacity: 1 !important;
+}
+
+.cropper-point.point-se {
+    right: -7px !important;
+    bottom: -7px !important;
+}
+
+.cropper-dashed {
+    border-color: rgba(255, 255, 255, 0.5) !important;
+}
 
 .product-image {
     width: 60px;
@@ -10,23 +47,28 @@
     object-fit: cover;
     border-radius: 4px;
 }
+
 .status-badge {
     padding: 0.25rem 0.5rem;
     font-size: 0.75rem;
     border-radius: 0.25rem;
     font-weight: 600;
 }
+
 .in-stock {
     background-color: #D1FAE5;
     color: #065F46;
 }
+
 .out-of-stock {
     background-color: #FEE2E2;
     color: #B91C1C;
 }
-tr:hover{
-    background-color:#f9fafb;
-  }
+
+tr:hover {
+    background-color: #f9fafb;
+}
+
 .truncate {
     overflow: hidden;
     text-overflow: ellipsis;
@@ -37,40 +79,78 @@ tr:hover{
     min-width: 0;
 }
 
-.cropper-view-box,
-.cropper-face {
-    border-radius: 5px;}
-
-.cropper-container {
-    margin: 0 auto;
+.upload-area {
+    transition: all 0.3s ease;
+    border: 2px dashed #d1d5db;
 }
 
-.cropper-modal {
-    background-color: #fff;
-    opacity: 1;
+.upload-area:hover {
+    border-color: #6C7559;
+    background-color: #f8f7f5;
 }
 
-.cropper-line,
-.cropper-point {
-    background-color: #6C7559;
+.current-image-container {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    background-color: #f3f4f6;
+    padding: 1rem;
+    border-radius: 0.5rem;
 }
 
-.cropper-view-box {
-    outline: 1px solid #6C7559;
-    outline-color: rgba(108, 117, 89, 0.75);
+.current-image {
+    width: 120px;
+    height: 120px;
+    object-fit: contain;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.5rem;
+    background-color: white;
+    padding: 0.5rem;
+}
+
+.crop-control-btn {
+    border: 1px solid #d1d5db;
+    transition: all 0.2s ease;
+}
+
+.crop-control-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+@media (prefers-color-scheme: dark) {
+    .cropper-view-box {
+        outline-color: #FFA500;
+        box-shadow: 0 0 0 1px #000, 0 0 0 2px #FFA500;
+    }
 }
 
 #image-preview-container {
-    max-height: 400px;
+    max-height: 500px;
     margin-top: 1rem;
 }
 
-#image-preview {
+#image-preview-cropper {
     max-width: 100%;
-    max-height: 300px;
+    max-height: 500px;
+}
+
+#thumbnail-preview {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+#thumbnail-preview img {
+    width: 100%;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 0.25rem;
+    border: 1px solid #e5e7eb;
 }
 </style>
-
 
 <div class="flex-1 overflow-auto p-3 md:p-6 pt-20">
     <div class="p-4 md:p-6 bg-white shadow-sm">
@@ -95,177 +175,159 @@ tr:hover{
         </div>
     </div>
 
-<div class="hidden md:block overflow-x-auto m-6">
-
-<div class="inline-block min-w-full align-middle">
-    <table class="w-full whitespace-nowrap bg-white rounded-lg shadow">
-        <thead>
-            <tr class="bg-gray-50 text-left">
-                <th class="px-6 py-3 text-xs font-medium text-gray-500 uppercase">Product</th>
-                <th class="px-6 py-3 text-xs font-medium text-gray-500 uppercase">Brand</th>
-                <th class="px-6 py-3 text-xs font-medium text-gray-500 uppercase">Category</th>
-                <th class="px-6 py-3 text-xs font-medium text-gray-500 uppercase">Size</th>
-                <th class="px-6 py-3 text-xs font-medium text-gray-500 uppercase">Price</th>
-                <th class="px-6 py-3 text-xs font-medium text-gray-500 uppercase">Stock</th>
-                <th class="px-6 py-3 text-xs font-medium text-gray-500 uppercase">Status</th>
-                <th class="px-6 py-3 text-xs font-medium text-gray-500 uppercase">Last Updated</th>
-                <th class="px-6 py-3 text-xs font-medium text-gray-500 uppercase">Actions</th>
-            </tr>
-        </thead>
-        <tbody class="divide-y divide-gray-200">
-            <% data.forEach(product => { %>
-                <tr class="hover:bg-gray-50">
-                    <!-- Product Column (with image) -->
-                    <td class="px-6 py-4 ">
-                        <div class="flex items-center">
-                            <% if (product.productImage && product.productImage.length > 0) { %>
-                                <img src="<%= product.productImage[0] %>" 
-                                     alt="<%= product.productName %>" 
-                                     class="product-image mr-3"
-                                     onerror="this.onerror=null;this.src='/images/default-product.png'">
-                            <% } else { %>
-                                <img src="/images/default-product.png" 
-                                     alt="Default Product" 
-                                     class="product-image mr-3">
-                            <% } %>
-                            <div class = "mr-[20px]">
-                                <div class="text-sm font-medium text-gray-900"><%= product.productName %></div>
-                                <div class="text-xs text-gray-500"><%= product.condition %></div>
+    <div class="hidden md:block overflow-x-auto m-6">
+        <div class="inline-block min-w-full align-middle">
+            <table class="w-full whitespace-nowrap bg-white rounded-lg shadow">
+                <thead>
+                    <tr class="bg-gray-50 text-left">
+                        <th class="px-6 py-3 text-xs font-medium text-gray-500 uppercase">Product</th>
+                        <th class="px-6 py-3 text-xs font-medium text-gray-500 uppercase">Brand</th>
+                        <th class="px-6 py-3 text-xs font-medium text-gray-500 uppercase">Category</th>
+                        <th class="px-6 py-3 text-xs font-medium text-gray-500 uppercase">Size</th>
+                        <th class="px-6 py-3 text-xs font-medium text-gray-500 uppercase">Price</th>
+                        <th class="px-6 py-3 text-xs font-medium text-gray-500 uppercase">Stock</th>
+                        <th class="px-6 py-3 text-xs font-medium text-gray-500 uppercase">Status</th>
+                        <th class="px-6 py-3 text-xs font-medium text-gray-500 uppercase">Last Updated</th>
+                        <th class="px-6 py-3 text-xs font-medium text-gray-500 uppercase">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-200">
+                    <% data.forEach(product => { %>
+                        <tr class="hover:bg-gray-50">
+                            <td class="px-6 py-4 ">
+                                <div class="flex items-center">
+                                    <% if (product.productImage && product.productImage.length > 0) { %>
+                                        <img src="<%= product.productImage[0] %>" 
+                                             alt="<%= product.productName %>" 
+                                             class="product-image mr-3"
+                                             onerror="this.onerror=null;this.src='/images/default-product.png'">
+                                    <% } else { %>
+                                        <img src="/images/default-product.png" 
+                                             alt="Default Product" 
+                                             class="product-image mr-3">
+                                    <% } %>
+                                    <div class = "mr-[20px]">
+                                        <div class="text-sm font-medium text-gray-900"><%= product.productName %></div>
+                                        <div class="text-xs text-gray-500"><%= product.condition %></div>
+                                    </div>
+                                </div>
+                            </td>
+                            
+                            <td class="px-6 py-4 text-sm text-gray-900"><%= product.brand?.brandName || 'N/A' %></td>
+                            
+                            <td class="px-6 py-4 text-sm text-gray-900"><%= product.category?.name || 'N/A' %></td>
+                            
+                            <td class="px-6 py-4 text-sm text-gray-900"><%= product.size || 'N/A' %></td>
+                            
+                            <td class="px-6 py-4 text-sm text-gray-900">$<%= product.regularPrice.toFixed(2) %></td>
+                            
+                            <td class="px-6 py-4 text-sm text-gray-900"><%= product.stock %></td>
+                            
+                            <td class="px-6 py-4 text-sm">
+                                <span class="status-badge <%= product.stock > 0 ? 'in-stock' : 'out-of-stock' %>">
+                                    <%= product.stock > 0 ? 'In Stock' : 'Out of Stock' %>
+                                </span>
+                            </td>
+                            
+                            <td class="px-6 py-4 text-sm text-gray-500">
+                                <%= new Date(product.updatedAt).toLocaleDateString() %>
+                            </td>
+                            
+                            <td class="px-6 py-4 text-sm">
+                                <div class="flex items-center space-x-3">
+                                    <a href="/admin/editProduct/<%= product._id %>" class="text-blue-600 hover:text-blue-800">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                                  d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                                        </svg>
+                                    </a>
+                                    <a href="/admin/deleteProduct/<%= product._id %>" class="text-red-600 hover:text-red-800 delete-product">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                                  d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                                        </svg>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    <% }); %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="md:hidden space-y-4 m-4">
+        <% data.forEach(product => { %>
+            <div class="bg-white p-4 rounded-lg shadow">
+                <div class="flex flex-col sm:flex-row items-start gap-3">
+                    <div class="flex-shrink-0">
+                        <% if (product.productImage && product.productImage.length > 0) { %>
+                            <img src="<%= product.productImage[0] %>" 
+                                 alt="<%= product.productName %>" 
+                                 class="product-image"
+                                 onerror="this.onerror=null;this.src='/images/default-product.png'">
+                        <% } else { %>
+                            <img src="/images/default-product.png" 
+                                 alt="Default Product" 
+                                 class="product-image">
+                        <% } %>
+                    </div>
+                    
+                    <div class="flex-1 min-w-0"> 
+                        <div class="flex justify-between items-start gap-2">
+                            <h3 class="font-medium text-gray-900 truncate"><%= product.productName %></h3>
+                            <span class="status-badge <%= product.stock > 0 ? 'in-stock' : 'out-of-stock' %> flex-shrink-0">
+                                <%= product.stock > 0 ? 'In Stock' : 'Out of Stock' %>
+                            </span>
+                        </div>
+                        
+                        <p class="text-sm text-gray-500 truncate mt-1"><%= product.brand?.brandName || 'N/A' %></p>
+                        
+                        <div class="mt-2 grid grid-cols-2 gap-x-4 gap-y-2 text-sm">
+                            <div class="truncate">
+                                <span class="text-gray-500">Size:</span>
+                                <span class="font-medium ml-1"><%= product.size || 'N/A' %></span>
+                            </div>
+                            <div class="truncate">
+                                <span class="text-gray-500">Category:</span>
+                                <span class="font-medium ml-1"><%= product.category?.name || 'N/A' %></span>
+                            </div>
+                            <div class="truncate">
+                                <span class="text-gray-500">Price:</span>
+                                <span class="font-medium ml-1">$<%= product.regularPrice.toFixed(2) %></span>
+                            </div>
+                            <div class="truncate">
+                                <span class="text-gray-500">Stock:</span>
+                                <span class="font-medium ml-1"><%= product.stock %></span>
+                            </div>
+                            <div class="truncate">
+                                <span class="text-gray-500">Condition:</span>
+                                <span class="font-medium ml-1"><%= product.condition || 'N/A' %></span>
+                            </div>
+                            <div class="truncate">
+                                <span class="text-gray-500">Updated:</span>
+                                <span class="font-medium ml-1"><%= new Date(product.updatedAt).toLocaleDateString() %></span>
                             </div>
                         </div>
-                    </td>
-                    
-                    <!-- Brand Column -->
-                    <td class="px-6 py-4 text-sm text-gray-900"><%= product.brand?.brandName || 'N/A' %></td>
-                    
-                    <!-- Category Column -->
-                    <td class="px-6 py-4 text-sm text-gray-900"><%= product.category?.name || 'N/A' %></td>
-                    
-                    <!-- Size Column -->
-                    <td class="px-6 py-4 text-sm text-gray-900"><%= product.size || 'N/A' %></td>
-                    
-                    <!-- Price Column -->
-                    <td class="px-6 py-4 text-sm text-gray-900">$<%= product.regularPrice.toFixed(2) %></td>
-                    
-                    <!-- Stock Column -->
-                    <td class="px-6 py-4 text-sm text-gray-900"><%= product.stock %></td>
-                    
-                    <!-- Status Column -->
-                    <td class="px-6 py-4 text-sm">
-                        <span class="status-badge <%= product.stock > 0 ? 'in-stock' : 'out-of-stock' %>">
-                            <%= product.stock > 0 ? 'In Stock' : 'Out of Stock' %>
-                        </span>
-                    </td>
-                    
-                    <!-- Last Updated Column -->
-                    <td class="px-6 py-4 text-sm text-gray-500">
-                        <%= new Date(product.updatedAt).toLocaleDateString() %>
-                    </td>
-                    
-                    <!-- Actions Column -->
-                    <td class="px-6 py-4 text-sm">
-                        <div class="flex items-center space-x-3">
-                            <a href="/admin/editProduct/<%= product._id %>" class="text-blue-600 hover:text-blue-800">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                                          d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
-                                </svg>
-                            </a>
-                            <a href="/admin/deleteProduct/<%= product._id %>" class="text-red-600 hover:text-red-800 delete-product">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                                          d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
-                                </svg>
-                            </a>
-                        </div>
-                    </td>
-                </tr>
-            <% }); %>
-        </tbody>
-    </table>
-</div>
-</div>
-<!-- Mobile View: Card Layout -->
-<div class="md:hidden space-y-4 m-4">
-    <% data.forEach(product => { %>
-        <div class="bg-white p-4 rounded-lg shadow">
-            <div class="flex flex-col sm:flex-row items-start gap-3">
-                <!-- Product Image -->
-                <div class="flex-shrink-0">
-                    <% if (product.productImage && product.productImage.length > 0) { %>
-                        <img src="<%= product.productImage[0] %>" 
-                             alt="<%= product.productName %>" 
-                             class="product-image"
-                             onerror="this.onerror=null;this.src='/images/default-product.png'">
-                    <% } else { %>
-                        <img src="/images/default-product.png" 
-                             alt="Default Product" 
-                             class="product-image">
-                    <% } %>
+                    </div>
                 </div>
                 
-                <!-- Product Details -->
-                <div class="flex-1 min-w-0"> <!-- min-w-0 prevents text overflow -->
-                    <!-- Product Name and Status -->
-                    <div class="flex justify-between items-start gap-2">
-                        <h3 class="font-medium text-gray-900 truncate"><%= product.productName %></h3>
-                        <span class="status-badge <%= product.stock > 0 ? 'in-stock' : 'out-of-stock' %> flex-shrink-0">
-                            <%= product.stock > 0 ? 'In Stock' : 'Out of Stock' %>
-                        </span>
-                    </div>
-                    
-                    <!-- Brand Name -->
-                    <p class="text-sm text-gray-500 truncate mt-1"><%= product.brand?.brandName || 'N/A' %></p>
-                    
-                    <!-- Product Details Grid -->
-                    <div class="mt-2 grid grid-cols-2 gap-x-4 gap-y-2 text-sm">
-                        <div class="truncate">
-                            <span class="text-gray-500">Size:</span>
-                            <span class="font-medium ml-1"><%= product.size || 'N/A' %></span>
-                        </div>
-                        <div class="truncate">
-                            <span class="text-gray-500">Category:</span>
-                            <span class="font-medium ml-1"><%= product.category?.name || 'N/A' %></span>
-                        </div>
-                        <div class="truncate">
-                            <span class="text-gray-500">Price:</span>
-                            <span class="font-medium ml-1">$<%= product.regularPrice.toFixed(2) %></span>
-                        </div>
-                        <div class="truncate">
-                            <span class="text-gray-500">Stock:</span>
-                            <span class="font-medium ml-1"><%= product.stock %></span>
-                        </div>
-                        <div class="truncate">
-                            <span class="text-gray-500">Condition:</span>
-                            <span class="font-medium ml-1"><%= product.condition || 'N/A' %></span>
-                        </div>
-                        <div class="truncate">
-                            <span class="text-gray-500">Updated:</span>
-                            <span class="font-medium ml-1"><%= new Date(product.updatedAt).toLocaleDateString() %></span>
-                        </div>
-                    </div>
+                <div class="mt-4 flex justify-end space-x-3">
+                    <a href="/admin/editProduct/<%= product._id %>" class="text-blue-600 hover:text-blue-800 p-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                  d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                        </svg>
+                    </a>
+                    <a href="/admin/deleteProduct/<%= product._id %>" class="text-red-600 hover:text-red-800 p-2 delete-product">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                  d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                        </svg>
+                    </a>
                 </div>
             </div>
-            
-            <!-- Action Buttons -->
-            <div class="mt-4 flex justify-end space-x-3">
-                <a href="/admin/editProduct/<%= product._id %>" class="text-blue-600 hover:text-blue-800 p-2">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                              d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
-                    </svg>
-                </a>
-                <a href="/admin/deleteProduct/<%= product._id %>" class="text-red-600 hover:text-red-800 p-2 delete-product">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                              d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
-                    </svg>
-                </a>
-            </div>
-        </div>
-    <% }); %>
-</div>
-    <!-- Pagination -->
+        <% }); %>
+    </div>
     <% if (totalPages > 1) { %>
         <div class="flex justify-center items-center space-x-2 my-6">
             <% for(let i = 1; i <= totalPages; i++) { %>
@@ -278,7 +340,6 @@ tr:hover{
     <% } %>
 </div>
 
-<!-- Add Product Modal -->
 <div id="addModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden">
     <div class="min-h-screen flex items-center justify-center p-4">
         <div class="bg-white rounded-lg p-6 max-w-2xl w-full mx-4 relative overflow-y-auto max-h-screen">
@@ -290,194 +351,253 @@ tr:hover{
                     </svg>
                 </button>
             </div>
-<form id="addProductForm" action="/admin/addProduct" method="POST" enctype="multipart/form-data" class="space-y-4">
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div class="space-y-4">
-            <div>
-                <label for="productName" class="block text-sm font-medium text-gray-700 mb-1">Product Name*</label>
-                <input type="text" id="productName" name="productName" required
-                       class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#6C7559] focus:border-transparent">
-                <p id="productName-error" class="error-message text-red-500 text-sm mt-1 hidden"></p>
-            </div>
+            <form id="addProductForm" action="/admin/addProduct" method="POST" enctype="multipart/form-data" class="space-y-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="space-y-4">
+                        <div>
+                            <label for="productName" class="block text-sm font-medium text-gray-700 mb-1">Product Name*</label>
+                            <input type="text" id="productName" name="productName" required
+                                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#6C7559] focus:border-transparent">
+                            <p id="productName-error" class="error-message text-red-500 text-sm mt-1 hidden"></p>
+                        </div>
 
-            <div>
-                <label for="brand" class="block text-sm font-medium text-gray-700 mb-1">Brand*</label>
-                <select id="brand" name="brand" required
-                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#6C7559] focus:border-transparent">
-                    <option value="">Select Brand</option>
-                    <% brands.forEach(brand => { %>
-                        <option value="<%= brand._id %>"><%= brand.brandName %></option>
-                    <% }); %>
-                </select>
-                <p id="brand-error" class="error-message text-red-500 text-sm mt-1 hidden"></p>
-            </div>
+                        <div>
+                            <label for="brand" class="block text-sm font-medium text-gray-700 mb-1">Brand*</label>
+                            <select id="brand" name="brand" required
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#6C7559] focus:border-transparent">
+                                <option value="">Select Brand</option>
+                                <% brands.forEach(brand => { %>
+                                    <option value="<%= brand._id %>"><%= brand.brandName %></option>
+                                <% }); %>
+                            </select>
+                            <p id="brand-error" class="error-message text-red-500 text-sm mt-1 hidden"></p>
+                        </div>
 
-            <div>
-                <label for="category" class="block text-sm font-medium text-gray-700 mb-1">Category*</label>
-                <select id="category" name="category" required
-                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#6C7559] focus:border-transparent">
-                    <option value="">Select Category</option>
-                    <% categories.forEach(category => { %>
-                        <option value="<%= category._id %>"><%= category.name %></option>
-                    <% }); %>
-                </select>
-                <p id="category-error" class="error-message text-red-500 text-sm mt-1 hidden"></p>
-            </div>
+                        <div>
+                            <label for="category" class="block text-sm font-medium text-gray-700 mb-1">Category*</label>
+                            <select id="category" name="category" required
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#6C7559] focus:border-transparent">
+                                <option value="">Select Category</option>
+                                <% categories.forEach(category => { %>
+                                    <option value="<%= category._id %>"><%= category.name %></option>
+                                <% }); %>
+                            </select>
+                            <p id="category-error" class="error-message text-red-500 text-sm mt-1 hidden"></p>
+                        </div>
 
-            <div>
-                <label for="size" class="block text-sm font-medium text-gray-700 mb-1">Size*</label>
-                <input type="text" id="size" name="size" required
-                       class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#6C7559] focus:border-transparent">
-                <p id="size-error" class="error-message text-red-500 text-sm mt-1 hidden"></p>
-            </div>
+                        <div>
+                            <label for="size" class="block text-sm font-medium text-gray-700 mb-1">Size*</label>
+                            <input type="text" id="size" name="size" required
+                                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#6C7559] focus:border-transparent">
+                            <p id="size-error" class="error-message text-red-500 text-sm mt-1 hidden"></p>
+                        </div>
 
-            <div>
-                <label for="condition" class="block text-sm font-medium text-gray-700 mb-1">Condition*</label>
-                <select id="condition" name="condition" required
-                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#6C7559] focus:border-transparent">
-                    <option value="">Select Condition</option>
-                    <option value="Like New">Like New</option>
-                    <option value="Gently Used">Gently Used</option>
-                    <option value="Fair Condition">Fair Condition</option>
-                </select>
-                <p id="condition-error" class="error-message text-red-500 text-sm mt-1 hidden"></p>
-            </div>
-        </div>
-
-        <!-- Right Column -->
-        <div class="space-y-4">
-            <div>
-                <label for="regularPrice" class="block text-sm font-medium text-gray-700 mb-1">Regular Price*</label>
-                <input type="number" id="regularPrice" name="regularPrice" min="0" step="0.01" required
-                       class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#6C7559] focus:border-transparent">
-                <p id="regularPrice-error" class="error-message text-red-500 text-sm mt-1 hidden"></p>
-            </div>
-
-            <div>
-                <label for="salesPrice" class="block text-sm font-medium text-gray-700 mb-1">Sale Price*</label>
-                <input type="number" id="salesPrice" name="salesPrice" min="0" step="0.01" required
-                       class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#6C7559] focus:border-transparent">
-                <p id="salesPrice-error" class="error-message text-red-500 text-sm mt-1 hidden"></p>
-            </div>
-
-            <div>
-                <label for="productOffer" class="block text-sm font-medium text-gray-700 mb-1">Product Offer (%)</label>
-                <input type="number" id="productOffer" name="productOffer" min="0" max="100" step="1" 
-                       class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#6C7559] focus:border-transparent">
-                <p id="productOffer-error" class="error-message text-red-500 text-sm mt-1 hidden"></p>
-            </div>
-
-            <div>
-                <label for="stock" class="block text-sm font-medium text-gray-700 mb-1">Stock Quantity*</label>
-                <input type="number" id="stock" name="stock" min="0" required
-                       class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#6C7559] focus:border-transparent">
-                <p id="stock-error" class="error-message text-red-500 text-sm mt-1 hidden"></p>
-            </div>
-
-            <div>
-                <label for="quantity" class="block text-sm font-medium text-gray-700 mb-1">Quantity*</label>
-                <input type="number" id="quantity" name="quantity" min="0" required
-                       class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#6C7559] focus:border-transparent">
-                <p id="quantity-error" class="error-message text-red-500 text-sm mt-1 hidden"></p>
-            </div>
-
-            <div>
-                <label for="status" class="block text-sm font-medium text-gray-700 mb-1">Status*</label>
-                <select id="status" name="status" required
-                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#6C7559] focus:border-transparent">
-                    <option value="Available">Available</option>
-                    <option value="Out of stock">Out of stock</option>
-                    <option value="Discontinued">Discontinued</option>
-                </select>
-                <p id="status-error" class="error-message text-red-500 text-sm mt-1 hidden"></p>
-            </div>
-        </div>
-    </div>
-
-    <!-- Additional Fields -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div>
-            <label for="description" class="block text-sm font-medium text-gray-700 mb-1">Description*</label>
-            <textarea id="description" name="description" rows="3" required
-                      class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#6C7559] focus:border-transparent"></textarea>
-            <p id="description-error" class="error-message text-red-500 text-sm mt-1 hidden"></p>
-        </div>
-
-        <div class="space-y-2">
-            <div class="flex items-center">
-                <input type="checkbox" id="isFeatured" name="isFeatured" 
-                       class="w-4 h-4 text-[#6C7559] border-gray-300 rounded focus:ring-[#6C7559]">
-                <label for="isFeatured" class="ml-2 text-sm text-gray-700">Featured Product</label>
-            </div>
-            <div class="flex items-center">
-                <input type="checkbox" id="isNew" name="isNew"
-                       class="w-4 h-4 text-[#6C7559] border-gray-300 rounded focus:ring-[#6C7559]">
-                <label for="isNew" class="ml-2 text-sm text-gray-700">Mark as New</label>
-            </div>
-        </div>
-    </div>
-
-    <!-- Image Upload Section -->
-<div>
-    <label class="block text-sm font-medium text-gray-700 mb-1">Product Images (Minimum 3 required)*</label>
-    <div class="mt-1 flex items-center">
-        <input type="file" id="images" name="images" multiple accept="image/*" class="hidden">
-        <button type="button" id="uploadTrigger" 
-                class="px-3 py-2 border border-gray-300 rounded-md shadow-sm text-sm leading-4 font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#6C7559]">
-            Upload Images
-        </button>
-        <span id="file-chosen" class="ml-2 text-sm text-gray-500">No files chosen</span>
-    </div>
-    
-    <!-- Cropper container -->
-    <div id="image-preview-container" class="hidden">
-        <div class="relative">
-            <img id="image-preview-cropper" class="max-w-full max-h-64" alt="Preview">
-        </div>
-        <div class="mt-2 flex space-x-2">
-            <button type="button" id="cropBtn" class="px-3 py-1 bg-[#6C7559] text-white text-sm rounded hidden">
-                Crop Image
-            </button>
-            <button type="button" id="cancelCropBtn" class="px-3 py-1 bg-gray-300 text-gray-700 text-sm rounded hidden">
-                Cancel
-            </button>
-        </div>
-    </div>
-    
-    <!-- Thumbnail preview grid -->
-    <div id="thumbnail-preview" class="mt-2 grid grid-cols-3 gap-2 hidden">
-        <!-- Preview images will appear here -->
-    </div>
-    
-    <p id="images-error" class="error-message text-red-500 text-sm mt-1 hidden"></p>
-</div>
-    
-    <div class="flex justify-end space-x-4 mt-6">
-        <button type="button" onclick="closeAddModal()"
-                class="px-4 py-2 text-sm text-gray-600 hover:text-gray-800 font-medium">
-            Cancel
-        </button>
-        <button type="submit" 
-                class="px-4 py-2 bg-[#6C7559] hover:bg-[#5a6349] text-white rounded-lg text-sm">
-            Add Product
-        </button>
-    </div>
-</form>
+                        <div>
+                            <label for="condition" class="block text-sm font-medium text-gray-700 mb-1">Condition*</label>
+                            <select id="condition" name="condition" required
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#6C7559] focus:border-transparent">
+                                <option value="">Select Condition</option>
+                                <option value="Like New">Like New</option>
+                                <option value="Gently Used">Gently Used</option>
+                                <option value="Fair Condition">Fair Condition</option>
+                            </select>
+                            <p id="condition-error" class="error-message text-red-500 text-sm mt-1 hidden"></p>
+                        </div>
                     </div>
-    </div>
-</div>
 
-<!-- Edit Product Modal (Will be populated dynamically) -->
-<div id="editModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden">
-    <div class="min-h-screen flex items-center justify-center p-4">
-        <div class="bg-white rounded-lg p-6 max-w-2xl w-full mx-4 relative overflow-y-auto max-h-screen">
-            <!-- Content will be loaded via AJAX -->
+                    <div class="space-y-4">
+                        <div>
+                            <label for="regularPrice" class="block text-sm font-medium text-gray-700 mb-1">Regular Price*</label>
+                            <input type="number" id="regularPrice" name="regularPrice" min="0" step="0.01" required
+                                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#6C7559] focus:border-transparent">
+                            <p id="regularPrice-error" class="error-message text-red-500 text-sm mt-1 hidden"></p>
+                        </div>
+
+                        <div>
+                            <label for="salesPrice" class="block text-sm font-medium text-gray-700 mb-1">Sale Price*</label>
+                            <input type="number" id="salesPrice" name="salesPrice" min="0" step="0.01" required
+                                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#6C7559] focus:border-transparent">
+                            <p id="salesPrice-error" class="error-message text-red-500 text-sm mt-1 hidden"></p>
+                        </div>
+
+                        <div>
+                            <label for="productOffer" class="block text-sm font-medium text-gray-700 mb-1">Product Offer (%)</label>
+                            <input type="number" id="productOffer" name="productOffer" min="0" max="100" step="1" 
+                                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#6C7559] focus:border-transparent">
+                            <p id="productOffer-error" class="error-message text-red-500 text-sm mt-1 hidden"></p>
+                        </div>
+
+                        <div>
+                            <label for="stock" class="block text-sm font-medium text-gray-700 mb-1">Stock Quantity*</label>
+                            <input type="number" id="stock" name="stock" min="0" required
+                                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#6C7559] focus:border-transparent">
+                            <p id="stock-error" class="error-message text-red-500 text-sm mt-1 hidden"></p>
+                        </div>
+
+                        <div>
+                            <label for="quantity" class="block text-sm font-medium text-gray-700 mb-1">Quantity*</label>
+                            <input type="number" id="quantity" name="quantity" min="0" required
+                                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#6C7559] focus:border-transparent">
+                            <p id="quantity-error" class="error-message text-red-500 text-sm mt-1 hidden"></p>
+                        </div>
+
+                        <div>
+                            <label for="status" class="block text-sm font-medium text-gray-700 mb-1">Status*</label>
+                            <select id="status" name="status" required
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#6C7559] focus:border-transparent">
+                                <option value="Available">Available</option>
+                                <option value="Out of stock">Out of stock</option>
+                                <option value="Discontinued">Discontinued</option>
+                            </select>
+                            <p id="status-error" class="error-message text-red-500 text-sm mt-1 hidden"></p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label for="description" class="block text-sm font-medium text-gray-700 mb-1">Description*</label>
+                        <textarea id="description" name="description" rows="3" required
+                                  class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#6C7559] focus:border-transparent"></textarea>
+                        <p id="description-error" class="error-message text-red-500 text-sm mt-1 hidden"></p>
+                    </div>
+
+                    <div class="space-y-2">
+                        <div class="flex items-center">
+                            <input type="checkbox" id="isFeatured" name="isFeatured" 
+                                   class="w-4 h-4 text-[#6C7559] border-gray-300 rounded focus:ring-[#6C7559]">
+                            <label for="isFeatured" class="ml-2 text-sm text-gray-700">Featured Product</label>
+                        </div>
+                        <div class="flex items-center">
+                            <input type="checkbox" id="isNew" name="isNew"
+                                   class="w-4 h-4 text-[#6C7559] border-gray-300 rounded focus:ring-[#6C7559]">
+                            <label for="isNew" class="ml-2 text-sm text-gray-700">Mark as New</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Product Images (Minimum 3 required)*</label>
+                    <div class="mt-1 flex items-center">
+                        <input type="file" id="images" name="images" multiple accept="image/*" class="hidden">
+                        <button type="button" id="uploadTrigger" 
+                                class="px-4 py-2 border-2 border-dashed border-gray-300 rounded-lg hover:border-[#6C7559] transition-colors upload-area w-full">
+                            <div class="flex flex-col items-center justify-center text-gray-500">
+                                <i class="fas fa-cloud-upload-alt text-4xl mb-3"></i>
+                                <p class="font-medium text-lg">Click to upload product images</p>
+                                <p class="text-sm mt-1">Recommended: Square images (1000×1000 pixels)</p>
+                                <p class="text-xs mt-1 text-gray-400">JPG, PNG, or WEBP (max 10MB each)</p>
+                            </div>
+                        </button>
+                        <span id="file-chosen" class="ml-2 text-sm text-gray-500 hidden">No files chosen</span>
+                    </div>
+                    
+                    <div id="image-preview-container" class="hidden">
+                        <div class="relative w-full" style="height: 500px; background-color: #f3f4f6;">
+                            <img id="image-preview-cropper" class="max-w-full max-h-full" alt="Preview">
+                        </div>
+                        <div class="mt-4 flex flex-wrap gap-3 justify-center">
+                            <button type="button" id="zoomInBtn" class="px-4 py-2 bg-gray-100 rounded-lg crop-control-btn">
+                                <i class="fas fa-search-plus mr-2 text-gray-700"></i>Zoom In
+                            </button>
+                            <button type="button" id="zoomOutBtn" class="px-4 py-2 bg-gray-100 rounded-lg crop-control-btn">
+                                <i class="fas fa-search-minus mr-2 text-gray-700"></i>Zoom Out
+                            </button>
+                            <button type="button" id="rotateBtn" class="px-4 py-2 bg-gray-100 rounded-lg crop-control-btn">
+                                <i class="fas fa-undo mr-2 text-gray-700"></i>Rotate
+                            </button>
+                            <button type="button" id="resetBtn" class="px-4 py-2 bg-gray-100 rounded-lg crop-control-btn">
+                                <i class="fas fa-sync-alt mr-2 text-gray-700"></i>Reset
+                            </button>
+                            <button type="button" id="cropBtn" class="px-4 py-2 bg-[#6C7559] hover:bg-[#5a6349] text-white rounded-lg">
+                                <i class="fas fa-crop mr-2"></i>Apply Crop
+                            </button>
+                            <button type="button" id="cancelCropBtn" class="px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded-lg">
+                                <i class="fas fa-times mr-2"></i>Cancel
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div id="thumbnail-preview" class="mt-4 grid grid-cols-3 gap-2 hidden">
+                    </div>
+                    
+                    <p id="images-error" class="error-message text-red-500 text-sm mt-1 hidden"></p>
+                </div>
+                
+                <div class="flex justify-end space-x-4 mt-6">
+                    <button type="button" onclick="closeAddModal()"
+                            class="px-4 py-2 text-sm text-gray-600 hover:text-gray-800 font-medium">
+                        Cancel
+                    </button>
+                    <button type="submit" 
+                            class="px-4 py-2 bg-[#6C7559] hover:bg-[#5a6349] text-white rounded-lg text-sm">
+                        Add Product
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
 
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
 <script>
+let cropper;
+let originalImageFile;
+let currentFileIndex = 0;
+let croppedImages = [];
+
+function initCropper(imageElement) {
+    return new Cropper(imageElement, {
+        aspectRatio: 1,
+        viewMode: 1,
+        autoCropArea: 0.8,
+        minContainerWidth: 500,
+        minContainerHeight: 500,
+        minCanvasWidth: 500,
+        minCanvasHeight: 500,
+        minCropBoxWidth: 200,
+        minCropBoxHeight: 200,
+        responsive: true,
+        restore: true,
+        guides: false,
+        center: true,
+        highlight: false,
+        cropBoxMovable: true,
+        cropBoxResizable: true,
+        toggleDragModeOnDblclick: false,
+        background: '#f3f4f6',
+        checkCrossOrigin: false,
+        checkOrientation: false,
+        modal: true,
+        dragMode: 'move',
+        ready: function() {
+            const imageData = this.cropper.getImageData();
+            if (isDarkImage(imageData)) {
+                enhanceDarkImageVisibility();
+            }
+        }
+    });
+}
+
+function isDarkImage(imageData) {
+    return imageData.naturalWidth < imageData.width || imageData.naturalHeight < imageData.height;
+}
+
+function enhanceDarkImageVisibility() {
+    document.querySelectorAll('.cropper-line').forEach(line => {
+        line.style.backgroundColor = '#FFA500';
+    });
+    document.querySelectorAll('.cropper-point').forEach(point => {
+        point.style.backgroundColor = '#FFA500';
+        point.style.border = '2px solid white';
+    });
+    document.querySelector('.cropper-view-box').style.outline = '2px solid #FFA500';
+}
+
 function openAddModal() {
     document.getElementById('addModal').classList.remove('hidden');
     document.body.style.overflow = 'hidden';
@@ -487,16 +607,14 @@ function closeAddModal() {
     document.getElementById('addModal').classList.add('hidden');
     document.body.style.overflow = 'auto';
     
-    // Clear all form fields
     document.getElementById('addProductForm').reset();
     
-    // Clear image preview and related elements
     document.getElementById('image-preview-container').classList.add('hidden');
     document.getElementById('thumbnail-preview').innerHTML = '';
+    document.getElementById('thumbnail-preview').classList.add('hidden');
     document.getElementById('file-chosen').textContent = 'No files chosen';
     document.getElementById('images-error').classList.add('hidden');
     
-    // Clear cropper and related variables
     if (cropper) {
         cropper.destroy();
         cropper = null;
@@ -504,16 +622,9 @@ function closeAddModal() {
     croppedImages = [];
     currentFileIndex = 0;
     
-    // Clear all error messages
     clearErrorMessages();
 }
 
-let cropper;
-let originalImageFile;
-let currentFileIndex = 0;
-let croppedImages = [];
-
-// Image Cropping Functionality
 document.getElementById('uploadTrigger').addEventListener('click', function() {
     document.getElementById('images').click();
 });
@@ -522,14 +633,23 @@ document.getElementById('images').addEventListener('change', function(e) {
     const files = e.target.files;
     if (!files || files.length === 0) return;
 
-    // Process each file
+    croppedImages = [];
+    currentFileIndex = 0;
+    document.getElementById('thumbnail-preview').innerHTML = '';
+    document.getElementById('thumbnail-preview').classList.add('hidden');
+    
     processImage(files[0]);
 });
 
 function processImage(file) {
-    // Validate image type
-    if (!file.type.match('image.*')) {
-        displayError('images-error', 'Only image files are allowed');
+    const validTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+    if (!validTypes.includes(file.type)) {
+        displayError('images-error', 'Please upload valid images (JPEG, PNG, GIF, or WEBP)');
+        return;
+    }
+
+    if (file.size > 10 * 1024 * 1024) { // 10MB
+        displayError('images-error', 'Image must be less than 10MB');
         return;
     }
 
@@ -537,85 +657,76 @@ function processImage(file) {
     reader.onload = function(event) {
         const imagePreview = document.getElementById('image-preview-cropper');
         const imagePreviewContainer = document.getElementById('image-preview-container');
-        const cropBtn = document.getElementById('cropBtn');
-        const cancelCropBtn = document.getElementById('cancelCropBtn');
-        const thumbnailPreview = document.getElementById('thumbnail-preview');
-
+        
         imagePreview.src = event.target.result;
         imagePreviewContainer.classList.remove('hidden');
-        cropBtn.classList.remove('hidden');
-        cancelCropBtn.classList.remove('hidden');
-        thumbnailPreview.classList.add('hidden');
+        
+        ['zoomInBtn', 'zoomOutBtn', 'rotateBtn', 'resetBtn', 'cropBtn', 'cancelCropBtn'].forEach(id => {
+            document.getElementById(id).classList.remove('hidden');
+        });
 
-        // Initialize cropper
         if (cropper) {
             cropper.destroy();
         }
         
-        cropper = new Cropper(imagePreview, {
-            aspectRatio: 1, // Square aspect ratio (change if you want rectangular)
-            viewMode: 1,
-            autoCropArea: 0.8,
-            responsive: true,
-            guides: false
-        });
-
-        // Store the original file
+        cropper = initCropper(imagePreview);
         originalImageFile = file;
     };
     reader.readAsDataURL(file);
 }
 
-// Crop button handler
 document.getElementById('cropBtn').addEventListener('click', function() {
-    if (cropper) {
-        const canvas = cropper.getCroppedCanvas({
-            width: 800,
-            height: 800,
-            minWidth: 400,
-            minHeight: 400,
-            maxWidth: 2000,
-            maxHeight: 2000,
-            fillColor: '#fff',
-            imageSmoothingEnabled: true,
-            imageSmoothingQuality: 'high',
+    if (!cropper) return;
+
+    const canvas = cropper.getCroppedCanvas({
+        width: 1000,
+        height: 1000,
+        minWidth: 800,
+        minHeight: 800,
+        maxWidth: 2000,
+        maxHeight: 2000,
+        fillColor: '#fff',
+        imageSmoothingEnabled: true,
+        imageSmoothingQuality: 'high'
+    });
+
+    canvas.toBlob((blob) => {
+        const croppedFile = new File([blob], originalImageFile.name, {
+            type: 'image/jpeg',
+            lastModified: Date.now()
         });
 
-        canvas.toBlob((blob) => {
-            const croppedFile = new File([blob], originalImageFile.name, {
-                type: 'image/jpeg',
-                lastModified: Date.now()
-            });
+        croppedImages.push(croppedFile);
+        updateThumbnailPreview(croppedFile);
+        
+        ['zoomInBtn', 'zoomOutBtn', 'rotateBtn', 'resetBtn', 'cropBtn', 'cancelCropBtn'].forEach(id => {
+            document.getElementById(id).classList.add('hidden');
+        });
+        
+        document.getElementById('image-preview-container').classList.add('hidden');
 
-            croppedImages.push(croppedFile);
-            updateThumbnailPreview(croppedFile);
-            
-            document.getElementById('cropBtn').classList.add('hidden');
-            document.getElementById('cancelCropBtn').classList.add('hidden');
-            document.getElementById('image-preview-container').classList.add('hidden');
-
-            cropper.destroy();
-            cropper = null;
-            
-            document.getElementById('file-chosen').textContent = 
-                croppedImages.length + ' image(s) selected';
-            
-            if (croppedImages.length >= 3) {
-                document.getElementById('images-error').classList.add('hidden');
+        cropper.destroy();
+        cropper = null;
+        
+        document.getElementById('file-chosen').textContent = 
+            croppedImages.length + ' image(s) selected';
+        document.getElementById('file-chosen').classList.remove('hidden');
+        
+        if (croppedImages.length >= 3) {
+            document.getElementById('images-error').classList.add('hidden');
+        }
+        
+        const fileInput = document.getElementById('images');
+        if (currentFileIndex < fileInput.files.length - 1) {
+            currentFileIndex++;
+            processImage(fileInput.files[currentFileIndex]);
+        } else {
+            updateFileInput();
+            if (croppedImages.length < 3) {
+                displayError('images-error', 'Please upload at least 3 images');
             }
-            
-            const fileInput = document.getElementById('images');
-            if (currentFileIndex < fileInput.files.length - 1) {
-                currentFileIndex++;
-                processImage(fileInput.files[currentFileIndex]);
-            } else {
-                updateFileInput();
-                if (croppedImages.length < 3) {
-                    displayError('images-error', 'Please upload at least 3 images');
-                }
-            }
-        }, 'image/jpeg', 0.9);
-    }
+        }
+    }, 'image/jpeg', 0.9);
 });
 
 function updateThumbnailPreview(file) {
@@ -643,35 +754,47 @@ function updateFileInput() {
 }
 
 document.getElementById('cancelCropBtn').addEventListener('click', function() {
-    const imagePreviewContainer = document.getElementById('image-preview-container');
-    const fileInput = document.getElementById('images');
-    
     if (cropper) {
         cropper.destroy();
         cropper = null;
     }
     
-    imagePreviewContainer.classList.add('hidden');
-    fileInput.value = '';
+    document.getElementById('image-preview-container').classList.add('hidden');
+    document.getElementById('images').value = '';
     document.getElementById('file-chosen').textContent = 'No files chosen';
+    document.getElementById('file-chosen').classList.add('hidden');
     document.getElementById('thumbnail-preview').innerHTML = '';
+    document.getElementById('thumbnail-preview').classList.add('hidden');
     document.getElementById('images-error').classList.add('hidden');
     croppedImages = [];
     currentFileIndex = 0;
 });
 
-document.getElementById('images').addEventListener('change', function(e) {
-    const files = e.target.files;
-    if (!files || files.length === 0) return;
-
-    croppedImages = [];
-    currentFileIndex = 0;
-    document.getElementById('thumbnail-preview').innerHTML = '';
-    
-    processImage(files[0]);
+document.getElementById('zoomInBtn').addEventListener('click', function() {
+    if (cropper) {
+        cropper.zoom(0.1);
+    }
 });
 
-document.getElementById('addProductForm').addEventListener('submit', function(e) {
+document.getElementById('zoomOutBtn').addEventListener('click', function() {
+    if (cropper) {
+        cropper.zoom(-0.1);
+    }
+});
+
+document.getElementById('rotateBtn').addEventListener('click', function() {
+    if (cropper) {
+        cropper.rotate(90);
+    }
+});
+
+document.getElementById('resetBtn').addEventListener('click', function() {
+    if (cropper) {
+        cropper.reset();
+    }
+});
+
+document.getElementById('addProductForm').addEventListener('submit', async function(e) {
     e.preventDefault();
     clearErrorMessages();
     
@@ -756,17 +879,18 @@ document.getElementById('addProductForm').addEventListener('submit', function(e)
     
     const formData = new FormData(this);
     
-    fetch('/admin/addProduct', {
-        method: 'POST',
-        body: formData
-    })
-    .then(response => {
+    try {
+        const response = await fetch('/admin/addProduct', {
+            method: 'POST',
+            body: formData
+        });
+
+        const data = await response.json();
+
         if (!response.ok) {
-            return response.json().then(err => { throw err; });
+            throw new Error(data.error || 'Failed to add product');
         }
-        return response.json();
-    })
-    .then(data => {
+
         Swal.fire({
             icon: 'success',
             title: 'Success!',
@@ -775,15 +899,15 @@ document.getElementById('addProductForm').addEventListener('submit', function(e)
         }).then(() => {
             window.location.reload();
         });
-    })
-    .catch(error => {
+
+    } catch (error) {
         Swal.fire({
             icon: 'error',
             title: 'Error!',
-            text: error.error || 'Failed to add product',
+            text: error.message,
             confirmButtonColor: '#6C7559'
         });
-    });
+    }
 });
 
 function deleteProduct(productId) {
@@ -863,7 +987,6 @@ document.querySelectorAll('.delete-product').forEach(btn => {
 function searchProducts(query) {
     window.location.href = `/admin/products?search=${encodeURIComponent(query)}`;
 }
-
 </script>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
+<%- include('../partials/admin/admin-footer') %>  

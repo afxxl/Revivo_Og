@@ -1,16 +1,13 @@
 <%- include('../partials/admin/admin-header.ejs') %>
 <%- include('../partials/admin/admin-sidebar', {currentPage: 'dashboard'}) %>
 
-<!-- Main Content -->
 <div class="flex-1 overflow-auto md:ml-0 pt-16 md:pt-0">
-    <!-- Add a mobile-friendly header -->
     <header class="md:hidden fixed top-0 left-0 right-0 bg-white shadow-sm z-20">
         <div class="flex justify-center items-center h-16">
             <h1 class="text-xl font-semibold text-gray-800">Dashboard</h1>
         </div>
     </header>
 
-    <!-- Header -->
     <header class="bg-white shadow-sm">
         <div class="flex justify-between items-center px-6 py-4">
             <h1 class="text-2xl font-semibold text-gray-800">Dashboard</h1>
@@ -25,9 +22,7 @@
         </div>
     </header>
 
-    <!-- Stats Cards -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 p-4 md:p-6">
-        <!-- Total Users Card -->
         <div class="bg-purple-500 rounded-lg p-6 text-white">
             <div class="flex justify-between items-center">
                 <div>
@@ -40,7 +35,6 @@
             </div>
         </div>
 
-        <!-- Items Sold Card -->
         <div class="bg-purple-500 rounded-lg p-6 text-white">
             <div class="flex justify-between items-center">
                 <div>
@@ -53,7 +47,6 @@
             </div>
         </div>
 
-        <!-- Total Sales Card -->
         <div class="bg-purple-500 rounded-lg p-6 text-white">
             <div class="flex justify-between items-center">
                 <div>
@@ -66,7 +59,6 @@
             </div>
         </div>
 
-        <!-- Pending Orders Card -->
         <div class="bg-purple-500 rounded-lg p-6 text-white">
             <div class="flex justify-between items-center">
                 <div>
@@ -80,7 +72,6 @@
         </div>
     </div>
 
-    <!-- Products Table -->
     <div class="p-6">
         <div class="bg-white rounded-lg shadow">
             <div class="px-6 py-4 border-b">
@@ -100,7 +91,6 @@
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-200">
-                        <!-- Sample row, repeat for each product -->
                         <tr class="hover:bg-gray-50">
                             <td class="px-6 py-4 text-sm text-gray-500">#1225</td>
                             <td class="px-6 py-4">
@@ -112,11 +102,9 @@
                             <td class="px-6 py-4 text-sm text-gray-900">$3483</td>
                             <td class="px-6 py-4 text-sm text-gray-900">1</td>
                         </tr>
-                        <!-- Add more rows as needed -->
                     </tbody>
                 </table>
             </div>
-            <!-- Pagination -->
             <div class="px-6 py-4 flex items-center justify-between border-t">
                 <div class="text-sm text-gray-500">
                     Showing 1 of 10

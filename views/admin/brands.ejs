@@ -1,40 +1,104 @@
 <%- include('../partials/admin/admin-header.ejs') %>
 <%- include('../partials/admin/admin-sidebar', {currentPage: 'brands'}) %>
 
-<style> 
-/* Cropper.js overrides */
-.cropper-view-box,
-.cropper-face {
-    border-radius: 50%;
-}
-
+<style>
 .cropper-container {
+    width: 100% !important;
+    height: 500px !important;
     margin: 0 auto;
+    background-color: #f8f9fa;
 }
 
 .cropper-modal {
-    background-color: #fff;
-    opacity: 1;
-}
-
-.cropper-line,
-.cropper-point {
-    background-color: #6C7559;
+    background-color: white !important;
+    opacity: 0.7 !important;
 }
 
 .cropper-view-box {
-    outline: 1px solid #6C7559;
-    outline-color: rgba(108, 117, 89, 0.75);
+    outline: 2px solid #FFA500; 
+    outline-color: rgba(255, 165, 0, 0.8);
+    box-shadow: 0 0 0 1px #fff, 0 0 0 2px #FFA500; 
+}
+
+.cropper-line {
+    background-color: #FFA500 !important;
+}
+
+.cropper-point {
+    width: 14px !important;
+    height: 14px !important;
+    background-color: #FFA500 !important;
+    border: 2px solid white;
+    opacity: 1 !important;
+}
+
+.cropper-point.point-se {
+    right: -7px !important;
+    bottom: -7px !important;
+}
+
+.cropper-dashed {
+    border-color: rgba(255, 255, 255, 0.5) !important;
+}
+
+.upload-area {
+    transition: all 0.3s ease;
+    border: 2px dashed #d1d5db;
+}
+
+.upload-area:hover {
+    border-color: #6C7559;
+    background-color: #f8f7f5;
+}
+
+.current-image-container {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    background-color: #f3f4f6;
+    padding: 1rem;
+    border-radius: 0.5rem;
+}
+
+.current-image {
+    width: 120px;
+    height: 120px;
+    object-fit: contain;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.5rem;
+    background-color: white;
+    padding: 0.5rem;
+}
+
+.crop-control-btn {
+    border: 1px solid #d1d5db;
+    transition: all 0.2s ease;
+}
+
+.crop-control-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+@media (prefers-color-scheme: dark) {
+    .cropper-view-box {
+        outline-color: #FFA500;
+        box-shadow: 0 0 0 1px #000, 0 0 0 2px #FFA500;
+    }
+}
+
+.brand-card {
+    transition: all 0.2s ease;
+}
+
+.brand-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
 }
 </style>
 
-
-<!-- Main Content -->
-
-
-
 <div class="flex-1 overflow-auto p-3 md:p-6 pt-20">
-    <!-- Header Section -->
     <div class="p-4 md:p-6 bg-white shadow-sm">
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
             <h1 class="text-2xl font-semibold text-gray-800">Brands</h1>
@@ -43,7 +107,6 @@
                 Add New Brand
             </button>
         </div>
-        <!-- Search Bar -->
         <div class="relative w-full mt-4">
             <input type="text" 
                    placeholder="Search brands..." 
@@ -57,7 +120,6 @@
         </div>
     </div>
 
-    <!-- Desktop View: Table Layout -->
     <div class="hidden md:block overflow-x-auto m-6">
         <table class="w-full whitespace-nowrap bg-white rounded-lg shadow">
             <thead>
@@ -90,42 +152,37 @@
                                 <%= brand.isActive ? 'Active' : 'Inactive' %>
                             </span>
                         </td>
-<td class="px-6 py-4 text-sm">
-    <div class="flex items-center space-x-3">
-        <!-- Edit Button -->
-        <a href="/admin/editBrand/<%= brand._id %>" class="text-blue-600 hover:text-blue-800">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                      d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
-            </svg>
-        </a>
-        <!-- Toggle Button -->
-        <a href="/admin/toggleBrand/<%= brand._id %>" class="toggle-brand text-gray-600 hover:text-gray-800">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                      d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
-            </svg>
-        </a>
-        <!-- Delete Button -->
-        <a href="/admin/deleteBrand/<%= brand._id %>" class="delete-brand text-red-600 hover:text-red-800">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                      d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
-            </svg>
-        </a>
-    </div>
-</td>
-                        
+                        <td class="px-6 py-4 text-sm">
+                            <div class="flex items-center space-x-3">
+                                <a href="/admin/editBrand/<%= brand._id %>" class="text-blue-600 hover:text-blue-800">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                              d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                                    </svg>
+                                </a>
+                                <a href="/admin/toggleBrand/<%= brand._id %>" class="toggle-brand text-gray-600 hover:text-gray-800">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                              d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                                    </svg>
+                                </a>
+                                <a href="/admin/deleteBrand/<%= brand._id %>" class="delete-brand text-red-600 hover:text-red-800">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                              d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                                    </svg>
+                                </a>
+                            </div>
+                        </td>
                     </tr>
                 <% }); %>
             </tbody>
         </table>
     </div>
 
-    <!-- Mobile View: Card Layout -->
     <div class="md:hidden space-y-4 m-4">
         <% data.forEach(function(brand) { %>
-            <div class="bg-white p-4 rounded-lg shadow">
+            <div class="bg-white p-4 rounded-lg shadow brand-card">
                 <div class="flex items-center space-x-4">
                     <% if (brand.brandImage && brand.brandImage.length > 0) { %>
                         <img src="<%= brand.brandImage[0] %>" 
@@ -145,107 +202,116 @@
                         <%= brand.isActive ? 'Active' : 'Inactive' %>
                     </span>
                 </div>
-<div class="mt-4 flex justify-end space-x-3">
-    <!-- Edit Button -->
-    <a href="/admin/editBrand/<%= brand._id %>" class="text-blue-600 hover:text-blue-800 p-2">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                  d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
-        </svg>
-    </a>
-    <!-- Toggle Button -->
-    <a href="/admin/toggleBrand/<%= brand._id %>" class="toggle-brand text-gray-600 hover:text-gray-800 p-2">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                  d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
-        </svg>
-    </a>
-    <!-- Delete Button -->
-    <a href="/admin/deleteBrand/<%= brand._id %>" class="delete-brand text-red-600 hover:text-red-800 p-2">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                  d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
-        </svg>
-    </a>
-</div>
-
+                <div class="mt-4 flex justify-end space-x-3">
+                    <a href="/admin/editBrand/<%= brand._id %>" class="text-blue-600 hover:text-blue-800 p-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                  d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                        </svg>
+                    </a>
+                    <a href="/admin/toggleBrand/<%= brand._id %>" class="toggle-brand text-gray-600 hover:text-gray-800 p-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                  d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                        </svg>
+                    </a>
+                    <a href="/admin/deleteBrand/<%= brand._id %>" class="delete-brand text-red-600 hover:text-red-800 p-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                  d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                        </svg>
+                    </a>
+                </div>
             </div>
         <% }); %>
     </div>
 
-    <!-- Add Brand Modal -->
-    <div id="addModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden">
-        <div class="min-h-screen flex items-center justify-center p-4">
-            <div class="bg-white rounded-lg p-6 max-w-md w-full mx-4 relative">
-                <div class="flex justify-between items-center mb-4">
-                    <h3 class="text-xl font-semibold text-gray-900">Add New Brand</h3>
-                    <button type="button" onclick="closeAddModal()" class="text-gray-400 hover:text-gray-500">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-                        </svg>
+<div id="addModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden overflow-y-auto">
+    <div class="min-h-screen flex items-start py-8 justify-center p-4">
+        <div class="bg-white rounded-lg p-6 max-w-2xl w-full mx-4 relative max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-4 sticky top-0 bg-white pt-2 pb-4 z-10">
+                <h3 class="text-xl font-semibold text-gray-900">Add New Brand</h3>
+                <button type="button" onclick="closeAddModal()" class="text-gray-400 hover:text-gray-500">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>
+            <form id="brandForm" method="POST" enctype="multipart/form-data" class="space-y-4">
+                <div>
+                    <label for="brandName" class="block text-sm font-medium text-gray-700 mb-1">Brand Name</label>
+                    <input type="text" 
+                           id="brandName" 
+                           name="name" 
+                           required
+                           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#6C7559] focus:border-transparent">
+                    <p id="name-error" class="error-message text-red-500 text-sm mt-1 hidden"></p>
+                </div>
+                
+                <div>
+                    <label for="brandImage" class="block text-sm font-medium text-gray-700 mb-1">Brand Image</label>
+                    <input type="file" 
+                           id="brandImage" 
+                           name="image" 
+                           accept="image/*" 
+                           class="hidden"
+                           required>
+                    
+                    <div class="mt-2">
+                        <div id="imagePreviewContainer" class="hidden">
+                            <div class="relative w-full" style="height: 400px; background-color: #f8f9fa;">
+                                <img id="imagePreview" class="max-w-full max-h-full" alt="Preview">
+                            </div>
+                            <div class="mt-4 flex flex-wrap gap-3 justify-center sticky bottom-0 bg-white py-2">
+                                <button type="button" id="zoomInBtn" class="px-4 py-2 bg-gray-100 rounded-lg crop-control-btn">
+                                    <i class="fas fa-search-plus mr-2 text-gray-700"></i>Zoom In
+                                </button>
+                                <button type="button" id="zoomOutBtn" class="px-4 py-2 bg-gray-100 rounded-lg crop-control-btn">
+                                    <i class="fas fa-search-minus mr-2 text-gray-700"></i>Zoom Out
+                                </button>
+                                <button type="button" id="rotateBtn" class="px-4 py-2 bg-gray-100 rounded-lg crop-control-btn">
+                                    <i class="fas fa-undo mr-2 text-gray-700"></i>Rotate
+                                </button>
+                                <button type="button" id="resetBtn" class="px-4 py-2 bg-gray-100 rounded-lg crop-control-btn">
+                                    <i class="fas fa-sync-alt mr-2 text-gray-700"></i>Reset
+                                </button>
+                                <button type="button" id="cropBtn" class="px-4 py-2 bg-[#6C7559] hover:bg-[#5a6349] text-white rounded-lg">
+                                    <i class="fas fa-crop mr-2"></i>Apply Crop
+                                </button>
+                                <button type="button" id="cancelCropBtn" class="px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded-lg">
+                                    <i class="fas fa-times mr-2"></i>Cancel
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <button type="button" id="uploadTrigger" 
+                                class="w-full px-4 py-8 border-2 border-dashed border-gray-300 rounded-lg hover:border-[#6C7559] transition-colors upload-area">
+                            <div class="flex flex-col items-center justify-center text-gray-500">
+                                <i class="fas fa-cloud-upload-alt text-4xl mb-3"></i>
+                                <p class="font-medium text-lg">Click to upload new brand image</p>
+                                <p class="text-sm mt-1">Recommended: Square image (1000×1000 pixels)</p>
+                                <p class="text-xs mt-1 text-gray-400">JPG, PNG, or WEBP (max 10MB)</p>
+                            </div>
+                        </button>
+                    </div>
+                    <p id="image-error" class="error-message text-red-500 text-sm mt-1 hidden"></p>
+                </div>
+                
+                <div class="flex justify-end space-x-4 mt-6 sticky bottom-0 bg-white pt-4 pb-2">
+                    <button type="button" 
+                            onclick="closeAddModal()"
+                            class="px-4 py-2 text-sm text-gray-600 hover:text-gray-800 font-medium">
+                        Cancel
+                    </button>
+                    <button type="submit" 
+                            class="px-4 py-2 bg-[#6C7559] hover:bg-[#5a6349] text-white rounded-lg text-sm">
+                        Add Brand
                     </button>
                 </div>
-                <form id="brandForm" method="POST" enctype="multipart/form-data" class="space-y-4">
-                    <div>
-                        <label for="brandName" class="block text-sm font-medium text-gray-700 mb-1">Brand Name</label>
-                        <input type="text" 
-                               id="brandName" 
-                               name="name" 
-                               required
-                               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#6C7559] focus:border-transparent">
-                        <p id="name-error" class="error-message text-red-500 text-sm mt-1 hidden"></p>
-                    </div>
-<!-- Replace the existing image input section with this -->
-<div>
-    <label for="brandImage" class="block text-sm font-medium text-gray-700 mb-1">Brand Image</label>
-    <input type="file" 
-           id="brandImage" 
-           name="image" 
-           accept="image/*" 
-           class="hidden"
-           required>
-    
-    <!-- Cropper container -->
-    <div class="mt-2">
-        <div id="imagePreviewContainer" class="hidden">
-            <div class="relative" style="max-height: 300px;">
-                <img id="imagePreview" class="max-w-full max-h-64" alt="Preview">
-            </div>
-            <div class="mt-2 flex space-x-2">
-                <button type="button" id="cropBtn" class="px-3 py-1 bg-[#6C7559] text-white text-sm rounded hidden">
-                    Crop Image
-                </button>
-                <button type="button" id="cancelCropBtn" class="px-3 py-1 bg-gray-300 text-gray-700 text-sm rounded hidden">
-                    Cancel
-                </button>
-            </div>
+            </form>
         </div>
-        
-        <!-- Upload button that triggers file input -->
-        <button type="button" id="uploadTrigger" 
-                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#6C7559] focus:border-transparent">
-            Choose Image
-        </button>
     </div>
-    <p id="image-error" class="error-message text-red-500 text-sm mt-1 hidden"></p>
 </div>
-                                        <div class="flex justify-end space-x-4 mt-6">
-                        <button type="button" 
-                                onclick="closeAddModal()"
-                                class="px-4 py-2 text-sm text-gray-600 hover:text-gray-800 font-medium">
-                            Cancel
-                        </button>
-                        <button type="submit" 
-                                class="px-4 py-2 bg-[#6C7559] hover:bg-[#5a6349] text-white rounded-lg text-sm">
-                            Add Brand
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <!-- Pagination -->
     <% if (totalPages > 1) { %>
         <div class="flex justify-center items-center space-x-2 my-6">
             <% for(let i = 1; i <= totalPages; i++) { %>
@@ -258,79 +324,129 @@
     <% } %>
 </div>
 
-<!-- Modal and Form Handling Script -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
 <script>
-    // Modal Functions
-    function openAddModal() {
-        document.getElementById('addModal').classList.remove('hidden');
-        document.body.style.overflow = 'hidden';
-    }
+let cropper;
+let originalImageFile;
 
-    function closeAddModal() {
-        document.getElementById('addModal').classList.add('hidden');
-        document.body.style.overflow = 'auto';
-        resetBrandForm();
-    }
-
-    // Close modal when clicking outside or pressing Escape
-    document.getElementById('addModal').addEventListener('click', function(e) {
-        if (e.target === this) closeAddModal();
-    });
-    document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape') closeAddModal();
-    });
-
-    // Form Handling
-    document.getElementById('brandForm').addEventListener('submit', async function(e) {
-        e.preventDefault();
-        
-        if (!validateBrandForm()) return;
-
-        const formData = new FormData(this);
-        
-        try {
-            const response = await fetch('/admin/addBrand', {
-                method: 'POST',
-                body: formData
-            });
-
-            const data = await response.json();
-
-            if (!response.ok) {
-                throw new Error(data.error || 'Failed to add brand');
+function initCropper(imageElement) {
+    return new Cropper(imageElement, {
+        aspectRatio: 1,
+        viewMode: 1,
+        autoCropArea: 0.8,
+        minContainerWidth: 400,
+        minContainerHeight: 400,
+        minCanvasWidth: 400,
+        minCanvasHeight: 400,
+        minCropBoxWidth: 200,
+        minCropBoxHeight: 200,
+        responsive: true,
+        restore: true,
+        guides: false,
+        center: true,
+        highlight: false,
+        cropBoxMovable: true,
+        cropBoxResizable: true,
+        toggleDragModeOnDblclick: false,
+        background: '#f3f4f6',
+        checkCrossOrigin: false,
+        checkOrientation: false,
+        modal: true,
+        dragMode: 'move',
+        preview: '.img-preview',
+        ready: function() {
+            const imageData = this.cropper.getImageData();
+            if (isDarkImage(imageData)) {
+                enhanceDarkImageVisibility();
             }
-
-            Swal.fire({
-                icon: 'success',
-                title: 'Success!',
-                text: 'Brand added successfully',
-                confirmButtonColor: '#6C7559'
-            }).then(() => {
-                window.location.reload();
-            });
-
-        } catch (error) {
-            Swal.fire({
-                icon: 'error',
-                title: 'Error!',
-                text: error.message,
-                confirmButtonColor: '#6C7559'
-            });
         }
     });
+}
 
-    // Form Validation
+function isDarkImage(imageData) {
+    return imageData.naturalWidth < imageData.width || imageData.naturalHeight < imageData.height;
+}
+
+function enhanceDarkImageVisibility() {
+    document.querySelectorAll('.cropper-line').forEach(line => {
+        line.style.backgroundColor = '#FFA500';
+    });
+    document.querySelectorAll('.cropper-point').forEach(point => {
+        point.style.backgroundColor = '#FFA500';
+        point.style.border = '2px solid white';
+    });
+    document.querySelector('.cropper-view-box').style.outline = '2px solid #FFA500';
+}
+
+function openAddModal() {
+    document.getElementById('addModal').classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeAddModal() {
+    document.getElementById('addModal').classList.add('hidden');
+    document.body.style.overflow = 'auto';
+    resetBrandForm();
+}
+
+document.getElementById('addModal').addEventListener('click', function(e) {
+    if (e.target === this) closeAddModal();
+});
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') closeAddModal();
+});
+
+document.getElementById('brandForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    if (!validateBrandForm()) return;
+
+    const formData = new FormData(this);
+    
+    try {
+        const response = await fetch('/admin/addBrand', {
+            method: 'POST',
+            body: formData
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.error || 'Failed to add brand');
+        }
+
+        Swal.fire({
+            icon: 'success',
+            title: 'Success!',
+            text: 'Brand added successfully',
+            confirmButtonColor: '#6C7559'
+        }).then(() => {
+            window.location.reload();
+        });
+
+    } catch (error) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Error!',
+            text: error.message,
+            confirmButtonColor: '#6C7559'
+        });
+    }
+});
+
 function validateBrandForm() {
     let isValid = true;
     const name = document.getElementById('brandName').value.trim();
     const imageInput = document.getElementById('brandImage');
 
-    // Clear previous errors
     document.querySelectorAll('.error-message').forEach(el => {
         el.classList.add('hidden');
     });
 
-    // Validate name
     if (!name) {
         displayError('name-error', 'Brand name is required');
         isValid = false;
@@ -339,7 +455,6 @@ function validateBrandForm() {
         isValid = false;
     }
 
-    // Validate image
     if (!imageInput.files || imageInput.files.length === 0) {
         displayError('image-error', 'Brand image is required');
         isValid = false;
@@ -347,18 +462,19 @@ function validateBrandForm() {
 
     return isValid;
 }
-        function displayError(elementId, message) {
-        const element = document.getElementById(elementId);
-        element.textContent = message;
-        element.classList.remove('hidden');
-    }
+
+function displayError(elementId, message) {
+    const element = document.getElementById(elementId);
+    element.textContent = message;
+    element.classList.remove('hidden');
+}
+
 function resetBrandForm() {
     document.getElementById('brandForm').reset();
     document.querySelectorAll('.error-message').forEach(el => {
         el.classList.add('hidden');
     });
     
-    // Reset cropper and preview
     const imagePreviewContainer = document.getElementById('imagePreviewContainer');
     imagePreviewContainer.classList.add('hidden');
     
@@ -367,63 +483,169 @@ function resetBrandForm() {
         cropper = null;
     }
     
-    document.getElementById('cropBtn').classList.add('hidden');
-    document.getElementById('cancelCropBtn').classList.add('hidden');
+    ['cropBtn', 'cancelCropBtn', 'zoomInBtn', 'zoomOutBtn', 'rotateBtn', 'resetBtn'].forEach(id => {
+        document.getElementById(id).classList.add('hidden');
+    });
 }
-    
 
-    // Toggle Brand Status with Confirmation
-    document.querySelectorAll('.toggle-brand').forEach(link => {
-        link.addEventListener('click', function(e) {
-            e.preventDefault();
-            const url = this.getAttribute('href');
-            
-            Swal.fire({
-                title: 'Are you sure?',
-                text: "You're about to change the status of this brand",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#6C7559',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, change it!'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    fetch(url, {
-                        method: 'GET',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        }
-                    })
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error('Network response was not ok');
-                        }
-                        return response.json();
-                    })
-                    .then(data => {
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Success!',
-                            text: data.message || 'Brand status updated',
-                            confirmButtonColor: '#6C7559'
-                        }).then(() => {
-                            window.location.reload();
-                        });
-                    })
-                    .catch(error => {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Error!',
-                            text: error.message,
-                            confirmButtonColor: '#6C7559'
-                        });
-                    });
-                }
-            });
+document.getElementById('uploadTrigger').addEventListener('click', function() {
+    document.getElementById('brandImage').click();
+});
+
+document.getElementById('brandImage').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const validTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+    if (!validTypes.includes(file.type)) {
+        displayError('image-error', 'Please upload a valid image (JPEG, PNG, GIF, or WEBP)');
+        return;
+    }
+
+    if (file.size > 10 * 1024 * 1024) { // 10MB
+        displayError('image-error', 'Image must be less than 10MB');
+        return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = function(event) {
+        const imagePreview = document.getElementById('imagePreview');
+        const imagePreviewContainer = document.getElementById('imagePreviewContainer');
+        
+        imagePreview.src = event.target.result;
+        imagePreviewContainer.classList.remove('hidden');
+        
+        ['cropBtn', 'cancelCropBtn', 'zoomInBtn', 'zoomOutBtn', 'rotateBtn', 'resetBtn'].forEach(id => {
+            document.getElementById(id).classList.remove('hidden');
         });
+
+        if (cropper) {
+            cropper.destroy();
+        }
+        
+        cropper = initCropper(imagePreview);
+        originalImageFile = file;
+    };
+    reader.readAsDataURL(file);
+});
+
+document.getElementById('zoomInBtn').addEventListener('click', function() {
+    cropper.zoom(0.1);
+});
+
+document.getElementById('zoomOutBtn').addEventListener('click', function() {
+    cropper.zoom(-0.1);
+});
+
+document.getElementById('rotateBtn').addEventListener('click', function() {
+    cropper.rotate(90);
+});
+
+document.getElementById('resetBtn').addEventListener('click', function() {
+    cropper.reset();
+});
+
+document.getElementById('cropBtn').addEventListener('click', function() {
+    if (!cropper) return;
+
+    const canvas = cropper.getCroppedCanvas({
+        width: 1000,
+        height: 1000,
+        minWidth: 800,
+        minHeight: 800,
+        maxWidth: 2000,
+        maxHeight: 2000,
+        fillColor: '#fff',
+        imageSmoothingEnabled: true,
+        imageSmoothingQuality: 'high'
     });
 
-// Add this to your existing script section
+    canvas.toBlob((blob) => {
+        const croppedFile = new File([blob], originalImageFile.name, {
+            type: 'image/jpeg',
+            lastModified: Date.now()
+        });
+
+        const dataTransfer = new DataTransfer();
+        dataTransfer.items.add(croppedFile);
+        
+        document.getElementById('brandImage').files = dataTransfer.files;
+        
+        ['cropBtn', 'cancelCropBtn', 'zoomInBtn', 'zoomOutBtn', 'rotateBtn', 'resetBtn'].forEach(id => {
+            document.getElementById(id).classList.add('hidden');
+        });
+        
+        document.getElementById('imagePreview').src = canvas.toDataURL('image/jpeg', 0.9);
+        
+        cropper.destroy();
+        cropper = null;
+    }, 'image/jpeg', 0.9);
+});
+
+document.getElementById('cancelCropBtn').addEventListener('click', function() {
+    if (cropper) {
+        cropper.destroy();
+        cropper = null;
+    }
+    
+    document.getElementById('imagePreviewContainer').classList.add('hidden');
+    document.getElementById('brandImage').value = '';
+    
+    ['cropBtn', 'cancelCropBtn', 'zoomInBtn', 'zoomOutBtn', 'rotateBtn', 'resetBtn'].forEach(id => {
+        document.getElementById(id).classList.add('hidden');
+    });
+});
+
+document.querySelectorAll('.toggle-brand').forEach(link => {
+    link.addEventListener('click', function(e) {
+        e.preventDefault();
+        const url = this.getAttribute('href');
+        
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You're about to change the status of this brand",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#6C7559',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, change it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                fetch(url, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success!',
+                        text: data.message || 'Brand status updated',
+                        confirmButtonColor: '#6C7559'
+                    }).then(() => {
+                        window.location.reload();
+                    });
+                })
+                .catch(error => {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error!',
+                        text: error.message,
+                        confirmButtonColor: '#6C7559'
+                    });
+                });
+            }
+        });
+    });
+});
+
 document.querySelectorAll('.delete-brand').forEach(link => {
     link.addEventListener('click', function(e) {
         e.preventDefault();
@@ -473,119 +695,10 @@ document.querySelectorAll('.delete-brand').forEach(link => {
         });
     });
 });
-// Add these variables at the top of your script section
-let cropper;
-let originalImageFile;
-
-// Image Cropping Functionality
-document.getElementById('uploadTrigger').addEventListener('click', function() {
-    document.getElementById('brandImage').click();
-});
-
-document.getElementById('brandImage').addEventListener('change', function(e) {
-    const file = e.target.files[0];
-    if (!file) return;
-
-    // Validate image type
-    if (!file.type.match('image.*')) {
-        displayError('image-error', 'Only image files are allowed');
-        return;
-    }
-
-    const reader = new FileReader();
-    reader.onload = function(event) {
-        const imagePreview = document.getElementById('imagePreview');
-        const imagePreviewContainer = document.getElementById('imagePreviewContainer');
-        const cropBtn = document.getElementById('cropBtn');
-        const cancelCropBtn = document.getElementById('cancelCropBtn');
-
-        imagePreview.src = event.target.result;
-        imagePreviewContainer.classList.remove('hidden');
-        cropBtn.classList.remove('hidden');
-        cancelCropBtn.classList.remove('hidden');
-
-        // Initialize cropper
-        if (cropper) {
-            cropper.destroy();
-        }
-        
-        cropper = new Cropper(imagePreview, {
-            aspectRatio: 1, // Square aspect ratio
-            viewMode: 1,
-            autoCropArea: 0.8,
-            responsive: true,
-            guides: false
-        });
-
-        // Store the original file
-        originalImageFile = file;
-    };
-    reader.readAsDataURL(file);
-});
-
-// Crop button handler
-document.getElementById('cropBtn').addEventListener('click', function() {
-    if (cropper) {
-        // Get the cropped canvas
-        const canvas = cropper.getCroppedCanvas({
-            width: 500,
-            height: 500,
-            minWidth: 256,
-            minHeight: 256,
-            maxWidth: 2000,
-            maxHeight: 2000,
-            fillColor: '#fff',
-            imageSmoothingEnabled: true,
-            imageSmoothingQuality: 'high',
-        });
-
-        // Convert canvas to blob
-        canvas.toBlob((blob) => {
-            // Create a new File object from the blob
-            const croppedFile = new File([blob], originalImageFile.name, {
-                type: 'image/jpeg',
-                lastModified: Date.now()
-            });
-
-            // Create a new DataTransfer object and add the file
-            const dataTransfer = new DataTransfer();
-            dataTransfer.items.add(croppedFile);
-            
-            // Update the file input with the cropped file
-            const fileInput = document.getElementById('brandImage');
-            fileInput.files = dataTransfer.files;
-
-            // Hide the cropper controls
-            document.getElementById('cropBtn').classList.add('hidden');
-            document.getElementById('cancelCropBtn').classList.add('hidden');
-
-            // Destroy the cropper
-            cropper.destroy();
-            cropper = null;
-        }, 'image/jpeg', 0.9); // 0.9 is the quality (0-1)
-    }
-});
-
-// Cancel crop button handler
-document.getElementById('cancelCropBtn').addEventListener('click', function() {
-    const imagePreviewContainer = document.getElementById('imagePreviewContainer');
-    const fileInput = document.getElementById('brandImage');
-    
-    if (cropper) {
-        cropper.destroy();
-        cropper = null;
-    }
-    
-    imagePreviewContainer.classList.add('hidden');
-    fileInput.value = ''; // Clear the file input
-});
 
 function searchBrands(query) {
     window.location.href = `/admin/brands?search=${encodeURIComponent(query)}`;
 }
-
 </script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
 
 <%- include('../partials/admin/admin-footer') %>

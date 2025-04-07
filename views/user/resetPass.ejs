@@ -25,7 +25,6 @@
         border-color: #2C2C2C;
       }
 
-      /* Animation for form appearance */
       @keyframes formFade {
         from { opacity: 0; transform: translateY(-20px); }
         to { opacity: 1; transform: translateY(0); }
@@ -47,9 +46,7 @@
           <p class="text-sm text-[#2C2C2C]/70">Enter your email address and we'll send you a link to reset your password.</p>
         </div>
 
-        <!-- Form -->
         <form id="resetForm" class="space-y-6" action="/sendResetOtp" method="POST">
-          <!-- Email Input -->
           <div class="space-y-4">
             <div class="input-group">
               <input
@@ -68,7 +65,6 @@
               </div>
             <%}%>
 
-            <!-- Submit Button -->
             <button
               type="submit"
               class="w-full bg-[#2C2C2C] text-white py-3 rounded-md hover:bg-[#1a1a1a] transition-colors font-medium flex items-center justify-center gap-2"
@@ -81,7 +77,6 @@
           </div>
         </form>
 
-        <!-- Back to Login Link -->
         <p class="text-center text-sm text-[#2C2C2C]/70">
           Remember your password?
           <a href="/login" class="text-[#2C2C2C] hover:underline font-medium">Back to Login</a>
@@ -121,7 +116,6 @@
         }
       });
 
-      // Optional: Add loading state to button when form is submitted
       resetForm.addEventListener("submit", function() {
         const button = this.querySelector('button[type="submit"]');
         button.innerHTML = `

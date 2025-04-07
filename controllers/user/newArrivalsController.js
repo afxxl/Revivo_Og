@@ -3,9 +3,8 @@ const Product = require("../../models/productSchema.js");
 const newArrivalsPage = async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
-    const perPage = 8; // Products per page
+    const perPage = 8;
 
-    // Calculate date 30 days ago
     const thirtyDaysAgo = new Date();
     thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
 
@@ -20,7 +19,7 @@ const newArrivalsPage = async (req, res) => {
       createdAt: { $gte: thirtyDaysAgo },
       isNew: true,
     })
-      .sort({ createdAt: -1 }) // Sort by newest first
+      .sort({ createdAt: -1 })
       .skip((page - 1) * perPage)
       .limit(perPage)
       .lean();

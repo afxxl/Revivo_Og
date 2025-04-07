@@ -12,7 +12,6 @@ passport.use(
     },
     async (req, accessToken, refreshToken, profile, done) => {
       try {
-        // First, try to find user by googleId
         let user = await User.findOne({ googleId: profile.id });
 
         if (!user) {

@@ -115,22 +115,11 @@ const deleteBrand = async (req, res) => {
   try {
     const brandId = req.params.id;
 
-    // Optional: Check if any products are associated with this brand
-    // const products = await Product.find({ brand: brandId });
-    // if (products.length > 0) {
-    //     return res.status(400).json({
-    //         error: "Cannot delete brand with associated products"
-    //     });
-    // }
-
     const deletedBrand = await Brand.findByIdAndDelete(brandId);
 
     if (!deletedBrand) {
       return res.status(404).json({ error: "Brand not found" });
     }
-
-    // Optional: Delete the associated image file
-    // fs.unlinkSync(path.join(__dirname, '../public', deletedBrand.brandImage[0]));
 
     return res.status(200).json({
       success: true,
@@ -144,17 +133,16 @@ const deleteBrand = async (req, res) => {
   }
 };
 
-//getEditBrand
 const getEditBrand = async (req, res) => {
   try {
     const brand = await Brand.findById(req.params.id);
     if (!brand) {
-      return res.redirect("/admin/brands"); // or show error page
+      return res.redirect("/admin/brands");
     }
-    res.render("edit-brand", { brand }); // Render the EJS template with brand data
+    res.render("edit-brand", { brand });
   } catch (error) {
     console.error("Edit Brand Error:", error);
-    res.redirect("/admin/pageerror"); // or handle error appropriately
+    res.redirect("/admin/pageerror");
   }
 };
 

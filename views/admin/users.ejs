@@ -1,11 +1,8 @@
 <%- include('../partials/admin/admin-header.ejs') %>
 <%- include('../partials/admin/admin-sidebar', {currentPage: 'users'}) %>
 
-<!-- Main Content -->
 <div class="flex-1 overflow-auto p-3 md:p-6 pt-20">
-    <!-- Page Header with Search -->
     <div class="flex flex-col gap-4 mb-6">
-        <!-- Top Section: Title and Add Button -->
         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
             <h1 class="text-xl md:text-2xl font-semibold text-gray-800">Users</h1>
             <button onclick="window.location.href='/admin/add-user'" 
@@ -17,23 +14,25 @@
             </button>
         </div>
 
-        <!-- Search Bar -->
-        <div class="relative w-full">
-            <input type="text" 
-                   placeholder="Search users..." 
-                   class="w-full pl-10 pr-4 py-2 md:py-3 text-sm md:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#6C7559] focus:border-transparent shadow-sm"
-                   onkeyup="searchUsers(this.value)">
-            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <svg class="w-4 h-4 md:w-5 md:h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
-                </svg>
-            </div>
+<div class="relative w-full">
+    <form id="searchForm" action="/admin/users" method="GET">
+        <input type="text" 
+               name="search"
+               value="<%= searchQuery || '' %>"
+               placeholder="Search users..." 
+               class="w-full pl-10 pr-4 py-2 md:py-3 text-sm md:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#6C7559] focus:border-transparent shadow-sm"
+               onkeyup="debounceSearch(this.value)">
+        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <svg class="w-4 h-4 md:w-5 md:h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+            </svg>
         </div>
-    </div>
+    </form>
+</div>
 
-    <!-- Users Table -->
+            </div>
+
     <div class="bg-white rounded-lg shadow overflow-hidden">
-        <!-- Mobile View: Card Layout -->
         <div class="block md:hidden">
             <div class="divide-y divide-gray-200">
                 <% for (let i = 0; i < data.length; i++) { %>
@@ -87,7 +86,6 @@
             </div>
         </div>
 
-        <!-- Desktop View: Table Layout -->
         <div class="hidden md:block overflow-x-auto">
             <table class="w-full whitespace-nowrap">
                 <thead>
@@ -149,7 +147,6 @@
             </table>
         </div>
 
-  <!-- Pagination -->
 <div class="px-4 md:px-6 py-3 md:py-4 bg-white border-t border-gray-200">
     <div class="flex flex-col sm:flex-row justify-between items-center gap-3">
         <p class="text-xs md:text-sm text-gray-700 order-2 sm:order-1">
@@ -159,56 +156,38 @@
             <nav aria-label="Page navigation" class="order-1 sm:order-2">
                 <ul class="pagination flex space-x-2">
                     <% if (currentPage > 1) { %>
-                        <li class="page-item">
-                            <a class="px-2 md:px-3 py-1 text-sm rounded border border-gray-300 text-gray-700 hover:bg-gray-100" 
-                               href="?page=<%= currentPage - 1 %>">
-                                Previous
-                            </a>
-                        </li>
-                    <% } %>
+<li class="page-item">
+    <a class="px-2 md:px-3 py-1 text-sm rounded border border-gray-300 text-gray-700 hover:bg-gray-100" 
+       href="?page=<%= currentPage - 1 %><% if (searchQuery) { %>&search=<%= searchQuery %><% } %>">
+        Previous
+    </a>
+</li>
+                                            <% } %>
                     
                     <% for(let i = 1; i <= totalPages; i++) { %>
-                        <li class="page-item">
-                            <a class="px-2 md:px-3 py-1 text-sm rounded border <%= (i === currentPage) ? 'bg-[#6C7559] text-white' : 'border-gray-300 text-gray-700 hover:bg-gray-100' %>" 
-                               href="?page=<%= i %>">
-                                <%= i %>
-                            </a>
-                        </li>
-                    <% } %>
+<li class="page-item">
+    <a class="px-2 md:px-3 py-1 text-sm rounded border <%= (i === currentPage) ? 'bg-[#6C7559] text-white' : 'border-gray-300 text-gray-700 hover:bg-gray-100' %>" 
+       href="?page=<%= i %><% if (searchQuery) { %>&search=<%= searchQuery %><% } %>">
+        <%= i %>
+    </a>
+</li>
+                                            <% } %>
                     
                     <% if (currentPage < totalPages) { %>
-                        <li class="page-item">
-                            <a class="px-2 md:px-3 py-1 text-sm rounded border border-gray-300 text-gray-700 hover:bg-gray-100" 
-                               href="?page=<%= currentPage + 1 %>">
-                                Next
-                            </a>
-                        </li>
-                    <% } %>
+<li class="page-item">
+    <a class="px-2 md:px-3 py-1 text-sm rounded border border-gray-300 text-gray-700 hover:bg-gray-100" 
+       href="?page=<%= currentPage + 1 %><% if (searchQuery) { %>&search=<%= searchQuery %><% } %>">
+        Next
+    </a>
+</li>
+
+                                            <% } %>
                 </ul>
             </nav>
         <% } %>
     </div>
 </div>
 
-<!-- <div class="container mt-3"> -->
-<!--             <nav aria-label="Page navigation"> -->
-<!--                 <ul class="pagination justify-content-center mb-20" style="margin-right: 200px;"> -->
-<!---->
-<!-- <%for(let i=0;i<=totalPages;i++){%> -->
-<!-- <li class ="page-item <%=(i===currentPage)?'active':''%>">  -->
-<!-- <a class="page-link" href="?page=<%=i%>"><%=i%></a> -->
-<!-- </li> -->
-<!---->
-<!---->
-<!-- <%}%> -->
-<!--                 </ul> -->
-<!---->
-<!--             </nav> -->
-<!--         </div> -->
-<!--     </div> -->
-<!-- </div> -->
-<!---->
-<!-- Delete Confirmation Modal -->
 <div id="deleteModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4">
     <div class="bg-white rounded-lg p-4 md:p-6 max-w-sm w-full mx-4">
         <h3 class="text-lg md:text-xl font-semibold text-gray-900 mb-4">Confirm Delete</h3>
@@ -262,14 +241,12 @@
         closeDeleteModal();
     });
 
-    // Close modal when clicking outside
     document.getElementById('deleteModal').addEventListener('click', function(e) {
         if (e.target === this) {
             closeDeleteModal();
         }
     });
 
-    // Close modal on escape key
     document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape') {
             closeDeleteModal();
@@ -277,10 +254,17 @@
     });
 
     function searchUsers(query) {
-        // Implement search functionality
         console.log('Searching for:', query);
-        // You would typically make an AJAX request here to filter users
     }
+    // Add debounce to prevent too many requests
+    let debounceTimer;
+    function debounceSearch(query) {
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(() => {
+            document.getElementById('searchForm').submit();
+        }, 500); // 500ms delay
+    }
+
 </script>
 
 <%- include('../partials/admin/admin-footer') %>

@@ -2,28 +2,28 @@ const User = require("../../models/userSchema.js");
 
 const userInfo = async (req, res) => {
   try {
-    let search = req.query.search || "";
+    let searchQuery = req.query.search || "";
     let page = parseInt(req.query.page) || 1;
     const limit = 3;
 
-    const userData = await User.find({
+    const searchConditions = {
       isAdmin: false,
-      $or: [
-        { name: { $regex: ".*" + search + ".*", $options: "i" } },
-        { email: { $regex: ".*" + search + ".*", $options: "i" } },
-      ],
-    })
+    };
+
+    if (searchQuery) {
+      searchConditions.$or = [
+        { name: { $regex: searchQuery, $options: "i" } },
+        { email: { $regex: searchQuery, $options: "i" } },
+        { phone: { $regex: searchQuery, $options: "i" } },
+      ];
+    }
+
+    const userData = await User.find(searchConditions)
       .limit(limit)
       .skip((page - 1) * limit)
       .exec();
 
-    const count = await User.countDocuments({
-      isAdmin: false,
-      $or: [
-        { name: { $regex: ".*" + search + ".*", $options: "i" } },
-        { email: { $regex: ".*" + search + ".*", $options: "i" } },
-      ],
-    });
+    const count = await User.countDocuments(searchConditions);
 
     const totalPages = Math.ceil(count / limit);
 
@@ -33,6 +33,7 @@ const userInfo = async (req, res) => {
       currentPage: page,
       totalUsers: count,
       perPage: limit,
+      searchQuery: searchQuery,
     });
   } catch (err) {
     console.error(err);

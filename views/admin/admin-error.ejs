@@ -20,7 +20,6 @@
 
 <div class="min-h-screen flex items-center justify-center p-4">
     <div class="max-w-md w-full text-center">
-        <!-- Error Icon -->
         <div class="mb-8 inline-block">
             <svg class="w-24 h-24 text-[#6C7559] mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
@@ -29,11 +28,9 @@
             </svg>
         </div>
 
-        <!-- Error Message -->
         <h1 class="brand-heading text-4xl font-bold text-[#6C7559] mb-4">Oops!</h1>
         <p class="text-gray-600 text-lg mb-8">Something went wrong on our end.</p>
 
-        <!-- Action Buttons -->
         <div class="space-y-4">
             <button onclick="window.location.href='/admin/dashboard'" 
                     class="w-full md:w-auto px-8 py-3 bg-[#6C7559] text-white rounded-lg hover:bg-[#5a6349] transition-colors duration-200">
@@ -48,7 +45,6 @@
             </div>
         </div>
 
-        <!-- Additional Information -->
         <div class="mt-12 text-sm text-gray-500">
             <p>If this problem persists, please contact the system administrator.</p>
             <p class="mt-2">Error Code: <%= Date.now().toString(36) %></p>
@@ -56,7 +52,6 @@
     </div>
 </div>
 
-<!-- Decorative Elements -->
 <div class="fixed top-0 left-0 w-full h-1 bg-gradient-to-r from-[#6C7559] to-[#A4B494]"></div>
 <div class="fixed bottom-0 left-0 w-full h-1 bg-gradient-to-r from-[#A4B494] to-[#6C7559]"></div>
 

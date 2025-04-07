@@ -7,9 +7,7 @@ const Brand = require("../../models/brandSchema.js");
 const Category = require("../../models/categorySchema.js");
 
 const loadHomepage = async (req, res) => {
-  const categories = await Category.find({ isListed: true });
   try {
-    // Get new arrival products
     const products = await Product.find({
       isDeleted: { $ne: true },
       isNew: true,
@@ -20,7 +18,6 @@ const loadHomepage = async (req, res) => {
       .populate("brand")
       .populate("category");
 
-    // Get all active brands that have products
     const brandsWithProducts = await Brand.aggregate([
       { $match: { isActive: true } },
       {
@@ -31,7 +28,7 @@ const loadHomepage = async (req, res) => {
           as: "products",
         },
       },
-      { $match: { "products.0": { $exists: true } } }, // Only brands with at least one product
+      { $match: { "products.0": { $exists: true } } },
       { $project: { brandName: 1, brandImage: 1 } },
     ]);
 
@@ -40,10 +37,11 @@ const loadHomepage = async (req, res) => {
       userData = await User.findById(req.session.user);
     }
 
+    const categories = await Category.find({ isListed: true });
     res.render("home", {
       categories,
       products,
-      brands: brandsWithProducts, // Pass the brands with products
+      brands: brandsWithProducts,
       user: userData,
     });
   } catch (error) {
@@ -237,13 +235,10 @@ const resendOtp = async (req, res) => {
 const loadLogin = async (req, res) => {
   try {
     if (!req.session.user) {
-      // Check for messages from both regular login and Google auth
       let message = null;
 
-      // Check for Google auth error message
       if (req.session.messages && req.session.messages.length > 0) {
         message = req.session.messages[req.session.messages.length - 1];
-        // Clear the messages after using them
         req.session.messages = [];
       }
 
@@ -258,7 +253,6 @@ const loadLogin = async (req, res) => {
 
 const login = async (req, res) => {
   try {
-    // Regular email/password login handling
     const { email, password } = req.body;
     const findUser = await User.findOne({ isAdmin: 0, email: email });
 
@@ -285,7 +279,6 @@ const login = async (req, res) => {
 
 const logout = async (req, res) => {
   try {
-    // Get the current URL before destroying the session
     const referer = req.headers.referer || "/";
 
     req.session.destroy((err) => {
@@ -293,7 +286,6 @@ const logout = async (req, res) => {
         console.log("Session destruction error", err.message);
         return res.redirect("/pageNotFound");
       }
-      // Redirect back to the same page they were on
       return res.redirect(referer);
     });
   } catch (err) {
@@ -439,8 +431,6 @@ const addToCart = async (req, res) => {
       });
     }
 
-    // Add your cart logic here
-    // This is just a placeholder response
     res.json({
       success: true,
       message: "Product added to cart successfully",
@@ -457,7 +447,6 @@ const loadProductPage = async (req, res) => {
   try {
     const productId = req.params.id;
 
-    // Find the product and populate brand and category details
     const product = await Product.findById(productId)
       .populate("brand")
       .populate("category")

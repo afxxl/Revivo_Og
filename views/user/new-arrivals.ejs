@@ -175,9 +175,9 @@
                   
                   <div class="flex items-center justify-between">
                     <div>
-                      <p class="text-[#333] text-sm font-montserrat">$<%= product.salesPrice %> COP</p>
+                      <p class="text-[#333] text-sm font-montserrat">$<%= product.salesPrice %> $</p>
                       <% if (product.originalPrice) { %>
-                        <p class="text-[#333]/60 text-xs font-montserrat line-through">$<%= product.originalPrice %> COP</p>
+                        <p class="text-[#333]/60 text-xs font-montserrat line-through">$<%= product.originalPrice %> $</p>
                       <% } %>
                     </div>
                     <button 

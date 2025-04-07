@@ -5,7 +5,7 @@ const Category = require("../../models/categorySchema.js");
 const shopPage = async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
-    const perPage = 8; // Products per page
+    const perPage = 8;
 
     const categories = await Category.find({ isListed: true }).lean();
     const brands = await Brand.find({}).lean();

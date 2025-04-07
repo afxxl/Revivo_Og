@@ -2,29 +2,93 @@
 <%- include('../partials/admin/admin-sidebar', {currentPage: 'brands'}) %>
 
 <style>
-/* Reuse the same cropper styles from your add brand modal */
-.cropper-view-box,
-.cropper-face {
-    border-radius: 50%;
-}
 .cropper-container {
+    width: 100% !important;
+    height: 500px !important;
     margin: 0 auto;
+    background-color: #f8f9fa;
 }
+
 .cropper-modal {
-    background-color: #fff;
-    opacity: 1;
+    background-color: white !important;
+    opacity: 0.7 !important;
 }
-.cropper-line,
-.cropper-point {
-    background-color: #6C7559;
-}
+
 .cropper-view-box {
-    outline: 1px solid #6C7559;
-    outline-color: rgba(108, 117, 89, 0.75);
+    outline: 2px solid #FFA500; 
+    outline-color: rgba(255, 165, 0, 0.8);
+    box-shadow: 0 0 0 1px #fff, 0 0 0 2px #FFA500;
+}
+
+.cropper-line {
+    background-color: #FFA500 !important; 
+}
+
+.cropper-point {
+    width: 14px !important;
+    height: 14px !important;
+    background-color: #FFA500 !important;
+    border: 2px solid white; 
+    opacity: 1 !important;
+}
+
+.cropper-point.point-se {
+    right: -7px !important;
+    bottom: -7px !important;
+}
+
+.cropper-dashed {
+    border-color: rgba(255, 255, 255, 0.5) !important;
+}
+
+.upload-area {
+    transition: all 0.3s ease;
+    border: 2px dashed #d1d5db;
+}
+
+.upload-area:hover {
+    border-color: #6C7559;
+    background-color: #f8f7f5;
+}
+
+.current-image-container {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    background-color: #f3f4f6;
+    padding: 1rem;
+    border-radius: 0.5rem;
+}
+
+.current-image {
+    width: 120px;
+    height: 120px;
+    object-fit: contain;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.5rem;
+    background-color: white;
+    padding: 0.5rem;
+}
+
+.crop-control-btn {
+    border: 1px solid #d1d5db;
+    transition: all 0.2s ease;
+}
+
+.crop-control-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+@media (prefers-color-scheme: dark) {
+    .cropper-view-box {
+        outline-color: #FFA500;
+        box-shadow: 0 0 0 1px #000, 0 0 0 2px #FFA500;
+    }
 }
 </style>
 
-<!-- Main Content -->
 <div class="flex-1 overflow-auto p-3 md:p-6 pt-20">
     <div class="max-w-2xl mx-auto bg-white rounded-lg shadow p-6">
         <div class="flex justify-between items-center mb-6">
@@ -50,51 +114,74 @@
 
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">Current Image</label>
-                <% if (brand.brandImage && brand.brandImage.length > 0) { %>
-                    <img src="<%= brand.brandImage[0] %>" 
-                         alt="Current Brand Image" 
-                         class="h-20 w-20 object-cover rounded-full bg-gray-50 mb-2"
-                         onerror="this.onerror=null;this.src='/images/default-brand.png'">
-                <% } else { %>
-                    <img src="/images/default-brand.png" 
-                         alt="Default Brand Image" 
-                         class="h-20 w-20 object-cover rounded-full bg-gray-50 mb-2">
-                <% } %>
+                <div class="current-image-container">
+                    <% if (brand.brandImage && brand.brandImage.length > 0) { %>
+                        <img src="<%= brand.brandImage[0] %>" 
+                             alt="Current Brand Image" 
+                             class="current-image"
+                             onerror="this.onerror=null;this.src='/images/default-brand.png'">
+                    <% } else { %>
+                        <img src="/images/default-brand.png" 
+                             alt="Default Brand Image" 
+                             class="current-image">
+                    <% } %>
+                    <div>
+                        <p class="text-sm text-gray-600">Current brand logo</p>
+                        <p class="text-xs text-gray-500">Upload a new image below to replace</p>
+                    </div>
+                </div>
+                <input type="hidden" name="existingImage" value="<%= brand.brandImage && brand.brandImage[0] ? brand.brandImage[0] : '' %>">
             </div>
 
             <div>
-                <label for="brandImage" class="block text-sm font-medium text-gray-700 mb-1">Change Image (optional)</label>
+                <label for="brandImage" class="block text-sm font-medium text-gray-700 mb-1">New Brand Image</label>
                 <input type="file" 
                        id="brandImage" 
                        name="image" 
                        accept="image/*" 
                        class="hidden">
                 
-                <!-- Cropper container (same as add brand) -->
                 <div class="mt-2">
                     <div id="imagePreviewContainer" class="hidden">
-                        <div class="relative" style="max-height: 300px;">
-                            <img id="imagePreview" class="max-w-full max-h-64" alt="Preview">
+                        <div class="relative w-full" style="height: 500px; background-color: #f3f4f6;">
+                            <img id="imagePreview" class="max-w-full max-h-full" alt="Preview">
                         </div>
-                        <div class="mt-2 flex space-x-2">
-                            <button type="button" id="cropBtn" class="px-3 py-1 bg-[#6C7559] text-white text-sm rounded hidden">
-                                Crop Image
+                        <div class="mt-4 flex flex-wrap gap-3 justify-center">
+                            <button type="button" id="zoomInBtn" class="px-4 py-2 bg-gray-100 rounded-lg crop-control-btn">
+                                <i class="fas fa-search-plus mr-2 text-gray-700"></i>Zoom In
                             </button>
-                            <button type="button" id="cancelCropBtn" class="px-3 py-1 bg-gray-300 text-gray-700 text-sm rounded hidden">
-                                Cancel
+                            <button type="button" id="zoomOutBtn" class="px-4 py-2 bg-gray-100 rounded-lg crop-control-btn">
+                                <i class="fas fa-search-minus mr-2 text-gray-700"></i>Zoom Out
+                            </button>
+                            <button type="button" id="rotateBtn" class="px-4 py-2 bg-gray-100 rounded-lg crop-control-btn">
+                                <i class="fas fa-undo mr-2 text-gray-700"></i>Rotate
+                            </button>
+                            <button type="button" id="resetBtn" class="px-4 py-2 bg-gray-100 rounded-lg crop-control-btn">
+                                <i class="fas fa-sync-alt mr-2 text-gray-700"></i>Reset
+                            </button>
+                            <button type="button" id="cropBtn" class="px-4 py-2 bg-[#6C7559] hover:bg-[#5a6349] text-white rounded-lg">
+                                <i class="fas fa-crop mr-2"></i>Apply Crop
+                            </button>
+                            <button type="button" id="cancelCropBtn" class="px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded-lg">
+                                <i class="fas fa-times mr-2"></i>Cancel
                             </button>
                         </div>
                     </div>
                     
                     <button type="button" id="uploadTrigger" 
-                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#6C7559] focus:border-transparent">
-                        Change Image
+                            class="w-full px-4 py-8 border-2 border-dashed border-gray-300 rounded-lg hover:border-[#6C7559] transition-colors upload-area">
+                        <div class="flex flex-col items-center justify-center text-gray-500">
+                            <i class="fas fa-cloud-upload-alt text-4xl mb-3"></i>
+                            <p class="font-medium text-lg">Click to upload new brand image</p>
+                            <p class="text-sm mt-1">Recommended: Square image (1000×1000 pixels)</p>
+                            <p class="text-xs mt-1 text-gray-400">JPG, PNG, or WEBP (max 10MB)</p>
+                        </div>
                     </button>
                 </div>
                 <p id="image-error" class="error-message text-red-500 text-sm mt-1 hidden"></p>
             </div>
 
-            <div class="flex justify-end space-x-4">
+            <div class="flex justify-end space-x-4 pt-4">
                 <a href="/admin/brands" class="px-4 py-2 text-sm text-gray-600 hover:text-gray-800 font-medium">
                     Cancel
                 </a>
@@ -106,13 +193,63 @@
     </div>
 </div>
 
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
 <script>
-// Same cropper functionality as your add brand form
 let cropper;
 let originalImageFile;
+
+function initCropper(imageElement) {
+    return new Cropper(imageElement, {
+        aspectRatio: 1,
+        viewMode: 1,
+        autoCropArea: 0.8,
+        minContainerWidth: 500,
+        minContainerHeight: 500,
+        minCanvasWidth: 500,
+        minCanvasHeight: 500,
+        minCropBoxWidth: 200,
+        minCropBoxHeight: 200,
+        responsive: true,
+        restore: true,
+        guides: false,
+        center: true,
+        highlight: false,
+        cropBoxMovable: true,
+        cropBoxResizable: true,
+        toggleDragModeOnDblclick: false,
+        background: '#f3f4f6',
+        checkCrossOrigin: false,
+        checkOrientation: false,
+        modal: true,
+        dragMode: 'move',
+        preview: '.img-preview',
+        ready: function() {
+            const imageData = this.cropper.getImageData();
+            if (isDarkImage(imageData)) {
+                enhanceDarkImageVisibility();
+            }
+        }
+    });
+}
+
+function isDarkImage(imageData) {
+    return imageData.naturalWidth < imageData.width || imageData.naturalHeight < imageData.height;
+}
+
+function enhanceDarkImageVisibility() {
+    document.querySelectorAll('.cropper-line').forEach(line => {
+        line.style.backgroundColor = '#FFA500';
+    });
+    document.querySelectorAll('.cropper-point').forEach(point => {
+        point.style.backgroundColor = '#FFA500';
+        point.style.border = '2px solid white';
+    });
+    document.querySelector('.cropper-view-box').style.outline = '2px solid #FFA500';
+}
 
 document.getElementById('uploadTrigger').addEventListener('click', function() {
     document.getElementById('brandImage').click();
@@ -122,8 +259,14 @@ document.getElementById('brandImage').addEventListener('change', function(e) {
     const file = e.target.files[0];
     if (!file) return;
 
-    if (!file.type.match('image.*')) {
-        displayError('image-error', 'Only image files are allowed');
+    const validTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+    if (!validTypes.includes(file.type)) {
+        displayError('image-error', 'Please upload a valid image (JPEG, PNG, GIF, or WEBP)');
+        return;
+    }
+
+    if (file.size > 10 * 1024 * 1024) { // 10MB
+        displayError('image-error', 'Image must be less than 10MB');
         return;
     }
 
@@ -131,82 +274,96 @@ document.getElementById('brandImage').addEventListener('change', function(e) {
     reader.onload = function(event) {
         const imagePreview = document.getElementById('imagePreview');
         const imagePreviewContainer = document.getElementById('imagePreviewContainer');
-        const cropBtn = document.getElementById('cropBtn');
-        const cancelCropBtn = document.getElementById('cancelCropBtn');
-
+        
         imagePreview.src = event.target.result;
         imagePreviewContainer.classList.remove('hidden');
-        cropBtn.classList.remove('hidden');
-        cancelCropBtn.classList.remove('hidden');
+        
+        ['cropBtn', 'cancelCropBtn', 'zoomInBtn', 'zoomOutBtn', 'rotateBtn', 'resetBtn'].forEach(id => {
+            document.getElementById(id).classList.remove('hidden');
+        });
 
         if (cropper) {
             cropper.destroy();
         }
         
-        cropper = new Cropper(imagePreview, {
-            aspectRatio: 1,
-            viewMode: 1,
-            autoCropArea: 0.8,
-            responsive: true,
-            guides: false
-        });
-
+        cropper = initCropper(imagePreview);
         originalImageFile = file;
     };
     reader.readAsDataURL(file);
 });
 
+document.getElementById('zoomInBtn').addEventListener('click', function() {
+    cropper.zoom(0.1);
+});
+
+document.getElementById('zoomOutBtn').addEventListener('click', function() {
+    cropper.zoom(-0.1);
+});
+
+document.getElementById('rotateBtn').addEventListener('click', function() {
+    cropper.rotate(90);
+});
+
+document.getElementById('resetBtn').addEventListener('click', function() {
+    cropper.reset();
+});
+
 document.getElementById('cropBtn').addEventListener('click', function() {
-    if (cropper) {
-        const canvas = cropper.getCroppedCanvas({
-            width: 500,
-            height: 500,
-            minWidth: 256,
-            minHeight: 256,
-            maxWidth: 2000,
-            maxHeight: 2000,
-            fillColor: '#fff',
-            imageSmoothingEnabled: true,
-            imageSmoothingQuality: 'high',
+    if (!cropper) return;
+
+    const canvas = cropper.getCroppedCanvas({
+        width: 1000,
+        height: 1000,
+        minWidth: 800,
+        minHeight: 800,
+        maxWidth: 2000,
+        maxHeight: 2000,
+        fillColor: '#fff',
+        imageSmoothingEnabled: true,
+        imageSmoothingQuality: 'high'
+    });
+
+    canvas.toBlob((blob) => {
+        const croppedFile = new File([blob], originalImageFile.name, {
+            type: 'image/jpeg',
+            lastModified: Date.now()
         });
 
-        canvas.toBlob((blob) => {
-            const croppedFile = new File([blob], originalImageFile.name, {
-                type: 'image/jpeg',
-                lastModified: Date.now()
-            });
-
-            const dataTransfer = new DataTransfer();
-            dataTransfer.items.add(croppedFile);
-            
-            const fileInput = document.getElementById('brandImage');
-            fileInput.files = dataTransfer.files;
-
-            document.getElementById('cropBtn').classList.add('hidden');
-            document.getElementById('cancelCropBtn').classList.add('hidden');
-            cropper.destroy();
-            cropper = null;
-        }, 'image/jpeg', 0.9);
-    }
+        const dataTransfer = new DataTransfer();
+        dataTransfer.items.add(croppedFile);
+        
+        document.getElementById('brandImage').files = dataTransfer.files;
+        
+        ['cropBtn', 'cancelCropBtn', 'zoomInBtn', 'zoomOutBtn', 'rotateBtn', 'resetBtn'].forEach(id => {
+            document.getElementById(id).classList.add('hidden');
+        });
+        
+        document.getElementById('imagePreview').src = canvas.toDataURL('image/jpeg', 0.9);
+        
+        cropper.destroy();
+        cropper = null;
+    }, 'image/jpeg', 0.9);
 });
 
 document.getElementById('cancelCropBtn').addEventListener('click', function() {
-    const imagePreviewContainer = document.getElementById('imagePreviewContainer');
-    const fileInput = document.getElementById('brandImage');
-    
     if (cropper) {
         cropper.destroy();
         cropper = null;
     }
     
-    imagePreviewContainer.classList.add('hidden');
-    fileInput.value = '';
+    document.getElementById('imagePreviewContainer').classList.add('hidden');
+    document.getElementById('brandImage').value = '';
+    
+    ['cropBtn', 'cancelCropBtn', 'zoomInBtn', 'zoomOutBtn', 'rotateBtn', 'resetBtn'].forEach(id => {
+        document.getElementById(id).classList.add('hidden');
+    });
 });
 
-// Form submission handling
 document.getElementById('editBrandForm').addEventListener('submit', async function(e) {
     e.preventDefault();
     
+    if (!validateForm()) return;
+
     const formData = new FormData(this);
     
     try {
@@ -225,7 +382,8 @@ document.getElementById('editBrandForm').addEventListener('submit', async functi
             icon: 'success',
             title: 'Success!',
             text: data.message || 'Brand updated successfully',
-            confirmButtonColor: '#6C7559' }).then(() => {
+            confirmButtonColor: '#6C7559'
+        }).then(() => {
             window.location.href = '/admin/brands';
         });
 
@@ -238,6 +396,25 @@ document.getElementById('editBrandForm').addEventListener('submit', async functi
         });
     }
 });
+
+function validateForm() {
+    let isValid = true;
+    const name = document.getElementById('brandName').value.trim();
+
+    document.querySelectorAll('.error-message').forEach(el => {
+        el.classList.add('hidden');
+    });
+
+    if (!name) {
+        displayError('name-error', 'Brand name is required');
+        isValid = false;
+    } else if (!/^[a-zA-Z0-9\s]+$/.test(name)) {
+        displayError('name-error', 'Brand name can only contain letters, numbers and spaces');
+        isValid = false;
+    }
+
+    return isValid;
+}
 
 function displayError(elementId, message) {
     const element = document.getElementById(elementId);

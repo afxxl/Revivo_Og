@@ -3,7 +3,7 @@ const Product = require("../../models/productSchema.js");
 const featuredPage = async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
-    const perPage = 8; // Products per page
+    const perPage = 8;
 
     const totalProducts = await Product.countDocuments({ isFeatured: true });
     const totalPages = Math.ceil(totalProducts / perPage);
