@@ -267,17 +267,21 @@ function emailValidateChecking() {
     return true;
   }
 }
-
 function phoneValidateChecking() {
   const phoneVal = phoneid.value;
+  const phonePattern = /^\+?\d{10}$/; // Optional '+' followed by exactly 10 digits
 
   if (phoneVal.trim() === "") {
     error3.style.display = "block";
     error3.innerHTML = "Enter a valid phone number";
     return false;
-  } else if (phoneVal.length !== 10) {
+  } else if (phoneVal === "0000000000") {
     error3.style.display = "block";
-    error3.innerHTML = "Enter 10 digits";
+    error3.innerHTML = "Phone number cannot be all zeros";
+    return false;
+  } else if (!phonePattern.test(phoneVal)) {
+    error3.style.display = "block";
+    error3.innerHTML = "Phone number must be exactly 10 digits long and can start with '+'";
     return false;
   } else {
     error3.style.display = "none";

@@ -90,14 +90,11 @@
 
     <!-- New Arrivals Hero Section -->
     <section class="relative py-24 hero-section text-white overflow-hidden">
-      <!-- Background layers -->
       <div class="absolute inset-0" style="background-image: url('/Images/images/OLD_PAPER_TEXTURE.jpg'); opacity: 0.2; background-size: cover;"></div>
       <div class="absolute inset-0 bg-gradient-to-r from-[#1a1a1a]/90 to-transparent"></div>
       
-      <!-- Content container -->
       <div class="container mx-auto px-4 relative z-10">
         <div class="flex flex-col md:flex-row items-center justify-between">
-          <!-- Text content -->
           <div class="text-left max-w-xl mb-8 md:mb-0">
             <h4 class="text-[#f8c78d] text-sm tracking-widest uppercase mb-2 hero-subheading">Fresh Finds</h4>
             <h1 class="text-5xl md:text-6xl hero-heading mb-6 leading-tight">New <span class="text-[#f8c78d]">Arrivals</span></h1>
@@ -108,7 +105,6 @@
             </div>
           </div>
           
-          <!-- Decorative elements -->
           <div class="relative hidden md:block">
             <div class="w-80 h-80 rounded-full bg-[#f8c78d]/20 backdrop-blur-sm relative overflow-hidden border border-white/10">
               <div class="absolute -right-20 -bottom-20 w-64 h-64 rounded-full bg-[#f8c78d]/30"></div>
@@ -123,7 +119,6 @@
         </div>
       </div>
       
-      <!-- Floating design elements -->
       <div class="absolute bottom-0 left-0 w-full h-8 bg-[#f8f7f5] clip-path-wave"></div>
       <div class="absolute -bottom-6 right-12 transform rotate-45 w-24 h-24 border border-[#f8c78d]/30 rounded-md"></div>
       <div class="absolute top-12 right-12 w-8 h-8 rounded-full bg-[#f8c78d]/40"></div>
@@ -136,6 +131,91 @@
           <h4 class="text-[#f8c78d] text-xs tracking-widest uppercase mb-2 font-montserrat">Recently Added</h4>
           <h2 class="text-3xl section-heading text-[#2C2C2C]">New Arrivals</h2>
           <p class="text-[#2C2C2C]/70 max-w-2xl mx-auto mt-4 font-montserrat">Fresh vintage finds added to our collection in the last 30 days.</p>
+        </div>
+
+        <!-- Filter Section -->
+        <div class="mb-12 bg-white p-6 rounded-lg shadow-sm border border-[#e0dcd4]/50">
+          <div class="flex justify-between items-center mb-4">
+            <h3 class="text-lg font-playfair text-[#2C2C2C]">Filter Products</h3>
+            <button id="toggleFilters" class="md:hidden text-[#2C2C2C] hover:text-[#f8c78d] focus:outline-none">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+              </svg>
+            </button>
+          </div>
+
+          <form id="filterForm" class="filter-container hidden md:grid grid-cols-1 md:grid-cols-4 gap-4">
+            <!-- Category Filter -->
+            <div>
+              <label class="block text-sm font-montserrat text-[#2C2C2C]/70 mb-2">Category</label>
+              <select name="category" class="w-full border border-[#e0dcd4] p-2 rounded-md focus:ring-2 focus:ring-[#f8c78d]/30 focus:outline-none">
+                <option value="">All Categories</option>
+                <% categories.forEach(category => { %>
+                  <option value="<%= category._id %>" <%= filters.category === category._id.toString() ? 'selected' : '' %>>
+                    <%= category.name %>
+                  </option>
+                <% }); %>
+              </select>
+            </div>
+
+            <!-- Brand Filter -->
+            <div>
+              <label class="block text-sm font-montserrat text-[#2C2C2C]/70 mb-2">Brand</label>
+              <select name="brand" class="w-full border border-[#e0dcd4] p-2 rounded-md focus:ring-2 focus:ring-[#f8c78d]/30 focus:outline-none">
+                <option value="">All Brands</option>
+                <% brands.forEach(brand => { %>
+                  <option value="<%= brand._id %>" <%= filters.brand === brand._id.toString() ? 'selected' : '' %>>
+                    <%= brand.brandName %>
+                  </option>
+                <% }); %>
+              </select>
+            </div>
+
+            <!-- Size Filter -->
+            <div>
+              <label class="block text-sm font-montserrat text-[#2C2C2C]/70 mb-2">Size</label>
+              <select name="size" class="w-full border border-[#e0dcd4] p-2 rounded-md focus:ring-2 focus:ring-[#f8c78d]/30 focus:outline-none">
+                <option value="">All Sizes</option>
+                <option value="S" <%= filters.size === 'S' ? 'selected' : '' %>>S</option>
+                <option value="M" <%= filters.size === 'M' ? 'selected' : '' %>>M</option>
+                <option value="L" <%= filters.size === 'L' ? 'selected' : '' %>>L</option>
+                <option value="XL" <%= filters.size === 'XL' ? 'selected' : '' %>>XL</option>
+              </select>
+            </div>
+
+            <!-- Condition Filter -->
+            <div>
+              <label class="block text-sm font-montserrat text-[#2C2C2C]/70 mb-2">Condition</label>
+              <select name="condition" class="w-full border border-[#e0dcd4] p-2 rounded-md focus:ring-2 focus:ring-[#f8c78d]/30 focus:outline-none">
+                <option value="">All Conditions</option>
+                <option value="Like New" <%= filters.condition === 'Like New' ? 'selected' : '' %>>Like New</option>
+                <option value="Gently Used" <%= filters.condition === 'Gently Used' ? 'selected' : '' %>>Gently Used</option>
+                <option value="Fair Condition" <%= filters.condition === 'Fair Condition' ? 'selected' : '' %>>Fair Condition</option>
+              </select>
+            </div>
+
+            <!-- Price Range -->
+            <div class="md:col-span-2">
+              <label class="block text-sm font-montserrat text-[#2C2C2C]/70 mb-2">Price Range</label>
+              <div class="flex items-center gap-2">
+                <input type="number" name="minPrice" placeholder="Min" value="<%= filters.minPrice || '' %>" 
+                       class="w-1/2 border border-[#e0dcd4] p-2 rounded-md focus:ring-2 focus:ring-[#f8c78d]/30 focus:outline-none">
+                <span>-</span>
+                <input type="number" name="maxPrice" placeholder="Max" value="<%= filters.maxPrice || '' %>" 
+                       class="w-1/2 border border-[#e0dcd4] p-2 rounded-md focus:ring-2 focus:ring-[#f8c78d]/30 focus:outline-none">
+              </div>
+            </div>
+
+            <!-- Buttons -->
+            <div class="md:col-span-4 flex gap-4">
+              <button type="submit" class="px-6 py-2 bg-[#2C2C2C] text-white rounded-md hover:bg-[#1a1a1a] font-montserrat transition-colors">
+                Apply Filters
+              </button>
+              <a href="/new-arrivals" class="px-6 py-2 border border-[#e0dcd4] text-[#2C2C2C] rounded-md hover:bg-[#f8c78d]/10 font-montserrat transition-colors">
+                Clear Filters
+              </a>
+            </div>
+          </form>
         </div>
 
         <!-- Products grid -->
@@ -215,7 +295,7 @@
         <div class="mt-16 flex justify-center">
           <div class="inline-flex rounded-md shadow-sm">
             <% if (hasPreviousPage) { %>
-              <a href="/new-arrivals?page=<%= previousPage %>" 
+              <a href="/new-arrivals?page=<%= previousPage %>&<%= new URLSearchParams(filters).toString() %>" 
                  class="px-4 py-2 text-sm font-montserrat border border-[#e0dcd4] rounded-l-md hover:bg-[#f8c78d]/10 text-[#2C2C2C]">
                 Previous
               </a>
@@ -231,7 +311,7 @@
                   <%= i %>
                 </span>
               <% } else { %>
-                <a href="/new-arrivals?page=<%= i %>" 
+                <a href="/new-arrivals?page=<%= i %>&<%= new URLSearchParams(filters).toString() %>" 
                    class="px-4 py-2 text-sm font-montserrat border-t border-b border-[#e0dcd4] hover:bg-[#f8c78d]/10 text-[#2C2C2C]">
                   <%= i %>
                 </a>
@@ -239,7 +319,7 @@
             <% } %>
 
             <% if (hasNextPage) { %>
-              <a href="/new-arrivals?page=<%= nextPage %>" 
+              <a href="/new-arrivals?page=<%= nextPage %>&<%= new URLSearchParams(filters).toString() %>" 
                  class="px-4 py-2 text-sm font-montserrat border border-[#e0dcd4] rounded-r-md hover:bg-[#f8c78d]/10 text-[#2C2C2C]">
                 Next
               </a>
@@ -257,6 +337,22 @@
     <%- include('../partials/user/footer.ejs') %>
 
     <script>
+      // Toggle filters on mobile
+      const toggleButton = document.getElementById('toggleFilters');
+      const filterContainer = document.querySelector('.filter-container');
+
+      toggleButton.addEventListener('click', () => {
+        filterContainer.classList.toggle('hidden');
+      });
+
+      // Handle filter form submission
+      document.getElementById('filterForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const formData = new FormData(this);
+        const params = new URLSearchParams(formData).toString();
+        window.location.href = `/new-arrivals?${params}`;
+      });
+
       // Enhanced toast notification
       function showToast(message, type = 'success') {
         const toast = document.createElement('div');

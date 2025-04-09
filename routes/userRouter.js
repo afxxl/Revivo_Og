@@ -74,4 +74,13 @@ router.get("/shop/brand/:brandId", shopController.loadBrandPage);
 
 router.get("/product/:id", userController.loadProductPage);
 
+//heritage
+
+router.get("/shop/collection/prime-layers", shopController.loadPrimeLayers);
+router.get(
+  "/shop/collection/vintage-athletics",
+  shopController.loadVintageAthletics,
+);
+router.get("/shop/collection/y2k-essentials", shopController.loadY2kEssentials);
+
 module.exports = router;

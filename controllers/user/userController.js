@@ -129,8 +129,16 @@ const signup = async (req, res) => {
     req.session.userOtp = otp;
     req.session.userData = { name, phone, email, password };
 
-    res.render("verify-otp");
-    console.log("OTP Sent", otp);
+    req.session.save((err) => {
+      if (err) {
+        console.log("Session save error:", err);
+        return res.redirect("/signup");
+      }
+
+      res.render("verify-otp");
+
+      console.log("OTP Sent", otp);
+    });
   } catch (err) {
     console.log("signup error", err);
     res.redirect("/pageNotFound");
@@ -159,8 +167,13 @@ const verifyOtp = async (req, res) => {
 
     if (otp === req.session.userOtp) {
       const user = req.session.userData;
+      if (!user) {
+        return res.status(400).json({
+          success: false,
+          message: "User  data is missing. Please sign up again.",
+        });
+      }
       const passwordHash = await securePassword(user.password);
-
       const saveUserData = new User({
         name: user.name,
         email: user.email,

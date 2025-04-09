@@ -316,6 +316,114 @@
           height: 70%;
         }
       }
+  /* Add these styles to your existing style section */
+  
+  /* Testimonials Section Styles */
+  .testimonials-section {
+    background-color: #2C2C2C;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .testimonials-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url('/Images/images/OLD_PAPER_TEXTURE.jpg');
+    background-size: cover;
+    opacity: 0.1;
+  }
+  
+  .testimonial-card {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(248, 199, 141, 0.2);
+    transition: all 0.3s ease;
+  }
+  
+  .testimonial-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2);
+    border-color: rgba(248, 199, 141, 0.4);
+  }
+  
+  .testimonial-quote {
+    position: relative;
+  }
+  
+  .testimonial-quote::before {
+    content: '"';
+    position: absolute;
+    top: -20px;
+    left: -10px;
+    font-size: 4rem;
+    color: rgba(248, 199, 141, 0.2);
+    font-family: 'Playfair Display', serif;
+  }
+  
+  /* Newsletter Section Styles */
+  .newsletter-section {
+    background-color: #f8f7f5;
+  }
+  
+  .newsletter-container {
+    background-color: white;
+    border: 1px solid #e0dcd4;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+  }
+  
+  .newsletter-container:hover {
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  }
+  
+  .newsletter-input {
+    transition: all 0.3s ease;
+    border: 1px solid #e0dcd4;
+  }
+  
+  .newsletter-input:focus {
+    border-color: #f8c78d;
+    box-shadow: 0 0 0 2px rgba(248, 199, 141, 0.3);
+  }
+  
+  .newsletter-button {
+    transition: all 0.3s ease;
+    letter-spacing: 1px;
+  }
+  
+  .newsletter-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(44, 44, 44, 0.2);
+  }
+  
+  /* Star Rating Styles */
+  .star-rating {
+    color: #f8c78d;
+  }
+  
+  /* Responsive Adjustments */
+  @media (max-width: 768px) {
+    .testimonial-card {
+      padding: 1.5rem;
+    }
+    
+    .newsletter-container {
+      padding: 1.5rem;
+    }
+    
+    .newsletter-form {
+      flex-direction: column;
+    }
+    
+    .newsletter-input {
+      width: 100%;
+      margin-bottom: 1rem;
+    }
+  }
     </style>
   </head>
 
@@ -661,6 +769,103 @@
           </a>
         </div>
       </div>
+    </div>
+  </div>
+
+</section>
+<section class="testimonials-section py-20 relative">
+  <div class="container mx-auto px-6 relative z-10">
+    <div class="text-center mb-16">
+      <h2 class="text-3xl font-henny text-[#f8c78d] mb-4">Vintage Enthusiasts Love Revivo</h2>
+      <p class="text-white/80 font-montserrat max-w-2xl mx-auto">Hear what our community of vintage lovers has to say about their Revivo experience</p>
+    </div>
+    
+    <div class="grid md:grid-cols-3 gap-8">
+      <div class="testimonial-card p-8 rounded-lg">
+        <div class="flex items-center gap-4 mb-4">
+          <div class="w-12 h-12 rounded-full bg-[#f8c78d]/10 flex items-center justify-center text-[#f8c78d]">
+            <i class="fas fa-quote-left text-lg"></i>
+          </div>
+          <div>
+            <h4 class="font-medium font-playfair text-white">Sarah J.</h4>
+            <div class="star-rating flex">
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+            </div>
+          </div>
+        </div>
+        <p class="testimonial-quote text-white/80 italic font-montserrat pl-4">
+          "The quality of vintage pieces at Revivo is unmatched. Each item feels like a treasure with its own story. My 80s leather jacket is now my most prized possession!"
+        </p>
+      </div>
+      
+      <div class="testimonial-card p-8 rounded-lg">
+        <div class="flex items-center gap-4 mb-4">
+          <div class="w-12 h-12 rounded-full bg-[#f8c78d]/10 flex items-center justify-center text-[#f8c78d]">
+            <i class="fas fa-quote-left text-lg"></i>
+          </div>
+          <div>
+            <h4 class="font-medium font-playfair text-white">Michael T.</h4>
+            <div class="star-rating flex">
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+            </div>
+          </div>
+        </div>
+        <p class="testimonial-quote text-white/80 italic font-montserrat pl-4">
+          "As a collector of vintage sportswear, I'm blown away by the rare finds at Revivo. The authentication process gives me complete confidence in my purchases."
+        </p>
+      </div>
+      
+      <div class="testimonial-card p-8 rounded-lg">
+        <div class="flex items-center gap-4 mb-4">
+          <div class="w-12 h-12 rounded-full bg-[#f8c78d]/10 flex items-center justify-center text-[#f8c78d]">
+            <i class="fas fa-quote-left text-lg"></i>
+          </div>
+          <div>
+            <h4 class="font-medium font-playfair text-white">Emma L.</h4>
+            <div class="star-rating flex">
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star-half-alt"></i>
+            </div>
+          </div>
+        </div>
+        <p class="testimonial-quote text-white/80 italic font-montserrat pl-4">
+          "Revivo has transformed how I think about fashion. Their vintage pieces mix perfectly with my modern wardrobe, creating looks that are uniquely mine."
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="newsletter-section py-16">
+  <div class="container mx-auto px-6">
+    <div class="newsletter-container rounded-xl p-8 md:p-12 text-center">
+      <div class="inline-flex items-center gap-3 mb-6">
+        <img src="/Images/logo.png" alt="Revivo Logo" class="w-10 h-10">
+        <h2 class="text-2xl font-henny text-[#2C2C2C]">Join Our Vintage Community</h2>
+      </div>
+      <p class="text-[#2C2C2C]/80 mb-8 font-montserrat max-w-lg mx-auto">
+        Subscribe to receive exclusive early access to new arrivals, styling tips, and special offers for our vintage-loving community.
+      </p>
+      <form class="newsletter-form flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
+        <input type="email" placeholder="Your email address" class="newsletter-input flex-grow px-4 py-3 rounded-sm focus:outline-none font-montserrat">
+        <button type="submit" class="newsletter-button px-6 py-3 bg-[#2C2C2C] text-white rounded-sm hover:bg-[#f8c78d] transition-colors font-montserrat uppercase text-sm">
+          Subscribe
+        </button>
+      </form>
+      <p class="text-xs text-[#2C2C2C]/50 mt-4 font-montserrat">
+        We respect your privacy. Unsubscribe at any time.
+      </p>
     </div>
   </div>
 </section>

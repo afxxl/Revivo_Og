@@ -66,6 +66,7 @@ const addProduct = async (req, res) => {
       salesPrice,
       productOffer,
       stock,
+      heritage,
       quantity,
       status,
       description,
@@ -137,6 +138,7 @@ const addProduct = async (req, res) => {
       productOffer:
         productOffer && !isNaN(productOffer) ? parseInt(productOffer) : 0,
       stock: parseInt(stock),
+      heritage: heritage || "None",
       quantity: parseInt(quantity),
       status,
       description,
@@ -255,6 +257,7 @@ const updateProduct = async (req, res) => {
       salesPrice,
       productOffer,
       stock,
+      heritage,
       quantity,
       status,
       description,
@@ -364,6 +367,7 @@ const updateProduct = async (req, res) => {
         productOffer:
           productOffer && !isNaN(productOffer) ? parseInt(productOffer) : 0,
         stock: parseInt(stock),
+        heritage: heritage || "None",
         quantity: parseInt(quantity),
         status,
         description,

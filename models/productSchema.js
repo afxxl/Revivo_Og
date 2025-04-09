@@ -76,6 +76,11 @@ const productSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    heritage: {
+      type: String,
+      enum: ["Prime Layers", "Vintage Athletics", "Y2K Essentials", "None"],
+      default: "None",
+    },
   },
   {
     timestamps: true,
