@@ -8,10 +8,14 @@ const Category = require("../../models/categorySchema.js");
 
 const loadHomepage = async (req, res) => {
   try {
+    const categories = await Category.find({ isListed: true }).lean();
+    const listedCategoryIds = categories.map((cat) => cat._id);
+
     const products = await Product.find({
       isDeleted: { $ne: true },
       isNew: true,
       status: "Available",
+      category: { $in: listedCategoryIds },
     })
       .sort({ createdAt: -1 })
       .limit(6)
@@ -37,7 +41,6 @@ const loadHomepage = async (req, res) => {
       userData = await User.findById(req.session.user);
     }
 
-    const categories = await Category.find({ isListed: true });
     res.render("home", {
       categories,
       products,

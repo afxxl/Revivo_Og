@@ -18,8 +18,11 @@ const shopPage = async (req, res) => {
       heritage: req.query.heritage,
       status: req.query.status || "Available",
     };
+    const categories = await Category.find({ isListed: true }).lean();
+    const brands = await Brand.find({}).lean();
+    const listedCategoryIds = categories.map((cat) => cat._id);
 
-    let query = { status: "Available" };
+    let query = { status: "Available", category: { $in: listedCategoryIds } };
 
     if (req.query.category && filters.category !== "all") {
       query.category = filters.category;
@@ -33,8 +36,6 @@ const shopPage = async (req, res) => {
       if (filters.minPrice) query.salesPrice.$gte = filters.minPrice;
       if (filters.maxPrice) query.salesPrice.$lte = filters.maxPrice;
     }
-    const categories = await Category.find({ isListed: true }).lean();
-    const brands = await Brand.find({}).lean();
 
     const totalProducts = await Product.countDocuments(query);
     const totalPages = Math.ceil(totalProducts / perPage);
@@ -71,6 +72,10 @@ const loadBrandPage = async (req, res) => {
     const perPage = 8;
     const skip = (page - 1) * perPage;
 
+    const categories = await Category.find({ isListed: true }).lean();
+
+    const listedCategoryIds = categories.map((cat) => cat._id);
+
     const brand = await Brand.findById(brandId).lean();
     if (!brand) {
       return res.status(404).render("page-404");
@@ -84,7 +89,11 @@ const loadBrandPage = async (req, res) => {
       status: req.query.status || "Available",
     };
 
-    let query = { brand: brandId, status: "Available" };
+    let query = {
+      brand: brandId,
+      status: "Available",
+      category: { $in: listedCategoryIds },
+    };
     if (filters.size) query.size = filters.size;
     if (filters.condition) query.condition = filters.condition;
     if (filters.minPrice || filters.maxPrice) {
@@ -136,7 +145,15 @@ const loadPrimeLayers = async (req, res) => {
       status: req.query.status || "Available",
     };
 
-    let query = { heritage: "Prime Layers", status: "Available" };
+    const categories = await Category.find({ isListed: true }).lean();
+
+    const listedCategoryIds = categories.map((cat) => cat._id);
+
+    let query = {
+      heritage: "Prime Layers",
+      status: "Available",
+      category: { $in: listedCategoryIds },
+    };
     if (filters.size) query.size = filters.size;
     if (filters.condition) query.condition = filters.condition;
     if (filters.minPrice || filters.maxPrice) {
@@ -177,6 +194,10 @@ const loadVintageAthletics = async (req, res) => {
     const perPage = 8;
     const skip = (page - 1) * perPage;
 
+    const categories = await Category.find({ isListed: true }).lean();
+
+    const listedCategoryIds = categories.map((cat) => cat._id);
+
     const filters = {
       size: req.query.size || "",
       condition: req.query.condition || "",
@@ -185,7 +206,11 @@ const loadVintageAthletics = async (req, res) => {
       status: req.query.status || "Available",
     };
 
-    let query = { heritage: "Vintage Athletics", status: "Available" };
+    let query = {
+      heritage: "Vintage Athletics",
+      status: "Available",
+      category: { $in: listedCategoryIds },
+    };
     if (filters.size) query.size = filters.size;
     if (filters.condition) query.condition = filters.condition;
     if (filters.minPrice || filters.maxPrice) {
@@ -226,6 +251,10 @@ const loadY2kEssentials = async (req, res) => {
     const perPage = 8;
     const skip = (page - 1) * perPage;
 
+    const categories = await Category.find({ isListed: true }).lean();
+
+    const listedCategoryIds = categories.map((cat) => cat._id);
+
     const filters = {
       size: req.query.size || "",
       condition: req.query.condition || "",
@@ -234,7 +263,12 @@ const loadY2kEssentials = async (req, res) => {
       status: req.query.status || "Available",
     };
 
-    let query = { heritage: "Y2K Essentials", status: "Available" };
+    let query = {
+      heritage: "Y2K Essentials",
+      status: "Available",
+      category: { $in: listedCategoryIds },
+    };
+
     if (filters.size) query.size = filters.size;
     if (filters.condition) query.condition = filters.condition;
     if (filters.minPrice || filters.maxPrice) {

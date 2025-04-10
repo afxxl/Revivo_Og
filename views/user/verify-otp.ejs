@@ -215,6 +215,9 @@
           type: "POST",
           url: "/verify-otp",
           data: { otp: otpValue },
+          xhrFields:{
+              withCredentials:true,
+            }
           success: function (response) {
             if (response.success) {
               Swal.fire({

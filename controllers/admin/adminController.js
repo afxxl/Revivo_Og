@@ -14,30 +14,42 @@ const loadLogin = (req, res) => {
   }
   res.render("admin-login", { message: null });
 };
-
 const login = async (req, res) => {
   try {
     const { email, password } = req.body;
     const admin = await User.findOne({ email, isAdmin: true });
 
     if (!admin) {
-      return res.redirect("/admin/login");
+      return res.status(401).json({
+        success: false,
+        message: "Invalid credentials",
+      });
     }
 
     const passwordMatch = await bcrypt.compare(password, admin.password);
 
     if (!passwordMatch) {
-      return res.redirect("/admin/login");
+      return res.status(401).json({
+        success: false,
+        message: "Invalid credentials",
+      });
     }
 
     req.session.admin = admin._id;
 
-    return res.redirect("/admin");
+    return res.json({
+      success: true,
+      message: "Login successful",
+    });
   } catch (err) {
     console.error("Login error:", err);
-    return res.redirect("/pageerror");
+    return res.status(500).json({
+      success: false,
+      message: "Server error",
+    });
   }
 };
+
 const loadDashboard = async (req, res) => {
   if (req.session.admin) {
     try {

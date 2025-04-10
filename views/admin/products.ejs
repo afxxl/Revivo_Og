@@ -65,14 +65,6 @@
     color: #B91C1C;
 }
 
-.heritage-badge {
-    padding: 0.25rem 0.5rem;
-    font-size: 0.75rem;
-    border-radius: 0.25rem;
-    background-color: #f3f4f6;
-    color: #374151;
-}
-
 tr:hover {
     background-color: #f9fafb;
 }
@@ -160,6 +152,7 @@ tr:hover {
 }
 </style>
 
+
 <div class="flex-1 overflow-auto p-3 md:p-6 pt-20">
     <div class="p-4 md:p-6 bg-white shadow-sm">
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
@@ -215,7 +208,7 @@ tr:hover {
                                              alt="Default Product" 
                                              class="product-image mr-3">
                                     <% } %>
-                                    <div class="mr-[20px]">
+                                    <div class = "mr-[20px]">
                                         <div class="text-sm font-medium text-gray-900"><%= product.productName %></div>
                                         <div class="text-xs text-gray-500"><%= product.condition %></div>
                                     </div>
@@ -232,9 +225,9 @@ tr:hover {
                             
                             <td class="px-6 py-4 text-sm text-gray-900"><%= product.stock %></td>
                             
-                            <td class="px-6 py-4 text-sm">
+                            <td class="px-6 py-4 text-sm text-gray-900">
                                 <% if (product.heritage && product.heritage !== 'None') { %>
-                                    <span class="heritage-badge"><%= product.heritage %></span>
+                                    <span class="px-2 py-1 bg-[#f3f4f6] rounded text-xs"><%= product.heritage %></span>
                                 <% } else { %>
                                     <span class="text-gray-400">-</span>
                                 <% } %>
@@ -272,9 +265,8 @@ tr:hover {
             </table>
         </div>
     </div>
-    
-    <!-- Mobile view -->
-    <div class="md:hidden space-y-4 m-4">
+
+   <div class="md:hidden space-y-4 m-4">
         <% data.forEach(product => { %>
             <div class="bg-white p-4 rounded-lg shadow">
                 <div class="flex flex-col sm:flex-row items-start gap-3">
@@ -319,16 +311,6 @@ tr:hover {
                                 <span class="font-medium ml-1"><%= product.stock %></span>
                             </div>
                             <div class="truncate">
-                                <span class="text-gray-500">Heritage:</span>
-                                <span class="font-medium ml-1">
-                                    <% if (product.heritage && product.heritage !== 'None') { %>
-                                        <%= product.heritage %>
-                                    <% } else { %>
-                                        -
-                                    <% } %>
-                                </span>
-                            </div>
-                            <div class="truncate">
                                 <span class="text-gray-500">Condition:</span>
                                 <span class="font-medium ml-1"><%= product.condition || 'N/A' %></span>
                             </div>
@@ -357,7 +339,7 @@ tr:hover {
             </div>
         <% }); %>
     </div>
-    
+
     <% if (totalPages > 1) { %>
         <div class="flex justify-center items-center space-x-2 my-6">
             <% for(let i = 1; i <= totalPages; i++) { %>
@@ -370,7 +352,6 @@ tr:hover {
     <% } %>
 </div>
 
-<!-- Add Product Modal -->
 <div id="addModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden">
     <div class="min-h-screen flex items-center justify-center p-4">
         <div class="bg-white rounded-lg p-6 max-w-2xl w-full mx-4 relative overflow-y-auto max-h-screen">
@@ -438,17 +419,6 @@ tr:hover {
 
                     <div class="space-y-4">
                         <div>
-                            <label for="heritage" class="block text-sm font-medium text-gray-700 mb-1">Heritage Collection</label>
-                            <select id="heritage" name="heritage"
-                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#6C7559] focus:border-transparent">
-                                <option value="None">None</option>
-                                <option value="Prime Layers">Prime Layers</option>
-                                <option value="Vintage Athletics">Vintage Athletics</option>
-                                <option value="Y2K Essentials">Y2K Essentials</option>
-                            </select>
-                        </div>
-
-                        <div>
                             <label for="regularPrice" class="block text-sm font-medium text-gray-700 mb-1">Regular Price*</label>
                             <input type="number" id="regularPrice" name="regularPrice" min="0" step="0.01" required
                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#6C7559] focus:border-transparent">
@@ -475,6 +445,16 @@ tr:hover {
                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#6C7559] focus:border-transparent">
                             <p id="stock-error" class="error-message text-red-500 text-sm mt-1 hidden"></p>
                         </div>
+<div>
+  <label for="heritage" class="block text-sm font-medium text-gray-700 mb-1">Heritage Collection</label>
+  <select id="heritage" name="heritage"
+          class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#6C7559] focus:border-transparent">
+    <option value="None">None</option>
+    <option value="Prime Layers">Prime Layers</option>
+    <option value="Vintage Athletics">Vintage Athletics</option>
+    <option value="Y2K Essentials">Y2K Essentials</option>
+  </select>
+</div>
 
                         <div>
                             <label for="quantity" class="block text-sm font-medium text-gray-700 mb-1">Quantity*</label>
@@ -842,7 +822,6 @@ document.getElementById('addProductForm').addEventListener('submit', async funct
     
     let isValid = true; 
     
-    const heritage = document.getElementById('heritage').value;
     const productName = document.getElementById('productName').value.trim();
     const brand = document.getElementById('brand').value;
     const category = document.getElementById('category').value;
@@ -856,7 +835,65 @@ document.getElementById('addProductForm').addEventListener('submit', async funct
     const description = document.getElementById('description').value.trim();
     const fileInput = document.getElementById('images');
     
-    // Validation checks remain the same
+    if (!productName) {
+        displayError('productName-error', 'Product name is required');
+        isValid = false;
+    }
+    
+    if (!brand) {
+        displayError('brand-error', 'Please select a brand');
+        isValid = false;
+    }
+    
+    if (!category) {
+        displayError('category-error', 'Please select a category');
+        isValid = false;
+    }
+    
+    if (!size) {
+        displayError('size-error', 'Size is required');
+        isValid = false;
+    }
+    
+    if (!condition) {
+        displayError('condition-error', 'Please select a condition');
+        isValid = false;
+    }
+    
+    if (!regularPrice || parseFloat(regularPrice) <= 0) {
+        displayError('regularPrice-error', 'Please enter a valid price');
+        isValid = false;
+    }
+    
+    if (!salesPrice || parseFloat(salesPrice) <= 0) {
+        displayError('salesPrice-error', 'Please enter a valid sale price');
+        isValid = false;
+    }
+    
+    if (!stock || parseInt(stock) < 0) {
+        displayError('stock-error', 'Please enter a valid stock quantity');
+        isValid = false;
+    }
+    
+    if (!quantity || parseInt(quantity) < 0) {
+        displayError('quantity-error', 'Please enter a valid quantity');
+        isValid = false;
+    }
+    
+    if (!status) {
+        displayError('status-error', 'Please select a status');
+        isValid = false;
+    }
+    
+    if (!description) {
+        displayError('description-error', 'Description is required');
+        isValid = false;
+    }
+    
+    if (!fileInput.files || fileInput.files.length < 3) {
+        displayError('images-error', 'Please upload at least 3 images');
+        isValid = false;
+    }
     
     if (!isValid) {
         return;
@@ -895,9 +932,83 @@ document.getElementById('addProductForm').addEventListener('submit', async funct
     }
 });
 
-// Rest of your existing JavaScript functions (deleteProduct, displayError, etc.) remain the same
-// ...
+function deleteProduct(productId) {
+    Swal.fire({
+        title: 'Are you sure?',
+        text: "You won't be able to revert this!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#6C7559',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, delete it!'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            fetch(`/admin/deleteProduct/${productId}`, {
+                method: 'DELETE'
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Deleted!',
+                        text: data.message,
+                        confirmButtonColor: '#6C7559'
+                    }).then(() => {
+                        window.location.reload();
+                    });
+                } else {
+                    throw new Error(data.error);
+                }
+            })
+            .catch(error => {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error!',
+                    text: error.message || 'Failed to delete product',
+                    confirmButtonColor: '#6C7559'
+                });
+            });
+        }
+    });
+}
 
+function displayError(elementId, message) {
+    const element = document.getElementById(elementId);
+    if (element) {
+        element.textContent = message;
+        element.classList.remove('hidden');
+    }
+}
+
+function clearErrorMessages() {
+    document.querySelectorAll('.error-message').forEach(el => {
+        el.textContent = '';
+        el.classList.add('hidden');
+    });
+}
+
+document.getElementById('addModal').addEventListener('click', function(e) {
+    if (e.target === this) closeAddModal();
+});
+
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        closeAddModal();
+    }
+});
+
+document.querySelectorAll('.delete-product').forEach(btn => {
+    btn.addEventListener('click', function(e) {
+        e.preventDefault();
+        const productId = this.getAttribute('href').split('/').pop();
+        deleteProduct(productId);
+    });
+});
+
+function searchProducts(query) {
+    window.location.href = `/admin/products?search=${encodeURIComponent(query)}`;
+}
 </script>
 
-<%- include('../partials/admin/admin-footer') %>
+<%- include('../partials/admin/admin-footer') %>  

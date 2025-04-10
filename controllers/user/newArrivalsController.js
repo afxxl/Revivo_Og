@@ -11,7 +11,6 @@ const newArrivalsPage = async (req, res) => {
     const thirtyDaysAgo = new Date();
     thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
 
-    // Define filters from query parameters
     const filters = {
       category: req.query.category || "",
       brand: req.query.brand || "",
@@ -21,13 +20,15 @@ const newArrivalsPage = async (req, res) => {
       maxPrice: req.query.maxPrice ? parseFloat(req.query.maxPrice) : undefined,
     };
 
-    // Build the query object
+    const categories = await Category.find({ isListed: true }).lean();
+    const listedCategoriesId = categories.map((cat) => cat._id);
+
     let query = {
       createdAt: { $gte: thirtyDaysAgo },
       isNew: true,
+      category: { $in: listedCategoriesId },
     };
 
-    // Apply filters to the query
     if (filters.category) query.category = filters.category;
     if (filters.brand) query.brand = filters.brand;
     if (filters.size) query.size = filters.size;
@@ -38,15 +39,11 @@ const newArrivalsPage = async (req, res) => {
       if (filters.maxPrice) query.salesPrice.$lte = filters.maxPrice;
     }
 
-    // Fetch categories and brands for filter dropdowns
-    const categories = await Category.find({ isListed: true }).lean();
     const brands = await Brand.find({}).lean();
 
-    // Count total products matching the query
     const totalProducts = await Product.countDocuments(query);
     const totalPages = Math.ceil(totalProducts / perPage);
 
-    // Fetch products with filters applied
     const products = await Product.find(query)
       .populate("category")
       .populate("brand")
@@ -55,7 +52,6 @@ const newArrivalsPage = async (req, res) => {
       .limit(perPage)
       .lean();
 
-    // Render the template with all necessary data
     res.render("new-arrivals", {
       products,
       categories,
