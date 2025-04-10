@@ -56,6 +56,8 @@ app.use("/Images", express.static(path.join(__dirname, "Images")));
 app.use("/", userRouter);
 app.use("/admin", adminRouter);
 
+app.use("/uploads", express.static(path.join(__dirname, "public/uploads")));
+
 const uploadDir = path.join(__dirname, "public", "uploads", "re-image");
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });

@@ -5,6 +5,8 @@ const bcrypt = require("bcrypt");
 const Product = require("../../models/productSchema.js");
 const Brand = require("../../models/brandSchema.js");
 const Category = require("../../models/categorySchema.js");
+const Address = require("../../models/addressSchema.js");
+const Order = require("../../models/orderSchema.js");
 
 const loadHomepage = async (req, res) => {
   try {
@@ -479,6 +481,354 @@ const loadProductPage = async (req, res) => {
   }
 };
 
+//Profile
+
+const loadProfilePage = async (req, res) => {
+  try {
+    if (!req.session.user) {
+      return res.redirect("/login");
+    }
+
+    const user = await User.findById(req.session.user)
+      .populate("addresses")
+      .populate({
+        path: "orders",
+        populate: {
+          path: "items.product",
+          model: "Product",
+        },
+      })
+      .lean();
+
+    if (!user) {
+      return res.redirect("/login");
+    }
+    res.render("profile", { user });
+  } catch (err) {
+    console.log("Error Loading Profile Page:", err);
+    res.redirect("/pageNotFound");
+  }
+};
+
+const updateProfile = async (req, res) => {
+  try {
+    console.log("Session user:", req.session.user);
+    console.log("Request body:", req.body);
+
+    if (!req.session.user) {
+      return res.status(401).json({
+        success: false,
+        message: "Please login to update profile",
+      });
+    }
+
+    const { name, email, phone } = req.body;
+    const user = await User.findById(req.session.user);
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    if (email && email !== user.email) {
+      const otp = generateOtp();
+      const emailSent = await sendVerificationEmail(email, otp);
+
+      if (!emailSent) {
+        console.error("Email sending failed for:", email);
+        return res.status(500).json({
+          success: false,
+          message: "Failed to send verification email",
+        });
+      }
+
+      req.session.pendingProfileUpdate = {
+        name: name || user.name,
+        email: email,
+        phone: phone || user.phone,
+      };
+      req.session.emailOtp = otp;
+
+      console.log("OTP generated and sent:", otp);
+      return res.json({
+        success: true,
+        requiresOtp: true,
+        message: "OTP sent to new email for verification",
+      });
+    }
+
+    user.name = name || user.name;
+    user.phone = phone || user.phone;
+    const updatedUser = await user.save();
+
+    res.json({
+      success: true,
+      message: "Profile updated successfully",
+      user: {
+        name: updatedUser.name,
+        email: updatedUser.email,
+        phone: updatedUser.phone,
+      },
+    });
+  } catch (err) {
+    console.error("Error updating profile:", err);
+    res.status(500).json({
+      success: false,
+      message: "Failed to update profile",
+      error: err.message,
+    });
+  }
+};
+
+const verifyEmailOtp = async (req, res) => {
+  try {
+    const { otp } = req.body;
+    console.log("Received OTP:", otp);
+    console.log("Stored OTP:", req.session.emailOtp);
+
+    if (
+      !req.session.user ||
+      !req.session.emailOtp ||
+      !req.session.pendingProfileUpdate
+    ) {
+      console.log("Session data missing");
+      return res.status(400).json({
+        success: false,
+        message: "Invalid or expired OTP session",
+      });
+    }
+
+    if (otp !== req.session.emailOtp) {
+      console.log("OTP mismatch");
+      return res.status(400).json({
+        success: false,
+        message: "Incorrect OTP",
+      });
+    }
+
+    const user = await User.findById(req.session.user);
+    const { name, email, phone } = req.session.pendingProfileUpdate;
+    user.name = name;
+    user.email = email;
+    user.phone = phone;
+
+    const updatedUser = await user.save();
+    req.session.pendingProfileUpdate = null;
+    req.session.emailOtp = null;
+
+    res.json({
+      success: true,
+      message: "Email verified and profile updated successfully",
+      user: {
+        name: updatedUser.name,
+        email: updatedUser.email,
+        phone: updatedUser.phone,
+      },
+    });
+  } catch (err) {
+    console.error("Error verifying email OTP:", err);
+    res.status(500).json({
+      success: false,
+      message: "Failed to verify OTP",
+      error: err.message,
+    });
+  }
+};
+
+const updateProfileImage = async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({
+        success: false,
+        message: "No image file provided",
+      });
+    }
+
+    const userId = req.session.user;
+    const imagePath = `/uploads/profile-images/${req.file.filename}`;
+
+    await User.findByIdAndUpdate(userId, {
+      profileImage: imagePath,
+    });
+
+    res.json({
+      success: true,
+      imageUrl: imagePath,
+    });
+  } catch (err) {
+    console.error("Error updating profile image:", err);
+    res.status(500).json({
+      success: false,
+      message: "Failed to update profile image",
+    });
+  }
+};
+
+const resendProfileOtp = async (req, res) => {
+  try {
+    if (!req.session.pendingProfileUpdate || !req.session.emailOtp) {
+      return res.status(400).json({
+        success: false,
+        message: "No pending email change request",
+      });
+    }
+
+    const { email } = req.session.pendingProfileUpdate;
+    const otp = generateOtp();
+    const emailSent = await sendVerificationEmail(email, otp);
+
+    if (!emailSent) {
+      return res.status(500).json({
+        success: fasle,
+        message: "Failed to resend OTP",
+      });
+    }
+
+    req.session.emailOtp = otp;
+    console.log("Resent profile OTP:", otp);
+    res.json({
+      success: true,
+      message: "OTP resent successfully",
+    });
+  } catch (err) {
+    console.error("Error resending profile OTP:", err);
+    res.status(500).json({
+      success: false,
+      message: "Failed to resend OTP",
+    });
+  }
+};
+
+const addAddress = async (req, res) => {
+  try {
+    const isDefault = req.body.isDefault === "true";
+    const address = new Address({
+      ...req.body,
+      isDefault,
+      userId: req.user._id,
+    });
+
+    if (isDefault) {
+      await Address.updateMany(
+        { userId: req.user._id },
+        { $set: { isDefault: false } },
+      );
+    }
+
+    await address.save();
+    await User.findByIdAndUpdate(
+      req.user._id,
+      { $push: { addresses: address._id } },
+      { new: true },
+    );
+
+    res.status(201).send(address);
+  } catch (err) {
+    res.status(400).send(err);
+  }
+};
+
+const loadAddAddress = async (req, res) => {
+  try {
+    const addresses = await Address.find({ userId: req.user._id });
+    res.send(addresses);
+  } catch (err) {
+    res.status(500).send();
+  }
+};
+
+const updateAddress = async (req, res) => {
+  try {
+    console.log("Received update for address:", req.params.id); // Debug log
+    console.log("Update data:", req.body); // Debug log
+
+    const updates = req.body;
+    updates.isDefault =
+      updates.isDefault === "true" || updates.isDefault === true;
+
+    console.log("Processed updates:", updates); // Debug log
+
+    // First update the specified address
+    const address = await Address.findOneAndUpdate(
+      { _id: req.params.id, userId: req.user._id },
+      updates,
+      { new: true },
+    );
+
+    if (!address) {
+      console.log("Address not found"); // Debug log
+      return res.status(404).json({
+        success: false,
+        message: "Address not found",
+      });
+    }
+
+    // If this address is being set as default, update others
+    if (updates.isDefault) {
+      console.log("Updating other addresses to non-default"); // Debug log
+      const result = await Address.updateMany(
+        { userId: req.user._id, _id: { $ne: address._id } },
+        { $set: { isDefault: false } },
+      );
+      console.log("Update many result:", result); // Debug log
+    }
+
+    console.log("Update successful"); // Debug log
+    res.status(200).json({
+      success: true,
+      address,
+    });
+  } catch (err) {
+    console.error("Update address error:", err);
+    res.status(500).json({
+      success: false,
+      message: "Server error",
+    });
+  }
+};
+
+const deleteAddress = async (req, res) => {
+  try {
+    const address = await Address.findOneAndDelete({
+      _id: req.params.id,
+      userId: req.user._id,
+    });
+
+    if (!address) {
+      return res.status(404).send();
+    }
+
+    res.send(address);
+  } catch (error) {
+    res.status(500).send();
+  }
+};
+
+const getAddress = async (req, res) => {
+  try {
+    const address = await Address.findOne({
+      _id: req.params.id,
+      userId: req.user._id,
+    });
+
+    if (!address) {
+      return res.status(404).json({
+        success: false,
+        message: "Address not found",
+      });
+    }
+
+    res.status(200).json(address);
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      message: "Server error",
+    });
+  }
+};
+
 module.exports = {
   loadHomepage,
   pageNotFound,
@@ -496,4 +846,14 @@ module.exports = {
   resendResetOtp,
   addToCart,
   loadProductPage,
+  loadProfilePage,
+  updateProfile,
+  verifyEmailOtp,
+  updateProfileImage,
+  resendProfileOtp,
+  addAddress,
+  loadAddAddress,
+  updateAddress,
+  deleteAddress,
+  getAddress,
 };

@@ -5,6 +5,8 @@ const shopController = require("../controllers/user/shopController.js");
 const passport = require("passport");
 const featuredController = require("../controllers/user/featuredController.js");
 const newArrivalsController = require("../controllers/user/newArrivalsController.js");
+const { userAuth, adminAuth } = require("../middlewares/auth");
+const { uploadProfile } = require("../helpers/multer.js");
 
 router.get("/pageNotFound", userController.pageNotFound);
 
@@ -82,5 +84,29 @@ router.get(
   shopController.loadVintageAthletics,
 );
 router.get("/shop/collection/y2k-essentials", shopController.loadY2kEssentials);
+
+//Profile
+
+router.get("/profile", userAuth, userController.loadProfilePage);
+router.post("/update-profile", userAuth, userController.updateProfile);
+router.post("/verify-email-otp", userController.verifyEmailOtp);
+router.post(
+  "/update-profile-image",
+  userAuth,
+  uploadProfile,
+  userController.updateProfileImage,
+);
+router.post("/resend-profile-otp", userController.resendProfileOtp);
+
+//Address
+
+router.post("/addresses", userAuth, userController.addAddress);
+
+router.get("/addresses", userAuth, userController.loadAddAddress);
+
+router.patch("/addresses/:id", userAuth, userController.updateAddress);
+
+router.delete("/addresses/:id", userAuth, userController.deleteAddress);
+router.get("/addresses/:id", userAuth, userController.getAddress);
 
 module.exports = router;

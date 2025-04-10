@@ -1,0 +1,1072 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My Profile - REVIVO</title>
+    <link href="/css/styles.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Henny+Penny&family=Playfair+Display:wght@400;500;600&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+      .profile-bg {
+        background-image: url('/Images/images/OLD_PAPER_TEXTURE.jpg');
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        min-height: 100vh;
+        position: relative;
+      }
+      .profile-tab {
+        transition: all 0.3s ease;
+      }
+      .profile-tab:hover {
+        background-color: rgba(44, 44, 44, 0.05);
+      }
+      .profile-tab.active {
+        background-color: rgba(44, 44, 44, 0.1);
+        border-left: 3px solid #2C2C2C;
+      }
+      .edit-icon {
+        background-color: #2C2C2C;
+        padding: 6px;
+        border-radius: 50%;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+      }
+      .edit-icon:hover {
+        background-color: #f8c78d;
+        transform: scale(1.1);
+      }
+      .cropper-view-box,
+      .cropper-face {
+        border-radius: 50%;
+      }
+      .cropper-view-box {
+        outline: 1px solid #2C2C2C;
+        box-shadow: 0 0 0 1px #39f;
+      }
+      .cropper-dashed,
+      .cropper-line,
+      .cropper-point {
+        display: none !important;
+      }
+      .cropper-container {
+        max-width: 100%;
+        height: auto;
+      }
+    </style>
+  </head>
+
+  <body class="profile-bg">
+    <%- include('../partials/user/header.ejs') %>
+
+    <div class="container mx-auto px-4 py-12">
+      <div class="flex flex-col md:flex-row gap-8">
+        <div class="w-full md:w-64 bg-white/70 rounded-lg shadow-md p-4 h-fit">
+          <div class="flex flex-col items-center py-4 border-b border-[#2C2C2C]/20">
+            <div class="relative w-24 h-24 rounded-full overflow-hidden mb-3">
+              <img 
+                src="<%= user.profileImage || '/Images/default-profile.jpg' %>" 
+                alt="Profile Image" 
+                class="w-full h-full object-cover profile-image-preview"
+                id="profileImagePreview"
+              >
+              <button 
+                class="absolute bottom-1 right-1 edit-icon text-white"
+                onclick="openImageUploadModal()"
+              >
+                <i class="fas fa-camera text-sm"></i>
+              </button>
+            </div>
+            <h3 class="font-medium text-lg text-[#2C2C2C] profile-name"><%= user.name %></h3>
+            <p class="text-sm text-[#2C2C2C]/70 profile-email"><%= user.email %></p>
+          </div>
+
+          <nav class="mt-4 space-y-1">
+            <a href="#profile" class="block px-4 py-3 profile-tab active" onclick="switchTab('profile')">
+              <i class="fas fa-user mr-3 text-[#2C2C2C]/80"></i> Profile Details
+            </a>
+            <a href="#edit-profile" class="block px-4 py-3 profile-tab" onclick="switchTab('edit-profile')">
+              <i class="fas fa-edit mr-3 text-[#2C2C2C]/80"></i> Edit Profile
+            </a>
+            <a href="#addresses" class="block px-4 py-3 profile-tab" onclick="switchTab('addresses')">
+              <i class="fas fa-map-marker-alt mr-3 text-[#2C2C2C]/80"></i> My Addresses
+            </a>
+            <a href="#orders" class="block px-4 py-3 profile-tab" onclick="switchTab('orders')">
+              <i class="fas fa-shopping-bag mr-3 text-[#2C2C2C]/80"></i> My Orders
+            </a>
+            <a href="#change-password" class="block px-4 py-3 profile-tab" onclick="switchTab('change-password')">
+              <i class="fas fa-lock mr-3 text-[#2C2C2C]/80"></i> Change Password
+            </a>
+            <a href="/logout" class="block px-4 py-3 profile-tab text-red-600 hover:bg-red-50">
+              <i class="fas fa-sign-out-alt mr-3"></i> Logout
+            </a>
+          </nav>
+        </div>
+
+        <div class="flex-1">
+          <!-- Profile Details (Read-only) -->
+          <div id="profile-section" class="tab-content bg-white/70 rounded-lg shadow-md p-6">
+            <h2 class="text-2xl font-henny text-[#2C2C2C] mb-6">Profile Details</h2>
+            <div class="space-y-4">
+              <div>
+                <label class="block text-sm font-medium text-[#2C2C2C]/80 mb-1">Full Name</label>
+                <p class="text-[#2C2C2C] profile-name-display"><%= user.name %></p>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-[#2C2C2C]/80 mb-1">Email</label>
+                <p class="text-[#2C2C2C] profile-email-display"><%= user.email %></p>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-[#2C2C2C]/80 mb-1">Phone</label>
+                <p class="text-[#2C2C2C] profile-phone-display"><%= user.phone || 'Not provided' %></p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Edit Profile -->
+          <div id="edit-profile-section" class="tab-content hidden bg-white/70 rounded-lg shadow-md p-6">
+            <h2 class="text-2xl font-henny text-[#2C2C2C] mb-6">Edit Profile</h2>
+            <form id="profileForm" class="space-y-4">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-sm font-medium text-[#2C2C2C]/80 mb-1">Full Name</label>
+                  <input 
+                    type="text" 
+                    name="name" 
+                    value="<%= user.name %>" 
+                    class="w-full p-3 border border-[#2C2C2C]/30 rounded-md focus:outline-none focus:ring-1 focus:ring-[#2C2C2C]"
+                  >
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-[#2C2C2C]/80 mb-1">Email</label>
+                  <input 
+                    type="email" 
+                    name="email" 
+                    value="<%= user.email %>" 
+                    class="w-full p-3 border border-[#2C2C2C]/30 rounded-md focus:outline-none focus:ring-1 focus:ring-[#2C2C2C]"
+                  >
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-[#2C2C2C]/80 mb-1">Phone</label>
+                  <input 
+                    type="tel" 
+                    name="phone" 
+                    value="<%= user.phone || '' %>" 
+                    class="w-full p-3 border border-[#2C2C2C]/30 rounded-md focus:outline-none focus:ring-1 focus:ring-[#2C2C2C]"
+                  >
+                </div>
+              </div>
+              <div class="pt-4">
+                <button 
+                  type="submit" 
+                  class="px-6 py-2 bg-[#2C2C2C] text-white rounded-md hover:bg-[#1a1a1a] transition-colors"
+                >
+                  Save Changes
+                </button>
+              </div>
+            </form>
+          </div>
+
+          <!-- My Addresses -->
+          <div id="addresses-section" class="tab-content hidden bg-white/70 rounded-lg shadow-md p-6">
+            <div class="flex justify-between items-center mb-6">
+              <h2 class="text-2xl font-henny text-[#2C2C2C]">My Addresses</h2>
+              <button 
+                onclick="openAddressModal()"
+                class="px-4 py-2 bg-[#2C2C2C] text-white rounded-md hover:bg-[#1a1a1a] transition-colors text-sm"
+              >
+                <i class="fas fa-plus mr-2"></i> Add New Address
+              </button>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <% if (user.addresses && user.addresses.length > 0) { %>
+                <% user.addresses.forEach(address => { %>
+                  <div class="border border-[#2C2C2C]/20 rounded-lg p-4 relative">
+                    <% if (address.isDefault) { %>
+                      <span class="absolute top-2 right-2 bg-[#f8c78d] text-[#2C2C2C] text-xs px-2 py-1 rounded">Default</span>
+                    <% } %>
+                    <h3 class="font-medium text-lg mb-2"><%= address.name %> (<%= address.addressType %>)</h3>
+                    <p class="text-sm text-[#2C2C2C]/80 mb-1"><%= address.address %></p>
+                    <p class="text-sm text-[#2C2C2C]/80 mb-1"><%= address.city %>, <%= address.state %> - <%= address.pincode %></p>
+<p class="text-sm text-[#2C2C2C]/80 mb-3">
+          Phone: <%= address.phone %>
+          <% if (address.altPhone) { %>
+            <br>Alt. Phone: <%= address.altPhone %>
+          <% } %>
+        </p>
+                    <div class="flex gap-2">
+                      <button 
+                        onclick="editAddress('<%= address._id %>')"
+                        class="px-3 py-1 border border-[#2C2C2C] text-[#2C2C2C] rounded hover:bg-[#2C2C2C] hover:text-white transition-colors text-xs"
+                      >
+                        Edit
+                      </button>
+                      <% if (!address.isDefault) { %>
+                        <button 
+                          onclick="setDefaultAddress('<%= address._id %>')"
+                          class="px-3 py-1 border border-[#2C2C2C] text-[#2C2C2C] rounded hover:bg-[#2C2C2C] hover:text-white transition-colors text-xs"
+                        >
+                          Set Default
+                        </button>
+                        <button 
+                          onclick="deleteAddress('<%= address._id %>')"
+                          class="px-3 py-1 border border-red-500 text-red-500 rounded hover:bg-red-500 hover:text-white transition-colors text-xs"
+                        >
+                          Delete
+                        </button>
+                      <% } %>
+                    </div>
+                  </div>
+                <% }); %>
+              <% } else { %>
+                <div class="col-span-full text-center py-8">
+                  <i class="fas fa-map-marker-alt text-4xl text-[#2C2C2C]/30 mb-4"></i>
+                  <p class="text-[#2C2C2C]/70">You haven't added any addresses yet.</p>
+                </div>
+              <% } %>
+            </div>
+          </div>
+
+          <!-- My Orders -->
+          <div id="orders-section" class="tab-content hidden bg-white/70 rounded-lg shadow-md p-6">
+            <h2 class="text-2xl font-henny text-[#2C2C2C] mb-6">My Orders</h2>
+            <% if (user.orders && user.orders.length > 0) { %>
+              <div class="space-y-6">
+                <% user.orders.forEach(order => { %>
+                  <div class="border border-[#2C2C2C]/20 rounded-lg p-4">
+                    <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-4">
+                      <div>
+                        <h3 class="font-medium">Order #<%= order.orderId %></h3>
+                        <p class="text-sm text-[#2C2C2C]/70">
+                          Placed on <%= new Date(order.createdAt).toLocaleDateString() %>
+                        </p>
+                      </div>
+                      <div class="mt-2 md:mt-0">
+                        <span class="px-3 py-1 rounded-full text-xs 
+                          <%= order.status === 'Delivered' ? 'bg-green-100 text-green-800' : 
+                             order.status === 'Cancelled' ? 'bg-red-100 text-red-800' : 
+                             'bg-yellow-100 text-yellow-800' %>">
+                          <%= order.status %>
+                        </span>
+                      </div>
+                    </div>
+                    <div class="border-t border-[#2C2C2C]/10 pt-4">
+                      <% order.items.forEach(item => { %>
+                        <div class="flex gap-4 mb-4">
+                          <div class="w-20 h-20 bg-gray-100 rounded overflow-hidden">
+                            <img 
+                              src="<%= item.product.productImage[0] %>" 
+                              alt="<%= item.product.productName %>"
+                              class="w-full h-full object-contain"
+                              onerror="this.src='/Images/placeholder.jpg'"
+                            >
+                          </div>
+                          <div class="flex-1">
+                            <h4 class="font-medium"><%= item.product.productName %></h4>
+                            <p class="text-sm text-[#2C2C2C]/70">Qty: <%= item.quantity %></p>
+                            <p class="text-sm font-medium">$<%= item.price %></p>
+                          </div>
+                        </div>
+                      <% }); %>
+                    </div>
+                    <div class="flex justify-between items-center border-t border-[#2C2C2C]/10 pt-4">
+                      <p class="font-medium">Total: $<%= order.totalAmount %></p>
+                      <% if (order.status !== 'Cancelled' && order.status !== 'Delivered') { %>
+                        <button 
+                          onclick="cancelOrder('<%= order._id %>')"
+                          class="px-4 py-2 border border-red-500 text-red-500 rounded-md hover:bg-red-500 hover:text-white transition-colors text-sm"
+                        >
+                          Cancel Order
+                        </button>
+                      <% } %>
+                    </div>
+                  </div>
+                <% }); %>
+              </div>
+            <% } else { %>
+              <div class="text-center py-12">
+                <i class="fas fa-shopping-bag text-4xl text-[#2C2C2C]/30 mb-4"></i>
+                <p class="text-[#2C2C2C]/70 mb-6">You haven't placed any orders yet.</p>
+                <a 
+                  href="/shop" 
+                  class="px-6 py-2 bg-[#2C2C2C] text-white rounded-md hover:bg-[#1a1a1a] transition-colors"
+                >
+                  Start Shopping
+                </a>
+              </div>
+            <% } %>
+          </div>
+
+          <!-- Change Password -->
+          <div id="change-password-section" class="tab-content hidden bg-white/70 rounded-lg shadow-md p-6">
+            <h2 class="text-2xl font-henny text-[#2C2C2C] mb-6">Change Password</h2>
+            <form id="changePasswordForm" class="space-y-4 max-w-md">
+              <div>
+                <label class="block text-sm font-medium text-[#2C2C2C]/80 mb-1">Current Password</label>
+                <div class="relative">
+                  <input 
+                    type="password" 
+                    name="currentPassword" 
+                    class="w-full p-3 border border-[#2C2C2C]/30 rounded-md focus:outline-none focus:ring-1 focus:ring-[#2C2C2C]"
+                    required
+                  >
+                  <button 
+                    type="button" 
+                    class="absolute right-3 top-3 text-[#2C2C2C]/50 hover:text-[#2C2C2C]"
+                    onclick="togglePasswordVisibility(this)"
+                  >
+                    <i class="fas fa-eye"></i>
+                  </button>
+                </div>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-[#2C2C2C]/80 mb-1">New Password</label>
+                <div class="relative">
+                  <input 
+                    type="password" 
+                    name="newPassword" 
+                    class="w-full p-3 border border-[#2C2C2C]/30 rounded-md focus:outline-none focus:ring-1 focus:ring-[#2C2C2C]"
+                    required
+                  >
+                  <button 
+                    type="button" 
+                    class="absolute right-3 top-3 text-[#2C2C2C]/50 hover:text-[#2C2C2C]"
+                    onclick="togglePasswordVisibility(this)"
+                  >
+                    <i class="fas fa-eye"></i>
+                  </button>
+                </div>
+                <div class="text-xs text-[#2C2C2C]/70 mt-1">
+                  Password must be at least 8 characters long and contain a mix of letters, numbers, and symbols.
+                </div>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-[#2C2C2C]/80 mb-1">Confirm New Password</label>
+                <div class="relative">
+                  <input 
+                    type="password" 
+                    name="confirmPassword" 
+                    class="w-full p-3 border border-[#2C2C2C]/30 rounded-md focus:outline-none focus:ring-1 focus:ring-[#2C2C2C]"
+                    required
+                  >
+                  <button 
+                    type="button" 
+                    class="absolute right-3 top-3 text-[#2C2C2C]/50 hover:text-[#2C2C2C]"
+                    onclick="togglePasswordVisibility(this)"
+                  >
+                    <i class="fas fa-eye"></i>
+                  </button>
+                </div>
+              </div>
+              <div class="pt-2">
+                <button 
+                  type="submit" 
+                  class="px-6 py-2 bg-[#2C2C2C] text-white rounded-md hover:bg-[#1a1a1a] transition-colors"
+                >
+                  Update Password
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Address Modal -->
+    <div id="addressModal" class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center p-4">
+      <div class="bg-white rounded-lg shadow-xl w-full max-w-md max-h-[80vh] flex flex-col">
+        <div class="flex justify-between items-center border-b p-4">
+          <h3 class="text-lg font-medium" id="modalTitle">Add New Address</h3>
+          <button onclick="closeAddressModal()" class="text-[#2C2C2C]/50 hover:text-[#2C2C2C]">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <form id="addressForm" class="p-4 space-y-4 flex-1 overflow-y-auto">
+          <input type="hidden" id="addressId" name="id">
+          <div>
+            <label class="block text-sm font-medium text-[#2C2C2C]/80 mb-1">Address Type</label>
+            <select 
+              name="addressType" 
+              id="modalAddressType"
+              class="w-full p-3 border border-[#2C2C2C]/30 rounded-md focus:outline-none focus:ring-1 focus:ring-[#2C2C2C]"
+            >
+              <option value="HOME">Home</option>
+              <option value="WORK">Work</option>
+              <option value="OTHER">Other</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-[#2C2C2C]/80 mb-1">Full Name</label>
+            <input 
+              type="text" 
+              name="name" 
+              id="modalName",
+              class="w-full p-3 border border-[#2C2C2C]/30 rounded-md focus:outline-none focus:ring-1 focus:ring-[#2C2C2C]"
+              required
+            >
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-[#2C2C2C]/80 mb-1">Address</label>
+            <textarea 
+              name="address" 
+              id="modalAddress"
+              rows="3" 
+              class="w-full p-3 border border-[#2C2C2C]/30 rounded-md focus:outline-none focus:ring-1 focus:ring-[#2C2C2C]"
+              required
+            ></textarea>
+          </div>
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-medium text-[#2C2C2C]/80 mb-1">City</label>
+              <input 
+
+                type="text" 
+                id="modalCity"
+                name="city" 
+                class="w-full p-3 border border-[#2C2C2C]/30 rounded-md focus:outline-none focus:ring-1 focus:ring-[#2C2C2C]"
+                required
+              >
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-[#2C2C2C]/80 mb-1">State</label>
+              <input 
+              id="modalState"
+                type="text" 
+                name="state" 
+                class="w-full p-3 border border-[#2C2C2C]/30 rounded-md focus:outline-none focus:ring-1 focus:ring-[#2C2C2C]"
+                required
+              >
+            </div>
+          </div>
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-medium text-[#2C2C2C]/80 mb-1">Pincode</label>
+              <input 
+              id="modalPincode"
+                type="text" 
+                name="pincode" 
+                class="w-full p-3 border border-[#2C2C2C]/30 rounded-md focus:outline-none focus:ring-1 focus:ring-[#2C2C2C]"
+                required
+              >
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-[#2C2C2C]/80 mb-1">Phone</label>
+              <input 
+              id="modalPhone"
+                type="tel" 
+                name="phone" 
+                class="w-full p-3 border border-[#2C2C2C]/30 rounded-md focus:outline-none focus:ring-1 focus:ring-[#2C2C2C]"
+                required
+              >
+            </div>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-[#2C2C2C]/80 mb-1">Alternate Phone (Optional)</label>
+            <input 
+            id="modalAltPhone"
+              type="tel" 
+              name="altPhone" 
+              class="w-full p-3 border border-[#2C2C2C]/30 rounded-md focus:outline-none focus:ring-1 focus:ring-[#2C2C2C]"
+            >
+          </div>
+          <div class="flex items-center">
+            <input 
+              type="checkbox" 
+              id="isDefault" 
+              name="isDefault" 
+              value="true"
+              class="w-4 h-4 border-[#2C2C2C]/30 rounded focus:ring-[#2C2C2C]"
+            >
+            <label for="isDefault" class="ml-2 text-sm text-[#2C2C2C]/80">Set as default address</label>
+          </div>
+          <div class="flex justify-end gap-3 pt-4">
+            <button 
+              type="button" 
+              onclick="closeAddressModal()"
+              class="px-4 py-2 border border-[#2C2C2C] text-[#2C2C2C] rounded-md hover:bg-[#2C2C2C]/10 transition-colors"
+            >
+              Cancel
+            </button>
+            <button 
+              type="submit" 
+              class="px-4 py-2 bg-[#2C2C2C] text-white rounded-md hover:bg-[#1a1a1a] transition-colors"
+            >
+              Save Address
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- OTP Verification Modal -->
+
+<div id="otpModal" class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center p-4">
+  <div class="bg-white rounded-lg shadow-xl w-full max-w-md p-6">
+    <h3 class="text-lg font-medium text-[#2C2C2C] mb-4">Verify Your New Email</h3>
+    <p class="text-[#2C2C2C]/70 mb-4">An OTP has been sent to your new email address. Please enter it below:</p>
+    <form id="otpForm" class="space-y-4">
+      <input 
+        type="text" 
+        name="otp" 
+        placeholder="Enter OTP" 
+        class="w-full p-3 border border-[#2C2C2C]/30 rounded-md focus:outline-none focus:ring-1 focus:ring-[#2C2C2C]"
+      >
+      <div class="flex items-center justify-between">
+        <div class="text-sm text-[#2C2C2C]/70">
+          Time remaining: <span id="otpTimer">01:00</span>
+        </div>
+        <button 
+          type="button" 
+          id="resendOtpBtn" 
+          class="text-sm text-[#2C2C2C]/70 hover:text-[#2C2C2C] disabled:opacity-50 disabled:cursor-not-allowed"
+          disabled
+        >
+          Resend OTP
+        </button>
+      </div>
+      <div class="flex justify-end gap-3">
+        <button 
+          type="button" 
+          onclick="closeOtpModal()" 
+          class="px-4 py-2 border border-[#2C2C2C] text-[#2C2C2C] rounded-md hover:bg-[#2C2C2C]/10"
+        >
+          Cancel
+        </button>
+        <button 
+          type="submit" 
+          class="px-4 py-2 bg-[#2C2C2C] text-white rounded-md hover:bg-[#1a1a1a]"
+        >
+          Verify
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+       <!-- Image Upload & Crop Modal -->
+    <div id="imageUploadModal" class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center p-4">
+      <div class="bg-white rounded-lg shadow-xl w-full max-w-md max-h-[90vh] flex flex-col">
+        <div class="flex justify-between items-center border-b p-4">
+          <h3 class="text-lg font-medium">Upload Profile Image</h3>
+          <button onclick="closeImageUploadModal()" class="text-[#2C2C2C]/50 hover:text-[#2C2C2C]">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <div class="p-4 flex-1 overflow-y-auto">
+          <div class="mb-4">
+            <input type="file" id="imageUploadInput" accept="image/*" class="hidden">
+            <div class="flex justify-center">
+              <button 
+                onclick="document.getElementById('imageUploadInput').click()"
+                class="px-4 py-2 bg-[#2C2C2C] text-white rounded-md hover:bg-[#1a1a1a] transition-colors"
+              >
+                Select Image
+              </button>
+            </div>
+          </div>
+          <div class="mb-4">
+            <div id="imageCropperContainer" class="hidden">
+              <img id="imageToCrop" class="max-w-full max-h-[400px]">
+            </div>
+          </div>
+          <div class="flex justify-end gap-3">
+            <button 
+              onclick="closeImageUploadModal()"
+              class="px-4 py-2 border border-[#2C2C2C] text-[#2C2C2C] rounded-md hover:bg-[#2C2C2C]/10 transition-colors"
+            >
+              Cancel
+            </button>
+            <button 
+              id="uploadButton"
+              onclick="uploadCroppedImage()"
+              class="px-4 py-2 bg-[#2C2C2C] text-white rounded-md hover:bg-[#1a1a1a] transition-colors hidden"
+            >
+              Upload & Crop
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
+    <script>
+      // Tab switching functionality
+      function switchTab(tabName) {
+        document.querySelectorAll('.tab-content').forEach(content => content.classList.add('hidden'));
+        document.getElementById(`${tabName}-section`).classList.remove('hidden');
+        document.querySelectorAll('.profile-tab').forEach(tab => tab.classList.remove('active'));
+        document.querySelector(`.profile-tab[href="#${tabName}"]`).classList.add('active');
+      }
+
+      // Toggle password visibility
+      function togglePasswordVisibility(button) {
+        const input = button.parentElement.querySelector('input');
+        const icon = button.querySelector('i');
+        if (input.type === 'password') {
+          input.type = 'text';
+          icon.classList.remove('fa-eye');
+          icon.classList.add('fa-eye-slash');
+        } else {
+          input.type = 'password';
+          icon.classList.remove('fa-eye-slash');
+          icon.classList.add('fa-eye');
+        }
+      }
+
+      // OTP Modal functions
+      function showOtpModal() {
+        document.getElementById('otpModal').classList.remove('hidden');
+        startOtpTimer();
+      }
+
+document.getElementById('resendOtpBtn').addEventListener('click', async function() {
+  try {
+    const response = await fetch('/resend-profile-otp', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' }
+    });
+    
+    const data = await response.json();
+    if (data.success) {
+      showToast('New OTP has been sent!', 'success');
+      startOtpTimer();
+      this.disabled = true;
+    } else {
+      showToast(data.message || 'Failed to resend OTP', 'error');
+    }
+  } catch (error) {
+    console.error('Error resending OTP:', error);
+    showToast('Failed to resend OTP', 'error');
+  }
+});
+
+      function closeOtpModal() {
+        document.getElementById('otpModal').classList.add('hidden');
+clearInterval(otpCountdown);
+  remainingTime = 60;
+
+  document.getElementById('otpTimer').textContent = '01:00';
+  document.getElementById('resendOtpBtn').disabled = true;
+      }
+
+      // Address modal functions
+
+function openAddressModal(addressId = null) {
+  const modal = document.getElementById('addressModal');
+  const form = document.getElementById('addressForm');
+  const title = document.getElementById('modalTitle');
+  
+  if (addressId) {
+    title.textContent = 'Edit Address';
+    document.getElementById('addressId').value = addressId;
+    // Do NOT reset the form here
+  } else {
+    title.textContent = 'Add New Address';
+    form.reset();
+    document.getElementById('addressId').value = '';
+  }
+  
+  modal.classList.remove('hidden');
+}
+            function closeAddressModal() {
+        document.getElementById('addressModal').classList.add('hidden');
+      }
+
+      // Image Upload and Cropping
+      let cropper;
+
+      function openImageUploadModal() {
+        document.getElementById('imageUploadModal').classList.remove('hidden');
+        document.getElementById('imageCropperContainer').classList.add('hidden');
+        document.getElementById('uploadButton').classList.add('hidden');
+      }
+
+      function closeImageUploadModal() {
+        document.getElementById('imageUploadModal').classList.add('hidden');
+        if (cropper) {
+          cropper.destroy();
+          cropper = null;
+        }
+      }
+
+      // Handle file selection
+      document.getElementById('imageUploadInput').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = function(event) {
+          const image = document.getElementById('imageToCrop');
+          image.src = event.target.result;
+          
+          // Show the cropper container
+          const container = document.getElementById('imageCropperContainer');
+          container.classList.remove('hidden');
+          document.getElementById('uploadButton').classList.remove('hidden');
+          
+          // Initialize cropper if not already initialized
+          if (cropper) {
+            cropper.destroy();
+          }
+          
+          image.onload = function() {
+            cropper = new Cropper(image, {
+              aspectRatio: 1, // Square aspect ratio
+              viewMode: 1, // Restrict crop box to not exceed the size of the canvas
+              autoCropArea: 0.8, // 80% of the image will be initially cropped
+              responsive: true,
+              guides: false,
+              center: false,
+              highlight: false,
+              cropBoxMovable: true,
+              cropBoxResizable: true,
+              toggleDragModeOnDblclick: false,
+            });
+          };
+        };
+        reader.readAsDataURL(file);
+      });
+
+      // Upload the cropped image
+      function uploadCroppedImage() {
+        if (!cropper) {
+          showToast('Please select and crop an image first', 'error');
+          return;
+        }
+
+        // Get the cropped canvas
+        const canvas = cropper.getCroppedCanvas({
+          width: 500, // Set the output width
+          height: 500, // Set the output height
+          minWidth: 256,
+          minHeight: 256,
+          maxWidth: 1024,
+          maxHeight: 1024,
+          fillColor: '#fff',
+          imageSmoothingEnabled: true,
+          imageSmoothingQuality: 'high',
+        });
+
+        if (!canvas) {
+          showToast('Could not crop image', 'error');
+          return;
+        }
+
+        // Convert canvas to blob
+        canvas.toBlob(async (blob) => {
+          const formData = new FormData();
+          formData.append('profileImage', blob, 'profile.jpg');
+
+          try {
+            const response = await fetch('/update-profile-image', {
+              method: 'POST',
+              body: formData
+            });
+            
+            const data = await response.json();
+            
+            if (data.success) {
+              document.getElementById('profileImagePreview').src = data.imageUrl;
+              showToast('Profile image updated successfully!', 'success');
+              closeImageUploadModal();
+            } else {
+              showToast(data.message || 'Failed to update profile image', 'error');
+            }
+          } catch (error) {
+            console.error('Error:', error);
+            showToast('An error occurred while uploading', 'error');
+          }
+        }, 'image/jpeg', 0.9); // 90% quality JPEG
+      }
+
+// Profile Form Submission
+document.getElementById('profileForm').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  const formData = new FormData(this);
+  try {
+    const response = await fetch('/update-profile', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(Object.fromEntries(formData))
+    });
+    const data = await response.json();
+    console.log("Update profile response:", data); 
+    if (data.success) {
+      if (data.requiresOtp) { 
+        showOtpModal();
+      } else {
+        showToast('Profile updated successfully!', 'success');
+        updateProfileDisplay(data.user);
+        switchTab('profile');
+      }
+    } else {
+      showToast(data.message || 'Failed to update profile', 'error');
+    }
+  } catch (error) {
+    console.error('Fetch error:', error);
+    showToast('An error occurred while updating profile', 'error');
+  }
+});
+
+document.getElementById('otpForm').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  const formData = new FormData(this);
+  try {
+    const response = await fetch('/verify-email-otp', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(Object.fromEntries(formData))
+    });
+    const data = await response.json();
+    console.log("Verify OTP response:", data); 
+    if (data.success) {
+      showToast('Email verified and profile updated!', 'success');
+      closeOtpModal();
+      updateProfileDisplay(data.user);
+      switchTab('profile');
+    } else {
+      showToast(data.message || 'Invalid OTP', 'error');
+    }
+  } catch (error) {
+    console.error('Fetch error:', error);
+    showToast('An error occurred while verifying OTP', 'error');
+  }
+});
+                    let otpCountdown;
+       let remainingTime = 60;
+
+       function startOtpTimer(){
+          const timerDisplay = document.getElementById('otpTimer');
+          const resendButton = document.getElementById('resendOtpBtn');
+
+          remainingTime = 60;
+          resendButton.disabled = true;
+
+          otpCountdown = setInterval(()=>{
+              remainingTime--;  
+              const minutes = Math.floor(remainingTime/60);
+              const second = remainingTime%60;
+              timerDisplay.textContent = `${String(minutes).padStart(2,'0')}:${String(second).padStart(2,'0')}`;
+                
+                if(remainingTime<=0){
+                    clearInterval(otpCountdown);
+                    resendButton.disabled = false;
+                    timerDisplay.textContent = '00:00';
+                  }
+            },1000);
+
+        }
+
+function updateProfileDisplay(user) {
+    document.querySelector('.profile-name').textContent = user.name;
+    document.querySelector('.profile-email').textContent = user.email; 
+    document.querySelector('.profile-name-display').textContent = user.name;
+    document.querySelector('.profile-email-display').textContent = user.email;
+    document.querySelector('.profile-phone-display').textContent = user.phone || 'Not provided';
+}
+      
+
+      document.getElementById('changePasswordForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const formData = new FormData(this);
+        fetch('/change-password', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(Object.fromEntries(formData))
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            showToast('Password changed successfully!', 'success');
+            this.reset();
+          } else {
+            showToast(data.message || 'Failed to change password', 'error');
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          showToast('An error occurred', 'error');
+        });
+      });
+
+// Address Form Submission
+document.getElementById('addressForm').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  const formData = new FormData(this);
+  const addressId = document.getElementById('addressId').value;
+  
+  try {
+    const response = await fetch(addressId ? `/addresses/${addressId}` : '/addresses', {
+      method: addressId ? 'PATCH' : 'POST',
+      headers: { 
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      body: JSON.stringify(Object.fromEntries(formData))
+    });
+    
+    const data = await response.json();
+    
+    if (response.ok) {
+      showToast('Address saved successfully!', 'success');
+      closeAddressModal();
+      setTimeout(() => location.reload(), 1000);
+    } else {
+      showToast(data.message || 'Failed to save address', 'error');
+    }
+  } catch (error) {
+    console.error('Error:', error);
+    showToast('An error occurred while saving the address', 'error');
+  }
+});
+           // Toast Notification
+      function showToast(message, type = 'success') {
+        const toast = document.createElement('div');
+        toast.className = `fixed bottom-4 right-4 ${type === 'success' ? 'bg-[#2C2C2C]' : 'bg-red-500'} text-white px-6 py-3 rounded-lg shadow-xl transform translate-y-0 opacity-100 transition-all duration-300 z-50 flex items-center`;
+        toast.innerHTML = `
+          <span class="mr-2">
+            ${type === 'success' ? '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>' : '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>'}
+          </span>
+          <span class="font-montserrat">${message}</span>
+        `;
+        document.body.appendChild(toast);
+        setTimeout(() => {
+          toast.classList.add('translate-y-full', 'opacity-0');
+          setTimeout(() => toast.remove(), 300);
+        }, 3000);
+      }
+
+      // Address Actions
+    
+
+async function setDefaultAddress(addressId) {
+  try {
+    console.log("Setting address as default:", addressId);
+    
+    const response = await fetch(`/addresses/${addressId}`, {
+      method: 'PATCH',
+      headers: { 
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      body: JSON.stringify({ isDefault: true })
+    });
+    
+    const data = await response.json();
+    console.log("Response from server:", data);
+    
+    if (response.ok) {
+      showToast('Default address updated!', 'success');
+      setTimeout(() => location.reload(), 1000);
+    } else {
+      showToast(data.message || 'Failed to update default address', 'error');
+    }
+  } catch (error) {
+    console.error('Error:', error);
+    showToast('An error occurred', 'error');
+  }
+}
+
+
+async function deleteAddress(addressId) {
+  const { value: isConfirmed } = await Swal.fire({
+    title: 'Are you sure?',
+    text: "You won't be able to revert this!",
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#2C2C2C',
+    cancelButtonColor: '#d33',
+    confirmButtonText: 'Yes, delete it!'
+  });
+
+  if (isConfirmed) {
+    try {
+      const response = await fetch(`/addresses/${addressId}`, {
+        method: 'DELETE'
+      });
+      
+      const data = await response.json();
+      
+      if (response.ok) {
+        showToast('Address deleted successfully!', 'success');
+        setTimeout(() => location.reload(), 1000);
+      } else {
+        showToast(data.message || 'Failed to delete address', 'error');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      showToast('An error occurred while deleting the address', 'error');
+    }
+  }
+}
+
+
+
+async function editAddress(addressId) {
+  try {
+    const response = await fetch(`/addresses/${addressId}`, {
+      credentials: 'include'
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || 'Failed to fetch address');
+    }
+
+    const address = await response.json();
+
+    // Populate form fields
+    document.getElementById('addressId').value = address._id;
+    document.getElementById('modalAddressType').value = address.addressType;
+    document.getElementById('modalName').value = address.name;
+    document.getElementById('modalAddress').value = address.address;
+    document.getElementById('modalCity').value = address.city;
+    document.getElementById('modalState').value = address.state;
+    document.getElementById('modalPincode').value = address.pincode;
+    document.getElementById('modalPhone').value = address.phone;
+    document.getElementById('modalAltPhone').value = address.altPhone || '';
+    document.getElementById('isDefault').checked = address.isDefault;
+
+    openAddressModal(addressId);
+  } catch (error) {
+    console.error('Edit address error:', error);
+    showToast(error.message || 'Failed to load address details', 'error');
+  }
+}
+
+          // Cancel Order
+      // Cancel Order
+function cancelOrder(orderId) {
+  if (confirm('Are you sure you want to cancel this order?')) {
+    fetch('/cancel-order', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ orderId })
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.success) {
+        showToast('Order cancelled successfully!', 'success');
+        location.reload();
+      } else {
+        showToast(data.message || 'Failed to cancel order', 'error');
+      }
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      showToast('An error occurred while cancelling the order', 'error');
+    });
+  }
+}
+
+
+
+
+
+    </script>
+  </body>
+</html>    
+

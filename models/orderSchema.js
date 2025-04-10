@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const { v4: uuidv4 } = require("uuid");
 
-const orderSchema = new Schema({
+const orderSchema = new mongoose.Schema({
   orderId: {
     type: String,
     default: () => uuid(),
@@ -10,7 +10,7 @@ const orderSchema = new Schema({
   orderedItems: [
     {
       product: {
-        type: Schema.Types.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
         ref: "Product",
         required: true,
       },
@@ -37,7 +37,7 @@ const orderSchema = new Schema({
     required: true,
   },
   address: {
-    type: Schema.Types.ObjectId,
+    type: mongoose.Schema.Types.ObjectId,
     ref: "User",
     required: true,
   },

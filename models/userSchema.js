@@ -12,18 +12,18 @@ const userSchema = new mongoose.Schema({
   },
   phone: {
     type: String,
-    required: false,
-    unique: false,
-    sparse: true,
     default: null,
   },
   googleId: {
     type: String,
     unique: true,
+    sparse: true,
   },
   password: {
     type: String,
-    required: false,
+    required: function () {
+      return !this.googleId;
+    }, // Required only for local auth
   },
   isBlocked: {
     type: Boolean,
@@ -33,86 +33,39 @@ const userSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
-  cart: [
+  profileImage: {
+    type: String,
+    default: "/images/default-profile.jpg",
+  },
+  addresses: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Cart",
+      ref: "Address",
     },
   ],
-  wallet: {
-    type: Number,
-    default: 0,
-  },
-  orderHistory: [
+  orders: [
     {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Order",
     },
   ],
-  createdOn: {
-    type: Date,
-    default: Date.now,
-  },
-  referalCode: {
-    type: String,
-  },
-  redeemed: {
-    typed: Boolean,
-  },
-  redeemedUsers: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-    },
-  ],
-  searchHistory: [
-    {
-      category: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "category",
-      },
-      brand: {
-        type: String,
-      },
-      searchOn: {
-        type: Date,
-        default: Date.now,
-      },
-    },
-  ],
-  walletBalance: {
-    type: Number,
-    default: 0,
-  },
   wishlist: [
     {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Product",
     },
   ],
-  condition: {
-    type: String,
-    enum: ["excellent", "good", "fair"],
+  createdAt: {
+    type: Date,
+    default: Date.now,
   },
-  new: {
-    type: Boolean,
-    default: true,
-  },
-  featured: {
-    type: Boolean,
-    default: false,
-  },
-  heritage: String,
 });
 
 const User = mongoose.model("User", userSchema);
-
+// Index for Google ID
 User.collection.createIndex(
   { googleId: 1 },
-  {
-    unique: true,
-    partialFilterExpression: { googleId: { $type: "string" } },
-  },
+  { unique: true, partialFilterExpression: { googleId: { $type: "string" } } },
 );
 
 module.exports = User;

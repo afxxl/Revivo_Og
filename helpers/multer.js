@@ -74,6 +74,20 @@ const categoryStorage = multer.diskStorage({
   },
 });
 
+const profileStorage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    const dir = path.join(__dirname, "../public/uploads/profile-images");
+    ensureDirectoryExists(dir);
+    cb(null, dir);
+  },
+  filename: function (req, file, cb) {
+    const uniqueSuffix = Date.now() + "_" + Math.round(Math.random() * 1e9);
+    const ext = path.extname(file.originalname) || ".jpg";
+
+    cb(null, "profile-" + uniqueSuffix + ext);
+  },
+});
+
 module.exports = {
   uploadBrand: uploadBrand.single("image"),
   uploadProduct: uploadProduct.array("images", 10),
@@ -82,4 +96,10 @@ module.exports = {
     fileFilter: fileFilter,
     limits: { fileSize: limits.fileSize },
   }).single("categoryImage"),
+
+  uploadProfile: multer({
+    storage: profileStorage,
+    fileFilter: fileFilter,
+    limits: { fileSize: 1024 * 1024 * 5 },
+  }).single("profileImage"),
 };
