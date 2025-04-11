@@ -537,20 +537,48 @@ const loadProfilePage = async (req, res) => {
       return res.redirect("/login");
     }
 
-    const user = await User.findById(req.session.user)
-      .populate("addresses")
-      .populate({
-        path: "orders",
-        populate: {
-          path: "items.product",
-          model: "Product",
-        },
-      })
-      .lean();
+    const userId = req.session.user;
+    const { search, ordersPage = 1 } = req.query;
+    const perPage = 5;
+    const skip = (ordersPage - 1) * perPage;
 
-    if (!user) {
-      return res.redirect("/login");
+    // Build the search query
+    let ordersQuery = { user: userId };
+    if (search) {
+      ordersQuery.$or = [
+        { orderId: { $regex: search, $options: "i" } },
+        { status: { $regex: search, $options: "i" } },
+        { "orderItems.product.productName": { $regex: search, $options: "i" } },
+      ];
     }
+
+    // Get orders with pagination and search
+    const [orders, totalOrders] = await Promise.all([
+      Order.find(ordersQuery)
+        .sort({ createdOn: -1 })
+        .skip(skip)
+        .limit(perPage)
+        .populate({
+          path: "orderItems.product",
+          select: "productName productImage salesPrice",
+        })
+        .populate("address")
+        .lean(),
+      Order.countDocuments(ordersQuery),
+    ]);
+
+    const totalPages = Math.ceil(totalOrders / perPage);
+
+    const user = await User.findById(userId).populate("addresses").lean();
+
+    // Add orders and pagination data to user object
+    user.orders = orders;
+    user.ordersCurrentPage = Number(ordersPage);
+    user.ordersTotal = totalOrders;
+    user.ordersTotalPages = totalPages;
+    user.ordersPerPage = perPage;
+    user.ordersSearch = search;
+
     res.render("profile", { user });
   } catch (err) {
     console.log("Error Loading Profile Page:", err);

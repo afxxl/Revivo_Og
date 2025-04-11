@@ -588,6 +588,9 @@ const createOrder = async (req, res) => {
     }
 
     await order.save();
+    await User.findByIdAndUpdate(userId, {
+      $push: { orders: order._id },
+    });
     await Cart.deleteOne({ userId });
 
     res.json({

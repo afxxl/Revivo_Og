@@ -231,77 +231,254 @@
             </div>
           </div>
 
-          <!-- My Orders -->
-          <div id="orders-section" class="tab-content hidden bg-white/70 rounded-lg shadow-md p-6">
-            <h2 class="text-2xl font-henny text-[#2C2C2C] mb-6">My Orders</h2>
-            <% if (user.orders && user.orders.length > 0) { %>
-              <div class="space-y-6">
-                <% user.orders.forEach(order => { %>
-                  <div class="border border-[#2C2C2C]/20 rounded-lg p-4">
-                    <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-4">
-                      <div>
-                        <h3 class="font-medium">Order #<%= order.orderId %></h3>
-                        <p class="text-sm text-[#2C2C2C]/70">
-                          Placed on <%= new Date(order.createdAt).toLocaleDateString() %>
-                        </p>
-                      </div>
-                      <div class="mt-2 md:mt-0">
-                        <span class="px-3 py-1 rounded-full text-xs 
-                          <%= order.status === 'Delivered' ? 'bg-green-100 text-green-800' : 
-                             order.status === 'Cancelled' ? 'bg-red-100 text-red-800' : 
-                             'bg-yellow-100 text-yellow-800' %>">
-                          <%= order.status %>
-                        </span>
-                      </div>
-                    </div>
-                    <div class="border-t border-[#2C2C2C]/10 pt-4">
-                      <% order.items.forEach(item => { %>
-                        <div class="flex gap-4 mb-4">
-                          <div class="w-20 h-20 bg-gray-100 rounded overflow-hidden">
-                            <img 
-                              src="<%= item.product.productImage[0] %>" 
-                              alt="<%= item.product.productName %>"
-                              class="w-full h-full object-contain"
-                              onerror="this.src='/Images/placeholder.jpg'"
-                            >
-                          </div>
-                          <div class="flex-1">
-                            <h4 class="font-medium"><%= item.product.productName %></h4>
-                            <p class="text-sm text-[#2C2C2C]/70">Qty: <%= item.quantity %></p>
-                            <p class="text-sm font-medium">$<%= item.price %></p>
-                          </div>
-                        </div>
-                      <% }); %>
-                    </div>
-                    <div class="flex justify-between items-center border-t border-[#2C2C2C]/10 pt-4">
-                      <p class="font-medium">Total: $<%= order.totalAmount %></p>
-                      <% if (order.status !== 'Cancelled' && order.status !== 'Delivered') { %>
-                        <button 
-                          onclick="cancelOrder('<%= order._id %>')"
-                          class="px-4 py-2 border border-red-500 text-red-500 rounded-md hover:bg-red-500 hover:text-white transition-colors text-sm"
-                        >
-                          Cancel Order
-                        </button>
-                      <% } %>
-                    </div>
-                  </div>
-                <% }); %>
-              </div>
-            <% } else { %>
-              <div class="text-center py-12">
-                <i class="fas fa-shopping-bag text-4xl text-[#2C2C2C]/30 mb-4"></i>
-                <p class="text-[#2C2C2C]/70 mb-6">You haven't placed any orders yet.</p>
-                <a 
-                  href="/shop" 
-                  class="px-6 py-2 bg-[#2C2C2C] text-white rounded-md hover:bg-[#1a1a1a] transition-colors"
-                >
-                  Start Shopping
-                </a>
-              </div>
-            <% } %>
-          </div>
 
-          <!-- Change Password -->
+<!-- My Orders -->
+<div id="orders-section" class="tab-content hidden bg-white/70 rounded-lg shadow-md p-6">
+  <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+    <h2 class="text-2xl font-henny text-[#2C2C2C]">Order History</h2>
+    
+    <!-- Search Form -->
+    <div class="flex items-center gap-2 w-full md:w-96">
+      <form id="ordersSearchForm" class="flex-1 flex items-center gap-2">
+        <input 
+          type="text" 
+          name="search" 
+          placeholder="Search by product name..." 
+          class="w-full p-2 border border-[#2C2C2C]/30 rounded-md focus:outline-none focus:ring-1 focus:ring-[#2C2C2C]"
+          value="<%= user.ordersSearch || '' %>"
+        >
+        <button 
+          type="submit" 
+          class="p-2 text-[#2C2C2C] hover:text-[#2C2C2C]/70 transition-colors"
+        >
+          <i class="fas fa-search"></i>
+        </button>
+        <% if (user.ordersSearch) { %>
+          <a 
+            href="?ordersPage=1#orders"
+            class="p-2 text-red-500 hover:text-red-600 transition-colors flex items-center"
+            title="Clear search"
+          >
+            <i class="fas fa-times mr-1"></i>
+            <span class="text-sm">Cancel</span>
+          </a>
+        <% } %>
+      </form>
+    </div>
+  </div>
+
+  <% if (user.orders && user.orders.length > 0) { %>
+    <!-- Orders Container -->
+    <div class="space-y-4 md:overflow-x-auto">
+      <!-- Desktop Table -->
+      <table class="hidden md:table w-full">
+        <thead class="border-b border-[#2C2C2C]/20">
+          <tr class="text-sm text-[#2C2C2C]/80">
+            <th class="text-left py-3 px-2">Order ID</th>
+            <th class="text-left py-3 px-2">Products</th>
+            <th class="text-left py-3 px-2">Order Date</th>
+            <th class="text-left py-3 px-2">Amount</th>
+            <th class="text-left py-3 px-2">Status</th>
+            <th class="text-right py-3 px-2">Actions</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <% user.orders.forEach(order => { %>
+            <tr class="border-b border-[#2C2C2C]/10 hover:bg-gray-50 transition-colors">
+              <!-- Order ID -->
+              <td class="py-4 px-2">
+                <span class="text-sm font-mono text-[#2C2C2C]/70">
+                  <%= order.orderId %>
+                </span>
+              </td>
+
+              <!-- Product Images -->
+              <td class="py-4 px-2">
+                <div class="flex items-center">
+                  <div class="flex -space-x-2">
+                    <% order.orderItems.slice(0,3).forEach((item, index) => { %>
+                      <% if(item.product?.productImage?.length) { %>
+                        <img 
+                          src="<%= item.product.productImage[0] %>" 
+                          alt="<%= item.product.productName %>"
+                          class="w-10 h-10 object-cover rounded border <%= index > 0 ? 'opacity-75' : '' %>"
+                          onerror="this.src='/Images/placeholder.jpg'"
+                        >
+                      <% } %>
+                    <% }) %>
+                  </div>
+                  <% if (order.orderItems.length > 3) { %>
+                    <span class="ml-2 text-sm text-[#2C2C2C]/70">
+                      +<%= order.orderItems.length - 3 %> more
+                    </span>
+                  <% } %>
+                </div>
+              </td>
+
+              <!-- Order Date -->
+              <td class="py-4 px-2">
+                <span class="text-sm">
+                  <%= order.createdOn.toLocaleDateString('en-US', { 
+                    year: 'numeric', 
+                    month: 'short', 
+                    day: 'numeric' 
+                  }) %>
+                </span>
+              </td>
+
+              <!-- Amount -->
+              <td class="py-4 px-2">
+                <span class="font-medium">$<%= order.finalAmount?.toFixed(2) %></span>
+              </td>
+
+              <!-- Status -->
+              <td class="py-4 px-2">
+                <span class="px-3 py-1 rounded-full text-xs 
+                  <%= order.status === 'Delivered' ? 'bg-green-100 text-green-800' : 
+                     order.status === 'Cancelled' ? 'bg-red-100 text-red-800' : 
+                     'bg-yellow-100 text-yellow-800' %>">
+                  <%= order.status %>
+                </span>
+              </td>
+
+              <!-- Actions -->
+              <td class="py-4 px-2 text-right">
+                <a 
+                  href="/orders/<%= order.orderId %>" 
+                  class="inline-flex items-center text-sm text-[#2C2C2C] hover:text-[#2C2C2C]/70"
+                >
+                  Details
+                  <i class="fas fa-chevron-right ml-1 text-xs"></i>
+                </a>
+              </td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+
+      <!-- Mobile List -->
+      <div class="md:hidden space-y-4">
+        <% user.orders.forEach(order => { %>
+          <div class="border-b border-[#2C2C2C]/10 pb-4">
+            <div class="grid grid-cols-2 gap-2 text-sm mb-2">
+              <div class="text-[#2C2C2C]/70">Order ID:</div>
+              <div class="font-mono text-sm"><%= order.orderId %></div>
+            </div>
+
+            <!-- Product Images -->
+            <div class="flex items-center mb-3">
+              <div class="flex -space-x-2">
+                <% order.orderItems.slice(0,3).forEach((item, index) => { %>
+                  <% if(item.product?.productImage?.length) { %>
+                    <img 
+                      src="<%= item.product.productImage[0] %>" 
+                      alt="<%= item.product.productName %>"
+                      class="w-8 h-8 object-cover rounded border <%= index > 0 ? 'opacity-75' : '' %>"
+                      onerror="this.src='/Images/placeholder.jpg'"
+                    >
+                  <% } %>
+                <% }) %>
+              </div>
+              <% if (order.orderItems.length > 3) { %>
+                <span class="ml-2 text-sm text-[#2C2C2C]/70">
+                  +<%= order.orderItems.length - 3 %> more
+                </span>
+              <% } %>
+            </div>
+
+            <!-- Order Details -->
+            <div class="grid grid-cols-2 gap-2 text-sm">
+              <div class="text-[#2C2C2C]/70">Order Date:</div>
+              <div>
+                <%= order.createdOn.toLocaleDateString('en-US', { 
+                  year: 'numeric', 
+                  month: 'short', 
+                  day: 'numeric' 
+                }) %>
+              </div>
+              
+              <div class="text-[#2C2C2C]/70">Amount:</div>
+              <div class="font-medium">$<%= order.finalAmount?.toFixed(2) %></div>
+              
+              <div class="text-[#2C2C2C]/70">Status:</div>
+              <div>
+                <span class="px-2 py-1 rounded-full text-xs 
+                  <%= order.status === 'Delivered' ? 'bg-green-100 text-green-800' : 
+                     order.status === 'Cancelled' ? 'bg-red-100 text-red-800' : 
+                     'bg-yellow-100 text-yellow-800' %>">
+                  <%= order.status %>
+                </span>
+              </div>
+            </div>
+
+            <!-- Action -->
+            <div class="mt-3 text-right">
+              <a 
+                href="/orders/<%= order.orderId %>" 
+                class="inline-flex items-center text-sm text-[#2C2C2C] hover:text-[#2C2C2C]/70"
+              >
+                Details
+                <i class="fas fa-chevron-right ml-1 text-xs"></i>
+              </a>
+            </div>
+          </div>
+        <% }) %>
+      </div>
+    </div>
+
+    <!-- Pagination Controls -->
+    <div class="mt-6 pt-4 border-t border-[#2C2C2C]/10">
+      <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+        <div class="text-sm text-[#2C2C2C]/80">
+          Showing <%= (user.ordersCurrentPage - 1) * user.ordersPerPage + 1 %> - 
+          <%= Math.min(user.ordersCurrentPage * user.ordersPerPage, user.ordersTotal) %> 
+          of <%= user.ordersTotal %> orders
+        </div>
+        
+        <div class="flex gap-2">
+          <a 
+            href="?ordersPage=<%= user.ordersCurrentPage - 1 %><% if (user.ordersSearch) { %>&search=<%= user.ordersSearch %><% } %>#orders"
+            class="px-3 py-1 border border-[#2C2C2C]/30 rounded-md <%= user.ordersCurrentPage === 1 ? 'opacity-50 cursor-not-allowed' : 'hover:bg-[#2C2C2C]/10' %>"
+            <%= user.ordersCurrentPage === 1 ? 'tabindex="-1" aria-disabled="true"' : '' %>
+          >
+            Previous
+          </a>
+          <a 
+            href="?ordersPage=<%= user.ordersCurrentPage + 1 %><% if (user.ordersSearch) { %>&search=<%= user.ordersSearch %><% } %>#orders"
+            class="px-3 py-1 border border-[#2C2C2C]/30 rounded-md <%= user.ordersCurrentPage === user.ordersTotalPages ? 'opacity-50 cursor-not-allowed' : 'hover:bg-[#2C2C2C]/10' %>"
+            <%= user.ordersCurrentPage === user.ordersTotalPages ? 'tabindex="-1" aria-disabled="true"' : '' %>
+          >
+            Next
+          </a>
+        </div>
+      </div>
+    </div>
+<% } else { %>
+  <div class="text-center py-12">
+    <i class="fas fa-shopping-bag text-4xl text-[#2C2C2C]/30 mb-4"></i>
+    <% if (user.ordersSearch) { %>
+      <p class="text-[#2C2C2C]/70 mb-6">No orders found matching "<%= user.ordersSearch %>"</p>
+      <button 
+        onclick="clearSearch()"
+        class="px-6 py-2 bg-[#2C2C2C] text-white rounded-md hover:bg-[#1a1a1a] transition-colors"
+      >
+        Clear Search
+      </button>
+    <% } else { %>
+      <p class="text-[#2C2C2C]/70 mb-6">You haven't placed any orders yet.</p>
+      <a 
+        href="/shop" 
+        class="px-6 py-2 bg-[#2C2C2C] text-white rounded-md hover:bg-[#1a1a1a] transition-colors"
+      >
+        Start Shopping
+      </a>
+    <% } %>
+  </div>
+<% } %>
+
+  </div>
+                 <!-- Change Password -->
           <div id="change-password-section" class="tab-content hidden bg-white/70 rounded-lg shadow-md p-6">
             <h2 class="text-2xl font-henny text-[#2C2C2C] mb-6">Change Password</h2>
             <form id="changePasswordForm" class="space-y-4 max-w-md">
@@ -1098,6 +1275,19 @@ function cancelOrder(orderId) {
       showToast('An error occurred while cancelling the order', 'error');
     });
   }
+}
+
+document.getElementById('ordersSearchForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+  const search = this.search.value;
+  const url = new URL(window.location);
+  url.searchParams.set('search', search);
+  url.searchParams.set('ordersPage', 1);
+  window.location = url.toString();
+});
+
+function clearSearch() {
+  window.location = "?ordersPage=1#orders";
 }
 
 
