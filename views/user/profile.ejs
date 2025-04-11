@@ -593,13 +593,51 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
     <script>
+
+document.addEventListener('DOMContentLoaded', () => {
+    // Auto-select tab based on URL hash
+    const hash = window.location.hash.substring(1);
+    const validTabs = ['profile', 'edit-profile', 'addresses', 'orders', 'change-password'];
+    
+    if (validTabs.includes(hash)) {
+        switchTab(hash);
+    } else if (sessionStorage.getItem('autoScrollToOrders')) {
+        switchTab('orders');
+        sessionStorage.removeItem('autoScrollToOrders');
+    } else {
+        // Default to profile tab if no hash
+        switchTab('profile');
+    }
+
+    // Scroll to section after tab switch
+    if (hash || sessionStorage.getItem('autoScrollToOrders')) {
+        setTimeout(() => {
+            document.getElementById(`${hash || 'orders'}-section`).scrollIntoView({
+                behavior: 'auto',
+                block: 'start'
+            });
+        }, 100);
+    }
+
+    // Initialize default address selection
+    const defaultAddress = document.querySelector('.address-card [data-is-default="true"]');
+    if (defaultAddress) {
+        selectAddress(defaultAddress.closest('.address-card'));
+    }
+});
+
+
       // Tab switching functionality
-      function switchTab(tabName) {
-        document.querySelectorAll('.tab-content').forEach(content => content.classList.add('hidden'));
-        document.getElementById(`${tabName}-section`).classList.remove('hidden');
-        document.querySelectorAll('.profile-tab').forEach(tab => tab.classList.remove('active'));
-        document.querySelector(`.profile-tab[href="#${tabName}"]`).classList.add('active');
-      }
+     
+function switchTab(tabName) {
+    // Update URL hash without page reload
+    history.replaceState(null, null, `#${tabName}`);
+    
+    document.querySelectorAll('.tab-content').forEach(content => content.classList.add('hidden'));
+    document.getElementById(`${tabName}-section`).classList.remove('hidden');
+    document.querySelectorAll('.profile-tab').forEach(tab => tab.classList.remove('active'));
+    document.querySelector(`.profile-tab[href="#${tabName}"]`).classList.add('active');
+}
 
       // Toggle password visibility
       function togglePasswordVisibility(button) {

@@ -1,16 +1,23 @@
 const mongoose = require("mongoose");
-const { v4: uuidv4 } = require("uuid");
+const { Schema } = mongoose;
+const { customAlphabet } = require("nanoid");
+const nanoid = customAlphabet("ABCDEFXYZ1234567890", 5);
 
-const orderSchema = new mongoose.Schema({
+const orderSchema = new Schema({
+  user: {
+    type: Schema.Types.ObjectId,
+    ref: "User",
+    required: true,
+  },
   orderId: {
     type: String,
-    default: () => uuid(),
+    default: () => `ORD-${nanoid()}`,
     unique: true,
   },
-  orderedItems: [
+  orderItems: [
     {
       product: {
-        type: mongoose.Schema.Types.ObjectId,
+        type: Schema.Types.ObjectId,
         ref: "Product",
         required: true,
       },
@@ -37,8 +44,8 @@ const orderSchema = new mongoose.Schema({
     required: true,
   },
   address: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
+    type: Schema.Types.ObjectId,
+    ref: "Address",
     required: true,
   },
   invoiceDate: {
@@ -49,13 +56,21 @@ const orderSchema = new mongoose.Schema({
     required: true,
     enum: [
       "Pending",
-      "Processing",
+      "Confirmed",
       "Shipped",
+      "Out for Delivery",
       "Delivered",
       "Cancelled",
       "Return Request",
       "Returned",
+      "Return Rejected",
     ],
+    default: "Pending",
+  },
+  paymentMethod: {
+    type: String,
+    enum: ["COD", "CARD", "PAYPAL", "WALLET"],
+    required: true,
   },
   createdOn: {
     type: Date,
@@ -66,19 +81,16 @@ const orderSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
-  paymentMethod: {
+  cancelReason: {
     type: String,
-    required: true,
-    enum: ["COD", "ONLINE", "WALLET"],
+    required: false,
   },
-  paymentStatus: {
+  returnReason: {
     type: String,
-    enum: ["PENDING", "PAID", "FAILED"],
-    default: "PENDING",
+    required: false,
   },
-  deliveryInstructions: String,
-  estimatedDeliveryDate: Date,
 });
+
 const Order = mongoose.model("Order", orderSchema);
 
 module.exports = Order;

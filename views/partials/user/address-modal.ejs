@@ -1,0 +1,124 @@
+<!-- views/partials/user/address-modal.ejs -->
+<div id="addressModal" class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-lg shadow-xl w-full max-w-md max-h-[80vh] flex flex-col">
+        <div class="flex justify-between items-center border-b p-4">
+            <h3 class="text-lg font-medium" id="modalTitle">Add New Address</h3>
+            <button onclick="closeAddressModal()" class="text-[#2C2C2C]/50 hover:text-[#2C2C2C]">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <form id="addressForm" class="p-4 space-y-4 flex-1 overflow-y-auto">
+            <input type="hidden" id="addressId" name="id">
+            <div>
+                <label class="block text-sm font-medium text-[#2C2C2C]/80 mb-1">Address Type</label>
+                <select 
+                    name="addressType" 
+                    id="modalAddressType"
+                    class="w-full p-3 border border-[#2C2C2C]/30 rounded-md focus:outline-none focus:ring-1 focus:ring-[#2C2C2C]"
+                >
+                    <option value="HOME">Home</option>
+                    <option value="WORK">Work</option>
+                    <option value="OTHER">Other</option>
+                </select>
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-[#2C2C2C]/80 mb-1">Full Name</label>
+                <input 
+                    type="text" 
+                    name="name" 
+                    id="modalName"
+                    class="w-full p-3 border border-[#2C2C2C]/30 rounded-md focus:outline-none focus:ring-1 focus:ring-[#2C2C2C]"
+                    required
+                >
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-[#2C2C2C]/80 mb-1">Address</label>
+                <textarea 
+                    name="address" 
+                    id="modalAddress"
+                    rows="3" 
+                    class="w-full p-3 border border-[#2C2C2C]/30 rounded-md focus:outline-none focus:ring-1 focus:ring-[#2C2C2C]"
+                    required
+                ></textarea>
+            </div>
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-[#2C2C2C]/80 mb-1">City</label>
+                    <input 
+                        type="text" 
+                        id="modalCity"
+                        name="city" 
+                        class="w-full p-3 border border-[#2C2C2C]/30 rounded-md focus:outline-none focus:ring-1 focus:ring-[#2C2C2C]"
+                        required
+                    >
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-[#2C2C2C]/80 mb-1">State</label>
+                    <input 
+                        type="text" 
+                        id="modalState"
+                        name="state" 
+                        class="w-full p-3 border border-[#2C2C2C]/30 rounded-md focus:outline-none focus:ring-1 focus:ring-[#2C2C2C]"
+                        required
+                    >
+                </div>
+            </div>
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-[#2C2C2C]/80 mb-1">Pincode</label>
+                    <input 
+                        type="text" 
+                        id="modalPincode"
+                        name="pincode" 
+                        class="w-full p-3 border border-[#2C2C2C]/30 rounded-md focus:outline-none focus:ring-1 focus:ring-[#2C2C2C]"
+                        required
+                    >
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-[#2C2C2C]/80 mb-1">Phone</label>
+                    <input 
+                        type="tel" 
+                        id="modalPhone"
+                        name="phone" 
+                        class="w-full p-3 border border-[#2C2C2C]/30 rounded-md focus:outline-none focus:ring-1 focus:ring-[#2C2C2C]"
+                        required
+                    >
+                </div>
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-[#2C2C2C]/80 mb-1">Alternate Phone (Optional)</label>
+                <input 
+                    type="tel" 
+                    id="modalAltPhone"
+                    name="altPhone" 
+                    class="w-full p-3 border border-[#2C2C2C]/30 rounded-md focus:outline-none focus:ring-1 focus:ring-[#2C2C2C]"
+                >
+            </div>
+            <div class="flex items-center">
+                <input 
+                    type="checkbox" 
+                    id="isDefault" 
+                    name="isDefault" 
+                    value="true"
+                    class="w-4 h-4 border-[#2C2C2C]/30 rounded focus:ring-[#2C2C2C]"
+                >
+                <label for="isDefault" class="ml-2 text-sm text-[#2C2C2C]/80">Set as default address</label>
+            </div>
+            <div class="flex justify-end gap-3 pt-4">
+                <button 
+                    type="button" 
+                    onclick="closeAddressModal()"
+                    class="px-4 py-2 border border-[#2C2C2C] text-[#2C2C2C] rounded-md hover:bg-[#2C2C2C]/10 transition-colors"
+                >
+                    Cancel
+                </button>
+                <button 
+                    type="submit" 
+                    class="px-4 py-2 bg-[#2C2C2C] text-white rounded-md hover:bg-[#1a1a1a] transition-colors"
+                >
+                    Save Address
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

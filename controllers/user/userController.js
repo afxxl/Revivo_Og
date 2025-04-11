@@ -7,6 +7,7 @@ const Brand = require("../../models/brandSchema.js");
 const Category = require("../../models/categorySchema.js");
 const Address = require("../../models/addressSchema.js");
 const Order = require("../../models/orderSchema.js");
+const Cart = require("../../models/cartSchema.js");
 
 const loadHomepage = async (req, res) => {
   try {
@@ -441,17 +442,63 @@ const resendResetOtp = async (req, res) => {
 const addToCart = async (req, res) => {
   try {
     const { productId } = req.body;
+    const userId = req.session.user;
 
-    if (!req.session.user) {
+    if (!userId) {
       return res.status(401).json({
         success: false,
         message: "Please login to add items to cart",
       });
     }
 
+    const product = await Product.findById(productId);
+    if (!product) {
+      return res.status(404).json({
+        success: false,
+        message: "Product not found",
+      });
+    }
+
+    if (product.status !== "Available" || product.stock < 1) {
+      return res.status(400).json({
+        success: false,
+        message: "Product is not Available",
+      });
+    }
+
+    let cart = await Cart.findOne({ userId });
+    if (!cart) {
+      cart = new Cart({ userId, items: [] });
+    }
+
+    const existingItem = cart.items.find(
+      (item) => item.productId.toString() === productId,
+    );
+
+    if (existingItem) {
+      if (existingItem.quantity >= product.stock) {
+        return res.status(400).json({
+          success: false,
+          message: "Maximum stock reached fro this item",
+        });
+      }
+      existingItem.quantity += 1;
+      existingItem.totalPrice = existingItem.quantity * product.salesPrice;
+    } else {
+      cart.items.push({
+        productId,
+        quantity: 1,
+        price: product.salesPrice,
+        totalPrice: product.salesPrice,
+      });
+    }
+
+    await cart.save();
+
     res.json({
       success: true,
       message: "Product added to cart successfully",
+      cartCount: cart.items.reduce((sum, item) => sum + item.quantity, 0),
     });
   } catch (error) {
     console.error("Error adding to cart:", error);
@@ -461,6 +508,7 @@ const addToCart = async (req, res) => {
     });
   }
 };
+
 const loadProductPage = async (req, res) => {
   try {
     const productId = req.params.id;

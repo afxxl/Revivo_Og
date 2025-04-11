@@ -7,6 +7,9 @@ const featuredController = require("../controllers/user/featuredController.js");
 const newArrivalsController = require("../controllers/user/newArrivalsController.js");
 const { userAuth, adminAuth } = require("../middlewares/auth");
 const { uploadProfile } = require("../helpers/multer.js");
+const getCartCount = require("../middlewares/cartCount.js");
+
+router.use(getCartCount);
 
 router.get("/pageNotFound", userController.pageNotFound);
 
@@ -108,5 +111,22 @@ router.patch("/addresses/:id", userAuth, userController.updateAddress);
 
 router.delete("/addresses/:id", userAuth, userController.deleteAddress);
 router.get("/addresses/:id", userAuth, userController.getAddress);
+
+//Cart
+
+router.get("/cart", userAuth, shopController.loadCartPage);
+router.post("/update-cart", userAuth, shopController.updateCart);
+router.post("/remove-from-cart", userAuth, shopController.removeFromCart);
+
+//checkout
+
+router.get("/checkout", userAuth, shopController.loadCheckoutPage);
+router.post("/create-order", userAuth, shopController.createOrder);
+
+router.get(
+  "/order-confirmation/:orderId",
+  userAuth,
+  shopController.loadOrderConfirmation,
+);
 
 module.exports = router;

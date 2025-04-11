@@ -227,7 +227,12 @@
                     <% } %>
                 </div>
                 
-                <a href="/cart" class="nav-link">BAG (0)</a>
+<a href="/cart" class="nav-link relative">
+  BAG 
+  <span id="cart-count" class="absolute -top-2 -right-2 bg-[#f8c78d] text-[#2C2C2C] text-xs rounded-full w-5 h-5 flex items-center justify-center">
+    <%= locals.cartCount || 0 %>
+  </span>
+</a>
             </div>
         </div>
 
