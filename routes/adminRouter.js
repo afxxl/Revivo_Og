@@ -5,6 +5,7 @@ const { userAuth, adminAuth } = require("../middlewares/auth");
 const categoryController = require("../controllers/admin/categoryController");
 const brandController = require("../controllers/admin/brandController");
 const productController = require("../controllers/admin/productController");
+const orderController = require("../controllers/admin/orderController.js");
 const multer = require("../helpers/multer");
 
 //error
@@ -82,5 +83,23 @@ router.post(
 );
 
 router.delete("/deleteProduct/:id", adminAuth, productController.deleteProduct);
+
+//order
+
+router.get("/orders", adminAuth, orderController.loadOrderDetails);
+
+router.get("/orders/:id", adminAuth, orderController.orderDetails);
+
+router.post(
+  "/orders/:id/handle-return",
+  adminAuth,
+  orderController.handleReturn,
+);
+
+router.post(
+  "/orders/:id/update-status",
+  adminAuth,
+  orderController.updateStatus,
+);
 
 module.exports = router;

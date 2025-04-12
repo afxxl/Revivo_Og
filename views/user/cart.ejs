@@ -231,7 +231,7 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     
     <script>
-      document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function() {
         // Skip if cart is empty
         if (document.querySelector('.empty-cart-message')) {
           return;
@@ -272,8 +272,9 @@
         if (updateBtn) {
           updateBtn.addEventListener('click', async function() {
             try {
- updateBtn.disabled = true;
-    updateBtn.innerHTML = 'Updating...';
+              updateBtn.disabled = true;
+              updateBtn.innerHTML = 'Updating...';
+              
               const items = [];
               
               document.querySelectorAll('.cart-item').forEach(itemEl => {
@@ -326,84 +327,106 @@
             } catch (error) {
               console.error('Error updating cart:', error);
               showToast(error.message || 'Error updating cart', 'error');
+            } finally {
+              updateBtn.disabled = false;
+              updateBtn.innerHTML = 'Update Cart';
             }
-finally {
-    updateBtn.disabled = false;
-    updateBtn.innerHTML = 'Update Cart';
-  }
           });
         }
 
-        // Remove buttons - updated to use SweetAlert
+        // Remove buttons - updated to use toast confirmation
         document.querySelectorAll('.remove-btn').forEach(btn => {
           btn.addEventListener('click', async function() {
             const productId = this.getAttribute('data-product-id');
             const productName = this.closest('.cart-item').querySelector('a[href^="/product/"]').textContent.trim();
             
-            const result = await Swal.fire({
-              title: 'Remove Item',
-              html: `Are you sure you want to remove <strong>${productName}</strong> from your cart?`,
-              icon: 'question',
-              showCancelButton: true,
-              confirmButtonColor: '#d33',
-              cancelButtonColor: '#2C2C2C',
-              confirmButtonText: 'Yes, remove it',
-              cancelButtonText: 'Cancel',
-              reverseButtons: true
-            });
+            // Create confirmation toast
+            const confirmToast = document.createElement('div');
+            confirmToast.className = 'fixed bottom-4 right-4 bg-[#2C2C2C] text-white px-6 py-3 rounded-lg shadow-xl z-50';
+            confirmToast.innerHTML = `
+              <div class="flex flex-col">
+                <p class="font-montserrat mb-3">Remove <strong>${productName}</strong> from cart?</p>
+                <div class="flex gap-2 justify-end">
+                  <button class="cancel-remove-btn px-3 py-1 bg-gray-500 text-white rounded text-sm">
+                    Cancel
+                  </button>
+                  <button class="confirm-remove-btn px-3 py-1 bg-red-500 text-white rounded text-sm">
+                    Remove
+                  </button>
+                </div>
+              </div>
+            `;
             
-            if (result.isConfirmed) {
-              try {
-                const response = await fetch('/remove-from-cart', {
-                  method: 'POST',
-                  headers: {
-                    'Content-Type': 'application/json',
-                  },
-                  body: JSON.stringify({ 
-                    productId: productId 
-                  }),
-                });
-
-                const data = await response.json();
-
-                if (data.success) {
-                  Swal.fire({
-                    title: 'Removed!',
-                    text: 'The item has been removed from your cart.',
-                    icon: 'success',
-                    confirmButtonColor: '#2C2C2C',
-                  }).then(() => {
-                    window.location.reload();
-                  });
-                } else {
-                  Swal.fire({
-                    title: 'Error!',
-                    text: 'Failed to remove item',
-                    icon: 'error',
-                    confirmButtonColor: '#2C2C2C',
-                  });
-                }
-              } catch (error) {
-                console.error('Error removing item:', error);
-                Swal.fire({
-                  title: 'Error!',
-                  text: 'Error removing item',
-                  icon: 'error',
-                  confirmButtonColor: '#2C2C2C',
-                });
-              }
-            }
+            document.body.appendChild(confirmToast);
+            
+            // Handle confirmation
+            const confirmRemove = () => {
+              confirmToast.remove();
+              removeItem(productId, productName);
+            };
+            
+            // Handle cancellation
+            const cancelRemove = () => {
+              confirmToast.classList.add('opacity-0', 'translate-y-full');
+              setTimeout(() => confirmToast.remove(), 300);
+            };
+            
+            confirmToast.querySelector('.confirm-remove-btn').addEventListener('click', confirmRemove);
+            confirmToast.querySelector('.cancel-remove-btn').addEventListener('click', cancelRemove);
+            
+            // Auto-close after 5 seconds
+            const timeout = setTimeout(cancelRemove, 5000);
+            
+            // Clear timeout if user interacts
+            confirmToast.addEventListener('mouseenter', () => clearTimeout(timeout));
+            confirmToast.addEventListener('mouseleave', () => {
+              timeout = setTimeout(cancelRemove, 2000);
+            });
           });
         });
 
+        async function removeItem(productId, productName) {
+          try {
+            const response = await fetch('/remove-from-cart', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({ 
+                productId: productId 
+              }),
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+              showToast(`Removed ${productName} from cart`);
+              // Update cart count in header
+              const cartCountEl = document.getElementById('cart-count');
+              if (cartCountEl) {
+                cartCountEl.textContent = data.cartCount || 0;
+              }
+              // Reload after short delay to show toast
+              setTimeout(() => window.location.reload(), 1000);
+            } else {
+              showToast('Failed to remove item', 'error');
+            }
+          } catch (error) {
+            console.error('Error removing item:', error);
+            showToast('Error removing item', 'error');
+          }
+        }
+
         function showToast(message, type = 'success') {
           const toast = document.createElement('div');
-          toast.className = `fixed bottom-4 right-4 ${type === 'success' ? 'bg-[#2C2C2C]' : 'bg-red-500'} text-white px-6 py-3 rounded-lg shadow-xl transform translate-y-0 opacity-100 transition-all duration-300 z-50 flex items-center`;
+          toast.className = `fixed bottom-4 right-4 ${type === 'success' ? 'bg-[#2C2C2C]' : type === 'warning' ? 'bg-yellow-500' : 'bg-red-500'} text-white px-6 py-3 rounded-lg shadow-xl transform translate-y-0 opacity-100 transition-all duration-300 z-50 flex items-center`;
           
           const icon = document.createElement('span');
           icon.className = 'mr-2';
           icon.innerHTML = type === 'success' 
             ? '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>'
+            : type === 'warning'
+            ? '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>'
             : '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>';
           
           const text = document.createElement('span');
@@ -420,6 +443,7 @@ finally {
           }, 3000);
         }
       });
+
     </script>
   </body>
 </html>

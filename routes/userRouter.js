@@ -8,6 +8,7 @@ const newArrivalsController = require("../controllers/user/newArrivalsController
 const { userAuth, adminAuth } = require("../middlewares/auth");
 const { uploadProfile } = require("../helpers/multer.js");
 const getCartCount = require("../middlewares/cartCount.js");
+const validationController = require("../controllers/user/validationController.js");
 
 router.use(getCartCount);
 
@@ -91,7 +92,12 @@ router.get("/shop/collection/y2k-essentials", shopController.loadY2kEssentials);
 //Profile
 
 router.get("/profile", userAuth, userController.loadProfilePage);
-router.post("/update-profile", userAuth, userController.updateProfile);
+router.post(
+  "/update-profile",
+  userAuth,
+  validationController.validateProfileUpdate,
+  userController.updateProfile,
+);
 router.post("/verify-email-otp", userController.verifyEmailOtp);
 router.post(
   "/update-profile-image",
@@ -103,11 +109,21 @@ router.post("/resend-profile-otp", userController.resendProfileOtp);
 
 //Address
 
-router.post("/addresses", userAuth, userController.addAddress);
+router.post(
+  "/addresses",
+  userAuth,
+  validationController.validateAddress,
+  userController.addAddress,
+);
 
 router.get("/addresses", userAuth, userController.loadAddAddress);
 
-router.patch("/addresses/:id", userAuth, userController.updateAddress);
+router.patch(
+  "/addresses/:id",
+  userAuth,
+  validationController.validateAddress,
+  userController.updateAddress,
+);
 
 router.delete("/addresses/:id", userAuth, userController.deleteAddress);
 router.get("/addresses/:id", userAuth, userController.getAddress);
@@ -121,12 +137,55 @@ router.post("/remove-from-cart", userAuth, shopController.removeFromCart);
 //checkout
 
 router.get("/checkout", userAuth, shopController.loadCheckoutPage);
+
+//orders
 router.post("/create-order", userAuth, shopController.createOrder);
 
 router.get(
   "/order-confirmation/:orderId",
   userAuth,
   shopController.loadOrderConfirmation,
+);
+
+//order
+
+router.get("/orders/:orderId", shopController.orderDetails);
+router.post("/orders/:orderId/cancel", userAuth, shopController.cancelOrder);
+router.post(
+  "/orders/:orderId/request-return",
+  userAuth,
+  shopController.requestReturn,
+);
+
+router.post(
+  "/verify-current-password",
+  userAuth,
+  userController.verifyCurrentPassword,
+);
+
+router.post(
+  "/validate-password-change",
+  userAuth,
+  validationController.validatePasswordChange,
+  (req, res) => res.json({ success: true }),
+);
+
+router.post(
+  "/send-password-change-otp",
+  userAuth,
+  userController.sendPasswordChangeOtp,
+);
+
+router.post(
+  "/verify-password-change-otp",
+  userAuth,
+  userController.verifyPasswordChangeOtp,
+);
+
+router.post(
+  "/resend-password-change-otp",
+  userAuth,
+  userController.resendPasswordChangeOtp,
 );
 
 module.exports = router;

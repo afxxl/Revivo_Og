@@ -636,6 +636,129 @@ const loadOrderConfirmation = async (req, res) => {
   }
 };
 
+const orderDetails = async (req, res) => {
+  try {
+    const order = await Order.findOne({ orderId: req.params.orderId })
+      .populate("user")
+      .populate("address")
+      .populate({
+        path: "orderItems.product",
+        model: "Product",
+      });
+
+    if (!order) {
+      return res.status(404).render("page-404");
+    }
+
+    res.render("order-details", { order });
+  } catch (err) {
+    console.log("Error fetching order details:", err);
+    res.status(500).render("page-404");
+  }
+};
+
+const cancelOrder = async (req, res) => {
+  try {
+    const { reason } = req.body;
+    const orderId = req.params.orderId;
+    const userId = req.session.user;
+
+    const order = await Order.findOne({ orderId, user: userId }).populate(
+      "orderItems.product",
+    );
+
+    if (!order) {
+      return res.status(404).json({
+        success: false,
+        message: "Order not found",
+      });
+    }
+
+    if (!["Pending", "Confirmed"].includes(order.status)) {
+      return res.status(400).json({
+        success: false,
+        message: "Order cannot be cancelled at this stage",
+      });
+    }
+
+    // Restore product quantities
+    for (const item of order.orderItems) {
+      await Product.findByIdAndUpdate(item.product._id, {
+        $inc: { stock: item.quantity },
+      });
+    }
+
+    // Update order status
+    order.status = "Cancelled";
+    order.cancelReason = reason;
+    await order.save();
+
+    res.json({
+      success: true,
+      message: "Order cancelled successfully",
+    });
+  } catch (err) {
+    console.error("Error cancelling order:", err);
+    res.status(500).json({
+      success: false,
+      message: "Failed to cancel order",
+    });
+  }
+};
+const requestReturn = async (req, res) => {
+  try {
+    const { reason } = req.body;
+    const orderId = req.params.orderId;
+    const userId = req.session.user;
+
+    console.log("Return request received:", { orderId, userId, reason }); // Debug log
+
+    const order = await Order.findOne({ orderId, user: userId });
+
+    if (!order) {
+      console.log("Order not found"); // Debug log
+      return res.status(404).json({
+        success: false,
+        message: "Order not found",
+      });
+    }
+
+    console.log("Current order status:", order.status); // Debug log
+
+    if (order.status !== "Delivered") {
+      console.log("Invalid status for return:", order.status); // Debug log
+      return res.status(400).json({
+        success: false,
+        message: "Returns can only be requested for delivered orders",
+        currentStatus: order.status, // Send current status for debugging
+      });
+    }
+
+    order.status = "Return Requested";
+    order.return = {
+      requested: true,
+      reason,
+      status: "pending",
+      requestedAt: new Date(),
+    };
+
+    await order.save();
+
+    console.log("Return request processed successfully"); // Debug log
+    res.json({
+      success: true,
+      message: "Return request submitted for admin approval",
+    });
+  } catch (err) {
+    console.error("Error requesting return:", err);
+    res.status(500).json({
+      success: false,
+      message: err.message, // Send the actual error message
+      stack: process.env.NODE_ENV === "development" ? err.stack : undefined,
+    });
+  }
+};
+
 module.exports = {
   shopPage,
   loadBrandPage,
@@ -648,4 +771,7 @@ module.exports = {
   createOrder,
   loadCheckoutPage,
   loadOrderConfirmation,
+  orderDetails,
+  cancelOrder,
+  requestReturn,
 };

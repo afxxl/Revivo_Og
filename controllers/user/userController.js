@@ -80,7 +80,10 @@ const loadSignUpPage = async (req, res) => {
 };
 
 function generateOtp() {
-  return Math.floor(100000 + Math.random() * 900000).toString();
+  const otp = Math.floor(100000 + Math.random() * 900000).toString();
+
+  console.log("Generated OTP:", otp);
+  return otp;
 }
 
 async function sendVerificationEmail(email, otp) {
@@ -138,7 +141,10 @@ const signup = async (req, res) => {
     req.session.save((err) => {
       if (err) {
         console.log("Session save error:", err);
-        return res.redirect("/signup");
+        return res.status(500).json({
+          success: false,
+          message: "Failed to save session",
+        });
       }
 
       res.render("verify-otp");
@@ -147,7 +153,9 @@ const signup = async (req, res) => {
     });
   } catch (err) {
     console.log("signup error", err);
-    res.redirect("/pageNotFound");
+    res.status(500).render("signup", {
+      message: "An error occurred during signup",
+    });
   }
 };
 
@@ -171,6 +179,13 @@ const verifyOtp = async (req, res) => {
       });
     }
 
+    if (String(otp) !== String(req.session.userOtp)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid OTP, Please try again",
+      });
+    }
+
     if (otp === req.session.userOtp) {
       const user = req.session.userData;
       if (!user) {
@@ -189,6 +204,8 @@ const verifyOtp = async (req, res) => {
 
       const savedUser = await saveUserData.save();
       req.session.user = savedUser._id;
+
+      delete req.session.userOtp;
 
       req.session.save((err) => {
         if (err) {
@@ -441,7 +458,7 @@ const resendResetOtp = async (req, res) => {
 
 const addToCart = async (req, res) => {
   try {
-    const { productId } = req.body;
+    const { productId, quantity = 1 } = req.body; // Default to 1 if not provided
     const userId = req.session.user;
 
     if (!userId) {
@@ -466,6 +483,15 @@ const addToCart = async (req, res) => {
       });
     }
 
+    // Validate quantity
+    const requestedQuantity = parseInt(quantity);
+    if (isNaN(requestedQuantity) || requestedQuantity < 1) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid quantity",
+      });
+    }
+
     let cart = await Cart.findOne({ userId });
     if (!cart) {
       cart = new Cart({ userId, items: [] });
@@ -476,20 +502,32 @@ const addToCart = async (req, res) => {
     );
 
     if (existingItem) {
-      if (existingItem.quantity >= product.stock) {
+      // Calculate total quantity if adding new items to existing cart item
+      const totalQuantity = existingItem.quantity + requestedQuantity;
+
+      if (totalQuantity > product.stock) {
         return res.status(400).json({
           success: false,
-          message: "Maximum stock reached fro this item",
+          message: `Cannot add more than available stock. Max available: ${product.stock}`,
         });
       }
-      existingItem.quantity += 1;
-      existingItem.totalPrice = existingItem.quantity * product.salesPrice;
+
+      existingItem.quantity = totalQuantity;
+      existingItem.totalPrice = totalQuantity * product.salesPrice;
     } else {
+      // Adding new item to cart
+      if (requestedQuantity > product.stock) {
+        return res.status(400).json({
+          success: false,
+          message: `Cannot add more than available stock. Max available: ${product.stock}`,
+        });
+      }
+
       cart.items.push({
         productId,
-        quantity: 1,
+        quantity: requestedQuantity,
         price: product.salesPrice,
-        totalPrice: product.salesPrice,
+        totalPrice: requestedQuantity * product.salesPrice,
       });
     }
 
@@ -779,30 +817,44 @@ const resendProfileOtp = async (req, res) => {
 
 const addAddress = async (req, res) => {
   try {
-    const isDefault = req.body.isDefault === "true";
+    const userId = req.session.user; // Changed from req.user._id
+    const isDefault =
+      req.body.isDefault === "true" || req.body.isDefault === true;
+
     const address = new Address({
       ...req.body,
       isDefault,
-      userId: req.user._id,
+      userId: userId,
     });
 
     if (isDefault) {
       await Address.updateMany(
-        { userId: req.user._id },
+        { userId: userId },
         { $set: { isDefault: false } },
       );
     }
 
     await address.save();
+
+    // Update user's addresses array
     await User.findByIdAndUpdate(
-      req.user._id,
+      userId,
       { $push: { addresses: address._id } },
       { new: true },
     );
 
-    res.status(201).send(address);
+    res.status(201).json({
+      success: true,
+      address,
+      message: "Address added successfully",
+    });
   } catch (err) {
-    res.status(400).send(err);
+    console.error("Error adding address:", err);
+    res.status(400).json({
+      success: false,
+      message: "Failed to add address",
+      error: err.message,
+    });
   }
 };
 
@@ -817,41 +869,52 @@ const loadAddAddress = async (req, res) => {
 
 const updateAddress = async (req, res) => {
   try {
-    console.log("Received update for address:", req.params.id); // Debug log
-    console.log("Update data:", req.body); // Debug log
-
     const updates = req.body;
+
+    // If this is just setting default address
+    if (updates.updateType === "setDefault") {
+      await Address.updateMany(
+        { userId: req.session.user, _id: { $ne: req.params.id } },
+        { $set: { isDefault: false } },
+      );
+
+      const address = await Address.findOneAndUpdate(
+        { _id: req.params.id, userId: req.session.user },
+        { $set: { isDefault: true } },
+        { new: true },
+      );
+
+      return res.status(200).json({
+        success: true,
+        address,
+        message: "Default address updated successfully",
+      });
+    }
+
+    // Otherwise handle full address update
     updates.isDefault =
       updates.isDefault === "true" || updates.isDefault === true;
 
-    console.log("Processed updates:", updates); // Debug log
-
-    // First update the specified address
     const address = await Address.findOneAndUpdate(
-      { _id: req.params.id, userId: req.user._id },
+      { _id: req.params.id, userId: req.session.user },
       updates,
       { new: true },
     );
 
     if (!address) {
-      console.log("Address not found"); // Debug log
       return res.status(404).json({
         success: false,
         message: "Address not found",
       });
     }
 
-    // If this address is being set as default, update others
     if (updates.isDefault) {
-      console.log("Updating other addresses to non-default"); // Debug log
-      const result = await Address.updateMany(
-        { userId: req.user._id, _id: { $ne: address._id } },
+      await Address.updateMany(
+        { userId: req.session.user, _id: { $ne: address._id } },
         { $set: { isDefault: false } },
       );
-      console.log("Update many result:", result); // Debug log
     }
 
-    console.log("Update successful"); // Debug log
     res.status(200).json({
       success: true,
       address,
@@ -867,18 +930,49 @@ const updateAddress = async (req, res) => {
 
 const deleteAddress = async (req, res) => {
   try {
-    const address = await Address.findOneAndDelete({
+    // First, find the address to check if it exists and belongs to the user
+    const address = await Address.findOne({
       _id: req.params.id,
-      userId: req.user._id,
+      userId: req.session.user, // Changed from req.user._id to req.session.user
     });
 
     if (!address) {
-      return res.status(404).send();
+      return res.status(404).json({
+        success: false,
+        message: "Address not found or you don't have permission to delete it",
+      });
     }
 
-    res.send(address);
+    // If it's the default address, prevent deletion
+    if (address.isDefault) {
+      return res.status(400).json({
+        success: false,
+        message:
+          "Cannot delete the default address. Set another address as default first.",
+      });
+    }
+
+    // Delete the address
+    await Address.findByIdAndDelete(req.params.id);
+
+    // Remove the address reference from the user's addresses array
+    await User.findByIdAndUpdate(
+      req.session.user,
+      { $pull: { addresses: req.params.id } },
+      { new: true },
+    );
+
+    res.json({
+      success: true,
+      message: "Address deleted successfully",
+    });
   } catch (error) {
-    res.status(500).send();
+    console.error("Error deleting address:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to delete address",
+      error: error.message,
+    });
   }
 };
 
@@ -886,7 +980,7 @@ const getAddress = async (req, res) => {
   try {
     const address = await Address.findOne({
       _id: req.params.id,
-      userId: req.user._id,
+      userId: req.session.user, // Changed from req.user._id to req.session.user
     });
 
     if (!address) {
@@ -898,9 +992,174 @@ const getAddress = async (req, res) => {
 
     res.status(200).json(address);
   } catch (err) {
+    console.error("Error fetching address:", err);
     res.status(500).json({
       success: false,
       message: "Server error",
+    });
+  }
+};
+
+const sendPasswordChangeOtp = async (req, res) => {
+  try {
+    const user = await User.findById(req.session.user);
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    const otp = generateOtp();
+    const emailSent = await sendVerificationEmail(user.email, otp);
+
+    if (!emailSent) {
+      return res.status(500).json({
+        success: false,
+        message: "Failed to send OTP",
+      });
+    }
+
+    req.session.passwordChangeOtp = otp;
+    req.session.passwordChangeOtpExpires = Date.now() + 60000; // 60 seconds (1 minute)
+
+    res.json({
+      success: true,
+      message: "OTP sent successfully",
+    });
+  } catch (err) {
+    console.error("Error sending password change OTP:", err);
+    res.status(500).json({
+      success: false,
+      message: "Failed to send OTP",
+    });
+  }
+};
+
+const verifyPasswordChangeOtp = async (req, res) => {
+  try {
+    const { otp, newPassword } = req.body;
+    const user = await User.findById(req.session.user);
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    if (
+      !req.session.passwordChangeOtp ||
+      !req.session.passwordChangeOtpExpires
+    ) {
+      return res.status(400).json({
+        success: false,
+        message: "OTP session expired. Please request a new OTP.",
+      });
+    }
+
+    if (Date.now() > req.session.passwordChangeOtpExpires) {
+      return res.status(400).json({
+        success: false,
+        message: "OTP has expired. Please request a new OTP.",
+      });
+    }
+
+    if (otp !== req.session.passwordChangeOtp) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid OTP",
+      });
+    }
+
+    // Update password
+    const hashedPassword = await securePassword(newPassword);
+    user.password = hashedPassword;
+    await user.save();
+
+    // Clear session
+    req.session.passwordChangeOtp = null;
+    req.session.passwordChangeOtpExpires = null;
+    req.session.tempNewPassword = null;
+
+    res.json({
+      success: true,
+      message: "Password changed successfully",
+    });
+  } catch (err) {
+    console.error("Error verifying password change OTP:", err);
+    res.status(500).json({
+      success: false,
+      message: "Failed to change password",
+    });
+  }
+};
+const resendPasswordChangeOtp = async (req, res) => {
+  try {
+    const user = await User.findById(req.session.user);
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    const otp = generateOtp();
+    const emailSent = await sendVerificationEmail(user.email, otp);
+
+    if (!emailSent) {
+      return res.status(500).json({
+        success: false,
+        message: "Failed to resend OTP",
+      });
+    }
+
+    req.session.passwordChangeOtp = otp;
+    req.session.passwordChangeOtpExpires = Date.now() + 60000; // 60 seconds (1 minute)
+
+    res.json({
+      success: true,
+      message: "OTP resent successfully",
+    });
+  } catch (err) {
+    console.error("Error resending password change OTP:", err);
+    res.status(500).json({
+      success: false,
+      message: "Failed to resend OTP",
+    });
+  }
+};
+
+const verifyCurrentPassword = async (req, res) => {
+  try {
+    const { currentPassword } = req.body;
+    const user = await User.findById(req.session.user);
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    const passwordMatch = await bcrypt.compare(currentPassword, user.password);
+
+    if (!passwordMatch) {
+      return res.status(400).json({
+        success: false,
+        message: "Incorrect current password",
+      });
+    }
+
+    res.json({
+      success: true,
+      message: "Current password verified",
+    });
+  } catch (err) {
+    console.error("Error verifying current password:", err);
+    res.status(500).json({
+      success: false,
+      message: "Failed to verify password",
     });
   }
 };
@@ -932,4 +1191,8 @@ module.exports = {
   updateAddress,
   deleteAddress,
   getAddress,
+  verifyCurrentPassword,
+  resendPasswordChangeOtp,
+  verifyPasswordChangeOtp,
+  sendPasswordChangeOtp,
 };

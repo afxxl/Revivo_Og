@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Create Account</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Only needed for AJAX and SweetAlert -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
@@ -71,6 +72,7 @@
             />
           </div>
 
+          <!-- Timer -->
           <div class="text-center text-sm text-[#2C2C2C]/70">
             <span id="timer">00:30</span>
           </div>
@@ -177,7 +179,8 @@
                 showConfirmButton: false,
                 timer: 1500
               });
-              startTimer(); 
+              startTimer(); // This will re-enable inputs
+              // Clear input fields
               inputs.forEach(input => input.value = '');
               finalOtpInput.value = '';
             } else {
@@ -199,6 +202,7 @@
         return false;
       }
 
+      // Form validation and submission
       function validateOTPForm() {
         const otpValue = finalOtpInput.value;
 
@@ -215,9 +219,6 @@
           type: "POST",
           url: "/verify-otp",
           data: { otp: otpValue },
-          xhrFields:{
-              withCredentials:true,
-            }
           success: function (response) {
             if (response.success) {
               Swal.fire({

@@ -1,0 +1,421 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My Profile - REVIVO</title>
+    <link href="/css/styles.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Henny+Penny&family=Playfair+Display:wght@400;500;600&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+      .profile-bg {
+        background-image: url('/Images/images/OLD_PAPER_TEXTURE.jpg');
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        min-height: 100vh;
+        position: relative;
+      }
+      .profile-tab {
+        transition: all 0.3s ease;
+      }
+      .profile-tab:hover {
+        background-color: rgba(44, 44, 44, 0.05);
+      }
+      .profile-tab.active {
+        background-color: rgba(44, 44, 44, 0.1);
+        border-left: 3px solid #2C2C2C;
+      }
+      .edit-icon {
+        background-color: #2C2C2C;
+        padding: 6px;
+        border-radius: 50%;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+      }
+      .edit-icon:hover {
+        background-color: #f8c78d;
+        transform: scale(1.1);
+      }
+      .cropper-view-box,
+      .cropper-face {
+        border-radius: 50%;
+      }
+      .cropper-view-box {
+        outline: 1px solid #2C2C2C;
+        box-shadow: 0 0 0 1px #39f;
+      }
+      .cropper-dashed,
+      .cropper-line,
+      .cropper-point {
+        display: none !important;
+      }
+      .cropper-container {
+        max-width: 100%;
+        height: auto;
+      }
+
+.status-tracker {
+  @apply relative pt-4;
+}
+
+.status-step {
+  @apply relative flex flex-col items-center flex-1;
+}
+
+.status-step::before {
+  @apply content-[''] absolute top-3 w-full h-1 bg-gray-200;
+  right: 50%;
+}
+
+.status-step:first-child::before {
+  @apply hidden;
+}
+
+.status-step.active::before {
+  @apply bg-[#2C2C2C];
+}
+
+.status-icon {
+  @apply w-8 h-8 rounded-full flex items-center justify-center mb-2 z-10;
+}
+
+.timeline-item {
+  @apply border-l-2 border-[#2C2C2C] pl-4 mb-4;
+}
+    </style>
+  
+</head>
+<body class="profile-bg">
+  <%- include('../partials/user/header.ejs') %>
+
+  <div class="container mx-auto px-4 py-12">
+    <div class="max-w-4xl mx-auto bg-white/70 rounded-lg shadow-md p-6">
+      <!-- Back Button -->
+      <a href="/profile#orders" class="inline-block mb-6 text-[#2C2C2C] hover:text-[#2C2C2C]/70">
+        <i class="fas fa-arrow-left mr-2"></i> Back to Orders
+      </a>
+
+      <!-- Order Header -->
+<div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
+  <div>
+    <h1 class="text-2xl font-henny text-[#2C2C2C]">Order #<%= order.orderId %></h1>
+    <p class="text-sm text-[#2C2C2C]/70">
+      Placed on <%= order.createdOn.toLocaleDateString('en-US', { 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric' 
+      }) %>
+    </p>
+  </div>
+<div class="flex gap-4 mt-4 md:mt-0">
+  <% if (order.status === 'Pending' || order.status === 'Confirmed') { %>
+    <button 
+      onclick="showCancelModal()"
+      class="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors"
+    >
+      Cancel Order
+    </button>
+  <% } %>
+  <% if (order.status === 'Delivered' && (!order.return || order.return.status !== 'approved')) { %>
+    <button 
+      onclick="showReturnModal()"
+      class="px-4 py-2 bg-[#2C2C2C] text-white rounded-md hover:bg-[#1a1a1a] transition-colors"
+    >
+      Request Return
+    </button>
+  <% } %>
+</div>
+  </div>
+   
+
+      <!-- Status Tracker -->
+<div class="mb-8">
+  <h2 class="text-lg font-medium mb-4">Order Status</h2>
+  <div class="flex items-center justify-between">
+    <% 
+    const statuses = ['Pending', 'Confirmed', 'Shipped', 'Out for Delivery', 'Delivered', 'Return Requested'];
+    const currentStatusIndex = statuses.indexOf(order.status);
+    const cancelled = order.status === 'Cancelled';
+    const returned = order.status === 'Returned';
+    %>
+    
+    <% statuses.forEach((status, index) => { %>
+      <div class="flex-1 flex flex-col items-center">
+        <div class="w-8 h-8 rounded-full mb-2 flex items-center justify-center
+          <%= index <= currentStatusIndex ? 'bg-[#2C2C2C] text-white' : 'bg-gray-200' %>
+          <%= cancelled && index === 0 ? 'bg-red-500' : '' %>
+          <%= returned && index === statuses.length-1 ? 'bg-green-500' : '' %>">
+          <% if (index <= currentStatusIndex) { %>
+            <i class="fas fa-check text-xs"></i>
+          <% } else if (cancelled && index === 0) { %>
+            <i class="fas fa-times"></i>
+          <% } %>
+        </div>
+        <span class="text-sm text-center <%= index <= currentStatusIndex ? 'text-[#2C2C2C]' : 'text-gray-400' %>">
+          <%= status %>
+        </span>
+      </div>
+    <% }) %>
+  </div>
+  
+  <% if (order.status === 'Return Requested') { %>
+    <div class="mt-4 p-3 bg-yellow-50 text-yellow-800 rounded-lg border-l-4 border-yellow-400">
+      <p>Your return request is pending admin approval.</p>
+      <p class="mt-1 text-sm">Reason: <%= order.return.reason %></p>
+    </div>
+  <% } %>
+  
+  <% if (order.status === 'Returned') { %>
+  <div class="mt-4 p-3 bg-green-50 text-green-800 rounded-lg border-l-4 border-green-400">
+    <% if (order.return?.processedAt) { %>
+      <p>Your return was approved on <%= new Date(order.return.processedAt).toLocaleDateString() %>.</p>
+    <% } else { %>
+      <p>Your return was approved.</p>
+    <% } %>
+  </div>
+<% } %>
+        <!-- Order Details -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <!-- Shipping Info -->
+        <div>
+          <h3 class="text-lg font-medium mb-4">Shipping Information</h3>
+          <div class="space-y-2 text-sm">
+            <p><%= order.address.name %></p>
+            <p><%= order.address.address %></p>
+            <p><%= order.address.city %>, <%= order.address.state %> <%= order.address.pincode %></p>
+            <p>Phone: <%= order.address.phone %></p>
+            <% if (order.address.altPhone) { %>
+              <p>Alt. Phone: <%= order.address.altPhone %></p>
+            <% } %>
+          </div>
+        </div>
+
+        <!-- Payment Info -->
+        <div>
+          <h3 class="text-lg font-medium mb-4">Payment Details</h3>
+          <div class="space-y-2 text-sm">
+            <p>Payment Method: <%= order.paymentMethod %></p>
+            <p>Total Amount: $<%= order.finalAmount.toFixed(2) %></p>
+            <p>Delivery Status: <%= order.status %></p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Order Items -->
+      <div class="mt-8">
+        <h3 class="text-lg font-medium mb-4">Order Items</h3>
+        <div class="space-y-4">
+          <% order.orderItems.forEach(item => { %>
+            <div class="flex items-center border-b border-[#2C2C2C]/10 pb-4">
+              <img 
+                src="<%= item.product.productImage[0] %>" 
+                alt="<%= item.product.productName %>"
+                class="w-20 h-20 object-cover rounded border mr-4"
+                onerror="this.src='/Images/placeholder.jpg'"
+              >
+              <div class="flex-1">
+                <h4 class="font-medium"><%= item.product.productName %></h4>
+                <p class="text-sm text-[#2C2C2C]/70">
+                  Quantity: <%= item.quantity %> × $<%= item.price.toFixed(2) %>
+                </p>
+              </div>
+              <div class="ml-4">
+                <p class="text-right">$<%= (item.quantity * item.price).toFixed(2) %></p>
+              </div>
+            </div>
+          <% }) %>
+        </div>
+      </div>
+
+      <!-- Order Summary -->
+      <div class="mt-8 pt-4 border-t border-[#2C2C2C]/10">
+        <div class="max-w-xs ml-auto">
+          <div class="flex justify-between mb-2">
+            <span>Subtotal:</span>
+            <span>$<%= order.totalPrice.toFixed(2) %></span>
+          </div>
+          <div class="flex justify-between mb-2">
+            <span>Shipping:</span>
+            <span>\$5.00</span>
+          </div>
+          <div class="flex justify-between font-medium">
+            <span>Total:</span>
+            <span>$<%= order.finalAmount.toFixed(2) %></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<!-- Cancel Order Modal -->
+<div id="cancelModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+  <div class="bg-white p-6 rounded-lg max-w-md w-full">
+    <h3 class="text-xl font-bold mb-4">Cancel Order</h3>
+    <p class="mb-4">Please tell us why you're cancelling this order:</p>
+    <textarea id="cancelReason" class="w-full border rounded p-2 mb-4" rows="4"></textarea>
+    <div class="flex justify-end gap-2">
+      <button onclick="hideModal('cancelModal')" class="px-4 py-2 border rounded">Cancel</button>
+      <button onclick="submitCancel('<%= order.orderId %>')" class="px-4 py-2 bg-red-500 text-white rounded">Submit</button>
+    </div>
+  </div>
+</div>
+
+<!-- Return Request Modal -->
+<div id="returnModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+  <div class="bg-white p-6 rounded-lg max-w-md w-full">
+    <h3 class="text-xl font-bold mb-4">Request Return</h3>
+    <p class="mb-4">Please tell us why you're returning this order:</p>
+    <textarea id="returnReason" class="w-full border rounded p-2 mb-4" rows="4"></textarea>
+    <div class="flex justify-end gap-2">
+      <button onclick="hideModal('returnModal')" class="px-4 py-2 border rounded">Cancel</button>
+      <button onclick="submitReturn('<%= order.orderId %>')" class="px-4 py-2 bg-[#2C2C2C] text-white rounded">Submit</button>
+    </div>
+  </div>
+</div>
+</body>
+
+  <script> 
+   // Toast notification function
+    function showToast(message, type = 'success') {
+      const toast = document.createElement('div');
+      toast.className = `fixed bottom-4 right-4 ${type === 'success' ? 'bg-green-500' : 'bg-red-500'} text-white px-6 py-3 rounded-lg shadow-lg flex items-center gap-2 z-50 transition-all duration-300 transform translate-y-0 opacity-100`;
+      
+      // Add icon based on type
+      const icon = document.createElement('span');
+      icon.innerHTML = type === 'success' ? 
+        '<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" /></svg>' :
+        '<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" /></svg>';
+      
+      // Add message text
+      const text = document.createElement('span');
+      text.textContent = message;
+      text.className = 'font-medium';
+      
+      toast.appendChild(icon);
+      toast.appendChild(text);
+      document.body.appendChild(toast);
+
+      // Auto-remove after 3 seconds
+      setTimeout(() => {
+        toast.classList.add('translate-y-full', 'opacity-0');
+        setTimeout(() => toast.remove(), 300);
+      }, 3000);
+    }
+
+    // Confirmation toast function
+    function showConfirmToast(message, confirmText, cancelText, onConfirm) {
+      const toast = document.createElement('div');
+      toast.className = 'fixed bottom-4 right-4 bg-white text-gray-800 px-6 py-4 rounded-lg shadow-lg z-50 w-80';
+      toast.innerHTML = `
+        <p class="mb-4">${message}</p>
+        <div class="flex justify-end gap-2">
+          <button class="cancel-btn px-3 py-1 border border-gray-300 rounded hover:bg-gray-100">${cancelText}</button>
+          <button class="confirm-btn px-3 py-1 bg-[#2C2C2C] text-white rounded hover:bg-[#1a1a1a]">${confirmText}</button>
+        </div>
+      `;
+      
+      document.body.appendChild(toast);
+      
+      // Handle confirm button
+      toast.querySelector('.confirm-btn').addEventListener('click', () => {
+        toast.classList.add('translate-y-full', 'opacity-0');
+        setTimeout(() => toast.remove(), 300);
+        onConfirm();
+      });
+      
+      // Handle cancel button
+      toast.querySelector('.cancel-btn').addEventListener('click', () => {
+        toast.classList.add('translate-y-full', 'opacity-0');
+        setTimeout(() => toast.remove(), 300);
+      });
+    }
+
+    function showCancelModal() {
+      document.getElementById('cancelModal').classList.remove('hidden');
+    }
+
+    function showReturnModal() {
+      document.getElementById('returnModal').classList.remove('hidden');
+    }
+
+    function hideModal(id) {
+      document.getElementById(id).classList.add('hidden');
+    }
+
+    function submitCancel(orderId) {
+      const reason = document.getElementById('cancelReason').value.trim();
+      if (!reason) {
+        showToast('Please provide a cancellation reason', 'error');
+        return;
+      }
+
+      showConfirmToast(
+        'Are you sure you want to cancel this order?',
+        'Confirm Cancel',
+        'Go Back',
+        () => {
+          fetch(`/orders/${orderId}/cancel`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ reason })
+          })
+          .then(response => response.json())
+          .then(data => {
+            if (data.success) {
+              showToast('Your order has been cancelled');
+              setTimeout(() => location.reload(), 1500);
+            } else {
+              showToast(data.message || 'Failed to cancel order', 'error');
+            }
+          })
+          .catch(err => {
+            console.error('Error:', err);
+            showToast('Failed to cancel order', 'error');
+          });
+        }
+      );
+    }
+
+    function submitReturn(orderId) {
+      const reason = document.getElementById('returnReason').value.trim();
+      if (!reason) {
+        showToast('Please provide a return reason', 'error');
+        return;
+      }
+
+      showConfirmToast(
+        'Are you sure you want to submit this return request?',
+        'Submit Request',
+        'Go Back',
+        () => {
+          fetch(`/orders/${orderId}/request-return`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ reason })
+          })
+          .then(response => response.json())
+          .then(data => {
+            if (data.success) {
+              showToast('Return request submitted for review');
+              setTimeout(() => location.reload(), 1500);
+            } else {
+              showToast(data.message || 'Failed to submit request', 'error');
+            }
+          })
+          .catch(err => {
+            console.error('Error:', err);
+            showToast('Failed to submit return request', 'error');
+          });
+        }
+      );
+    }
+  </script>
+</html>
