@@ -6,6 +6,9 @@ const Address = require("../../models/addressSchema.js");
 const User = require("../../models/userSchema.js");
 const Order = require("../../models/orderSchema.js");
 const Payment = require("../../models/paymentSchema.js");
+const PDFDocument = require("pdfkit");
+const fs = require("fs");
+const path = require("path");
 
 const shopPage = async (req, res) => {
   try {
@@ -759,6 +762,118 @@ const requestReturn = async (req, res) => {
   }
 };
 
+const generateInvoice = async (req, res) => {
+  try {
+    const orderId = req.params.orderId;
+    const userId = req.session.user;
+
+    const order = await Order.findOne({ orderId, user: userId })
+      .populate("user")
+      .populate("address")
+      .populate({
+        path: "orderItems.product",
+        model: "Product",
+      });
+
+    if (!order) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Order not found" });
+    }
+
+    if (order.status !== "Delivered" && order.status !== "Returned") {
+      return res.status(400).json({
+        success: false,
+        message: "Invoice is only available for delivered orders",
+      });
+    }
+
+    // Create a new PDF document
+    const doc = new PDFDocument();
+
+    // Set response headers for PDF download
+    res.setHeader("Content-Type", "application/pdf");
+    res.setHeader(
+      "Content-Disposition",
+      `attachment; filename="invoice-${order.orderId}.pdf"`,
+    );
+
+    // Pipe the PDF to the response
+    doc.pipe(res);
+
+    // Add invoice header
+    doc.fontSize(20).text("REVIVO", { align: "center" });
+    doc.moveDown();
+    doc.fontSize(14).text("INVOICE", { align: "center", underline: true });
+    doc.moveDown();
+
+    // Invoice details
+    doc.fontSize(12).text(`Invoice #: ${order.orderId}`);
+    doc.text(`Date: ${order.createdOn.toLocaleDateString()}`);
+    doc.text(`Status: ${order.status}`);
+    doc.moveDown();
+
+    // Customer information
+    doc.fontSize(14).text("Customer Information", { underline: true });
+    doc.fontSize(12).text(`Name: ${order.address.name}`);
+    doc.text(`Address: ${order.address.address}`);
+    doc.text(
+      `City: ${order.address.city}, ${order.address.state} ${order.address.pincode}`,
+    );
+    doc.text(`Phone: ${order.address.phone}`);
+    doc.moveDown();
+
+    // Order items table header
+    doc.fontSize(14).text("Order Items", { underline: true });
+    doc.moveDown();
+
+    // Table headers
+    doc.font("Helvetica-Bold");
+    doc.text("Item", 50, doc.y);
+    doc.text("Quantity", 300, doc.y);
+    doc.text("Price", 400, doc.y, { width: 100, align: "right" });
+    doc.moveDown();
+
+    // Table rows
+    doc.font("Helvetica");
+    order.orderItems.forEach((item) => {
+      doc.text(item.product.productName, 50, doc.y);
+      doc.text(item.quantity.toString(), 300, doc.y);
+      doc.text(`$${item.price.toFixed(2)}`, 400, doc.y, {
+        width: 100,
+        align: "right",
+      });
+      doc.moveDown();
+    });
+
+    // Order summary
+    doc.moveDown();
+    doc.font("Helvetica-Bold").text("Order Summary", { underline: true });
+    doc.moveDown();
+    doc.font("Helvetica");
+    doc.text(`Subtotal: $${order.totalPrice.toFixed(2)}`, { align: "right" });
+    doc.text(`Shipping: $5.00`, { align: "right" });
+    doc.moveDown();
+    doc
+      .font("Helvetica-Bold")
+      .text(`Total: $${order.finalAmount.toFixed(2)}`, { align: "right" });
+    doc.moveDown();
+
+    // Footer
+    doc
+      .fontSize(10)
+      .text("Thank you for shopping with REVIVO!", { align: "center" });
+
+    // Finalize the PDF
+    doc.end();
+  } catch (err) {
+    console.error("Error generating invoice:", err);
+    res
+      .status(500)
+      .json({ success: false, message: "Failed to generate invoice" });
+  }
+};
+
 module.exports = {
   shopPage,
   loadBrandPage,
@@ -774,4 +889,5 @@ module.exports = {
   orderDetails,
   cancelOrder,
   requestReturn,
+  generateInvoice,
 };

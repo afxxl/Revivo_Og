@@ -306,6 +306,7 @@ const login = async (req, res) => {
     }
 
     req.session.user = findUser._id;
+    req.user = findUser;
     res.redirect("/");
   } catch (err) {
     console.log("login error", err);

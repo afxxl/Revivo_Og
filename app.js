@@ -9,6 +9,7 @@ const session = require("express-session");
 const passport = require("./config/passport.js");
 const fs = require("fs");
 const MongoStore = require("connect-mongo");
+const User = require("./models/userSchema.js");
 
 db();
 
@@ -37,12 +38,32 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.use(function (req, res, next) {
-  res.locals.user = req.user || null;
-  if (req.session.user) {
-    res.set("Cache-Control", "no-store, no-cache, must-revalidate, private");
+app.use(async (req, res, next) => {
+  try {
+    // First try Passport user
+    if (req.user) {
+      res.locals.user = req.user;
+      req.session.user = req.user._id; // Keep session in sync
+      return next();
+    }
+
+    // Then try session user
+    if (req.session.user) {
+      const user = await User.findById(req.session.user);
+      if (user) {
+        res.locals.user = user;
+        req.user = user; // Set Passport user for consistency
+        return next();
+      }
+    }
+
+    // No user found
+    res.locals.user = null;
+    next();
+  } catch (err) {
+    console.error("Session middleware error:", err);
+    next(err);
   }
-  next();
 });
 
 app.set("view engine", "ejs");

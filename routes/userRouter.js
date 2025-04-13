@@ -9,6 +9,7 @@ const { userAuth, adminAuth } = require("../middlewares/auth");
 const { uploadProfile } = require("../helpers/multer.js");
 const getCartCount = require("../middlewares/cartCount.js");
 const validationController = require("../controllers/user/validationController.js");
+const User = require("../models/userSchema.js");
 
 router.use(getCartCount);
 
@@ -67,13 +68,28 @@ router.get("/featured", featuredController.featuredPage);
 
 router.get("/new-arrivals", newArrivalsController.newArrivalsPage);
 
-router.get("/api/check-session", (req, res) => {
-  res.json({
-    loggedIn: !!req.session.user,
-    user: req.session.user
-      ? { name: req.user.name, email: req.user.email }
-      : null,
-  });
+router.get("/api/check-session", async (req, res) => {
+  try {
+    const user =
+      req.user ||
+      (req.session.user ? await User.findById(req.session.user) : null);
+
+    res.json({
+      loggedIn: !!user,
+      user: user
+        ? {
+            name: user.name,
+            email: user.email,
+          }
+        : null,
+    });
+  } catch (error) {
+    console.error("Session check error:", error);
+    res.json({
+      loggedIn: false,
+      user: null,
+    });
+  }
 });
 
 router.get("/shop/brand/:brandId", shopController.loadBrandPage);
@@ -186,6 +202,13 @@ router.post(
   "/resend-password-change-otp",
   userAuth,
   userController.resendPasswordChangeOtp,
+);
+
+//pdf
+router.get(
+  "/orders/:orderId/invoice",
+  userAuth,
+  shopController.generateInvoice,
 );
 
 module.exports = router;

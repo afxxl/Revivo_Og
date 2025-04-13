@@ -115,7 +115,8 @@
                             <td class="px-6 py-4 text-sm text-gray-900"><%= data[i].name %></td>
                             <td class="px-6 py-4 text-sm text-gray-500"><%= data[i].email %></td>
                             <td class="px-6 py-4 text-sm text-gray-500"><%= data[i].phone || 'N/A' %></td>
-                            <td class="px-6 py-4 text-sm text-gray-500"><%= new Date(data[i].createdOn).toLocaleDateString() %></td>
+
+<td class="px-6 py-4 text-sm text-gray-500"><%= new Date(data[i].createdAt).toLocaleDateString() %></td>
                             <td class="px-6 py-4 text-sm flex space-x-2">
                                 <% if (!data[i].isBlocked) { %>
                                     <a href="/admin/blockUser?id=<%= data[i]._id %>"
