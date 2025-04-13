@@ -257,13 +257,12 @@
     function searchUsers(query) {
         console.log('Searching for:', query);
     }
-    // Add debounce to prevent too many requests
     let debounceTimer;
     function debounceSearch(query) {
         clearTimeout(debounceTimer);
         debounceTimer = setTimeout(() => {
             document.getElementById('searchForm').submit();
-        }, 500); // 500ms delay
+        }, 500); 
     }
 
 </script>

@@ -326,18 +326,42 @@ const loadCartPage = async (req, res) => {
         cart: { items: [] },
         subtotal: 0,
         total: 0,
+        canCheckout: true,
       });
     }
 
-    const subtotal = cart.items.reduce((sum, item) => sum + item.totalPrice, 0);
+    let canCheckout = true;
+    const updatedItems = [];
+
+    for (const item of cart.items) {
+      const product = await Product.findById(item.productId._id);
+
+      if (!product || product.stock === 0 || product.status !== "Available") {
+        canCheckout = false;
+        item.unavailable = true;
+      } else {
+        item.quantity = Math.min(item.quantity, product.stock);
+        item.maxStock = product.stock;
+      }
+      updatedItems.push(item);
+    }
+
+    const subtotal = updatedItems.reduce(
+      (sum, item) => sum + item.totalPrice,
+      0,
+    );
     const shipping = subtotal > 0 ? 5 : 0;
     const total = subtotal + shipping;
 
     res.render("cart", {
-      cart,
+      cart: {
+        ...cart,
+        items: updatedItems,
+      },
       subtotal,
       shipping,
       total,
+      canCheckout,
     });
   } catch (err) {
     console.log("Error loading cart:", err);
@@ -347,7 +371,7 @@ const loadCartPage = async (req, res) => {
 
 const updateCart = async (req, res) => {
   try {
-    const { items } = req.body; // Now expecting array of items
+    const { items } = req.body;
     const userId = req.session.user;
 
     if (!userId) {
@@ -357,12 +381,10 @@ const updateCart = async (req, res) => {
       });
     }
 
-    // Find or create cart
     let cart = await Cart.findOne({ userId }).populate("items.productId");
 
     if (!cart) cart = new Cart({ userId, items: [] });
 
-    // Validate all items first
     for (const item of items) {
       const product = await Product.findOne({
         _id: item.productId,
@@ -386,7 +408,6 @@ const updateCart = async (req, res) => {
         });
       }
     }
-    // Update cart items
     cart.items = items.map((item) => {
       const existingItem = cart.items.find(
         (i) => i.productId._id.toString() === item.productId,
@@ -414,7 +435,6 @@ const updateCart = async (req, res) => {
 
     await cart.save();
 
-    // Re-populate to get fresh data
     const updatedCart = await Cart.findById(cart._id).populate(
       "items.productId",
     );
@@ -424,7 +444,6 @@ const updateCart = async (req, res) => {
       0,
     );
 
-    // Calculate totals
     const subtotal = updatedCart.items.reduce(
       (sum, item) => sum + item.totalPrice,
       0,
@@ -492,7 +511,7 @@ const removeFromCart = async (req, res) => {
       cartCount,
     });
   } catch (err) {
-    console.log("Error removing from cart:", error);
+    console.log("Error removing from cart:", err);
     res.status(500).json({
       success: false,
       message: "Error removing from cart",
@@ -535,15 +554,14 @@ const createOrder = async (req, res) => {
     const userId = req.session.user;
     const { addressId } = req.body;
 
+    const cart = await Cart.findOne({ userId }).populate("items.productId");
+
     if (!addressId) {
       return res.status(400).json({
         success: false,
         message: "Please select a delivery address",
       });
     }
-
-    const cart = await Cart.findOne({ userId }).populate("items.productId");
-    const address = await Address.findById(addressId);
 
     if (!cart || cart.items.length === 0) {
       return res.status(400).json({
@@ -555,6 +573,13 @@ const createOrder = async (req, res) => {
     let subtotal = 0;
     for (const item of cart.items) {
       const product = await Product.findById(item.productId._id);
+      if (!product || product.stock === 0 || product.status !== "Available") {
+        return res.status(400).json({
+          success: false,
+          message: `"${product.productName}" is no longer available`,
+          productId: product._id,
+        });
+      }
       if (product.stock < item.quantity) {
         return res.status(400).json({
           success: false,
@@ -684,14 +709,12 @@ const cancelOrder = async (req, res) => {
       });
     }
 
-    // Restore product quantities
     for (const item of order.orderItems) {
       await Product.findByIdAndUpdate(item.product._id, {
         $inc: { stock: item.quantity },
       });
     }
 
-    // Update order status
     order.status = "Cancelled";
     order.cancelReason = reason;
     await order.save();
@@ -714,26 +737,26 @@ const requestReturn = async (req, res) => {
     const orderId = req.params.orderId;
     const userId = req.session.user;
 
-    console.log("Return request received:", { orderId, userId, reason }); // Debug log
+    console.log("Return request received:", { orderId, userId, reason });
 
     const order = await Order.findOne({ orderId, user: userId });
 
     if (!order) {
-      console.log("Order not found"); // Debug log
+      console.log("Order not found");
       return res.status(404).json({
         success: false,
         message: "Order not found",
       });
     }
 
-    console.log("Current order status:", order.status); // Debug log
+    console.log("Current order status:", order.status);
 
     if (order.status !== "Delivered") {
-      console.log("Invalid status for return:", order.status); // Debug log
+      console.log("Invalid status for return:", order.status);
       return res.status(400).json({
         success: false,
         message: "Returns can only be requested for delivered orders",
-        currentStatus: order.status, // Send current status for debugging
+        currentStatus: order.status,
       });
     }
 
@@ -747,7 +770,7 @@ const requestReturn = async (req, res) => {
 
     await order.save();
 
-    console.log("Return request processed successfully"); // Debug log
+    console.log("Return request processed successfully");
     res.json({
       success: true,
       message: "Return request submitted for admin approval",
@@ -756,7 +779,7 @@ const requestReturn = async (req, res) => {
     console.error("Error requesting return:", err);
     res.status(500).json({
       success: false,
-      message: err.message, // Send the actual error message
+      message: err.message,
       stack: process.env.NODE_ENV === "development" ? err.stack : undefined,
     });
   }
@@ -788,32 +811,26 @@ const generateInvoice = async (req, res) => {
       });
     }
 
-    // Create a new PDF document
     const doc = new PDFDocument();
 
-    // Set response headers for PDF download
     res.setHeader("Content-Type", "application/pdf");
     res.setHeader(
       "Content-Disposition",
       `attachment; filename="invoice-${order.orderId}.pdf"`,
     );
 
-    // Pipe the PDF to the response
     doc.pipe(res);
 
-    // Add invoice header
     doc.fontSize(20).text("REVIVO", { align: "center" });
     doc.moveDown();
     doc.fontSize(14).text("INVOICE", { align: "center", underline: true });
     doc.moveDown();
 
-    // Invoice details
     doc.fontSize(12).text(`Invoice #: ${order.orderId}`);
     doc.text(`Date: ${order.createdOn.toLocaleDateString()}`);
     doc.text(`Status: ${order.status}`);
     doc.moveDown();
 
-    // Customer information
     doc.fontSize(14).text("Customer Information", { underline: true });
     doc.fontSize(12).text(`Name: ${order.address.name}`);
     doc.text(`Address: ${order.address.address}`);
@@ -823,18 +840,15 @@ const generateInvoice = async (req, res) => {
     doc.text(`Phone: ${order.address.phone}`);
     doc.moveDown();
 
-    // Order items table header
     doc.fontSize(14).text("Order Items", { underline: true });
     doc.moveDown();
 
-    // Table headers
     doc.font("Helvetica-Bold");
     doc.text("Item", 50, doc.y);
     doc.text("Quantity", 300, doc.y);
     doc.text("Price", 400, doc.y, { width: 100, align: "right" });
     doc.moveDown();
 
-    // Table rows
     doc.font("Helvetica");
     order.orderItems.forEach((item) => {
       doc.text(item.product.productName, 50, doc.y);
@@ -846,7 +860,6 @@ const generateInvoice = async (req, res) => {
       doc.moveDown();
     });
 
-    // Order summary
     doc.moveDown();
     doc.font("Helvetica-Bold").text("Order Summary", { underline: true });
     doc.moveDown();
@@ -859,12 +872,10 @@ const generateInvoice = async (req, res) => {
       .text(`Total: $${order.finalAmount.toFixed(2)}`, { align: "right" });
     doc.moveDown();
 
-    // Footer
     doc
       .fontSize(10)
       .text("Thank you for shopping with REVIVO!", { align: "center" });
 
-    // Finalize the PDF
     doc.end();
   } catch (err) {
     console.error("Error generating invoice:", err);

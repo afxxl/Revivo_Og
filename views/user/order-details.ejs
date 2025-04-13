@@ -94,12 +94,10 @@
 
   <div class="container mx-auto px-4 py-12">
     <div class="max-w-4xl mx-auto bg-white/70 rounded-lg shadow-md p-6">
-      <!-- Back Button -->
       <a href="/profile#orders" class="inline-block mb-6 text-[#2C2C2C] hover:text-[#2C2C2C]/70">
         <i class="fas fa-arrow-left mr-2"></i> Back to Orders
       </a>
 
-      <!-- Order Header -->
 <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
   <div>
     <h1 class="text-2xl font-henny text-[#2C2C2C]">Order #<%= order.orderId %></h1>
@@ -132,7 +130,6 @@
   </div>
    
 
-      <!-- Status Tracker -->
 <div class="mb-8">
   <h2 class="text-lg font-medium mb-4">Order Status</h2>
   <div class="flex items-center justify-between">
@@ -178,9 +175,7 @@
     <% } %>
   </div>
 <% } %>
-        <!-- Order Details -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <!-- Shipping Info -->
         <div>
           <h3 class="text-lg font-medium mb-4">Shipping Information</h3>
           <div class="space-y-2 text-sm">
@@ -194,7 +189,6 @@
           </div>
         </div>
 
-        <!-- Payment Info -->
         <div>
           <h3 class="text-lg font-medium mb-4">Payment Details</h3>
           <div class="space-y-2 text-sm">
@@ -205,7 +199,6 @@
         </div>
       </div>
 
-      <!-- Order Items -->
       <div class="mt-8">
         <h3 class="text-lg font-medium mb-4">Order Items</h3>
         <div class="space-y-4">
@@ -231,7 +224,6 @@
         </div>
       </div>
 
-      <!-- Order Summary -->
       <div class="mt-8 pt-4 border-t border-[#2C2C2C]/10">
         <div class="max-w-xs ml-auto">
           <div class="flex justify-between mb-2">
@@ -261,7 +253,6 @@
 
 
 
-<!-- Cancel Order Modal -->
 <div id="cancelModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
   <div class="bg-white p-6 rounded-lg max-w-md w-full">
     <h3 class="text-xl font-bold mb-4">Cancel Order</h3>
@@ -274,7 +265,6 @@
   </div>
 </div>
 
-<!-- Return Request Modal -->
 <div id="returnModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
   <div class="bg-white p-6 rounded-lg max-w-md w-full">
     <h3 class="text-xl font-bold mb-4">Request Return</h3>
@@ -289,18 +279,15 @@
 </body>
 
   <script> 
-   // Toast notification function
     function showToast(message, type = 'success') {
       const toast = document.createElement('div');
       toast.className = `fixed bottom-4 right-4 ${type === 'success' ? 'bg-green-500' : 'bg-red-500'} text-white px-6 py-3 rounded-lg shadow-lg flex items-center gap-2 z-50 transition-all duration-300 transform translate-y-0 opacity-100`;
       
-      // Add icon based on type
       const icon = document.createElement('span');
       icon.innerHTML = type === 'success' ? 
         '<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" /></svg>' :
         '<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" /></svg>';
       
-      // Add message text
       const text = document.createElement('span');
       text.textContent = message;
       text.className = 'font-medium';
@@ -309,14 +296,12 @@
       toast.appendChild(text);
       document.body.appendChild(toast);
 
-      // Auto-remove after 3 seconds
       setTimeout(() => {
         toast.classList.add('translate-y-full', 'opacity-0');
         setTimeout(() => toast.remove(), 300);
       }, 3000);
     }
 
-    // Confirmation toast function
     function showConfirmToast(message, confirmText, cancelText, onConfirm) {
       const toast = document.createElement('div');
       toast.className = 'fixed bottom-4 right-4 bg-white text-gray-800 px-6 py-4 rounded-lg shadow-lg z-50 w-80';
@@ -330,14 +315,12 @@
       
       document.body.appendChild(toast);
       
-      // Handle confirm button
       toast.querySelector('.confirm-btn').addEventListener('click', () => {
         toast.classList.add('translate-y-full', 'opacity-0');
         setTimeout(() => toast.remove(), 300);
         onConfirm();
       });
       
-      // Handle cancel button
       toast.querySelector('.cancel-btn').addEventListener('click', () => {
         toast.classList.add('translate-y-full', 'opacity-0');
         setTimeout(() => toast.remove(), 300);

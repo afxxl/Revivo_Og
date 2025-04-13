@@ -108,7 +108,6 @@
         </div>
 
         <div class="flex-1">
-          <!-- Profile Details (Read-only) -->
           <div id="profile-section" class="tab-content bg-white/70 rounded-lg shadow-md p-6">
             <h2 class="text-2xl font-henny text-[#2C2C2C] mb-6">Profile Details</h2>
             <div class="space-y-4">
@@ -127,7 +126,6 @@
             </div>
           </div>
 
-          <!-- Edit Profile -->
           <div id="edit-profile-section" class="tab-content hidden bg-white/70 rounded-lg shadow-md p-6">
             <h2 class="text-2xl font-henny text-[#2C2C2C] mb-6">Edit Profile</h2>
             <form id="profileForm" class="space-y-4">
@@ -171,7 +169,6 @@
             </form>
           </div>
 
-          <!-- My Addresses -->
           <div id="addresses-section" class="tab-content hidden bg-white/70 rounded-lg shadow-md p-6">
             <div class="flex justify-between items-center mb-6">
               <h2 class="text-2xl font-henny text-[#2C2C2C]">My Addresses</h2>
@@ -192,13 +189,13 @@
                     <h3 class="font-medium text-lg mb-2"><%= address.name %> (<%= address.addressType %>)</h3>
                     <p class="text-sm text-[#2C2C2C]/80 mb-1"><%= address.address %></p>
                     <p class="text-sm text-[#2C2C2C]/80 mb-1"><%= address.city %>, <%= address.state %> - <%= address.pincode %></p>
-<p class="text-sm text-[#2C2C2C]/80 mb-3">
-          Phone: <%= address.phone %>
-          <% if (address.altPhone) { %>
-            <br>Alt. Phone: <%= address.altPhone %>
-          <% } %>
-        </p>
-                    <div class="flex gap-2">
+                    <p class="text-sm text-[#2C2C2C]/80 mb-3">
+                              Phone: <%= address.phone %>
+                              <% if (address.altPhone) { %>
+                                <br>Alt. Phone: <%= address.altPhone %>
+                              <% } %>
+                            </p>
+                                        <div class="flex gap-2">
                       <button 
                         onclick="editAddress('<%= address._id %>')"
                         class="px-3 py-1 border border-[#2C2C2C] text-[#2C2C2C] rounded hover:bg-[#2C2C2C] hover:text-white transition-colors text-xs"
@@ -232,12 +229,10 @@
           </div>
 
 
-<!-- My Orders -->
 <div id="orders-section" class="tab-content hidden bg-white/70 rounded-lg shadow-md p-6">
   <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
     <h2 class="text-2xl font-henny text-[#2C2C2C]">Order History</h2>
     
-    <!-- Search Form -->
     <div class="flex items-center gap-2 w-full md:w-96">
       <form id="ordersSearchForm" class="flex-1 flex items-center gap-2">
         <input 
@@ -268,9 +263,7 @@
   </div>
 
   <% if (user.orders && user.orders.length > 0) { %>
-    <!-- Orders Container -->
     <div class="space-y-4 md:overflow-x-auto">
-      <!-- Desktop Table -->
       <table class="hidden md:table w-full">
         <thead class="border-b border-[#2C2C2C]/20">
           <tr class="text-sm text-[#2C2C2C]/80">
@@ -286,14 +279,12 @@
         <tbody>
           <% user.orders.forEach(order => { %>
             <tr class="border-b border-[#2C2C2C]/10 hover:bg-gray-50 transition-colors">
-              <!-- Order ID -->
               <td class="py-4 px-2">
                 <span class="text-sm font-mono text-[#2C2C2C]/70">
                   <%= order.orderId %>
                 </span>
               </td>
 
-              <!-- Product Images -->
               <td class="py-4 px-2">
                 <div class="flex items-center">
                   <div class="flex -space-x-2">
@@ -316,7 +307,6 @@
                 </div>
               </td>
 
-              <!-- Order Date -->
               <td class="py-4 px-2">
                 <span class="text-sm">
                   <%= order.createdOn.toLocaleDateString('en-US', { 
@@ -327,12 +317,10 @@
                 </span>
               </td>
 
-              <!-- Amount -->
               <td class="py-4 px-2">
                 <span class="font-medium">$<%= order.finalAmount?.toFixed(2) %></span>
               </td>
 
-              <!-- Status -->
               <td class="py-4 px-2">
                 <span class="px-3 py-1 rounded-full text-xs 
                   <%= order.status === 'Delivered' ? 'bg-green-100 text-green-800' : 
@@ -342,7 +330,6 @@
                 </span>
               </td>
 
-              <!-- Actions -->
               <td class="py-4 px-2 text-right">
                 <a 
                   href="/orders/<%= order.orderId %>" 
@@ -357,7 +344,6 @@
         </tbody>
       </table>
 
-      <!-- Mobile List -->
       <div class="md:hidden space-y-4">
         <% user.orders.forEach(order => { %>
           <div class="border-b border-[#2C2C2C]/10 pb-4">
@@ -366,7 +352,6 @@
               <div class="font-mono text-sm"><%= order.orderId %></div>
             </div>
 
-            <!-- Product Images -->
             <div class="flex items-center mb-3">
               <div class="flex -space-x-2">
                 <% order.orderItems.slice(0,3).forEach((item, index) => { %>
@@ -387,7 +372,6 @@
               <% } %>
             </div>
 
-            <!-- Order Details -->
             <div class="grid grid-cols-2 gap-2 text-sm">
               <div class="text-[#2C2C2C]/70">Order Date:</div>
               <div>
@@ -412,7 +396,6 @@
               </div>
             </div>
 
-            <!-- Action -->
             <div class="mt-3 text-right">
               <a 
                 href="/orders/<%= order.orderId %>" 
@@ -427,7 +410,6 @@
       </div>
     </div>
 
-    <!-- Pagination Controls -->
     <div class="mt-6 pt-4 border-t border-[#2C2C2C]/10">
       <div class="flex flex-col md:flex-row items-center justify-between gap-4">
         <div class="text-sm text-[#2C2C2C]/80">
@@ -552,7 +534,6 @@
       </div>
     </div>
 
-    <!-- Address Modal -->
     <div id="addressModal" class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center p-4">
       <div class="bg-white rounded-lg shadow-xl w-full max-w-md max-h-[80vh] flex flex-col">
         <div class="flex justify-between items-center border-b p-4">
@@ -678,7 +659,6 @@
       </div>
     </div>
 
-    <!-- OTP Verification Modal -->
 
 <div id="otpModal" class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center p-4">
   <div class="bg-white rounded-lg shadow-xl w-full max-w-md p-6">
@@ -765,7 +745,6 @@
     </form>
   </div>
 </div>
-       <!-- Image Upload & Crop Modal -->
     <div id="imageUploadModal" class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center p-4">
       <div class="bg-white rounded-lg shadow-xl w-full max-w-md max-h-[90vh] flex flex-col">
         <div class="flex justify-between items-center border-b p-4">
@@ -814,7 +793,6 @@
     <script>
 
 document.addEventListener('DOMContentLoaded', () => {
-    // Auto-select tab based on URL hash
     const hash = window.location.hash.substring(1);
     const validTabs = ['profile', 'edit-profile', 'addresses', 'orders', 'change-password'];
     
@@ -824,11 +802,9 @@ document.addEventListener('DOMContentLoaded', () => {
         switchTab('orders');
         sessionStorage.removeItem('autoScrollToOrders');
     } else {
-        // Default to profile tab if no hash
         switchTab('profile');
     }
 
-    // Scroll to section after tab switch
     if (hash || sessionStorage.getItem('autoScrollToOrders')) {
         setTimeout(() => {
             document.getElementById(`${hash || 'orders'}-section`).scrollIntoView({
@@ -838,7 +814,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 100);
     }
 
-    // Initialize default address selection
     const defaultAddress = document.querySelector('.address-card [data-is-default="true"]');
     if (defaultAddress) {
         selectAddress(defaultAddress.closest('.address-card'));
@@ -846,10 +821,8 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 
-      // Tab switching functionality
      
 function switchTab(tabName) {
-    // Update URL hash without page reload
     history.replaceState(null, null, `#${tabName}`);
     
     document.querySelectorAll('.tab-content').forEach(content => content.classList.add('hidden'));
@@ -858,7 +831,6 @@ function switchTab(tabName) {
     document.querySelector(`.profile-tab[href="#${tabName}"]`).classList.add('active');
 }
 
-      // Toggle password visibility
       function togglePasswordVisibility(button) {
         const input = button.parentElement.querySelector('input');
         const icon = button.querySelector('i');
@@ -873,7 +845,6 @@ function switchTab(tabName) {
         }
       }
 
-      // OTP Modal functions
       function showOtpModal() {
         document.getElementById('otpModal').classList.remove('hidden');
         startOtpTimer();
@@ -909,7 +880,6 @@ clearInterval(otpCountdown);
   document.getElementById('resendOtpBtn').disabled = true;
       }
 
-      // Address modal functions
 
 function openAddressModal(addressId = null) {
   const modal = document.getElementById('addressModal');
@@ -919,7 +889,6 @@ function openAddressModal(addressId = null) {
   if (addressId) {
     title.textContent = 'Edit Address';
     document.getElementById('addressId').value = addressId;
-    // Do NOT reset the form here
   } else {
     title.textContent = 'Add New Address';
     form.reset();
@@ -932,7 +901,6 @@ function openAddressModal(addressId = null) {
         document.getElementById('addressModal').classList.add('hidden');
       }
 
-      // Image Upload and Cropping
       let cropper;
 
       function openImageUploadModal() {
@@ -949,97 +917,118 @@ function openAddressModal(addressId = null) {
         }
       }
 
-      // Handle file selection
-      document.getElementById('imageUploadInput').addEventListener('change', function(e) {
-        const file = e.target.files[0];
-        if (!file) return;
+document.getElementById('imageUploadInput').addEventListener('change', function(e) {
+  const file = e.target.files[0];
+  if (!file) return;
 
-        const reader = new FileReader();
-        reader.onload = function(event) {
-          const image = document.getElementById('imageToCrop');
-          image.src = event.target.result;
-          
-          // Show the cropper container
-          const container = document.getElementById('imageCropperContainer');
-          container.classList.remove('hidden');
-          document.getElementById('uploadButton').classList.remove('hidden');
-          
-          // Initialize cropper if not already initialized
-          if (cropper) {
-            cropper.destroy();
-          }
-          
-          image.onload = function() {
-            cropper = new Cropper(image, {
-              aspectRatio: 1, // Square aspect ratio
-              viewMode: 1, // Restrict crop box to not exceed the size of the canvas
-              autoCropArea: 0.8, // 80% of the image will be initially cropped
-              responsive: true,
-              guides: false,
-              center: false,
-              highlight: false,
-              cropBoxMovable: true,
-              cropBoxResizable: true,
-              toggleDragModeOnDblclick: false,
-            });
-          };
-        };
-        reader.readAsDataURL(file);
-      });
+  const validTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+  if (!validTypes.includes(file.type)) {
+    showToast('Only JPG, PNG, GIF, or WEBP images are allowed', 'error');
+    this.value = ''; 
+    return;
+  }
 
-      // Upload the cropped image
-      function uploadCroppedImage() {
-        if (!cropper) {
-          showToast('Please select and crop an image first', 'error');
-          return;
-        }
+  const maxSize = 5 * 1024 * 1024; 
+  if (file.size > maxSize) {
+    showToast('Image must be less than 5MB', 'error');
+    this.value = ''; 
+    return;
+  }
 
-        // Get the cropped canvas
-        const canvas = cropper.getCroppedCanvas({
-          width: 500, // Set the output width
-          height: 500, // Set the output height
-          minWidth: 256,
-          minHeight: 256,
-          maxWidth: 1024,
-          maxHeight: 1024,
-          fillColor: '#fff',
-          imageSmoothingEnabled: true,
-          imageSmoothingQuality: 'high',
-        });
-
-        if (!canvas) {
-          showToast('Could not crop image', 'error');
-          return;
-        }
-
-        // Convert canvas to blob
-        canvas.toBlob(async (blob) => {
-          const formData = new FormData();
-          formData.append('profileImage', blob, 'profile.jpg');
-
-          try {
-            const response = await fetch('/update-profile-image', {
-              method: 'POST',
-              body: formData
-            });
-            
-            const data = await response.json();
-            
-            if (data.success) {
-              document.getElementById('profileImagePreview').src = data.imageUrl;
-              showToast('Profile image updated successfully!', 'success');
-              closeImageUploadModal();
-            } else {
-              showToast(data.message || 'Failed to update profile image', 'error');
-            }
-          } catch (error) {
-            console.error('Error:', error);
-            showToast('An error occurred while uploading', 'error');
-          }
-        }, 'image/jpeg', 0.9); // 90% quality JPEG
+  const reader = new FileReader();
+  reader.onload = function(event) {
+    const image = document.getElementById('imageToCrop');
+    image.src = event.target.result;
+    
+    const container = document.getElementById('imageCropperContainer');
+    container.classList.remove('hidden');
+    document.getElementById('uploadButton').classList.remove('hidden');
+    
+    if (cropper) {
+      cropper.destroy();
+    }
+    
+    image.onload = function() {
+      if (this.naturalWidth < 100 || this.naturalHeight < 100) {
+        showToast('Image must be at least 100x100 pixels', 'error');
+        container.classList.add('hidden');
+        document.getElementById('uploadButton').classList.add('hidden');
+        return;
       }
+      
+      cropper = new Cropper(image, {
+        aspectRatio: 1, 
+        viewMode: 1, 
+        autoCropArea: 0.8,
+        responsive: true,
+        guides: false,
+        center: false,
+        highlight: false,
+        cropBoxMovable: true,
+        cropBoxResizable: true,
+        toggleDragModeOnDblclick: false,
+      });
+    };
+  };
+  reader.readAsDataURL(file);
+});
+async function uploadCroppedImage() {
+  if (!cropper) {
+    showToast('Please select and crop an image first', 'error');
+    return;
+  }
 
-// Profile Form Submission
+  try {
+    const canvas = cropper.getCroppedCanvas({
+      width: 500,
+      height: 500,
+      minWidth: 100,
+      minHeight: 100,
+      maxWidth: 1024,
+      maxHeight: 1024,
+      fillColor: '#fff',
+      imageSmoothingEnabled: true,
+      imageSmoothingQuality: 'high',
+    });
+
+    if (!canvas) {
+      throw new Error('Could not crop image');
+    }
+
+    canvas.toBlob(async (blob) => {
+      const formData = new FormData();
+      formData.append('profileImage', blob, 'profile.jpg');
+
+      try {
+        const response = await fetch('/update-profile-image', {
+          method: 'POST',
+          body: formData
+        });
+        
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.message || 'Failed to upload image');
+        }
+        
+        const data = await response.json();
+        
+        if (data.success) {
+          document.getElementById('profileImagePreview').src = data.imageUrl;
+          showToast('Profile image updated successfully!', 'success');
+          closeImageUploadModal();
+        } else {
+          throw new Error(data.message || 'Failed to update profile image');
+        }
+      } catch (error) {
+        console.error('Upload error:', error);
+        showToast(error.message || 'An error occurred while uploading', 'error');
+      }
+    }, 'image/jpeg', 0.9);
+  } catch (error) {
+    console.error('Cropping error:', error);
+    showToast(error.message || 'An error occurred while processing the image', 'error');
+  }
+}
 document.getElementById('profileForm').addEventListener('submit', async function(e) {
   e.preventDefault();
   
@@ -1047,12 +1036,10 @@ document.getElementById('profileForm').addEventListener('submit', async function
   const email = this.email.value.trim();
   const phone = this.phone.value.trim();
   
-  // Clear previous errors
   document.querySelectorAll('.profile-error').forEach(el => el.remove());
   
   let isValid = true;
   
-  // Name validation
   if (!name) {
     showError(this.name, 'Name is required');
     isValid = false;
@@ -1061,7 +1048,6 @@ document.getElementById('profileForm').addEventListener('submit', async function
     isValid = false;
   }
   
-  // Email validation
   if (!email) {
     showError(this.email, 'Email is required');
     isValid = false;
@@ -1070,7 +1056,6 @@ document.getElementById('profileForm').addEventListener('submit', async function
     isValid = false;
   }
   
-  // Phone validation - modified to make it required
   if (!phone) {
     showError(this.phone, 'Phone number is required');
     isValid = false;
@@ -1108,22 +1093,17 @@ document.getElementById('profileForm').addEventListener('submit', async function
 });
 
 function showError(input, message) {
-  // Remove any existing error for this field
   const existingError = input.parentNode.querySelector('.password-error');
   if (existingError) existingError.remove();
   
-  // Create and style the error element
   const error = document.createElement('div');
   error.className = 'password-error text-red-500 text-xs mt-1';
   error.textContent = message;
   
-  // Insert after the input field
   input.parentNode.appendChild(error);
   
-  // Highlight the input field
   input.classList.add('border-red-500', 'focus:ring-red-500');
   
-  // Remove error on input
   input.addEventListener('input', function() {
     this.classList.remove('border-red-500', 'focus:ring-red-500');
     const error = this.parentNode.querySelector('.password-error');
@@ -1191,7 +1171,6 @@ function updateProfileDisplay(user) {
 document.getElementById('changePasswordForm').addEventListener('submit', async function(e) {
   e.preventDefault();
   
-  // Clear previous errors
   document.querySelectorAll('.password-error').forEach(el => el.remove());
   
   const formData = {
@@ -1201,7 +1180,6 @@ document.getElementById('changePasswordForm').addEventListener('submit', async f
   };
   
   try {
-    // First verify current password
     const verifyResponse = await fetch('/verify-current-password', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -1217,7 +1195,6 @@ document.getElementById('changePasswordForm').addEventListener('submit', async f
       return;
     }
     
-    // Then validate the new password
     const validateResponse = await fetch('/validate-password-change', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -1227,7 +1204,6 @@ document.getElementById('changePasswordForm').addEventListener('submit', async f
     const validateData = await validateResponse.json();
     
     if (!validateResponse.ok) {
-      // Handle validation errors
       if (validateData.message.includes("New password")) {
         showError(this.newPassword, validateData.message);
       } else if (validateData.message.includes("Passwords do not match")) {
@@ -1239,7 +1215,6 @@ document.getElementById('changePasswordForm').addEventListener('submit', async f
       return;
     }
     
-    // If validation passes, send OTP
     const otpResponse = await fetch('/send-password-change-otp', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -1252,7 +1227,6 @@ document.getElementById('changePasswordForm').addEventListener('submit', async f
     const otpData = await otpResponse.json();
     
     if (otpData.success) {
-      // Store the form data temporarily for the final step
       sessionStorage.setItem('tempPasswordData', JSON.stringify(formData));
       showPasswordOtpModal();
     } else {
@@ -1264,7 +1238,6 @@ document.getElementById('changePasswordForm').addEventListener('submit', async f
   }
 });
       
-// Address Form Submission
 
 document.getElementById('addressForm').addEventListener('submit', async function(e) {
   e.preventDefault();
@@ -1279,12 +1252,10 @@ document.getElementById('addressForm').addEventListener('submit', async function
     altPhone: this.altPhone.value.trim()
   };
   
-  // Clear previous errors
   document.querySelectorAll('.address-error').forEach(el => el.remove());
   
   let isValid = true;
   
-  // Name validation
   if (!fields.name) {
     showAddressError(this.name, 'Name is required');
     isValid = false;
@@ -1293,7 +1264,6 @@ document.getElementById('addressForm').addEventListener('submit', async function
     isValid = false;
   }
   
-  // Address validation
   if (!fields.address) {
     showAddressError(this.address, 'Address is required');
     isValid = false;
@@ -1302,19 +1272,16 @@ document.getElementById('addressForm').addEventListener('submit', async function
     isValid = false;
   }
   
-  // City validation
   if (!fields.city) {
     showAddressError(this.city, 'City is required');
     isValid = false;
   }
   
-  // State validation
   if (!fields.state) {
     showAddressError(this.state, 'State is required');
     isValid = false;
   }
   
-  // Pincode validation
   if (!fields.pincode) {
     showAddressError(this.pincode, 'Pincode is required');
     isValid = false;
@@ -1323,7 +1290,6 @@ document.getElementById('addressForm').addEventListener('submit', async function
     isValid = false;
   }
   
-  // Phone validation
   if (!fields.phone) {
     showAddressError(this.phone, 'Phone is required');
     isValid = false;
@@ -1332,7 +1298,6 @@ document.getElementById('addressForm').addEventListener('submit', async function
     isValid = false;
   }
   
-  // Alternate phone validation (if provided)
   if (fields.altPhone && !/^[0-9]{10}$/.test(fields.altPhone)) {
     showAddressError(this.altPhone, 'Alternate phone must be 10 digits');
     isValid = false;
@@ -1380,7 +1345,6 @@ function showAddressError(input, message) {
 }
 
 
-          // Toast Notification
       function showToast(message, type = 'success') {
         const toast = document.createElement('div');
         toast.className = `fixed bottom-4 right-4 ${type === 'success' ? 'bg-[#2C2C2C]' : 'bg-red-500'} text-white px-6 py-3 rounded-lg shadow-xl transform translate-y-0 opacity-100 transition-all duration-300 z-50 flex items-center`;
@@ -1474,7 +1438,6 @@ async function editAddress(addressId) {
 
     const address = await response.json();
 
-    // Populate form fields
     document.getElementById('addressId').value = address._id;
     document.getElementById('modalAddressType').value = address.addressType;
     document.getElementById('modalName').value = address.name;
@@ -1493,8 +1456,6 @@ async function editAddress(addressId) {
   }
 }
 
-          // Cancel Order
-      // Cancel Order
 function cancelOrder(orderId) {
   if (confirm('Are you sure you want to cancel this order?')) {
     fetch('/cancel-order', {
@@ -1571,7 +1532,6 @@ function closePasswordOtpModal() {
   document.getElementById('resendPasswordOtpBtn').disabled = true;
 }
 
-// Handle resend password OTP
 
 
 document.getElementById('resendPasswordOtpBtn').addEventListener('click', async function() {
@@ -1636,7 +1596,6 @@ document.getElementById('passwordOtpForm').addEventListener('submit', async func
       showToast('Password changed successfully!', 'success');
       sessionStorage.removeItem('tempPasswordData');
       closePasswordOtpModal();
-      // Reset the form
       document.getElementById('changePasswordForm').reset();
     } else {
       showToast(data.message || 'Failed to change password', 'error');

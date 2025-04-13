@@ -192,7 +192,6 @@
                 
                 <div class="flex items-center gap-4">
                     <% if (order.status === 'Return Request') { %>
-                        <!-- Return Request Actions -->
                         <div class="flex gap-2">
                             <button onclick="handleReturn('approve', '<%= order._id %>')" 
                                     class="px-4 py-2 bg-green-500 text-white rounded-md">
@@ -204,7 +203,6 @@
                             </button>
                         </div>
                     <% } else if (!['Delivered', 'Cancelled', 'Returned'].includes(order.status)) { %>
-                        <!-- Regular Status Update -->
                         <select id="statusSelect" class="status-select">
                             <% 
                             const statusTransitions = {
@@ -225,7 +223,6 @@
                             Update Status
                         </button>
                     <% } else { %>
-                        <!-- Final Status Display -->
                         <div class="final-status-message">
                             Status: <%= order.status %> (no further actions)
                         </div>
@@ -233,9 +230,7 @@
                 </div>
             </div>
 
-            <!-- Two Column Layout -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <!-- Shipping Information -->
                 <div>
                     <h2 class="text-xl font-semibold mb-4 text-gray-900">Shipping Information</h2>
                     <div class="space-y-2 text-gray-700">
@@ -247,7 +242,6 @@
                     </div>
                 </div>
 
-                <!-- Order Summary -->
                 <div>
                     <h2 class="text-xl font-semibold mb-4 text-gray-900">Order Summary</h2>
                     <div class="space-y-4">
@@ -272,7 +266,6 @@
             </div>
         </div>
 
-        <!-- Order Items -->
         <div class="order-card">
             <h2 class="text-xl font-semibold mb-6 text-gray-900">Order Items</h2>
             <div class="space-y-6">

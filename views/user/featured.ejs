@@ -131,7 +131,6 @@
           <p class="text-[#2C2C2C]/70 max-w-2xl mx-auto mt-4 font-montserrat">Each piece in this collection has been marked as featured for its exceptional quality and unique character.</p>
         </div>
 
-        <!-- Filter Section -->
         <div class="mb-12 bg-white p-6 rounded-lg shadow-sm border border-[#e0dcd4]/50">
           <div class="flex justify-between items-center mb-4">
             <h3 class="text-lg font-playfair text-[#2C2C2C]">Filter Products</h3>
@@ -143,7 +142,6 @@
           </div>
 
           <form id="filterForm" class="filter-container hidden md:grid grid-cols-1 md:grid-cols-4 gap-4">
-            <!-- Category Filter -->
             <div>
               <label class="block text-sm font-montserrat text-[#2C2C2C]/70 mb-2">Category</label>
               <select name="category" class="w-full border border-[#e0dcd4] p-2 rounded-md focus:ring-2 focus:ring-[#f8c78d]/30 focus:outline-none">
@@ -156,7 +154,6 @@
               </select>
             </div>
 
-            <!-- Brand Filter -->
             <div>
               <label class="block text-sm font-montserrat text-[#2C2C2C]/70 mb-2">Brand</label>
               <select name="brand" class="w-full border border-[#e0dcd4] p-2 rounded-md focus:ring-2 focus:ring-[#f8c78d]/30 focus:outline-none">
@@ -169,7 +166,6 @@
               </select>
             </div>
 
-            <!-- Size Filter -->
             <div>
               <label class="block text-sm font-montserrat text-[#2C2C2C]/70 mb-2">Size</label>
               <select name="size" class="w-full border border-[#e0dcd4] p-2 rounded-md focus:ring-2 focus:ring-[#f8c78d]/30 focus:outline-none">
@@ -181,7 +177,6 @@
               </select>
             </div>
 
-            <!-- Condition Filter -->
             <div>
               <label class="block text-sm font-montserrat text-[#2C2C2C]/70 mb-2">Condition</label>
               <select name="condition" class="w-full border border-[#e0dcd4] p-2 rounded-md focus:ring-2 focus:ring-[#f8c78d]/30 focus:outline-none">
@@ -192,7 +187,6 @@
               </select>
             </div>
 
-            <!-- Price Range -->
             <div class="md:col-span-2">
               <label class="block text-sm font-montserrat text-[#2C2C2C]/70 mb-2">Price Range</label>
               <div class="flex items-center gap-2">
@@ -204,7 +198,6 @@
               </div>
             </div>
 
-            <!-- Buttons -->
             <div class="md:col-span-4 flex gap-4">
               <button type="submit" class="px-6 py-2 bg-[#2C2C2C] text-white rounded-md hover:bg-[#1a1a1a] font-montserrat transition-colors">
                 Apply Filters
@@ -283,7 +276,6 @@
           <% } %>
         </div>
 
-        <!-- Pagination -->
         <% if (totalPages > 1) { %>
         <div class="mt-16 flex justify-center">
           <div class="inline-flex rounded-md shadow-sm">
@@ -330,7 +322,6 @@
     <%- include('../partials/user/footer.ejs') %>
 
     <script>
-      // Toggle filters on mobile
       const toggleButton = document.getElementById('toggleFilters');
       const filterContainer = document.querySelector('.filter-container');
 
@@ -338,7 +329,6 @@
         filterContainer.classList.toggle('hidden');
       });
 
-      // Handle filter form submission
       document.getElementById('filterForm').addEventListener('submit', function(e) {
         e.preventDefault();
         const formData = new FormData(this);

@@ -8,6 +8,8 @@ const Category = require("../../models/categorySchema.js");
 const Address = require("../../models/addressSchema.js");
 const Order = require("../../models/orderSchema.js");
 const Cart = require("../../models/cartSchema.js");
+const fs = require("fs");
+const path = require("path");
 
 const loadHomepage = async (req, res) => {
   try {
@@ -459,7 +461,7 @@ const resendResetOtp = async (req, res) => {
 
 const addToCart = async (req, res) => {
   try {
-    const { productId, quantity = 1 } = req.body; // Default to 1 if not provided
+    const { productId, quantity = 1 } = req.body;
     const userId = req.session.user;
 
     if (!userId) {
@@ -484,7 +486,6 @@ const addToCart = async (req, res) => {
       });
     }
 
-    // Validate quantity
     const requestedQuantity = parseInt(quantity);
     if (isNaN(requestedQuantity) || requestedQuantity < 1) {
       return res.status(400).json({
@@ -503,7 +504,6 @@ const addToCart = async (req, res) => {
     );
 
     if (existingItem) {
-      // Calculate total quantity if adding new items to existing cart item
       const totalQuantity = existingItem.quantity + requestedQuantity;
 
       if (totalQuantity > product.stock) {
@@ -516,7 +516,6 @@ const addToCart = async (req, res) => {
       existingItem.quantity = totalQuantity;
       existingItem.totalPrice = totalQuantity * product.salesPrice;
     } else {
-      // Adding new item to cart
       if (requestedQuantity > product.stock) {
         return res.status(400).json({
           success: false,
@@ -568,8 +567,6 @@ const loadProductPage = async (req, res) => {
   }
 };
 
-//Profile
-
 const loadProfilePage = async (req, res) => {
   try {
     if (!req.session.user) {
@@ -581,7 +578,6 @@ const loadProfilePage = async (req, res) => {
     const perPage = 5;
     const skip = (ordersPage - 1) * perPage;
 
-    // Build the search query
     let ordersQuery = { user: userId };
     if (search) {
       ordersQuery.$or = [
@@ -591,7 +587,6 @@ const loadProfilePage = async (req, res) => {
       ];
     }
 
-    // Get orders with pagination and search
     const [orders, totalOrders] = await Promise.all([
       Order.find(ordersQuery)
         .sort({ createdOn: -1 })
@@ -610,7 +605,6 @@ const loadProfilePage = async (req, res) => {
 
     const user = await User.findById(userId).populate("addresses").lean();
 
-    // Add orders and pagination data to user object
     user.orders = orders;
     user.ordersCurrentPage = Number(ordersPage);
     user.ordersTotal = totalOrders;
@@ -755,24 +749,64 @@ const verifyEmailOtp = async (req, res) => {
 const updateProfileImage = async (req, res) => {
   try {
     if (!req.file) {
+      if (req.fileValidationError) {
+        return res.status(400).json({
+          success: false,
+          message: req.fileValidationError,
+        });
+      }
       return res.status(400).json({
         success: false,
         message: "No image file provided",
       });
     }
 
+    const allowedTypes = ["image/jpeg", "image/png", "image/gif", "image/webp"];
+    if (!allowedTypes.includes(req.file.mimetype)) {
+      fs.unlinkSync(req.file.path);
+      return res.status(400).json({
+        success: false,
+        message: "Invalid file type. Only JPG, PNG, GIF, or WEBP are allowed.",
+      });
+    }
+
+    if (req.file.size > 5 * 1024 * 1024) {
+      fs.unlinkSync(req.file.path);
+      return res.status(400).json({
+        success: false,
+        message: "File size exceeds 5MB limit",
+      });
+    }
+
     const userId = req.session.user;
     const imagePath = `/uploads/profile-images/${req.file.filename}`;
 
-    await User.findByIdAndUpdate(userId, {
-      profileImage: imagePath,
-    });
+    const user = await User.findById(userId);
+    const oldImagePath = user.profileImage;
+
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      { profileImage: imagePath },
+      { new: true },
+    );
+
+    if (oldImagePath && !oldImagePath.includes("default-profile.jpg")) {
+      const oldImageFullPath = path.join(__dirname, "../public", oldImagePath);
+      if (fs.existsSync(oldImageFullPath)) {
+        fs.unlinkSync(oldImageFullPath);
+      }
+    }
 
     res.json({
       success: true,
       imageUrl: imagePath,
+      message: "Profile image updated successfully",
     });
   } catch (err) {
+    if (req.file && req.file.path) {
+      fs.unlinkSync(req.file.path);
+    }
+
     console.error("Error updating profile image:", err);
     res.status(500).json({
       success: false,
@@ -818,7 +852,7 @@ const resendProfileOtp = async (req, res) => {
 
 const addAddress = async (req, res) => {
   try {
-    const userId = req.session.user; // Changed from req.user._id
+    const userId = req.session.user;
     const isDefault =
       req.body.isDefault === "true" || req.body.isDefault === true;
 
@@ -837,7 +871,6 @@ const addAddress = async (req, res) => {
 
     await address.save();
 
-    // Update user's addresses array
     await User.findByIdAndUpdate(
       userId,
       { $push: { addresses: address._id } },
@@ -872,7 +905,6 @@ const updateAddress = async (req, res) => {
   try {
     const updates = req.body;
 
-    // If this is just setting default address
     if (updates.updateType === "setDefault") {
       await Address.updateMany(
         { userId: req.session.user, _id: { $ne: req.params.id } },
@@ -892,7 +924,6 @@ const updateAddress = async (req, res) => {
       });
     }
 
-    // Otherwise handle full address update
     updates.isDefault =
       updates.isDefault === "true" || updates.isDefault === true;
 
@@ -931,10 +962,9 @@ const updateAddress = async (req, res) => {
 
 const deleteAddress = async (req, res) => {
   try {
-    // First, find the address to check if it exists and belongs to the user
     const address = await Address.findOne({
       _id: req.params.id,
-      userId: req.session.user, // Changed from req.user._id to req.session.user
+      userId: req.session.user,
     });
 
     if (!address) {
@@ -944,7 +974,6 @@ const deleteAddress = async (req, res) => {
       });
     }
 
-    // If it's the default address, prevent deletion
     if (address.isDefault) {
       return res.status(400).json({
         success: false,
@@ -953,10 +982,8 @@ const deleteAddress = async (req, res) => {
       });
     }
 
-    // Delete the address
     await Address.findByIdAndDelete(req.params.id);
 
-    // Remove the address reference from the user's addresses array
     await User.findByIdAndUpdate(
       req.session.user,
       { $pull: { addresses: req.params.id } },
@@ -981,7 +1008,7 @@ const getAddress = async (req, res) => {
   try {
     const address = await Address.findOne({
       _id: req.params.id,
-      userId: req.session.user, // Changed from req.user._id to req.session.user
+      userId: req.session.user,
     });
 
     if (!address) {
@@ -1022,7 +1049,7 @@ const sendPasswordChangeOtp = async (req, res) => {
     }
 
     req.session.passwordChangeOtp = otp;
-    req.session.passwordChangeOtpExpires = Date.now() + 60000; // 60 seconds (1 minute)
+    req.session.passwordChangeOtpExpires = Date.now() + 60000;
 
     res.json({
       success: true,
@@ -1073,12 +1100,10 @@ const verifyPasswordChangeOtp = async (req, res) => {
       });
     }
 
-    // Update password
     const hashedPassword = await securePassword(newPassword);
     user.password = hashedPassword;
     await user.save();
 
-    // Clear session
     req.session.passwordChangeOtp = null;
     req.session.passwordChangeOtpExpires = null;
     req.session.tempNewPassword = null;
@@ -1116,7 +1141,7 @@ const resendPasswordChangeOtp = async (req, res) => {
     }
 
     req.session.passwordChangeOtp = otp;
-    req.session.passwordChangeOtpExpires = Date.now() + 60000; // 60 seconds (1 minute)
+    req.session.passwordChangeOtpExpires = Date.now() + 60000;
 
     res.json({
       success: true,

@@ -200,12 +200,12 @@
 <script>
     function openAddModal() {
         document.getElementById('addModal').classList.remove('hidden');
-        document.body.style.overflow = 'hidden'; // Prevent scrolling when modal is open
+        document.body.style.overflow = 'hidden'; 
     }
 
     function closeAddModal() {
         document.getElementById('addModal').classList.add('hidden');
-        document.body.style.overflow = 'auto'; // Restore scrolling
+        document.body.style.overflow = 'auto';
     }
 
     document.getElementById('addModal').addEventListener('click', function(e) {
@@ -284,7 +284,7 @@ if (imageInput && imageInput.files.length > 0) {
       displayErrorMessage("image-error", "Please upload a valid image (JPEG, PNG, GIF, or WEBP)");
       isValid = false;
     }
-    if (file.size > 12 * 1024 * 1024) { // 12MB
+    if (file.size > 12 * 1024 * 1024) { 
       displayErrorMessage("image-error", "Image must be less than 12MB");
       isValid = false;
     }

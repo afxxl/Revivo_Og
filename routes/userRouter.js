@@ -204,7 +204,6 @@ router.post(
   userController.resendPasswordChangeOtp,
 );
 
-//pdf
 router.get(
   "/orders/:orderId/invoice",
   userAuth,

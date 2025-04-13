@@ -1,5 +1,3 @@
-// cartCount.js
-
 const Cart = require("../models/cartSchema.js");
 
 const getCartCount = async (req, res, next) => {

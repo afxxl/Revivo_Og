@@ -40,24 +40,21 @@ app.use(passport.session());
 
 app.use(async (req, res, next) => {
   try {
-    // First try Passport user
     if (req.user) {
       res.locals.user = req.user;
-      req.session.user = req.user._id; // Keep session in sync
+      req.session.user = req.user._id;
       return next();
     }
 
-    // Then try session user
     if (req.session.user) {
       const user = await User.findById(req.session.user);
       if (user) {
         res.locals.user = user;
-        req.user = user; // Set Passport user for consistency
+        req.user = user;
         return next();
       }
     }
 
-    // No user found
     res.locals.user = null;
     next();
   } catch (err) {

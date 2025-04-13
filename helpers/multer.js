@@ -35,12 +35,21 @@ const productStorage = multer.diskStorage({
 });
 
 const fileFilter = function (req, file, cb) {
-  if (
-    !file.originalname.match(/\.(jpg|JPG|jpeg|JPEG|png|PNG|gif|GIF|webp|WEBP)$/)
-  ) {
-    req.fileValidationError = "Only image files are allowed!";
+  const filetypes = /jpeg|jpg|png|gif|webp/;
+  const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
+  const mimetype = filetypes.test(file.mimetype);
+
+  if (!mimetype || !extname) {
+    req.fileValidationError =
+      "Only image files (JPEG, JPG, PNG, GIF, WEBP) are allowed!";
     return cb(new Error("Only image files are allowed!"), false);
   }
+
+  if (file.size > 5 * 1024 * 1024) {
+    req.fileValidationError = "File size exceeds 5MB limit";
+    return cb(new Error("File size exceeds 5MB limit"), false);
+  }
+
   cb(null, true);
 };
 
@@ -101,5 +110,6 @@ module.exports = {
     storage: profileStorage,
     fileFilter: fileFilter,
     limits: { fileSize: 1024 * 1024 * 5 },
+    files: 1,
   }).single("profileImage"),
 };

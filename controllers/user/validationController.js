@@ -10,7 +10,6 @@ const validateProfileUpdate = (req, res, next) => {
     errors.push("Please provide a valid email");
   }
 
-  // Updated phone validation to make it required
   if (!phone) {
     errors.push("Phone number is required");
   } else if (!/^[0-9]{10,15}$/.test(phone)) {
@@ -25,7 +24,6 @@ const validateProfileUpdate = (req, res, next) => {
 };
 
 const validateAddress = (req, res, next) => {
-  // If this is just a default address update, skip full validation
   if (req.body.updateType === "setDefault") {
     return next();
   }

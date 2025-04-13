@@ -59,9 +59,7 @@
 
     <div class="container mx-auto px-4 py-12 max-w-7xl">
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <!-- Left Column -->
             <div class="space-y-8">
-                <!-- Delivery Address -->
                 <div class="bg-white/80 p-6 rounded-lg shadow-sm">
                     <h2 class="text-2xl font-bold mb-6">Delivery Information</h2>
                     
@@ -96,12 +94,10 @@
                         </button>
                     </div>
 
-                    <!-- Enhanced Payment Method Section -->
                     <div class="pt-6 border-t border-gray-200">
                         <h3 class="text-lg font-medium mb-4">Payment Method</h3>
 
 <div class="grid grid-cols-2 gap-4">
-    <!-- COD - Enabled -->
     <div class="payment-method p-4 rounded-lg border bg-white text-center cursor-pointer"
         data-method="COD"
         onclick="selectPaymentMethod(this)">
@@ -110,7 +106,6 @@
         <p class="text-xs text-gray-500 mt-1">Pay when you receive</p>
     </div>
 
-    <!-- Other Methods - Disabled -->
     <div class="payment-method p-4 rounded-lg border bg-gray-100 text-center cursor-not-allowed opacity-75"
         data-method="CARD"
         title="Coming soon">
@@ -142,11 +137,9 @@
                 </div>
             </div>
 
-            <!-- Right Column -->
             <div class="bg-white/80 p-6 rounded-lg shadow-sm h-fit sticky top-4">
                 <h2 class="text-2xl font-bold mb-6">Order Summary</h2>
                 
-                <!-- Order Items -->
                 <div class="mb-6">
                     <% cart.items.forEach(item => { %>
                         <div class="flex items-center justify-between py-3 border-b">
@@ -164,7 +157,6 @@
                     <% }); %>
                 </div>
 
-                <!-- Totals -->
                 <div class="space-y-3 mb-6">
                     <div class="flex justify-between">
                         <span>Subtotal:</span>
@@ -180,7 +172,6 @@
                     </div>
                 </div>
 
-                <!-- Place Order Button -->
                 <button 
                     id="placeOrderBtn"
                     onclick="placeOrder()"
@@ -197,9 +188,8 @@
 
 <script>
     let selectedAddressId = null;
-    let selectedPaymentMethod = 'COD'; // COD is the only available method
+    let selectedPaymentMethod = 'COD'; 
 
-    // Address Selection
     function selectAddress(element) {
         document.querySelectorAll('.address-card').forEach(card => {
             card.classList.remove('selected');
@@ -208,9 +198,7 @@
         selectedAddressId = element.dataset.addressId;
     }
 
-    // Payment Method Selection
     function selectPaymentMethod(element) {
-        // Only allow COD selection
         if (element.dataset.method !== 'COD') {
             showToast('Currently only Cash on Delivery is available', 'info');
             return;
@@ -223,7 +211,6 @@
         selectedPaymentMethod = element.dataset.method;
     }
 
-    // Edit Address
     async function editAddress(addressId) {
         try {
             const response = await fetch(`/addresses/${addressId}`);
@@ -247,7 +234,6 @@
         }
     }
 
-    // Place Order
     async function placeOrder() {
         if (!selectedAddressId) {
             showToast('Please select a delivery address', 'error');
@@ -264,7 +250,7 @@
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     addressId: selectedAddressId,
-                    paymentMethod: 'COD' // Force COD as payment method
+                    paymentMethod: 'COD' 
                 })
             });
 
@@ -284,7 +270,6 @@
         }
     }
 
-    // Address Modal Functions
     function openAddressModal(addressId = null) {
         const modal = document.getElementById('addressModal');
         const form = document.getElementById('addressForm');
@@ -305,7 +290,6 @@
         document.getElementById('addressModal').classList.add('hidden');
     }
 
-    // Handle Address Form Submission
     async function handleAddressFormSubmit(e) {
         e.preventDefault();
         const formData = new FormData(e.target);
@@ -343,7 +327,6 @@
         }
     }
 
-    // Toast Notification
     function showToast(message, type = 'success') {
         const toast = document.createElement('div');
         toast.className = `fixed bottom-4 right-4 ${type === 'success' ? 'bg-[#2C2C2C]' : 'bg-red-500'} text-white px-6 py-3 rounded-lg shadow-xl flex items-center`;
@@ -355,10 +338,8 @@
         setTimeout(() => toast.remove(), 3000);
     }
 
-    // Initialize
     document.getElementById('addressForm')?.addEventListener('submit', handleAddressFormSubmit);
     document.addEventListener('DOMContentLoaded', () => {
-        // Auto-select first address and COD payment method
         const codMethod = document.querySelector('[data-method="COD"]');
         if (codMethod) {
             codMethod.classList.add('selected');
