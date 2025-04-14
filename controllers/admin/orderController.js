@@ -100,7 +100,6 @@ const handleReturn = async (req, res) => {
     }
 
     if (action === "approve") {
-      // Restore product quantities
       for (const item of order.orderItems) {
         await Product.findByIdAndUpdate(item.product._id, {
           $inc: { stock: item.quantity },
@@ -109,17 +108,16 @@ const handleReturn = async (req, res) => {
 
       order.status = "Returned";
       order.return = {
-        // Ensure ALL fields are set
-        ...order.return, // Keep existing data
+        ...order.return,
         status: "approved",
-        processedAt: new Date(), // MUST be set
+        processedAt: new Date(),
       };
     } else {
       order.status = "Delivered";
       order.return = {
-        ...order.return, // Keep existing data
+        ...order.return,
         status: "rejected",
-        processedAt: new Date(), // MUST be set
+        processedAt: new Date(),
       };
     }
 
@@ -150,7 +148,6 @@ const updateStatus = async (req, res) => {
       });
     }
 
-    // Prevent any status changes after delivery (except return flow)
     if (order.status === "Delivered" && status !== "Return Request") {
       return res.status(400).json({
         success: false,
@@ -158,7 +155,6 @@ const updateStatus = async (req, res) => {
       });
     }
 
-    // Prevent changes to returned orders
     if (order.status === "Returned") {
       return res.status(400).json({
         success: false,
@@ -166,14 +162,13 @@ const updateStatus = async (req, res) => {
       });
     }
 
-    // Rest of your existing validation logic
     const validTransitions = {
       Pending: ["Confirmed", "Cancelled"],
       Confirmed: ["Shipped", "Cancelled"],
       Shipped: ["Delivered"],
-      Delivered: ["Return Request"], // Only allowed transition
-      "Return Request": ["Returned", "Delivered"], // Approve/Reject
-      Returned: [], // Final state
+      Delivered: ["Return Request"],
+      "Return Request": ["Returned", "Delivered"],
+      Returned: [],
     };
 
     if (!validTransitions[order.status]?.includes(status)) {
@@ -184,7 +179,6 @@ const updateStatus = async (req, res) => {
       });
     }
 
-    // Update status
     order.status = status;
     await order.save();
 
