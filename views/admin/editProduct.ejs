@@ -178,9 +178,7 @@
                     class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#6C7559] focus:border-transparent">
               <option value="">Select Brand</option>
               <% brands.forEach(brand => { %>
-                <option value="<%= brand._id %>" <%= product.brand.toString() === brand._id.toString() ? 'selected' : '' %>>
-                  <%= brand.brandName %>
-                </option>
+                <option value="<%= brand._id %>" <%= product.brand._id.toString() === brand._id.toString() ? 'selected' : '' %>><%= brand.brandName %></option>
               <% }); %>
             </select>
             <p id="brand-error" class="error-message text-red-500 text-sm mt-1 hidden"></p>
@@ -192,9 +190,7 @@
                     class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#6C7559] focus:border-transparent">
               <option value="">Select Category</option>
               <% categories.forEach(category => { %>
-                <option value="<%= category._id %>" <%= product.category.toString() === category._id.toString() ? 'selected' : '' %>>
-                  <%= category.name %>
-                </option>
+                <option value="<%= category._id %>" <%= product.category._id.toString() === category._id.toString() ? 'selected' : '' %>><%= category.name %></option>
               <% }); %>
             </select>
             <p id="category-error" class="error-message text-red-500 text-sm mt-1 hidden"></p>
@@ -249,22 +245,16 @@
             <p id="stock-error" class="error-message text-red-500 text-sm mt-1 hidden"></p>
           </div>
 
-<div>
-  <label for="heritage" class="block text-sm font-medium text-gray-700 mb-1">Heritage Collection</label>
-  <select id="heritage" name="heritage"
-          class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#6C7559] focus:border-transparent">
-    <option value="None" <%= product.heritage === 'None' ? 'selected' : '' %>>None</option>
-    <option value="Prime Layers" <%= product.heritage === 'Prime Layers' ? 'selected' : '' %>>Prime Layers</option>
-    <option value="Vintage Athletics" <%= product.heritage === 'Vintage Athletics' ? 'selected' : '' %>>Vintage Athletics</option>
-    <option value="Y2K Essentials" <%= product.heritage === 'Y2K Essentials' ? 'selected' : '' %>>Y2K Essentials</option>
-  </select>
-</div>
-
           <div>
-            <label for="quantity" class="block text-sm font-medium text-gray-700 mb-1">Quantity*</label>
-            <input type="number" id="quantity" name="quantity" value="<%= product.quantity %>" min="0" required
-                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#6C7559] focus:border-transparent">
-            <p id="quantity-error" class="error-message text-red-500 text-sm mt-1 hidden"></p>
+            <label for="heritage" class="block text-sm font-medium text-gray-700 mb-1">Heritage Collection</label>
+            <select id="heritage" name="heritage"
+                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#6C7559] focus:border-transparent">
+              <option value="None" <%= product.heritage === 'None' ? 'selected' : '' %>>None</option>
+              <option value="Prime Layers" <%= product.heritage === 'Prime Layers' ? 'selected' : '' %>>Prime Layers</option>
+              <option value="Vintage Athletics" <%= product.heritage === 'Vintage Athletics' ? 'selected' : '' %>>Vintage Athletics</option>
+              <option value="Y2K Essentials" <%= product.heritage === 'Y2K Essentials' ? 'selected' : '' %>>Y2K Essentials</option>
+            </select>
+            <p id="heritage-error" class="error-message text-red-500 text-sm mt-1 hidden"></p>
           </div>
 
           <div>
@@ -299,37 +289,43 @@
                    class="w-4 h-4 text-[#6C7559] border-gray-300 rounded focus:ring-[#6C7559]">
             <label for="isNew" class="ml-2 text-sm text-gray-700">Mark as New</label>
           </div>
+          <div class="flex items-center">
+            <input type="checkbox" id="isListed" name="isListed" <%= product.isListed ? 'checked' : '' %>
+                   class="w-4 h-4 text-[#6C7559] border-gray-300 rounded focus:ring-[#6C7559]">
+            <label for="isListed" class="ml-2 text-sm text-gray-700">List Product</label>
+          </div>
         </div>
       </div>
 
       <div>
-        <label class="block text-sm font-medium text-gray-700 mb-1">Existing Images</label>
-        <div class="existing-images">
+        <label class="block text-sm font-medium text-gray-700 mb-1">Existing Images (Minimum 3 required)*</label>
+        <div class="existing-images" id="existing-images">
           <% product.productImage.forEach((image, index) => { %>
-            <div class="existing-image">
+            <div class="existing-image" data-image-path="<%= image %>">
               <img src="<%= image %>" alt="Product Image <%= index + 1 %>">
-              <div class="delete-image" onclick="deleteExistingImage('<%= image %>')">×</div>
+              <span class="delete-image" onclick="deleteExistingImage(this)">×</span>
             </div>
           <% }); %>
         </div>
+        <p id="existing-images-error" class="error-message text-red-500 text-sm mt-1 hidden"></p>
       </div>
 
       <div>
-        <label class="block text-sm font-medium text-gray-700 mb-1">Add New Images</label>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Upload New Images</label>
         <div class="mt-1 flex items-center">
           <input type="file" id="images" name="images" multiple accept="image/*" class="hidden">
-          <button type="button" id="uploadTrigger" 
+          <button type="button" id="uploadTrigger"
                   class="px-4 py-2 border-2 border-dashed border-gray-300 rounded-lg hover:border-[#6C7559] transition-colors upload-area w-full">
             <div class="flex flex-col items-center justify-center text-gray-500">
               <i class="fas fa-cloud-upload-alt text-4xl mb-3"></i>
-              <p class="font-medium text-lg">Click to upload product images</p>
+              <p class="font-medium text-lg">Click to upload new product images</p>
               <p class="text-sm mt-1">Recommended: Square images (1000×1000 pixels)</p>
               <p class="text-xs mt-1 text-gray-400">JPG, PNG, or WEBP (max 10MB each)</p>
             </div>
           </button>
           <span id="file-chosen" class="ml-2 text-sm text-gray-500 hidden">No files chosen</span>
         </div>
-        
+
         <div id="image-preview-container" class="hidden">
           <div class="relative w-full" style="height: 500px; background-color: #f3f4f6;">
             <img id="image-preview-cropper" class="max-w-full max-h-full" alt="Preview">
@@ -355,20 +351,16 @@
             </button>
           </div>
         </div>
-        
-        <div id="thumbnail-preview" class="mt-4 grid grid-cols-3 gap-2 hidden">
-        </div>
 
+        <div id="thumbnail-preview" class="mt-4 grid grid-cols-3 gap-2 hidden"></div>
         <p id="images-error" class="error-message text-red-500 text-sm mt-1 hidden"></p>
       </div>
 
+      <input type="hidden" id="deletedImages" name="deletedImages" value="[]">
+
       <div class="flex justify-end space-x-4 mt-6">
-        <a href="/admin/products" 
-           class="px-4 py-2 text-sm text-gray-600 hover:text-gray-800 font-medium">
-          Cancel
-        </a>
-        <button type="submit" 
-                class="px-4 py-2 bg-[#6C7559] hover:bg-[#5a6349] text-white rounded-lg text-sm">
+        <a href="/admin/products" class="px-4 py-2 text-sm text-gray-600 hover:text-gray-800 font-medium">Cancel</a>
+        <button type="submit" class="px-4 py-2 bg-[#6C7559] hover:bg-[#5a6349] text-white rounded-lg text-sm">
           Update Product
         </button>
       </div>
@@ -382,364 +374,368 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
 <script>
-  let cropper;
-  let originalImageFile;
-  let currentFileIndex = 0;
-  let croppedImages = [];
-  let deletedImages = [];
+let cropper;
+let originalImageFile;
+let currentFileIndex = 0;
+let croppedImages = [];
+let deletedImages = [];
 
-  function initCropper(imageElement) {
-    return new Cropper(imageElement, {
-      aspectRatio: 1,
-      viewMode: 1,
-      autoCropArea: 0.8,
-      minContainerWidth: 500,
-      minContainerHeight: 500,
-      minCanvasWidth: 500,
-      minCanvasHeight: 500,
-      minCropBoxWidth: 200,
-      minCropBoxHeight: 200,
-      responsive: true,
-      restore: true,
-      guides: false,
-      center: true,
-      highlight: false,
-      cropBoxMovable: true,
-      cropBoxResizable: true,
-      toggleDragModeOnDblclick: false,
-      background: '#f3f4f6',
-      checkCrossOrigin: false,
-      checkOrientation: false,
-      modal: true,
-      dragMode: 'move',
-      ready: function() {
-        const imageData = this.cropper.getImageData();
-        if (isDarkImage(imageData)) {
-          enhanceDarkImageVisibility();
-        }
+function initCropper(imageElement) {
+  return new Cropper(imageElement, {
+    aspectRatio: 1,
+    viewMode: 1,
+    autoCropArea: 0.8,
+    minContainerWidth: 500,
+    minContainerHeight: 500,
+    minCanvasWidth: 500,
+    minCanvasHeight: 500,
+    minCropBoxWidth: 200,
+    minCropBoxHeight: 200,
+    responsive: true,
+    restore: true,
+    guides: false,
+    center: true,
+    highlight: false,
+    cropBoxMovable: true,
+    cropBoxResizable: true,
+    toggleDragModeOnDblclick: false,
+    background: '#f3f4f6',
+    checkCrossOrigin: false,
+    checkOrientation: false,
+    modal: true,
+    dragMode: 'move',
+    ready: function() {
+      const imageData = this.cropper.getImageData();
+      if (isDarkImage(imageData)) {
+        enhanceDarkImageVisibility();
       }
-    });
-  }
-
-  function isDarkImage(imageData) {
-    return imageData.naturalWidth < imageData.width || imageData.naturalHeight < imageData.height;
-  }
-
-  function enhanceDarkImageVisibility() {
-    document.querySelectorAll('.cropper-line').forEach(line => {
-      line.style.backgroundColor = '#FFA500';
-    });
-    document.querySelectorAll('.cropper-point').forEach(point => {
-      point.style.backgroundColor = '#FFA500';
-      point.style.border = '2px solid white';
-    });
-    document.querySelector('.cropper-view-box').style.outline = '2px solid #FFA500';
-  }
-
-  document.getElementById('uploadTrigger').addEventListener('click', function() {
-    document.getElementById('images').click();
-  });
-
-  document.getElementById('images').addEventListener('change', function(e) {
-    const files = e.target.files;
-    if (!files || files.length === 0) return;
-
-    croppedImages = [];
-    currentFileIndex = 0;
-    document.getElementById('thumbnail-preview').innerHTML = '';
-    document.getElementById('thumbnail-preview').classList.add('hidden');
-    
-    processImage(files[0]);
-  });
-
-  function processImage(file) {
-    const validTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
-    if (!validTypes.includes(file.type)) {
-      displayError('images-error', 'Please upload valid images (JPEG, PNG, GIF, or WEBP)');
-      return;
     }
-
-    if (file.size > 10 * 1024 * 1024) { 
-      displayError('images-error', 'Image must be less than 10MB');
-      return;
-    }
-
-    const reader = new FileReader();
-    reader.onload = function(event) {
-      const imagePreview = document.getElementById('image-preview-cropper');
-      const imagePreviewContainer = document.getElementById('image-preview-container');
-      
-      imagePreview.src = event.target.result;
-      imagePreviewContainer.classList.remove('hidden');
-      
-      ['zoomInBtn', 'zoomOutBtn', 'rotateBtn', 'resetBtn', 'cropBtn', 'cancelCropBtn'].forEach(id => {
-        document.getElementById(id).classList.remove('hidden');
-      });
-
-      if (cropper) {
-        cropper.destroy();
-      }
-      
-      cropper = initCropper(imagePreview);
-      originalImageFile = file;
-    };
-    reader.readAsDataURL(file);
-  }
-
-  document.getElementById('cropBtn').addEventListener('click', function() {
-    if (!cropper) return;
-
-    const canvas = cropper.getCroppedCanvas({
-      width: 1000,
-      height: 1000,
-      minWidth: 800,
-      minHeight: 800,
-      maxWidth: 2000,
-      maxHeight: 2000,
-      fillColor: '#fff',
-      imageSmoothingEnabled: true,
-      imageSmoothingQuality: 'high'
-    });
-
-    canvas.toBlob((blob) => {
-      const croppedFile = new File([blob], originalImageFile.name, {
-        type: 'image/jpeg',
-        lastModified: Date.now()
-      });
-
-      croppedImages.push(croppedFile);
-      updateThumbnailPreview(croppedFile);
-      
-      ['zoomInBtn', 'zoomOutBtn', 'rotateBtn', 'resetBtn', 'cropBtn', 'cancelCropBtn'].forEach(id => {
-        document.getElementById(id).classList.add('hidden');
-      });
-      
-      document.getElementById('image-preview-container').classList.add('hidden');
-
-      cropper.destroy();
-      cropper = null;
-      
-      document.getElementById('file-chosen').textContent = 
-        croppedImages.length + ' image(s) selected';
-      document.getElementById('file-chosen').classList.remove('hidden');
-      
-      const fileInput = document.getElementById('images');
-      if (currentFileIndex < fileInput.files.length - 1) {
-        currentFileIndex++;
-        processImage(fileInput.files[currentFileIndex]);
-      } else {
-        updateFileInput();
-      }
-    }, 'image/jpeg', 0.9);
   });
+}
 
-  function updateThumbnailPreview(file) {
-    const thumbnailPreview = document.getElementById('thumbnail-preview');
-    thumbnailPreview.classList.remove('hidden');
-    
-    const reader = new FileReader();
-    reader.onload = function(e) {
-      const img = document.createElement('img');
-      img.src = e.target.result;
-      img.className = 'w-full h-24 object-cover rounded';
-      thumbnailPreview.appendChild(img);
-    };
-    reader.readAsDataURL(file);
+function isDarkImage(imageData) {
+  return imageData.naturalWidth < imageData.width || imageData.naturalHeight < imageData.height;
+}
+
+function enhanceDarkImageVisibility() {
+  document.querySelectorAll('.cropper-line').forEach(line => {
+    line.style.backgroundColor = '#FFA500';
+  });
+  document.querySelectorAll('.cropper-point').forEach(point => {
+    point.style.backgroundColor = '#FFA500';
+    point.style.border = '2px solid white';
+  });
+  document.querySelector('.cropper-view-box').style.outline = '2px solid #FFA500';
+}
+
+function deleteExistingImage(element) {
+  const imageContainer = element.parentElement;
+  const imagePath = imageContainer.getAttribute('data-image-path');
+  deletedImages.push(imagePath);
+  document.getElementById('deletedImages').value = JSON.stringify(deletedImages);
+  imageContainer.remove();
+
+  const remainingImages = document.querySelectorAll('.existing-image').length;
+  if (remainingImages + croppedImages.length < 3) {
+    displayError('existing-images-error', 'At least 3 images are required');
+  } else {
+    document.getElementById('existing-images-error').classList.add('hidden');
+  }
+}
+
+document.getElementById('uploadTrigger').addEventListener('click', function() {
+  document.getElementById('images').click();
+});
+
+document.getElementById('images').addEventListener('change', function(e) {
+  const files = e.target.files;
+  if (!files || files.length === 0) return;
+
+  croppedImages = [];
+  currentFileIndex = 0;
+  document.getElementById('thumbnail-preview').innerHTML = '';
+  document.getElementById('thumbnail-preview').classList.add('hidden');
+  
+  processImage(files[0]);
+});
+
+function processImage(file) {
+  const validTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+  if (!validTypes.includes(file.type)) {
+    displayError('images-error', 'Please upload valid images (JPEG, PNG, GIF, or WEBP)');
+    return;
   }
 
-  function updateFileInput() {
-    const dataTransfer = new DataTransfer();
-    croppedImages.forEach(file => {
-      dataTransfer.items.add(file);
+  if (file.size > 10 * 1024 * 1024) { // 10MB
+    displayError('images-error', 'Image must be less than 10MB');
+    return;
+  }
+
+  const reader = new FileReader();
+  reader.onload = function(event) {
+    const imagePreview = document.getElementById('image-preview-cropper');
+    const imagePreviewContainer = document.getElementById('image-preview-container');
+    
+    imagePreview.src = event.target.result;
+    imagePreviewContainer.classList.remove('hidden');
+    
+    ['zoomInBtn', 'zoomOutBtn', 'rotateBtn', 'resetBtn', 'cropBtn', 'cancelCropBtn'].forEach(id => {
+      document.getElementById(id).classList.remove('hidden');
     });
-    
-    const fileInput = document.getElementById('images');
-    fileInput.files = dataTransfer.files;
-  }
 
-  document.getElementById('cancelCropBtn').addEventListener('click', function() {
     if (cropper) {
       cropper.destroy();
-      cropper = null;
     }
+    
+    cropper = initCropper(imagePreview);
+    originalImageFile = file;
+  };
+  reader.readAsDataURL(file);
+}
+
+document.getElementById('cropBtn').addEventListener('click', function() {
+  if (!cropper) return;
+
+  const canvas = cropper.getCroppedCanvas({
+    width: 1000,
+    height: 1000,
+    minWidth: 800,
+    minHeight: 800,
+    maxWidth: 2000,
+    maxHeight: 2000,
+    fillColor: '#fff',
+    imageSmoothingEnabled: true,
+    imageSmoothingQuality: 'high'
+  });
+
+  canvas.toBlob((blob) => {
+    const croppedFile = new File([blob], originalImageFile.name, {
+      type: 'image/jpeg',
+      lastModified: Date.now()
+    });
+
+    croppedImages.push(croppedFile);
+    updateThumbnailPreview(croppedFile);
+    
+    ['zoomInBtn', 'zoomOutBtn', 'rotateBtn', 'resetBtn', 'cropBtn', 'cancelCropBtn'].forEach(id => {
+      document.getElementById(id).classList.add('hidden');
+    });
     
     document.getElementById('image-preview-container').classList.add('hidden');
-    document.getElementById('images').value = '';
-    document.getElementById('file-chosen').textContent = 'No files chosen';
-    document.getElementById('file-chosen').classList.add('hidden');
-    document.getElementById('thumbnail-preview').innerHTML = '';
-    document.getElementById('thumbnail-preview').classList.add('hidden');
-    document.getElementById('images-error').classList.add('hidden');
-    croppedImages = [];
-    currentFileIndex = 0;
-  });
 
-  document.getElementById('zoomInBtn').addEventListener('click', function() {
-    if (cropper) {
-      cropper.zoom(0.1);
-    }
-  });
-
-  document.getElementById('zoomOutBtn').addEventListener('click', function() {
-    if (cropper) {
-      cropper.zoom(-0.1);
-    }
-  });
-
-  document.getElementById('rotateBtn').addEventListener('click', function() {
-    if (cropper) {
-      cropper.rotate(90);
-    }
-  });
-
-  document.getElementById('resetBtn').addEventListener('click', function() {
-    if (cropper) {
-      cropper.reset();
-    }
-  });
-
-  function deleteExistingImage(imagePath) {
-    deletedImages.push(imagePath);
-    const imageElement = event.target.parentElement;
-    imageElement.remove();
-  }
-
-  document.getElementById('editProductForm').addEventListener('submit', async function(e) {
-    e.preventDefault();
-    clearErrorMessages();
+    cropper.destroy();
+    cropper = null;
     
-    let isValid = true;
+    document.getElementById('file-chosen').textContent = 
+      croppedImages.length + ' new image(s) selected';
+    document.getElementById('file-chosen').classList.remove('hidden');
     
-    const productName = document.getElementById('productName').value.trim();
-    const brand = document.getElementById('brand').value;
-    const category = document.getElementById('category').value;
-    const size = document.getElementById('size').value;
-    const condition = document.getElementById('condition').value;
-    const regularPrice = document.getElementById('regularPrice').value;
-    const salesPrice = document.getElementById('salesPrice').value;
-    const stock = document.getElementById('stock').value;
-    const quantity = document.getElementById('quantity').value;
-    const status = document.getElementById('status').value;
-    const description = document.getElementById('description').value.trim();
+    const remainingImages = document.querySelectorAll('.existing-image').length;
+    if (remainingImages + croppedImages.length >= 3) {
+      document.getElementById('existing-images-error').classList.add('hidden');
+      document.getElementById('images-error').classList.add('hidden');
+    }
+    
     const fileInput = document.getElementById('images');
-    
-    const existingImages = document.querySelectorAll('.existing-image');
-    const remainingImages = existingImages.length;
-    const newImages = croppedImages.length;
-    const totalImages = remainingImages + newImages;
-    
-    if (!productName) {
-      displayError('productName-error', 'Product name is required');
-      isValid = false;
+    if (currentFileIndex < fileInput.files.length - 1) {
+      currentFileIndex++;
+      processImage(fileInput.files[currentFileIndex]);
+    } else {
+      updateFileInput();
     }
-    
-    if (!brand) {
-      displayError('brand-error', 'Please select a brand');
-      isValid = false;
-    }
-    
-    if (!category) {
-      displayError('category-error', 'Please select a category');
-      isValid = false;
-    }
-    
-    if (!size) {
-      displayError('size-error', 'Size is required');
-      isValid = false;
-    }
-    
-    if (!condition) {
-      displayError('condition-error', 'Please select a condition');
-      isValid = false;
-    }
-    
-    if (!regularPrice || parseFloat(regularPrice) <= 0) {
-      displayError('regularPrice-error', 'Please enter a valid price');
-      isValid = false;
-    }
-    
-    if (!salesPrice || parseFloat(salesPrice) <= 0) {
-      displayError('salesPrice-error', 'Please enter a valid sale price');
-      isValid = false;
-    }
-    
-    if (!stock || parseInt(stock) < 0) {
-      displayError('stock-error', 'Please enter a valid stock quantity');
-      isValid = false;
-    }
-    
-    if (!quantity || parseInt(quantity) < 0) {
-      displayError('quantity-error', 'Please enter a valid quantity');
-      isValid = false;
-    }
-    
-    if (!status) {
-      displayError('status-error', 'Please select a status');
-      isValid = false;
-    }
-    
-    if (!description) {
-      displayError('description-error', 'Description is required');
-      isValid = false;
-    }
+  }, 'image/jpeg', 0.9);
+});
 
-    if (totalImages < 3) {
-      displayError('images-error', 'At least 3 images are required (including existing and new images)');
-      isValid = false;
-    }
-    
-    if (!isValid) {
-      return;
-    }
-    
-    const formData = new FormData(this);
-    formData.append('deletedImages', JSON.stringify(deletedImages));
-    
-    try {
-      const response = await fetch(this.action, {
-        method: 'POST',
-        body: formData
-      });
+function updateThumbnailPreview(file) {
+  const thumbnailPreview = document.getElementById('thumbnail-preview');
+  thumbnailPreview.classList.remove('hidden');
+  
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const img = document.createElement('img');
+    img.src = e.target.result;
+    img.className = 'w-full h-24 object-cover rounded';
+    thumbnailPreview.appendChild(img);
+  };
+  reader.readAsDataURL(file);
+}
 
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || 'Failed to update product');
-      }
-
-      Swal.fire({
-        icon: 'success',
-        title: 'Success!',
-        text: data.message || 'Product updated successfully',
-        confirmButtonColor: '#6C7559'
-      }).then(() => {
-        window.location.href = '/admin/products';
-      });
-
-    } catch (error) {
-      Swal.fire({
-        icon: 'error',
-        title: 'Error!',
-        text: error.message,
-        confirmButtonColor: '#6C7559'
-      });
-    }
+function updateFileInput() {
+  const dataTransfer = new DataTransfer();
+  croppedImages.forEach(file => {
+    dataTransfer.items.add(file);
   });
+  
+  const fileInput = document.getElementById('images');
+  fileInput.files = dataTransfer.files;
+}
 
-  function displayError(elementId, message) {
-    const element = document.getElementById(elementId);
-    if (element) {
-      element.textContent = message;
-      element.classList.remove('hidden');
-    }
+document.getElementById('cancelCropBtn').addEventListener('click', function() {
+  if (cropper) {
+    cropper.destroy();
+    cropper = null;
   }
+  
+  document.getElementById('image-preview-container').classList.add('hidden');
+  document.getElementById('images').value = '';
+  document.getElementById('file-chosen').textContent = 'No files chosen';
+  document.getElementById('file-chosen').classList.add('hidden');
+  document.getElementById('thumbnail-preview').innerHTML = '';
+  document.getElementById('thumbnail-preview').classList.add('hidden');
+  document.getElementById('images-error').classList.add('hidden');
+  croppedImages = [];
+  currentFileIndex = 0;
+});
 
-  function clearErrorMessages() {
-    document.querySelectorAll('.error-message').forEach(el => {
-      el.textContent = '';
-      el.classList.add('hidden');
+document.getElementById('zoomInBtn').addEventListener('click', function() {
+  if (cropper) {
+    cropper.zoom(0.1);
+  }
+});
+
+document.getElementById('zoomOutBtn').addEventListener('click', function() {
+  if (cropper) {
+    cropper.zoom(-0.1);
+  }
+});
+
+document.getElementById('rotateBtn').addEventListener('click', function() {
+  if (cropper) {
+    cropper.rotate(90);
+  }
+});
+
+document.getElementById('resetBtn').addEventListener('click', function() {
+  if (cropper) {
+    cropper.reset();
+  }
+});
+
+document.getElementById('editProductForm').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  clearErrorMessages();
+  
+  let isValid = true;
+  
+  const productName = document.getElementById('productName').value.trim();
+  const brand = document.getElementById('brand').value;
+  const category = document.getElementById('category').value;
+  const size = document.getElementById('size').value;
+  const condition = document.getElementById('condition').value;
+  const regularPrice = document.getElementById('regularPrice').value;
+  const salesPrice = document.getElementById('salesPrice').value;
+  const stock = document.getElementById('stock').value;
+  const status = document.getElementById('status').value;
+  const description = document.getElementById('description').value.trim();
+  const remainingImages = document.querySelectorAll('.existing-image').length;
+  const totalImages = remainingImages + croppedImages.length;
+  
+  if (!productName) {
+    displayError('productName-error', 'Product name is required');
+    isValid = false;
+  }
+  
+  if (!brand) {
+    displayError('brand-error', 'Please select a brand');
+    isValid = false;
+  }
+  
+  if (!category) {
+    displayError('category-error', 'Please select a category');
+    isValid = false;
+  }
+  
+  if (!size) {
+    displayError('size-error', 'Size is required');
+    isValid = false;
+  }
+  
+  if (!condition) {
+    displayError('condition-error', 'Please select a condition');
+    isValid = false;
+  }
+  
+  if (!regularPrice || parseFloat(regularPrice) <= 0) {
+    displayError('regularPrice-error', 'Please enter a valid price');
+    isValid = false;
+  }
+  
+  if (!salesPrice || parseFloat(salesPrice) <= 0) {
+    displayError('salesPrice-error', 'Please enter a valid sale price');
+    isValid = false;
+  }
+  
+  if (!stock || parseInt(stock) < 0) {
+    displayError('stock-error', 'Please enter a valid stock quantity');
+    isValid = false;
+  }
+  
+  if (!status) {
+    displayError('status-error', 'Please select a status');
+    isValid = false;
+  }
+  
+  if (!description) {
+    displayError('description-error', 'Description is required');
+    isValid = false;
+  }
+  
+  if (totalImages < 3) {
+    displayError('existing-images-error', 'At least 3 images are required');
+    isValid = false;
+  }
+  
+  if (!isValid) {
+    return;
+  }
+  
+  const formData = new FormData(this);
+  
+  try {
+    const response = await fetch(`/admin/updateProduct/<%= product._id %>`, {
+      method: 'POST',
+      body: formData
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.error || 'Failed to update product');
+    }
+
+    Swal.fire({
+      icon: 'success',
+      title: 'Success!',
+      text: data.message || 'Product updated successfully',
+      confirmButtonColor: '#6C7559'
+    }).then(() => {
+      window.location.href = '/admin/products';
+    });
+
+  } catch (error) {
+    Swal.fire({
+      icon: 'error',
+      title: 'Error!',
+      text: error.message,
+      confirmButtonColor: '#6C7559'
     });
   }
+});
+
+function displayError(elementId, message) {
+  const element = document.getElementById(elementId);
+  if (element) {
+    element.textContent = message;
+    element.classList.remove('hidden');
+  }
+}
+
+function clearErrorMessages() {
+  document.querySelectorAll('.error-message').forEach(el => {
+    el.textContent = '';
+    el.classList.add('hidden');
+  });
+}
 </script>
 
-<%- include('../partials/admin/admin-footer.ejs') %>
+<%- include('../partials/admin/admin-footer') %>

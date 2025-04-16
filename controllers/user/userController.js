@@ -15,25 +15,49 @@ const loadHomepage = async (req, res) => {
   try {
     const categories = await Category.find({ isListed: true }).lean();
     const listedCategoryIds = categories.map((cat) => cat._id);
+    const activeBrands = await Brand.find({ isActive: true }).lean();
+    const activeBrandIds = activeBrands.map((brand) => brand._id);
 
     const products = await Product.find({
       isDeleted: { $ne: true },
       isNew: true,
       status: "Available",
+      isListed: true,
       category: { $in: listedCategoryIds },
+      brand: { $in: activeBrandIds },
     })
       .sort({ createdAt: -1 })
       .limit(6)
-      .populate("brand")
-      .populate("category");
+      .populate({
+        path: "brand",
+        match: { isActive: true },
+      })
+      .populate({
+        path: "category",
+        match: { isListed: true },
+      })
+      .lean();
 
     const brandsWithProducts = await Brand.aggregate([
       { $match: { isActive: true } },
       {
         $lookup: {
           from: "products",
-          localField: "_id",
-          foreignField: "brand",
+          let: { brandId: "$_id" },
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $and: [
+                    { $eq: ["$brand", "$$brandId"] },
+                    { $in: ["$category", listedCategoryIds] },
+                    { $eq: ["$status", "Available"] },
+                    { $ne: ["$isDeleted", true] },
+                  ],
+                },
+              },
+            },
+          ],
           as: "products",
         },
       },
@@ -471,18 +495,30 @@ const addToCart = async (req, res) => {
       });
     }
 
-    const product = await Product.findById(productId);
-    if (!product) {
+    const product = await Product.findOne({
+      _id: productId,
+      status: "Available",
+    })
+      .populate({
+        path: "brand",
+        match: { isActive: true },
+      })
+      .populate({
+        path: "category",
+        match: { isListed: true },
+      });
+
+    if (!product || !product.brand || !product.category) {
       return res.status(404).json({
         success: false,
-        message: "Product not found",
+        message: "Product not found or unavailable",
       });
     }
 
-    if (product.status !== "Available" || product.stock < 1) {
+    if (product.stock < 1) {
       return res.status(400).json({
         success: false,
-        message: "Product is not Available",
+        message: "Product is out of stock",
       });
     }
 
@@ -551,12 +587,21 @@ const loadProductPage = async (req, res) => {
   try {
     const productId = req.params.id;
 
-    const product = await Product.findById(productId)
-      .populate("brand")
-      .populate("category")
+    const product = await Product.findOne({
+      _id: productId,
+      status: "Available",
+    })
+      .populate({
+        path: "brand",
+        match: { isActive: true },
+      })
+      .populate({
+        path: "category",
+        match: { isListed: true },
+      })
       .lean();
 
-    if (!product) {
+    if (!product || !product.brand || !product.category) {
       return res.status(404).render("404", { message: "Product not found" });
     }
 

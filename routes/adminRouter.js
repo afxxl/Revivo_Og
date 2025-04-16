@@ -43,7 +43,6 @@ router.get(
 );
 
 //Brands
-
 router.get("/brands", adminAuth, brandController.getBrandPage);
 router.post(
   "/addBrand",
@@ -52,7 +51,6 @@ router.post(
   brandController.addBrand,
 );
 router.delete("/deleteBrand/:id", adminAuth, brandController.deleteBrand);
-
 router.get("/editBrand/:id", adminAuth, brandController.getEditBrand);
 router.post(
   "/updateBrand/:id",
@@ -63,39 +61,35 @@ router.post(
 router.get("/toggleBrand/:id", adminAuth, brandController.toggleBrandStatus);
 
 //Products
-
 router.get("/products", adminAuth, productController.productInfo);
-
 router.post(
   "/addProduct",
   adminAuth,
   multer.uploadProduct,
   productController.addProduct,
 );
-
 router.get("/editProduct/:id", adminAuth, productController.editProduct);
-
 router.post(
   "/updateProduct/:id",
   adminAuth,
   multer.uploadProduct,
   productController.updateProduct,
 );
-
 router.delete("/deleteProduct/:id", adminAuth, productController.deleteProduct);
+router.get(
+  "/toggleProduct/:id",
+  adminAuth,
+  productController.toggleProductStatus,
+);
 
 //order
-
 router.get("/orders", adminAuth, orderController.loadOrderDetails);
-
 router.get("/orders/:id", adminAuth, orderController.orderDetails);
-
 router.post(
   "/orders/:id/handle-return",
   adminAuth,
   orderController.handleReturn,
 );
-
 router.post(
   "/orders/:id/update-status",
   adminAuth,

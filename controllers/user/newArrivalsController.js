@@ -21,12 +21,16 @@ const newArrivalsPage = async (req, res) => {
     };
 
     const categories = await Category.find({ isListed: true }).lean();
-    const listedCategoriesId = categories.map((cat) => cat._id);
+    const listedCategoryIds = categories.map((cat) => cat._id);
+    const activeBrands = await Brand.find({ isActive: true }).lean();
+    const activeBrandIds = activeBrands.map((brand) => brand._id);
 
     let query = {
       createdAt: { $gte: thirtyDaysAgo },
       isNew: true,
-      category: { $in: listedCategoriesId },
+      isListed: true, // Ensure only listed products are fetched
+      category: { $in: listedCategoryIds },
+      brand: { $in: activeBrandIds },
     };
 
     if (filters.category) query.category = filters.category;
@@ -39,14 +43,21 @@ const newArrivalsPage = async (req, res) => {
       if (filters.maxPrice) query.salesPrice.$lte = filters.maxPrice;
     }
 
-    const brands = await Brand.find({}).lean();
-
-    const totalProducts = await Product.countDocuments(query);
+    const totalProducts = await Product.countDocuments({
+      ...query,
+      isListed: true, // Ensure pagination counts only listed products
+    });
     const totalPages = Math.ceil(totalProducts / perPage);
 
     const products = await Product.find(query)
-      .populate("category")
-      .populate("brand")
+      .populate({
+        path: "category",
+        match: { isListed: true },
+      })
+      .populate({
+        path: "brand",
+        match: { isActive: true },
+      })
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(perPage)
@@ -55,7 +66,7 @@ const newArrivalsPage = async (req, res) => {
     res.render("new-arrivals", {
       products,
       categories,
-      brands,
+      brands: activeBrands,
       currentPage: page,
       totalPages,
       hasNextPage: page < totalPages,
@@ -69,7 +80,6 @@ const newArrivalsPage = async (req, res) => {
     res.status(500).send("Server Error");
   }
 };
-
 module.exports = {
   newArrivalsPage,
 };

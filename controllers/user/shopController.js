@@ -26,11 +26,18 @@ const shopPage = async (req, res) => {
       heritage: req.query.heritage,
       status: req.query.status || "Available",
     };
-    const categories = await Category.find({ isListed: true }).lean();
-    const brands = await Brand.find({}).lean();
-    const listedCategoryIds = categories.map((cat) => cat._id);
 
-    let query = { status: "Available", category: { $in: listedCategoryIds } };
+    const categories = await Category.find({ isListed: true }).lean();
+    const listedCategoryIds = categories.map((cat) => cat._id);
+    const activeBrands = await Brand.find({ isActive: true }).lean();
+    const activeBrandIds = activeBrands.map((brand) => brand._id);
+
+    let query = {
+      status: "Available",
+      isListed: true, // Ensure only listed products are fetched
+      category: { $in: listedCategoryIds },
+      brand: { $in: activeBrandIds },
+    };
 
     if (req.query.category && filters.category !== "all") {
       query.category = filters.category;
@@ -45,12 +52,21 @@ const shopPage = async (req, res) => {
       if (filters.maxPrice) query.salesPrice.$lte = filters.maxPrice;
     }
 
-    const totalProducts = await Product.countDocuments(query);
+    const totalProducts = await Product.countDocuments({
+      ...query,
+      isListed: true, // Ensure pagination counts only listed products
+    });
     const totalPages = Math.ceil(totalProducts / perPage);
 
     const products = await Product.find(query)
-      .populate("category")
-      .populate("brand")
+      .populate({
+        path: "category",
+        match: { isListed: true },
+      })
+      .populate({
+        path: "brand",
+        match: { isActive: true },
+      })
       .skip(skip)
       .limit(perPage)
       .lean();
@@ -58,7 +74,7 @@ const shopPage = async (req, res) => {
     res.render("shop", {
       products,
       categories,
-      brands,
+      brands: activeBrands,
       selectedCategory: filters.category || "all",
       currentPage: page,
       totalPages,
@@ -73,6 +89,7 @@ const shopPage = async (req, res) => {
     res.status(500).send("Server Error");
   }
 };
+
 const loadBrandPage = async (req, res) => {
   try {
     const brandId = req.params.brandId;
@@ -81,10 +98,9 @@ const loadBrandPage = async (req, res) => {
     const skip = (page - 1) * perPage;
 
     const categories = await Category.find({ isListed: true }).lean();
-
     const listedCategoryIds = categories.map((cat) => cat._id);
 
-    const brand = await Brand.findById(brandId).lean();
+    const brand = await Brand.findOne({ _id: brandId, isActive: true }).lean();
     if (!brand) {
       return res.status(404).render("page-404");
     }
@@ -100,6 +116,7 @@ const loadBrandPage = async (req, res) => {
     let query = {
       brand: brandId,
       status: "Available",
+      isListed: true, // Ensure only listed products are fetched
       category: { $in: listedCategoryIds },
     };
     if (filters.size) query.size = filters.size;
@@ -110,11 +127,17 @@ const loadBrandPage = async (req, res) => {
       if (filters.maxPrice) query.salesPrice.$lte = filters.maxPrice;
     }
 
-    const totalProducts = await Product.countDocuments(query);
+    const totalProducts = await Product.countDocuments({
+      ...query,
+      isListed: true, // Ensure pagination counts only listed products
+    });
     const totalPages = Math.ceil(totalProducts / perPage);
 
     const products = await Product.find(query)
-      .populate("category")
+      .populate({
+        path: "category",
+        match: { isListed: true },
+      })
       .skip(skip)
       .limit(perPage)
       .lean();
@@ -154,13 +177,16 @@ const loadPrimeLayers = async (req, res) => {
     };
 
     const categories = await Category.find({ isListed: true }).lean();
-
     const listedCategoryIds = categories.map((cat) => cat._id);
+    const activeBrands = await Brand.find({ isActive: true }).lean();
+    const activeBrandIds = activeBrands.map((brand) => brand._id);
 
     let query = {
       heritage: "Prime Layers",
       status: "Available",
+      isListed: true, // Ensure only listed products are fetched
       category: { $in: listedCategoryIds },
+      brand: { $in: activeBrandIds },
     };
     if (filters.size) query.size = filters.size;
     if (filters.condition) query.condition = filters.condition;
@@ -170,11 +196,21 @@ const loadPrimeLayers = async (req, res) => {
       if (filters.maxPrice) query.salesPrice.$lte = filters.maxPrice;
     }
 
-    const totalProducts = await Product.countDocuments(query);
+    const totalProducts = await Product.countDocuments({
+      ...query,
+      isListed: true, // Ensure pagination counts only listed products
+    });
     const totalPages = Math.ceil(totalProducts / perPage);
 
     const products = await Product.find(query)
-      .populate("category")
+      .populate({
+        path: "category",
+        match: { isListed: true },
+      })
+      .populate({
+        path: "brand",
+        match: { isActive: true },
+      })
       .skip(skip)
       .limit(perPage)
       .lean();
@@ -202,10 +238,6 @@ const loadVintageAthletics = async (req, res) => {
     const perPage = 8;
     const skip = (page - 1) * perPage;
 
-    const categories = await Category.find({ isListed: true }).lean();
-
-    const listedCategoryIds = categories.map((cat) => cat._id);
-
     const filters = {
       size: req.query.size || "",
       condition: req.query.condition || "",
@@ -214,10 +246,17 @@ const loadVintageAthletics = async (req, res) => {
       status: req.query.status || "Available",
     };
 
+    const categories = await Category.find({ isListed: true }).lean();
+    const listedCategoryIds = categories.map((cat) => cat._id);
+    const activeBrands = await Brand.find({ isActive: true }).lean();
+    const activeBrandIds = activeBrands.map((brand) => brand._id);
+
     let query = {
       heritage: "Vintage Athletics",
       status: "Available",
+      isListed: true, // Ensure only listed products are fetched
       category: { $in: listedCategoryIds },
+      brand: { $in: activeBrandIds },
     };
     if (filters.size) query.size = filters.size;
     if (filters.condition) query.condition = filters.condition;
@@ -227,11 +266,21 @@ const loadVintageAthletics = async (req, res) => {
       if (filters.maxPrice) query.salesPrice.$lte = filters.maxPrice;
     }
 
-    const totalProducts = await Product.countDocuments(query);
+    const totalProducts = await Product.countDocuments({
+      ...query,
+      isListed: true, // Ensure pagination counts only listed products
+    });
     const totalPages = Math.ceil(totalProducts / perPage);
 
     const products = await Product.find(query)
-      .populate("category")
+      .populate({
+        path: "category",
+        match: { isListed: true },
+      })
+      .populate({
+        path: "brand",
+        match: { isActive: true },
+      })
       .skip(skip)
       .limit(perPage)
       .lean();
@@ -259,10 +308,6 @@ const loadY2kEssentials = async (req, res) => {
     const perPage = 8;
     const skip = (page - 1) * perPage;
 
-    const categories = await Category.find({ isListed: true }).lean();
-
-    const listedCategoryIds = categories.map((cat) => cat._id);
-
     const filters = {
       size: req.query.size || "",
       condition: req.query.condition || "",
@@ -271,10 +316,17 @@ const loadY2kEssentials = async (req, res) => {
       status: req.query.status || "Available",
     };
 
+    const categories = await Category.find({ isListed: true }).lean();
+    const listedCategoryIds = categories.map((cat) => cat._id);
+    const activeBrands = await Brand.find({ isActive: true }).lean();
+    const activeBrandIds = activeBrands.map((brand) => brand._id);
+
     let query = {
       heritage: "Y2K Essentials",
       status: "Available",
+      isListed: true, // Ensure only listed products are fetched
       category: { $in: listedCategoryIds },
+      brand: { $in: activeBrandIds },
     };
 
     if (filters.size) query.size = filters.size;
@@ -285,11 +337,21 @@ const loadY2kEssentials = async (req, res) => {
       if (filters.maxPrice) query.salesPrice.$lte = filters.maxPrice;
     }
 
-    const totalProducts = await Product.countDocuments(query);
+    const totalProducts = await Product.countDocuments({
+      ...query,
+      isListed: true, // Ensure pagination counts only listed products
+    });
     const totalPages = Math.ceil(totalProducts / perPage);
 
     const products = await Product.find(query)
-      .populate("category")
+      .populate({
+        path: "category",
+        match: { isListed: true },
+      })
+      .populate({
+        path: "brand",
+        match: { isActive: true },
+      })
       .skip(skip)
       .limit(perPage)
       .lean();

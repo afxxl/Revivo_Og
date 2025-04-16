@@ -47,11 +47,6 @@ const productSchema = new mongoose.Schema(
       required: true,
       min: 0,
     },
-    quantity: {
-      type: Number,
-      required: true,
-      min: 0,
-    },
     status: {
       type: String,
       required: true,
@@ -80,6 +75,10 @@ const productSchema = new mongoose.Schema(
       type: String,
       enum: ["Prime Layers", "Vintage Athletics", "Y2K Essentials", "None"],
       default: "None",
+    },
+    isListed: {
+      type: Boolean,
+      default: true,
     },
   },
   {

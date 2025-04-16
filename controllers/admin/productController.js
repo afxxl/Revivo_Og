@@ -67,11 +67,11 @@ const addProduct = async (req, res) => {
       productOffer,
       stock,
       heritage,
-      quantity,
       status,
       description,
       isFeatured,
       isNew,
+      isListed,
     } = req.body;
 
     if (!mongoose.Types.ObjectId.isValid(brand)) {
@@ -104,15 +104,10 @@ const addProduct = async (req, res) => {
       });
     }
 
-    if (
-      isNaN(regularPrice) ||
-      isNaN(salesPrice) ||
-      isNaN(stock) ||
-      isNaN(quantity)
-    ) {
+    if (isNaN(regularPrice) || isNaN(salesPrice) || isNaN(stock)) {
       return res.status(400).json({
         success: false,
-        error: "Price, stock and quantity must be numbers",
+        error: "Price and stock must be numbers",
       });
     }
 
@@ -139,12 +134,12 @@ const addProduct = async (req, res) => {
         productOffer && !isNaN(productOffer) ? parseInt(productOffer) : 0,
       stock: parseInt(stock),
       heritage: heritage || "None",
-      quantity: parseInt(quantity),
       status,
       description,
       productImage: productImages,
-      isFeatured: req.body.isFeatured === "on",
-      isNew: req.body.isNew === "on",
+      isFeatured: isFeatured === "on",
+      isNew: isNew === "on",
+      isListed: isListed === "on",
     });
 
     await newProduct.validate();
@@ -258,11 +253,11 @@ const updateProduct = async (req, res) => {
       productOffer,
       stock,
       heritage,
-      quantity,
       status,
       description,
       isFeatured,
       isNew,
+      isListed,
     } = req.body;
 
     if (!mongoose.Types.ObjectId.isValid(brand)) {
@@ -295,15 +290,10 @@ const updateProduct = async (req, res) => {
       });
     }
 
-    if (
-      isNaN(regularPrice) ||
-      isNaN(salesPrice) ||
-      isNaN(stock) ||
-      isNaN(quantity)
-    ) {
+    if (isNaN(regularPrice) || isNaN(salesPrice) || isNaN(stock)) {
       return res.status(400).json({
         success: false,
-        error: "Price, stock and quantity must be numbers",
+        error: "Price and stock must be numbers",
       });
     }
 
@@ -368,12 +358,12 @@ const updateProduct = async (req, res) => {
           productOffer && !isNaN(productOffer) ? parseInt(productOffer) : 0,
         stock: parseInt(stock),
         heritage: heritage || "None",
-        quantity: parseInt(quantity),
         status,
         description,
         productImage: updatedImages,
         isFeatured: isFeatured === "on",
         isNew: isNew === "on",
+        isListed: isListed === "on",
       },
       { new: true, runValidators: true },
     );
@@ -408,10 +398,40 @@ const updateProduct = async (req, res) => {
   }
 };
 
+const toggleProductStatus = async (req, res) => {
+  try {
+    const productId = req.params.id;
+
+    const product = await Product.findById(productId);
+    if (!product) {
+      return res.status(404).json({
+        success: false,
+        error: "Product not found",
+      });
+    }
+
+    product.isListed = !product.isListed;
+    await product.save();
+
+    return res.status(200).json({
+      success: true,
+      message: `Product ${product.isListed ? "listed" : "unlisted"} successfully`,
+      isListed: product.isListed,
+    });
+  } catch (error) {
+    console.error("Toggle Product Status Error:", error);
+    return res.status(500).json({
+      success: false,
+      error: "An error occurred while toggling the product status",
+    });
+  }
+};
+
 module.exports = {
   productInfo,
   addProduct,
   deleteProduct,
   editProduct,
   updateProduct,
+  toggleProductStatus,
 };

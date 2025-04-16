@@ -65,6 +65,16 @@
     color: #B91C1C;
 }
 
+.listed {
+    background-color: #D1FAE5;
+    color: #065F46;
+}
+
+.unlisted {
+    background-color: #FEE2E2;
+    color: #B91C1C;
+}
+
 tr:hover {
     background-color: #f9fafb;
 }
@@ -152,7 +162,6 @@ tr:hover {
 }
 </style>
 
-
 <div class="flex-1 overflow-auto p-3 md:p-6 pt-20">
     <div class="p-4 md:p-6 bg-white shadow-sm">
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
@@ -189,6 +198,7 @@ tr:hover {
                         <th class="px-6 py-3 text-xs font-medium text-gray-500 uppercase">Stock</th>
                         <th class="px-6 py-3 text-xs font-medium text-gray-500 uppercase">Heritage</th>
                         <th class="px-6 py-3 text-xs font-medium text-gray-500 uppercase">Status</th>
+                        <th class="px-6 py-3 text-xs font-medium text-gray-500 uppercase">Listing</th>
                         <th class="px-6 py-3 text-xs font-medium text-gray-500 uppercase">Last Updated</th>
                         <th class="px-6 py-3 text-xs font-medium text-gray-500 uppercase">Actions</th>
                     </tr>
@@ -208,7 +218,7 @@ tr:hover {
                                              alt="Default Product" 
                                              class="product-image mr-3">
                                     <% } %>
-                                    <div class = "mr-[20px]">
+                                    <div class="mr-[20px]">
                                         <div class="text-sm font-medium text-gray-900"><%= product.productName %></div>
                                         <div class="text-xs text-gray-500"><%= product.condition %></div>
                                     </div>
@@ -239,6 +249,12 @@ tr:hover {
                                 </span>
                             </td>
                             
+                            <td class="px-6 py-4 text-sm">
+                                <span class="status-badge <%= product.isListed ? 'listed' : 'unlisted' %>">
+                                    <%= product.isListed ? 'Listed' : 'Unlisted' %>
+                                </span>
+                            </td>
+                            
                             <td class="px-6 py-4 text-sm text-gray-500">
                                 <%= new Date(product.updatedAt).toLocaleDateString() %>
                             </td>
@@ -257,6 +273,12 @@ tr:hover {
                                                   d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
                                         </svg>
                                     </a>
+                                    <a href="/admin/toggleProduct/<%= product._id %>" class="text-yellow-600 hover:text-yellow-800 toggle-product">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                                  d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                        </svg>
+                                    </a>
                                 </div>
                             </td>
                         </tr>
@@ -266,7 +288,7 @@ tr:hover {
         </div>
     </div>
 
-   <div class="md:hidden space-y-4 m-4">
+    <div class="md:hidden space-y-4 m-4">
         <% data.forEach(product => { %>
             <div class="bg-white p-4 rounded-lg shadow">
                 <div class="flex flex-col sm:flex-row items-start gap-3">
@@ -315,6 +337,12 @@ tr:hover {
                                 <span class="font-medium ml-1"><%= product.condition || 'N/A' %></span>
                             </div>
                             <div class="truncate">
+                                <span class="text-gray-500">Listing:</span>
+                                <span class="font-medium ml-1 <%= product.isListed ? 'text-green-600' : 'text-red-600' %>">
+                                    <%= product.isListed ? 'Listed' : 'Unlisted' %>
+                                </span>
+                            </div>
+                            <div class="truncate">
                                 <span class="text-gray-500">Updated:</span>
                                 <span class="font-medium ml-1"><%= new Date(product.updatedAt).toLocaleDateString() %></span>
                             </div>
@@ -333,6 +361,12 @@ tr:hover {
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
                                   d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                        </svg>
+                    </a>
+                    <a href="/admin/toggleProduct/<%= product._id %>" class="text-yellow-600 hover:text-yellow-800 p-2 toggle-product">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                  d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
                         </svg>
                     </a>
                 </div>
@@ -457,13 +491,6 @@ tr:hover {
                           </div>
 
                         <div>
-                            <label for="quantity" class="block text-sm font-medium text-gray-700 mb-1">Quantity*</label>
-                            <input type="number" id="quantity" name="quantity" min="0" required
-                                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#6C7559] focus:border-transparent">
-                            <p id="quantity-error" class="error-message text-red-500 text-sm mt-1 hidden"></p>
-                        </div>
-
-                        <div>
                             <label for="status" class="block text-sm font-medium text-gray-700 mb-1">Status*</label>
                             <select id="status" name="status" required
                                     class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#6C7559] focus:border-transparent">
@@ -494,6 +521,11 @@ tr:hover {
                             <input type="checkbox" id="isNew" name="isNew"
                                    class="w-4 h-4 text-[#6C7559] border-gray-300 rounded focus:ring-[#6C7559]">
                             <label for="isNew" class="ml-2 text-sm text-gray-700">Mark as New</label>
+                        </div>
+                        <div class="flex items-center">
+                            <input type="checkbox" id="isListed" name="isListed" checked
+                                   class="w-4 h-4 text-[#6C7559] border-gray-300 rounded focus:ring-[#6C7559]">
+                            <label for="isListed" class="ml-2 text-sm text-gray-700">List Product</label>
                         </div>
                     </div>
                 </div>
@@ -635,6 +667,7 @@ function closeAddModal() {
     document.getElementById('thumbnail-preview').innerHTML = '';
     document.getElementById('thumbnail-preview').classList.add('hidden');
     document.getElementById('file-chosen').textContent = 'No files chosen';
+    document.getElementById('file-chosen').classList.add('hidden');
     document.getElementById('images-error').classList.add('hidden');
     
     if (cropper) {
@@ -830,7 +863,6 @@ document.getElementById('addProductForm').addEventListener('submit', async funct
     const regularPrice = document.getElementById('regularPrice').value;
     const salesPrice = document.getElementById('salesPrice').value;
     const stock = document.getElementById('stock').value;
-    const quantity = document.getElementById('quantity').value;
     const status = document.getElementById('status').value;
     const description = document.getElementById('description').value.trim();
     const fileInput = document.getElementById('images');
@@ -872,11 +904,6 @@ document.getElementById('addProductForm').addEventListener('submit', async funct
     
     if (!stock || parseInt(stock) < 0) {
         displayError('stock-error', 'Please enter a valid stock quantity');
-        isValid = false;
-    }
-    
-    if (!quantity || parseInt(quantity) < 0) {
-        displayError('quantity-error', 'Please enter a valid quantity');
         isValid = false;
     }
     
@@ -973,6 +1000,47 @@ function deleteProduct(productId) {
     });
 }
 
+function toggleProduct(productId, isListed) {
+    Swal.fire({
+        title: `Are you sure you want to ${isListed ? 'unlist' : 'list'} this product?`,
+        text: isListed ? "This product will no longer be visible to customers." : "This product will be visible to customers.",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#6C7559',
+        cancelButtonColor: '#d33',
+        confirmButtonText: `Yes, ${isListed ? 'unlist' : 'list'} it!`
+    }).then((result) => {
+        if (result.isConfirmed) {
+            fetch(`/admin/toggleProduct/${productId}`, {
+                method: 'GET'
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: isListed ? 'Unlisted!' : 'Listed!',
+                        text: data.message,
+                        confirmButtonColor: '#6C7559'
+                    }).then(() => {
+                        window.location.reload();
+                    });
+                } else {
+                    throw new Error(data.error);
+                }
+            })
+            .catch(error => {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error!',
+                    text: error.message || `Failed to ${isListed ? 'unlist' : 'list'} product`,
+                    confirmButtonColor: '#6C7559'
+                });
+            });
+        }
+    });
+}
+
 function displayError(elementId, message) {
     const element = document.getElementById(elementId);
     if (element) {
@@ -1006,9 +1074,19 @@ document.querySelectorAll('.delete-product').forEach(btn => {
     });
 });
 
+document.querySelectorAll('.toggle-product').forEach(btn => {
+    btn.addEventListener('click', function(e) {
+        e.preventDefault();
+        const productId = this.getAttribute('href').split('/').pop();
+        const isListed = this.closest('tr')?.querySelector('.status-badge.listed') !== null ||
+                         this.closest('.bg-white')?.querySelector('.text-green-600') !== null;
+        toggleProduct(productId, isListed);
+    });
+});
+
 function searchProducts(query) {
     window.location.href = `/admin/products?search=${encodeURIComponent(query)}`;
 }
 </script>
 
-<%- include('../partials/admin/admin-footer') %>  
+<%- include('../partials/admin/admin-footer') %>
