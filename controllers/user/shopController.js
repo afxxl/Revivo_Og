@@ -588,16 +588,41 @@ const loadCheckoutPage = async (req, res) => {
     const user = await User.findById(userId).populate("addresses").lean();
 
     const cart = await Cart.findOne({ userId })
-      .populate("items.productId")
+      .populate({
+        path: "items.productId",
+        populate: [{ path: "brand" }, { path: "category" }],
+      })
       .lean();
 
     if (!cart || cart.items.length === 0) {
       return res.redirect("/cart");
     }
 
+    // Validate cart items
+    for (const item of cart.items) {
+      const product = item.productId;
+      if (
+        !product.isListed ||
+        !product.brand.isActive ||
+        !product.category.isListed ||
+        product.status !== "Available" ||
+        product.stock < item.quantity
+      ) {
+        return res.render("cart", {
+          cart,
+          subtotal: 0,
+          shipping: 0,
+          total: 0,
+          canCheckout: false,
+          errorMessage: `Cannot proceed to checkout. "${product.productName}" is no longer available or invalid.`,
+        });
+      }
+    }
+
     const subtotal = cart.items.reduce((sum, item) => sum + item.totalPrice, 0);
     const shipping = subtotal > 0 ? 5 : 0;
     const total = subtotal + shipping;
+
     res.render("checkout", {
       user,
       cart,
@@ -616,7 +641,10 @@ const createOrder = async (req, res) => {
     const userId = req.session.user;
     const { addressId } = req.body;
 
-    const cart = await Cart.findOne({ userId }).populate("items.productId");
+    const cart = await Cart.findOne({ userId }).populate({
+      path: "items.productId",
+      populate: [{ path: "brand [brand" }, { path: "category" }],
+    });
 
     if (!addressId) {
       return res.status(400).json({
@@ -634,18 +662,18 @@ const createOrder = async (req, res) => {
 
     let subtotal = 0;
     for (const item of cart.items) {
-      const product = await Product.findById(item.productId._id);
-      if (!product || product.stock === 0 || product.status !== "Available") {
+      const product = item.productId;
+      if (
+        !product.isListed ||
+        !product.brand.isActive ||
+        !product.category.isListed ||
+        product.status !== "Available" ||
+        product.stock < item.quantity
+      ) {
         return res.status(400).json({
           success: false,
-          message: `"${product.productName}" is no longer available`,
+          message: `"${product.productName}" is no longer available or invalid`,
           productId: product._id,
-        });
-      }
-      if (product.stock < item.quantity) {
-        return res.status(400).json({
-          success: false,
-          message: `Only ${product.stock} items available for ${product.productName}`,
         });
       }
       subtotal += item.totalPrice;

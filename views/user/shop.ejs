@@ -190,7 +190,7 @@
             <div>
               <label class="block text-sm font-montserrat text-[#2C2C2C]/70 mb-2">Category</label>
               <select name="category" class="w-full border border-[#e0dcd4] p-2 rounded-md focus:ring-2 focus:ring-[#f8c78d]/30 focus:outline-none">
-                <option value="">All Categories</option>
+                <option value="all">All Categories</option>
                 <% categories.forEach(category => { %>
                   <option value="<%= category._id %>" <%= filters.category === category._id.toString() ? 'selected' : '' %>>
                     <%= category.name %>
@@ -340,7 +340,7 @@
         <div class="mt-16 flex justify-center">
           <div class="inline-flex rounded-md shadow-sm">
             <% if (hasPreviousPage) { %>
-              <a href="/shop?page=<%= previousPage %>&<%= new URLSearchParams(filters).toString() %>" 
+              <a href="/shop?page=<%= previousPage %>&<%= new URLSearchParams(Object.entries(filters).filter(([_, v]) => v !== '' && v !== undefined)).toString() %>" 
                  class="px-4 py-2 text-sm font-montserrat border border-[#e0dcd4] rounded-l-md hover:bg-[#f8c78d]/10 text-[#2C2C2C]">
                 Previous
               </a>
@@ -356,7 +356,7 @@
                   <%= i %>
                 </span>
               <% } else { %>
-                <a href="/shop?page=<%= i %>&<%= new URLSearchParams(filters).toString() %>" 
+                <a href="/shop?page=<%= i %>&<%= new URLSearchParams(Object.entries(filters).filter(([_, v]) => v !== '' && v !== undefined)).toString() %>" 
                    class="px-4 py-2 text-sm font-montserrat border-t border-b border-[#e0dcd4] hover:bg-[#f8c78d]/10 text-[#2C2C2C]">
                   <%= i %>
                 </a>
@@ -364,7 +364,7 @@
             <% } %>
 
             <% if (hasNextPage) { %>
-              <a href="/shop?page=<%= nextPage %>&<%= new URLSearchParams(filters).toString() %>" 
+              <a href="/shop?page=<%= nextPage %>&<%= new URLSearchParams(Object.entries(filters).filter(([_, v]) => v !== '' && v !== undefined)).toString() %>" 
                  class="px-4 py-2 text-sm font-montserrat border border-[#e0dcd4] rounded-r-md hover:bg-[#f8c78d]/10 text-[#2C2C2C]">
                 Next
               </a>
@@ -392,17 +392,25 @@
       document.getElementById('filterForm').addEventListener('submit', function(e) {
         e.preventDefault();
         const formData = new FormData(this);
-        const params = new URLSearchParams(formData).toString();
-        window.location.href = `/shop?${params}`;
+        const params = new URLSearchParams();
+        for (const [key, value] of formData) {
+          if (value && value !== '' && value !== 'undefined') {
+            params.append(key, value);
+          }
+        }
+        window.location.href = `/shop?${params.toString()}`;
       });
 
       document.getElementById('mobile-category-filter')?.addEventListener('change', function() {
         const categoryId = this.value;
+        const params = new URLSearchParams(window.location.search);
         if (categoryId === 'all') {
-          window.location.href = '/shop';
+          params.delete('category');
         } else {
-          window.location.href = `/shop?category=${categoryId}`;
+          params.set('category', categoryId);
         }
+        params.delete('page'); // Reset to page 1 on category change
+        window.location.href = `/shop?${params.toString()}`;
       });
 
       function showToast(message, type = 'success') {

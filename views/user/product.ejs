@@ -135,6 +135,23 @@
 
           <div class="lg:w-1/2">
             <div class="bg-white p-6 rounded-lg shadow-sm">
+              <% if (!product.isListed || !product.brand.isActive || !product.category.isListed || product.stock <= 0 || product.status !== 'Available') { %>
+                <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-6" role="alert">
+                  <p class="font-bold">Product Unavailable</p>
+                  <p>
+                    <% if (!product.isListed) { %>
+                      This product is no longer available.
+                    <% } else if (!product.brand.isActive) { %>
+                      This product's brand is not available.
+                    <% } else if (!product.category.isListed) { %>
+                      This product's category is not available.
+                    <% } else if (product.stock <= 0 || product.status !== 'Available') { %>
+                      This product is out of stock.
+                    <% } %>
+                  </p>
+                </div>
+              <% } %>
+
               <div class="mb-4">
                 <span class="text-xs text-[#2C2C2C]/60 font-montserrat">
                   <%= product.category?.name || 'Vintage' %> / <%= product.brand?.brandName || 'Generic' %>
@@ -201,9 +218,9 @@
               <button 
                 onclick="addToCart('<%= product._id %>')"
                 class="w-full py-3 bg-[#2C2C2C] text-white rounded-md hover:bg-[#1a1a1a] transition-colors font-montserrat mb-6"
-                <%= product.stock <= 0 ? 'disabled' : '' %>
+                <%= (!product.isListed || !product.brand.isActive || !product.category.isListed || product.stock <= 0 || product.status !== 'Available') ? 'disabled' : '' %>
               >
-                <%= product.stock > 0 ? 'Add to Cart' : 'Out of Stock' %>
+                <%= (!product.isListed || !product.brand.isActive || !product.category.isListed || product.stock <= 0 || product.status !== 'Available') ? 'Unavailable' : 'Add to Cart' %>
               </button>
 
               <div class="mb-6 p-3 bg-[#f8f7f5] rounded-lg border border-[#e0dcd4]">
@@ -332,13 +349,19 @@
 
       function showToast(message, type = 'success') {
         const toast = document.createElement('div');
-        toast.className = `fixed bottom-4 right-4 ${type === 'success' ? 'bg-[#2C2C2C]' : 'bg-red-500'} text-white px-6 py-3 rounded-lg shadow-xl transform translate-y-0 opacity-100 transition-all duration-300 z-50 flex items-center`;
+        toast.className = `fixed bottom-4 right-4 ${
+          type === 'success' ? 'bg-[#2C2C2C]' : 
+          type === 'warning' ? 'bg-yellow-500' : 
+          type === 'info' ? 'bg-blue-500' : 'bg-red-500'
+        } text-white px-6 py-3 rounded-lg shadow-xl transform translate-y-0 opacity-100 transition-all duration-300 z-50 flex items-center`;
         
         const icon = document.createElement('span');
         icon.className = 'mr-2';
-        icon.innerHTML = type === 'success' 
-          ? '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>'
-          : '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>';
+        icon.innerHTML = 
+          type === 'success' ? '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>' :
+          type === 'warning' ? '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>' :
+          type === 'info' ? '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>' :
+          '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>';
         
         const text = document.createElement('span');
         text.textContent = message;
