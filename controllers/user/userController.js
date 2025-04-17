@@ -485,7 +485,7 @@ const resendResetOtp = async (req, res) => {
 
 const addToCart = async (req, res) => {
   try {
-    const { productId, quantity } = req.body;
+    const { productId, quantity = 1 } = req.body;
     const userId = req.session.user;
 
     if (!userId) {

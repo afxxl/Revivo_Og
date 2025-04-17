@@ -7,99 +7,118 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Henny+Penny&family=Playfair+Display:wght@400;500;600&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
 
-    <style>
-      .cart-item {
-        transition: all 0.3s ease;
-      }
-      .cart-item:hover {
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-      }
-      .quantity-btn {
-        width: 30px;
-        height: 30px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border: 1px solid #e0dcd4;
-        background: transparent;
-        cursor: pointer;
-        transition: all 0.2s ease;
-      }
-      .quantity-btn:hover {
-        background: #f8f7f5;
-      }
-      .quantity-input {
-        width: 50px;
-        text-align: center;
-        border-top: 1px solid #e0dcd4;
-        border-bottom: 1px solid #e0dcd4;
-        border-left: none;
-        border-right: none;
-        outline: none;
-      }
-      .remove-btn {
-        transition: all 0.2s ease;
-      }
-      .remove-btn:hover {
-        color: #d32f2f;
-      }
-      .checkout-btn {
-        transition: all 0.3s ease;
-        letter-spacing: 1px;
-      }
-      .checkout-btn:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(44, 44, 44, 0.15);
-      }
-      .subtotal-display, 
-      .shipping-display, 
-      .total-display {
-        transition: all 0.3s ease;
-      }
-      .unavailable-item {
-        opacity: 0.7;
-        position: relative;
-      }
-      .unavailable-item::after {
-        content: "Unavailable";
-        position: absolute;
-        top: 10px;
-        right: 10px;
-        background: #f8c78d;
-        color: #2C2C2C;
-        padding: 2px 8px;
-        border-radius: 4px;
-        font-size: 12px;
-        font-weight: bold;
-      }
-      .spinner-border {
-        display: inline-block;
-        width: 1rem;
-        height: 1rem;
-        vertical-align: text-bottom;
-        border: 0.15em solid currentColor;
-        border-right-color: transparent;
-        border-radius: 50%;
-        animation: spinner-border .75s linear infinite;
-      }
-      @keyframes spinner-border {
-        to { transform: rotate(360deg); }
-      }
-      .quantity-input:disabled {
-        background-color: #f8f7f5;
-        cursor: not-allowed;
-      }
-      /* Toast Confirmation Dialog */
-      .toast-confirm {
-        transform: translateY(0);
-        opacity: 1;
-        transition: all 0.3s ease;
-      }
-      .toast-confirm.hidden {
-        transform: translateY(100%);
-        opacity: 0;
-      }
-    </style>
+
+<style>
+  .cart-item {
+    transition: all 0.3s ease;
+  }
+  .cart-item:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  }
+  .quantity-btn {
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #e0dcd4;
+    background: transparent;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  .quantity-btn:hover {
+    background: #f8f7f5;
+  }
+  .quantity-input {
+    width: 50px;
+    text-align: center;
+    border-top: 1px solid #e0dcd4;
+    border-bottom: 1px solid #e0dcd4;
+    border-left: none;
+    border-right: none;
+    outline: none;
+  }
+  .remove-btn {
+    transition: all 0.2s ease;
+  }
+  .remove-btn:hover {
+    color: #d32f2f;
+  }
+  .checkout-btn {
+    transition: all 0.3s ease;
+    letter-spacing: 1px;
+  }
+  .checkout-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(44, 44, 44, 0.15);
+  }
+  .subtotal-display, 
+  .shipping-display, 
+  .total-display {
+    transition: all 0.3s ease;
+  }
+  .unavailable-item {
+    opacity: 0.7;
+    position: relative;
+  }
+  .unavailable-item::after {
+    content: "Unavailable";
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: #f8c78d;
+    color: #2C2C2C;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: bold;
+  }
+  .spinner-border {
+    display: inline-block;
+    width: 1rem;
+    height: 1rem;
+    vertical-align: text-bottom;
+    border: 0.15em solid currentColor;
+    border-right-color: transparent;
+    border-radius: 50%;
+    animation: spinner-border .75s linear infinite;
+  }
+  @keyframes spinner-border {
+    to { transform: rotate(360deg); }
+  }
+  .quantity-input:disabled {
+    background-color: #f8f7f5;
+    cursor: not-allowed;
+  }
+  /* Toast Confirmation Dialog */
+  .toast-confirm {
+    transform: translateY(0);
+    opacity: 1;
+    transition: all 0.3s ease;
+  }
+  .toast-confirm.hidden {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  /* Enhanced styles for empty cart message */
+  .empty-cart-message {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    text-align: center !important;
+    width: 100%;
+  }
+  .empty-cart-message a {
+    display: block !important;
+    margin: 0 auto !important;
+    text-align: center !important;
+  }
+  .empty-cart-message .flex {
+    display: flex !important;
+    justify-content: center !important;
+    width: 100% !important;
+  }
+</style>
   </head>
 
   <body class="bg-[#f8f7f5]">
@@ -275,7 +294,7 @@
 
       <%- include('../partials/user/footer.ejs') %>
 
-      <script> 
+<script>
 document.addEventListener('DOMContentLoaded', function() {
   if (document.querySelector('.empty-cart-message')) {
     return;
@@ -347,6 +366,32 @@ document.addEventListener('DOMContentLoaded', function() {
         if (subtotalEl) subtotalEl.textContent = `$${data.cart.subtotal.toFixed(2)}`;
         if (shippingEl) shippingEl.textContent = `$${data.cart.shipping.toFixed(2)}`;
         if (totalEl) totalEl.textContent = `$${data.cart.total.toFixed(2)}`;
+
+        // Update the individual item's total price in the DOM
+        const updatedItem = data.cart.items.find(item => item.productId._id.toString() === productId);
+        if (updatedItem) {
+          // Escape the Tailwind class text-[#2C2C2C]
+          const escapedColorClass = 'text-\\[\\#2C2C2C\\]';
+          const itemTotalEl = document.querySelector(
+            `.cart-item .remove-btn[data-product-id="${productId}"]`
+          ).parentElement.querySelector(`.font-montserrat.${escapedColorClass}`);
+          
+          if (itemTotalEl) {
+            itemTotalEl.textContent = `$${updatedItem.totalPrice.toFixed(2)}`;
+          } else {
+            console.error('Total element not found for productId:', productId);
+            // Fallback selector: select the first div inside the parent of remove-btn
+            const fallbackTotalEl = document.querySelector(
+              `.cart-item .remove-btn[data-product-id="${productId}"]`
+            ).parentElement.querySelector('div');
+            if (fallbackTotalEl) {
+              fallbackTotalEl.textContent = `$${updatedItem.totalPrice.toFixed(2)}`;
+              console.log('Used fallback selector for total price');
+            }
+          }
+        } else {
+          console.error('Updated item not found in response for productId:', productId);
+        }
 
         input.defaultValue = newQuantity;
 
@@ -431,26 +476,72 @@ document.addEventListener('DOMContentLoaded', function() {
 
   async function removeItem(productId, productName) {
     try {
+      console.log('removeItem called:', { productId, productName });
       const response = await fetch('/remove-from-cart', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ 
-          productId: productId 
-        }),
-        credentials: 'include'
+        body: JSON.stringify({ productId }),
+        credentials: 'include',
       });
 
       const data = await response.json();
+      console.log('Response from /remove-from-cart:', data);
 
       if (data.success) {
         showToast(`Removed ${productName} from cart`, 'success');
+
+        // Update cart count
         const cartCountEl = document.getElementById('cart-count');
         if (cartCountEl) {
           cartCountEl.textContent = data.cartCount || 0;
         }
-        setTimeout(() => window.location.reload(), 1000);
+
+        // Remove the cart item from the DOM
+        const cartItem = document.querySelector(`.cart-item .remove-btn[data-product-id="${productId}"]`).closest('.cart-item');
+        if (cartItem) {
+          cartItem.remove();
+        }
+
+        // Update order summary
+        const subtotalEl = document.querySelector('.subtotal-display');
+        const shippingEl = document.querySelector('.shipping-display');
+        const totalEl = document.querySelector('.total-display');
+
+        if (subtotalEl) subtotalEl.textContent = `$${data.cart.subtotal.toFixed(2)}`;
+        if (shippingEl) shippingEl.textContent = `$${data.cart.shipping.toFixed(2)}`;
+        if (totalEl) totalEl.textContent = `$${data.cart.total.toFixed(2)}`;
+
+        // Update checkout button *before* replacing the container
+        const checkoutBtn = document.querySelector('.checkout-btn');
+        if (data.cart.items.length === 0 && checkoutBtn) {
+          checkoutBtn.classList.add('opacity-60', 'cursor-not-allowed');
+          checkoutBtn.removeAttribute('href');
+          checkoutBtn.setAttribute('title', 'Cart is empty');
+        }
+
+        // Check if cart is empty
+        const cartItems = document.querySelectorAll('.cart-item');
+        if (cartItems.length === 0) {
+          const cartContainer = document.querySelector('.flex.flex-col.lg\\:flex-row.gap-8');
+          cartContainer.innerHTML = `
+            <div class="text-center py-16 empty-cart-message">
+              <svg class="w-16 h-16 mx-auto text-[#2C2C2C]/30 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
+              </svg>
+              <h2 class="text-xl font-medium text-[#2C2C2C] mb-4">Your cart is empty</h2>
+              <p class="text-[#2C2C2C]/70 mb-6 font-montserrat">Start shopping to add items to your cart</p>
+              <a href="/shop" class="inline-block px-6 py-3 bg-[#2C2C2C] text-white rounded-sm hover:bg-[#1a1a1a] transition-colors font-montserrat" style="display: block; margin: 0 auto; text-align: center;">
+                Continue Shopping
+              </a>
+            </div>
+          `;
+          // Reload the page after a delay to show the toast
+          setTimeout(() => {
+            window.location.reload();
+          }, 600); // Reduced to 600ms for faster transition
+        }
       } else {
         showToast(data.message || 'Failed to remove item', 'error');
       }
@@ -493,6 +584,7 @@ document.addEventListener('DOMContentLoaded', function() {
   function showConfirmToast(message, onConfirm, onCancel) {
     const toast = document.createElement('div');
     toast.className = 'toast-confirm fixed bottom-4 right-4 bg-[#2C2C2C] text-white px-6 py-4 rounded-lg shadow-xl z-50';
+    let isDismissing = false; // Flag to prevent further timeouts
 
     toast.innerHTML = `
       <div class="flex flex-col">
@@ -513,7 +605,23 @@ document.addEventListener('DOMContentLoaded', function() {
     const confirmBtn = toast.querySelector('.confirm-btn');
     const cancelBtn = toast.querySelector('.cancel-btn');
 
+    let timeout = setTimeout(() => {
+      if (!isDismissing) {
+        console.log('Auto-cancel timeout triggered'); // Debug
+        isDismissing = true;
+        toast.classList.add('hidden');
+        setTimeout(() => {
+          toast.remove();
+          onCancel();
+        }, 300);
+      }
+    }, 5000);
+
     confirmBtn.addEventListener('click', () => {
+      if (isDismissing) return;
+      console.log('Confirm button clicked'); // Debug
+      isDismissing = true;
+      clearTimeout(timeout);
       toast.classList.add('hidden');
       setTimeout(() => {
         toast.remove();
@@ -522,6 +630,10 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     cancelBtn.addEventListener('click', () => {
+      if (isDismissing) return;
+      console.log('Cancel button clicked'); // Debug
+      isDismissing = true;
+      clearTimeout(timeout);
       toast.classList.add('hidden');
       setTimeout(() => {
         toast.remove();
@@ -529,27 +641,29 @@ document.addEventListener('DOMContentLoaded', function() {
       }, 300);
     });
 
-    let timeout = setTimeout(() => {
-      toast.classList.add('hidden');
-      setTimeout(() => {
-        toast.remove();
-        onCancel();
-      }, 300);
-    }, 5000);
+    toast.addEventListener('mouseenter', () => {
+      console.log('Mouse entered toast'); // Debug
+      clearTimeout(timeout);
+    });
 
-    toast.addEventListener('mouseenter', () => clearTimeout(timeout));
     toast.addEventListener('mouseleave', () => {
+      if (isDismissing) return;
+      console.log('Mouse left toast'); // Debug
       timeout = setTimeout(() => {
-        toast.classList.add('hidden');
-        setTimeout(() => {
-          toast.remove();
-          onCancel();
-        }, 300);
+        if (!isDismissing) {
+          console.log('Mouseleave timeout triggered'); // Debug
+          isDismissing = true;
+          toast.classList.add('hidden');
+          setTimeout(() => {
+            toast.remove();
+            onCancel();
+          }, 300);
+        }
       }, 2000);
     });
   }
 });
-      </script>
+</script>
   </body>
 </html>
 

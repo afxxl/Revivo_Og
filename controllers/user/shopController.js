@@ -375,62 +375,6 @@ const loadY2kEssentials = async (req, res) => {
 
 //Cart
 
-const loadCartPage = async (req, res) => {
-  try {
-    const userId = req.session.user;
-
-    const cart = await Cart.findOne({ userId })
-      .populate("items.productId")
-      .lean();
-
-    if (!cart) {
-      return res.render("cart", {
-        cart: { items: [] },
-        subtotal: 0,
-        total: 0,
-        canCheckout: true,
-      });
-    }
-
-    let canCheckout = true;
-    const updatedItems = [];
-
-    for (const item of cart.items) {
-      const product = await Product.findById(item.productId._id);
-
-      if (!product || product.stock === 0 || product.status !== "Available") {
-        canCheckout = false;
-        item.unavailable = true;
-      } else {
-        item.quantity = Math.min(item.quantity, product.stock);
-        item.maxStock = product.stock;
-      }
-      updatedItems.push(item);
-    }
-
-    const subtotal = updatedItems.reduce(
-      (sum, item) => sum + item.totalPrice,
-      0,
-    );
-    const shipping = subtotal > 0 ? 5 : 0;
-    const total = subtotal + shipping;
-
-    res.render("cart", {
-      cart: {
-        ...cart,
-        items: updatedItems,
-      },
-      subtotal,
-      shipping,
-      total,
-      canCheckout,
-    });
-  } catch (err) {
-    console.log("Error loading cart:", err);
-    res.status(500).render("page-404", { message: "Error loading cart" });
-  }
-};
-
 const updateCart = async (req, res) => {
   try {
     const { items } = req.body;
@@ -443,20 +387,41 @@ const updateCart = async (req, res) => {
       });
     }
 
+    if (!items || !Array.isArray(items) || items.length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid or empty items array",
+      });
+    }
+
     let cart = await Cart.findOne({ userId }).populate("items.productId");
 
-    if (!cart) cart = new Cart({ userId, items: [] });
+    if (!cart) {
+      cart = new Cart({ userId, items: [] });
+    }
 
+    // Log incoming items for debugging
+    console.log("Incoming items:", items);
+
+    // Validate all items before updating
     for (const item of items) {
+      if (!item.productId || !item.quantity) {
+        return res.status(400).json({
+          success: false,
+          message: "Invalid item: productId and quantity are required",
+        });
+      }
+
       const product = await Product.findOne({
         _id: item.productId,
         status: "Available",
+        isListed: true,
       });
 
       if (!product) {
         return res.status(400).json({
           success: false,
-          message: "The product is no longer available",
+          message: `The product with ID ${item.productId} is no longer available`,
           productId: item.productId,
         });
       }
@@ -470,30 +435,45 @@ const updateCart = async (req, res) => {
         });
       }
     }
-    cart.items = items.map((item) => {
-      const existingItem = cart.items.find(
-        (i) => i.productId._id.toString() === item.productId,
+
+    // Update only the specified items, preserving others
+    const updatedItems = [...cart.items]; // Copy existing items
+
+    for (const item of items) {
+      const existingItemIndex = updatedItems.findIndex(
+        (i) => i.productId._id.toString() === item.productId.toString(),
       );
 
-      if (existingItem) {
-        return {
+      if (existingItemIndex !== -1) {
+        // Update existing item
+        console.log(`Updating existing item: ${item.productId}`);
+        const existingItem = updatedItems[existingItemIndex];
+        updatedItems[existingItemIndex] = {
           ...existingItem.toObject(),
           quantity: item.quantity,
           totalPrice: item.quantity * existingItem.price,
         };
       } else {
-        const product = cart.items.find(
-          (i) => i.productId._id.toString() === item.productId,
-        )?.productId;
-
-        return {
+        // Add new item
+        console.log(`Adding new item: ${item.productId}`);
+        const product = await Product.findById(item.productId);
+        if (!product) {
+          throw new Error(`Product not found: ${item.productId}`);
+        }
+        updatedItems.push({
           productId: item.productId,
           quantity: item.quantity,
           price: product.salesPrice,
           totalPrice: item.quantity * product.salesPrice,
-        };
+        });
       }
-    });
+    }
+
+    // Set updated items to cart
+    cart.items = updatedItems;
+
+    // Log updated cart items
+    console.log("Updated cart items:", cart.items);
 
     await cart.save();
 
@@ -533,6 +513,72 @@ const updateCart = async (req, res) => {
     });
   }
 };
+
+const loadCartPage = async (req, res) => {
+  try {
+    const userId = req.session.user;
+
+    let cart = await Cart.findOne({ userId }).populate("items.productId");
+
+    if (!cart) {
+      return res.render("cart", {
+        cart: { items: [] },
+        subtotal: 0,
+        total: 0,
+        canCheckout: true,
+      });
+    }
+
+    let canCheckout = true;
+    const updatedItems = [];
+
+    for (const item of cart.items) {
+      const product = await Product.findById(item.productId._id);
+      if (
+        !product ||
+        product.stock === 0 ||
+        product.status !== "Available" ||
+        !product.isListed
+      ) {
+        // Remove invalid item from cart
+        continue;
+      } else {
+        item.quantity = Math.min(item.quantity, product.stock);
+        item.totalPrice = item.quantity * item.price; // Ensure totalPrice is updated
+        item.maxStock = product.stock;
+        updatedItems.push(item);
+      }
+    }
+
+    // Update cart in database if items were removed
+    if (updatedItems.length !== cart.items.length) {
+      cart.items = updatedItems;
+      await cart.save();
+    }
+
+    const subtotal = updatedItems.reduce(
+      (sum, item) => sum + item.totalPrice,
+      0,
+    );
+    const shipping = subtotal > 0 ? 5 : 0;
+    const total = subtotal + shipping;
+
+    res.render("cart", {
+      cart: {
+        ...cart.toObject(),
+        items: updatedItems,
+      },
+      subtotal,
+      shipping,
+      total,
+      canCheckout,
+    });
+  } catch (err) {
+    console.log("Error loading cart:", err);
+    res.status(500).render("page-404", { message: "Error loading cart" });
+  }
+};
+
 const removeFromCart = async (req, res) => {
   try {
     const { productId } = req.body;
