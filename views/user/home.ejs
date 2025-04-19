@@ -10,70 +10,99 @@
     <link href="https://fonts.googleapis.com/css2?family=Henny+Penny&family=Playfair+Display:wght@400;500;600&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
     <style>
       .paper-bg {
+        background-color: #f8f7f5;
+        min-height: 100vh;
+        position: relative;
+        overflow: hidden;
+      }
+
+    .logo {
+    height: 85px; /* Adjust as needed */
+    width: auto;  /* Maintain aspect ratio */
+    max-width: 100%; /* Ensure it doesn't overflow its container */
+      }
+
+      .hero-gradient {
+        background: linear-gradient(to right, rgba(248, 247, 245, 0.9) 40%, rgba(248, 247, 245, 0.5) 70%, rgba(248, 247, 245, 0.2) 100%);
+      }
+
+      .hero-bg-image {
         background-image: url('/Images/images/OLD_PAPER_TEXTURE.jpg');
         background-size: cover;
         background-position: center;
-        background-repeat: no-repeat;
-        min-height: 100vh;
+        opacity: 0.1;
+      }
+
+      .main-heading {
+        font-family: 'Playfair Display', serif;
+        color: #2C2C2C;
+        font-weight: 600;
+        line-height: 1.1;
         position: relative;
       }
-      .paper-bg::before {
+
+      .main-heading::after {
         content: '';
         position: absolute;
-        top: 0;
+        bottom: -12px;
         left: 0;
-        right: 0;
-        bottom: 0;
-        background: rgba(255, 255, 255, 0.1);
-        pointer-events: none;
+        width: 80px;
+        height: 3px;
+        background-color: #f8c78d;
       }
-      .model-container {
+
+      .tagline {
+        font-family: 'Montserrat', sans-serif;
+        color: rgba(44, 44, 44, 0.85);
+        line-height: 1.6;
+        font-weight: 300;
+        letter-spacing: 0.2rem;
+      }
+
+      .welcome-text {
+        font-family: 'Montserrat', sans-serif;
+        line-height: 1.8;
+        color: rgba(44, 44, 44, 0.8);
+      }
+
+      .cta-button {
+        font-family: 'Montserrat', sans-serif;
+        background-color: #2C2C2C;
+        transition: all 0.3s ease;
+        letter-spacing: 2px;
+        text-transform: uppercase;
         position: relative;
-        height: calc(100vh - 50px);
-        width: 100%;
-        overflow: visible;
-        margin-top: -80px;
+        overflow: hidden;
+        z-index: 1;
+        border: 2px solid #2C2C2C;
       }
-      .model-group {
-        position: absolute;
-        right: 0;
-        bottom: -5%;
-        width: 100%;
-        height: 100%;
-        display: flex;
-        justify-content: flex-end;
-        align-items: flex-end;
+
+      .cta-button:hover {
+        background-color: transparent;
+        color: #2C2C2C;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
       }
-      .model-wrapper {
-        position: relative;
-        height: 100%;
-        display: flex;
-        align-items: flex-end;
-        margin-right: 5%;
-        transform: translateY(-5%);
-      }
+
       .model {
         opacity: 0;
         transform: translateY(20px);
         animation: fadeInUp 1s ease forwards;
-        max-height: 85vh;
-        object-fit: contain;
         filter: contrast(1.1) saturate(1.1);
       }
+
       .model-1 {
-        height: 60%;
-        margin-right: -8%;
         animation-delay: 0.3s;
       }
+
       .model-2 {
-        height: 70%;
-        margin-right: -10%;
         animation-delay: 0.6s;
       }
+
       .model-3 {
-        height: 80%;
         animation-delay: 0.9s;
       }
+
       @keyframes fadeInUp {
         from {
           opacity: 0;
@@ -84,166 +113,45 @@
           transform: translateY(0);
         }
       }
+
       .content-wrapper {
-        max-width: 600px;
-        margin-left: 10%;
-        opacity: 0;
         animation: fadeIn 1s ease forwards 0.5s;
-        margin-bottom: 2rem;
+        opacity: 0;
       }
+
       @keyframes fadeIn {
         from { opacity: 0; }
         to { opacity: 1; }
       }
-      .main-heading {
-        font-family: 'Playfair Display', serif;
-        font-size: 4.5rem;
-        letter-spacing: 0.1em;
-        color: #2C2C2C;
-        font-weight: 500;
-        line-height: 1;
-        margin-bottom: 1.5rem;
-        position: relative;
-      }
-      .main-heading::after {
-        content: '';
+
+      .accent-element {
+        background-color: rgba(248, 199, 141, 0.2);
+        border-radius: 50%;
         position: absolute;
-        bottom: -10px;
-        left: 0;
-        width: 60px;
-        height: 3px;
-        background-color: #2C2C2C;
+        z-index: 0;
       }
-      .tagline {
-        font-family: 'Montserrat', sans-serif;
-        color: rgba(44, 44, 44, 0.85);
-        font-size: 1rem;
-        letter-spacing: 2.5px;
-        line-height: 1.8;
-        font-weight: 300;
-        text-transform: uppercase;
-        margin-bottom: 2.5rem;
-      }
-      .welcome-text {
-        font-family: 'Montserrat', sans-serif;
-        letter-spacing: 2px;
-        line-height: 1.6;
-      }
-      .shop-button {
-        font-family: 'Montserrat', sans-serif;
-        background-color: #2C2C2C;
-        transition: all 0.4s ease;
-        letter-spacing: 3px;
-        text-transform: uppercase;
-        font-size: 0.9rem;
-        padding: 1.2rem 3rem;
-        position: relative;
-        overflow: hidden;
-        z-index: 1;
-      }
-      .shop-button::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: -100%;
-        width: 100%;
-        height: 100%;
-        background: #4A4A4A;
-        transition: all 0.4s ease;
-        z-index: -1;
-      }
-      .shop-button:hover::before {
-        left: 0;
-      }
-      .shop-button:hover {
-        transform: translateY(-2px);
-      }
-      .vintage-accent {
-        position: absolute;
-        top: 2rem;
-        left: 50%;
-        transform: translateX(-50%);
-        font-family: 'Playfair Display', serif;
-        font-style: italic;
-        color: rgba(44, 44, 44, 0.4);
-        font-size: 1.2rem;
-        letter-spacing: 2px;
-      }
-      .decorative-circle {
-        position: absolute;
+
+      .accent-1 {
         width: 300px;
         height: 300px;
-        border: 1px solid rgba(44, 44, 44, 0.1);
-        border-radius: 50%;
-        right: 10%;
-        top: 20%;
-        z-index: 0;
+        top: -150px;
+        left: -100px;
       }
-      .decorative-circle::before {
-        content: '';
-        position: absolute;
+
+      .accent-2 {
         width: 200px;
         height: 200px;
-        border: 1px solid rgba(44, 44, 44, 0.1);
-        border-radius: 50%;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
+        bottom: 10%;
+        left: 5%;
       }
-      .vintage-text {
-        position: absolute;
-        font-family: 'Playfair Display', serif;
-        font-style: italic;
-        color: rgba(44, 44, 44, 0.15);
-        font-size: 8rem;
-        right: -2rem;
-        bottom: 5rem;
-        transform: rotate(-90deg);
-        z-index: 0;
+
+      .accent-3 {
+        width: 100px;
+        height: 100px;
+        top: 30%;
+        right: 40%;
       }
-      .year-label {
-        position: absolute;
-        right: 3rem;
-        top: 5rem;
-        transform: rotate(90deg);
-        font-family: 'Montserrat', sans-serif;
-        font-size: 0.9rem;
-        letter-spacing: 5px;
-        color: rgba(44, 44, 44, 0.6);
-      }
-      .dot-pattern {
-        position: absolute;
-        width: 150px;
-        height: 150px;
-        background-image: radial-gradient(circle, #2C2C2C 1px, transparent 1px);
-        background-size: 15px 15px;
-        opacity: 0.1;
-        top: 15%;
-        right: 15%;
-        z-index: 0;
-      }
-      .features-list {
-        margin-top: 4rem;
-        display: flex;
-        gap: 2.5rem;
-        opacity: 0;
-        animation: fadeIn 1s ease forwards 1s;
-      }
-      .feature-item {
-        display: flex;
-        align-items: center;
-        gap: 0.75rem;
-        font-family: 'Montserrat', sans-serif;
-        color: rgba(44, 44, 44, 0.75);
-        font-size: 0.85rem;
-        letter-spacing: 1px;
-      }
-      .feature-item svg {
-        width: 18px;
-        height: 18px;
-        stroke: #2C2C2C;
-        opacity: 0.6;
-      }
+
       .section-heading {
         font-family: 'Playfair Display', serif;
         font-weight: 500;
@@ -251,6 +159,7 @@
         position: relative;
         display: inline-block;
       }
+      
       .section-heading::after {
         content: '';
         position: absolute;
@@ -261,59 +170,226 @@
         background-color: #f8c78d;
         transition: width 0.3s ease;
       }
+      
       .section-heading:hover::after {
         width: 100%;
       }
+      
       .hero-heading {
         font-family: 'Henny Penny', cursive;
         font-weight: 400;
         letter-spacing: 0.05em;
         text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
       }
+      
       .hero-subheading {
         font-family: 'Montserrat', sans-serif;
         letter-spacing: 0.1em;
         font-weight: 300;
         text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
       }
+      
       .clip-path-wave {
         clip-path: polygon(0% 0%, 4% 40%, 13% 60%, 20% 35%, 33% 60%, 44% 30%, 52% 55%, 65% 45%, 78% 65%, 85% 25%, 95% 50%, 100% 0%, 100% 100%, 0% 100%);
       }
+      
       .font-playfair {
         font-family: 'Playfair Display', serif;
       }
+      
       .font-montserrat {
         font-family: 'Montserrat', sans-serif;
       }
+      
       .font-henny {
         font-family: 'Henny Penny', cursive;
       }
+      
       html {
         scroll-behavior: smooth;
       }
+      
+      /* New Product Card Styles */
       .product-card {
+        position: relative;
         transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         background-color: white;
+        border-radius: 0.75rem;
+        overflow: hidden;
+        border: 1px solid rgba(232, 232, 232, 0.5);
+        height: 100%;
+        display: flex;
+        flex-direction: column;
       }
+      
       .product-card:hover {
         transform: translateY(-8px);
-        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+        border-color: rgba(248, 199, 141, 0.3);
       }
+      
+      .product-image-container {
+        position: relative;
+        overflow: hidden;
+        padding-top: 100%; /* 1:1 Aspect Ratio */
+        background-color: rgba(248, 247, 245, 0.5);
+      }
+      
+      .product-image {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        object-position: center;
+        transition: transform 0.5s ease;
+        padding: 1rem;
+      }
+      
+      .product-card:hover .product-image {
+        transform: scale(1.05);
+      }
+      
+      .product-overlay {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(to top, rgba(44, 44, 44, 0.8) 0%, rgba(44, 44, 44, 0) 100%);
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        display: flex;
+        align-items: flex-end;
+        justify-content: center;
+        padding-bottom: 1rem;
+      }
+      
+      .product-card:hover .product-overlay {
+        opacity: 1;
+      }
+      
+      .product-badge {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        z-index: 10;
+        font-family: 'Montserrat', sans-serif;
+        font-size: 0.65rem;
+        font-weight: 600;
+        padding: 0.25rem 0.75rem;
+        border-radius: 2rem;
+        letter-spacing: 0.05rem;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      }
+      
+      .product-content {
+        padding: 1.25rem;
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1;
+        position: relative;
+      }
+      
+      .product-category {
+        font-size: 0.7rem;
+        text-transform: uppercase;
+        font-family: 'Montserrat', sans-serif;
+        letter-spacing: 0.05rem;
+        margin-bottom: 0.5rem;
+        color: rgba(44, 44, 44, 0.6);
+      }
+      
+      .product-title {
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 500;
+        font-size: 0.9rem;
+        line-height: 1.4;
+        margin-bottom: 0.75rem;
+        transition: color 0.3s ease;
+        letter-spacing: 0.03rem;
+        overflow: hidden;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+      }
+      
+      .product-card:hover .product-title {
+        color: #f8c78d;
+      }
+      
+      .product-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: auto;
+      }
+      
+      .product-price {
+        font-family: 'Montserrat', sans-serif;
+      }
+      
+      .current-price {
+        font-weight: 600;
+        font-size: 0.95rem;
+        color: #2C2C2C;
+      }
+      
+      .original-price {
+        font-size: 0.75rem;
+        text-decoration: line-through;
+        color: rgba(44, 44, 44, 0.5);
+        margin-left: 0.5rem;
+      }
+      
+      .cart-button {
+        background-color: #2C2C2C;
+        color: white;
+        border-radius: 50%;
+        width: 2.5rem;
+        height: 2.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+        border: 2px solid #2C2C2C;
+      }
+      
+      .cart-button:hover {
+        background-color: #f8c78d;
+        color: #2C2C2C;
+        transform: scale(1.1);
+        border-color: #f8c78d;
+      }
+      
+      .quick-view-button {
+        background-color: white;
+        color: #2C2C2C;
+        font-size: 0.7rem;
+        font-weight: 600;
+        padding: 0.5rem 1.25rem;
+        border-radius: 2rem;
+        transition: all 0.3s ease;
+        transform: translateY(1rem);
+        opacity: 0;
+        letter-spacing: 0.05rem;
+      }
+      
+      .product-card:hover .quick-view-button {
+        transform: translateY(0);
+        opacity: 1;
+      }
+      
+      .quick-view-button:hover {
+        background-color: #f8c78d;
+        color: #2C2C2C;
+      }
+      
       @media (max-width: 768px) {
         .clip-path-wave {
           height: 6px;
         }
-        .main-heading {
-          font-size: 3rem;
-        }
-        .model-1 {
-          height: 50%;
-        }
-        .model-2 {
-          height: 60%;
-        }
-        .model-3 {
-          height: 70%;
+        
+        .hero-gradient {
+          background: linear-gradient(to bottom, rgba(248, 247, 245, 0.95) 60%, rgba(248, 247, 245, 0.8) 100%);
         }
       }
   
@@ -425,66 +501,80 @@
   <body class="bg-[#f8f7f5]">
     <%- include('../partials/user/header.ejs') %>
 
-    <div class="relative min-h-screen paper-bg overflow-hidden">
-      <div class="vintage-accent">Est. 2023</div>
+    <!-- Hero Section Start -->
+    <section class="paper-bg relative overflow-hidden">
+      <!-- Background Texture -->
+      <div class="hero-bg-image absolute inset-0"></div>
       
-      <div class="decorative-circle"></div>
-      <div class="dot-pattern"></div>
-      <div class="vintage-text">Vintage</div>
-      <div class="year-label">SINCE 2023</div>
-
-      <div class="flex flex-col md:flex-row justify-between items-start h-[calc(100vh-120px)]">
-        <div class="w-full md:w-1/2 mb-12 md:mb-0 md:mt-20 z-10">
-          <div class="content-wrapper">
-            <h1 class="main-heading">REVIVO</h1>
-            <p class="tagline">Where Timeless Style Meets Modern Expression</p>
-            <div class="space-y-5">
-              <p class="welcome-text text-base text-gray-700">
+      <!-- Decorative Accents -->
+      <div class="accent-element accent-1"></div>
+      <div class="accent-element accent-2"></div>
+      <div class="accent-element accent-3"></div>
+      
+      <div class="container mx-auto px-4 md:px-8 h-screen flex flex-col justify-center relative z-10">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+          
+          <!-- Text Content -->
+          <div class="content-wrapper max-w-xl">
+            <span class="inline-block mb-4 py-1 px-3 bg-[#f8c78d]/20 rounded-full text-[#2C2C2C]/70 text-xs uppercase tracking-wider font-montserrat">Established 2023</span>
+            
+            <h1 class="main-heading text-5xl sm:text-6xl md:text-7xl mb-8">
+              REVIVO
+            </h1>
+            
+            <p class="tagline text-lg sm:text-xl uppercase mb-6">
+              Where Timeless Style Meets Modern Expression
+            </p>
+            
+            <p class="welcome-text mb-10 max-w-md">
                 Discover our curated collection of vintage treasures, 
                 each piece telling its own unique story of style and sophistication.
               </p>
-              <div class="mt-12">
-                <a href="/shop" class="shop-button inline-block text-white rounded-sm">
+            
+            <div class="flex flex-col sm:flex-row items-center gap-6">
+              <a href="/shop" class="cta-button py-3 px-8 text-white rounded-md text-sm font-medium tracking-wider">
                   Explore Collection
                 </a>
-              </div>
-              <div class="features-list">
-                <div class="feature-item">
-                  <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              
+              <div class="flex items-center gap-6 mt-4 sm:mt-0">
+                <div class="flex items-center gap-2 text-sm text-[#2C2C2C]/70 font-montserrat">
+                  <svg class="w-5 h-5 text-[#f8c78d]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
                   </svg>
                   Quality Assured
                 </div>
-                <div class="feature-item">
-                  <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
+                
+                <div class="flex items-center gap-2 text-sm text-[#2C2C2C]/70 font-montserrat">
+                  <svg class="w-5 h-5 text-[#f8c78d]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
                   </svg>
                   Free Shipping
                 </div>
-                <div class="feature-item">
-                  <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                  </svg>
-                  24/7 Support
                 </div>
               </div>
             </div>
+          
+          <!-- Hero Images -->
+          <div class="hidden lg:block relative h-[500px]">
+            <div class="absolute right-0 h-full flex items-end">
+              <img src="/Images/Models/image-removebg-preview.png" alt="Model 1" class="model model-1 h-[400px] w-auto -mr-10 z-10 object-contain">
+              <img src="/Images/Models/x9F2ccsm-removebg-preview.png" alt="Model 2" class="model model-2 h-[450px] w-auto -mr-16 z-20 object-contain">
+              <img src="/Images/Models/Richard_Gere_s_80s_fashion-removebg-preview.png" alt="Model 3" class="model model-3 h-[500px] w-auto z-30 object-contain">
           </div>
         </div>
 
-        <div class="w-full md:w-1/2 relative">
-          <div class="model-container">
-            <div class="model-group">
-              <div class="model-wrapper">
-                <img src="/Images/Models/image-removebg-preview.png" alt="Model 1" class="model model-1 w-auto object-contain">
-                <img src="/Images/Models/x9F2ccsm-removebg-preview.png" alt="Model 2" class="model model-2 w-auto object-contain">
-                <img src="/Images/Models/Richard_Gere_s_80s_fashion-removebg-preview.png" alt="Model 3" class="model model-3 w-auto object-contain">
               </div>
+        
+        <!-- Scroll Indicator -->
+        <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex flex-col items-center animate-bounce opacity-60">
+          <span class="text-xs uppercase tracking-widest text-[#2C2C2C]/60 mb-2 font-montserrat">Scroll</span>
+          <svg class="w-6 h-6 text-[#2C2C2C]/60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+          </svg>
             </div>
           </div>
-        </div>
-      </div>
-    </div>
+    </section>
+    <!-- Hero Section End -->
 
     <section class="relative py-16 overflow-hidden bg-[#2C2C2C] text-white">
       <div class="absolute inset-0 bg-gradient-to-b from-[#2C2C2C]/90 to-[#1a1a1a]/90 backdrop-blur-sm"></div>
@@ -496,7 +586,7 @@
       <div class="container mx-auto px-4 max-w-6xl relative">
         <div class="text-center mb-12">
           <div class="flex items-center justify-center gap-4 mb-4">
-            <img src="/Images/logo.png" alt="REVIVO Logo" class="w-12 h-12">
+            <img src="/Images/logo.svg" alt="REVIVO Logo" class="logo">
             <h2 class="text-4xl font-henny text-[#f8c78d]">Why Choose REVIVO?</h2>
           </div>
           <h3 class="text-xl text-[#ffffff]/80 font-medium tracking-wide">WHERE VINTAGE MEETS MODERN</h3>
@@ -553,7 +643,7 @@
       <div class="container mx-auto px-4 max-w-7xl relative">
         <div class="flex items-center justify-between mb-12">
           <div class="flex items-center gap-4">
-            <img src="/Images/logo.png" alt="REVIVO Logo" class="w-10 h-10">
+            <img src="/Images/logo.svg" alt="REVIVO Logo" class="logo">
             <h2 class="text-3xl font-henny text-[#2C2C2C]">New Arrivals</h2>
           </div>
           <a href="/new-arrivals" class="group flex items-center gap-2 text-[#2C2C2C] hover:text-[#f8c78d] transition-colors">
@@ -564,49 +654,50 @@
           </a>
         </div>
 
-
 <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
   <% if (products && products.length > 0) { %>
     <% products.forEach(product => { %>
-      <div class="product-card group relative bg-white border border-[#e0dcd4]/50 p-4 hover:shadow-lg transition-all duration-300 rounded-md">
-        <div class="absolute top-4 right-4 bg-[#f8c78d] text-[#2C2C2C] text-xs font-medium py-1 px-3 rounded-full z-10">NEW</div>
+              <div class="product-card">
+                <!-- Badge -->
+                <div class="product-badge bg-[#f8c78d] text-[#2C2C2C]">NEW</div>
         
-        <div class="relative aspect-[1/1] overflow-hidden mb-4 bg-white/20 group-hover:shadow-md transition-all">
-          <a href="/product/<%= product._id %>">
+                <!-- Image Container -->
+                <div class="product-image-container">
             <img 
               src="<%= product.productImage && product.productImage[0] ? product.productImage[0] : '/Images/placeholder.jpg' %>" 
               alt="<%= product.productName %>" 
-              class="w-full h-full object-contain p-2 group-hover:scale-105 transition-transform duration-500"
+                    class="product-image"
               onerror="this.src='/Images/placeholder.jpg'"
             >
-          </a>
-          <div class="absolute inset-0 bg-[#2C2C2C]/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-            <a href="/product/<%= product._id %>" class="px-4 py-2 bg-white text-[#2C2C2C] rounded-full text-xs font-montserrat hover:bg-[#f8c78d] transition-colors">Quick View</a>
+                  <div class="product-overlay">
+                    <a href="/product/<%= product._id %>" class="quick-view-button font-montserrat">Quick View</a>
           </div>
         </div>
         
-        <div class="px-2">
-          <div class="mb-2">
-            <span class="text-xs text-[#2C2C2C]/60 font-montserrat"><%= product.category?.name || 'Vintage' %></span>
+                <!-- Content -->
+                <div class="product-content">
+                  <div class="product-category">
+                    <%= product.category?.name || 'Vintage' %>
           </div>
           
-          <h3 class="text-[#333] font-medium mb-2 uppercase text-sm tracking-wider font-montserrat">
-            <a href="/product/<%= product._id %>" class="hover:text-[#f8c78d] transition-colors"><%= product.productName %></a>
+                  <h3 class="product-title uppercase">
+                    <a href="/product/<%= product._id %>"><%= product.productName %></a>
           </h3>
           
-          <div class="flex items-center justify-between">
-            <div>
-              <p class="text-[#333] text-sm font-montserrat">$<%= product.salesPrice %> $</p>
+                  <div class="product-footer">
+                    <div class="product-price">
+                      <span class="current-price">$<%= product.salesPrice %></span>
               <% if (product.originalPrice) { %>
-                <p class="text-[#333]/60 text-xs font-montserrat line-through">$<%= product.originalPrice %> $</p>
+                        <span class="original-price">$<%= product.originalPrice %></span>
               <% } %>
             </div>
+                    
             <button 
               onclick="addToCart('<%= product._id %>')"
-              class="w-10 h-10 flex items-center justify-center bg-[#2C2C2C] text-white rounded-full hover:bg-[#f8c78d] hover:text-[#2C2C2C] transition-colors transform hover:scale-110"
+                      class="cart-button"
               title="Add to cart"
             >
-              <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                      <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
               </svg>
             </button>
@@ -631,6 +722,7 @@
 </div>
               </div>
     </section>
+
 <section class="relative py-16 overflow-hidden bg-white">
   <div class="container mx-auto px-4 max-w-7xl relative">
     <div class="text-center mb-12">
@@ -768,6 +860,7 @@
   </div>
 
 </section>
+
 <section class="testimonials-section py-20 relative">
   <div class="container mx-auto px-6 relative z-10">
     <div class="text-center mb-16">
@@ -846,7 +939,7 @@
   <div class="container mx-auto px-6">
     <div class="newsletter-container rounded-xl p-8 md:p-12 text-center">
       <div class="inline-flex items-center gap-3 mb-6">
-        <img src="/Images/logo.png" alt="Revivo Logo" class="w-10 h-10">
+        <img src="/Images/logo.svg" alt="Revivo Logo" class="logo">
         <h2 class="text-2xl font-henny text-[#2C2C2C]">Join Our Vintage Community</h2>
       </div>
       <p class="text-[#2C2C2C]/80 mb-8 font-montserrat max-w-lg mx-auto">

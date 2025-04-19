@@ -5,17 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard - Revivo</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Henny+Penny&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
     <style>
         body {
             font-family: 'Poppins', sans-serif;
-            background-color: #F3F4F6;
+            background-color: #f8f7f5;
         }
         .brand-heading {
-            font-family: 'Playfair Display', serif;
-            letter-spacing: 0.05em;
+            font-family: 'Henny Penny', cursive;
+            color: #2C2C2C;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
         }
         @media (max-width: 768px) {
             .sidebar-open {
@@ -24,30 +25,147 @@
             .sidebar-closed {
                 transform: translateX(-100%);
             }
+            .header-content {
+                padding: 0 1rem;
+                height: 60px;
+            }
+            .logo-container {
+                margin-left: 0;
+            }
+            .user-actions {
+                margin-right: 0;
+            }
+            .admin-dashboard-text {
+                display: none;
+            }
+            .logo {
+                display: none;
+            }
+            .user-profile {
+                display: none;
+            }
+            .brand-heading {
+                font-size: 1.5rem;
+            }
+        }
+        .header-shadow {
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05), 0 1px 2px rgba(0,0,0,0.1);
+        }
+        .burger-button {
+            display: none;
+            transition: all 0.3s ease;
+        }
+        @media (max-width: 768px) {
+            .burger-button {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: 40px;
+                height: 40px;
+                margin-right: 1rem;
+            }
+            .logo-container {
+                flex: 1;
+            }
+        }
+        .modal-animation {
+            animation: modalFadeIn 0.3s ease-out;
+        }
+        @keyframes modalFadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+        .logo {
+            height: 85px;
+            width: auto;
+            max-width: 100%;
+            transition: transform 0.3s ease;
+        }
+        .logo:hover {
+            transform: scale(1.05);
+        }
+        .admin-text {
+            color: #2C2C2C;
+            font-family: 'Henny Penny', cursive;
+        }
+        .logout-button {
+            background-color: #2C2C2C;
+            transition: all 0.3s ease;
+        }
+        .logout-button:hover {
+            background-color: #1a1a1a;
+            transform: translateY(-1px);
+        }
+        .modal-button {
+            background-color: #2C2C2C;
+            transition: all 0.3s ease;
+        }
+        .modal-button:hover {
+            background-color: #1a1a1a;
+        }
+        .cancel-button {
+            color: #2C2C2C;
+            transition: all 0.3s ease;
+        }
+        .cancel-button:hover {
+            color: #1a1a1a;
+        }
+        .user-avatar {
+            background: linear-gradient(135deg, #2C2C2C, #1a1a1a);
+            color: #f8f7f5;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 1rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+        .user-avatar:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
     </style>
 </head>
-<body>
-    <div class="fixed top-0 left-0 right-0 h-16 bg-white shadow-sm z-40">
-        <div class="flex justify-between items-center h-full px-6 ml-16 md:ml-64">
-            <div class="md:hidden font-semibold text-gray-800">
-                Dashboard
+<body class="bg-[#f8f7f5]">
+    <!-- Revivo Header -->
+    <div class="fixed top-0 left-0 right-0 h-24 bg-white header-shadow z-50">
+        <div class="flex items-center justify-between h-full px-6 header-content">
+            <div class="flex items-center space-x-4 logo-container">
+                <button class="burger-button" onclick="toggleSidebar()">
+                    <svg class="w-6 h-6 text-[#2C2C2C]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                    </svg>
+                </button>
+                <img src="/Images/logo.svg" alt="Revivo Logo" class="logo">
+                <div>
+                    <h1 class="brand-heading text-2xl md:text-3xl font-bold tracking-wide">REVIVO</h1>
+                    <p class="admin-dashboard-text text-xs font-medium text-[#2C2C2C]/70 tracking-wider uppercase">Admin Dashboard</p>
+                </div>
             </div>
-
-            <div class="flex items-center ml-auto space-x-4">
-                <div class="flex items-center">
+            <div class="flex items-center space-x-4 user-actions">
+                <div class="flex items-center user-profile">
                     <div class="hidden md:block text-right mr-3">
-                        <p class="text-sm font-medium text-gray-700">Admin</p>
-                        <p class="text-xs text-gray-500">admin@revivo.com</p>
+                        <p class="text-sm font-medium text-[#2C2C2C]">Admin</p>
+                        <p class="text-xs text-[#2C2C2C]/70">admin@revivo.com</p>
                     </div>
-                    <div class="w-8 h-8 rounded-full bg-[#6C7559] flex items-center justify-center text-white font-medium text-sm">
+                    <div class="user-avatar">
                         A
                     </div>
                 </div>
 
                 <button onclick="confirmLogout()" 
-                        class="px-3 py-1.5 bg-red-500 hover:bg-red-600 text-white rounded-lg transition-colors duration-200 flex items-center space-x-2">
-                    <span class="hidden md:inline text-sm">Logout</span>
+                        class="logout-button px-4 py-2 text-white rounded-lg flex items-center space-x-2 shadow-sm hover:shadow-md">
+                    <span class="hidden md:inline text-sm font-medium">Logout</span>
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
                               d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
@@ -58,23 +176,23 @@
     </div>
 
     <div id="logoutModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center">
-        <div class="bg-white rounded-lg p-6 max-w-sm mx-4">
-            <h3 class="text-xl font-semibold text-gray-900 mb-4">Confirm Logout</h3>
-            <p class="text-gray-600 mb-6">Are you sure you want to logout from the admin panel?</p>
+        <div class="bg-white rounded-xl p-6 max-w-sm mx-4 modal-animation shadow-xl">
+            <h3 class="text-xl font-semibold text-[#2C2C2C] mb-4">Confirm Logout</h3>
+            <p class="text-[#2C2C2C]/70 mb-6">Are you sure you want to logout from the admin panel?</p>
             <div class="flex justify-end space-x-4">
                 <button onclick="closeLogoutModal()" 
-                        class="px-4 py-2 text-gray-600 hover:text-gray-800 font-medium">
+                        class="cancel-button px-4 py-2 font-medium">
                     Cancel
                 </button>
                 <button onclick="window.location.href='/admin/logout'" 
-                        class="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg transition-colors duration-200">
+                        class="modal-button px-4 py-2 text-white rounded-lg shadow-sm hover:shadow-md">
                     Logout
                 </button>
             </div>
         </div>
     </div>
 
-    <div class="flex h-screen pt-16">
+    <div class="flex h-screen pt-24">
 
     <script>
         function confirmLogout() {
@@ -83,6 +201,14 @@
 
         function closeLogoutModal() {
             document.getElementById('logoutModal').classList.add('hidden');
+        }
+
+        function toggleSidebar() {
+            const sidebar = document.querySelector('.sidebar');
+            if (sidebar) {
+                sidebar.classList.toggle('sidebar-open');
+                sidebar.classList.toggle('sidebar-closed');
+            }
         }
 
         document.getElementById('logoutModal').addEventListener('click', function(e) {

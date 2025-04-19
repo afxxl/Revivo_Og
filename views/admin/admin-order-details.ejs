@@ -1,4 +1,3 @@
-
 <%- include('../partials/admin/admin-header.ejs') %>
 <%- include('../partials/admin/admin-sidebar', {currentPage: 'orders'}) %>
 
@@ -9,45 +8,53 @@
 }
 
 .order-card {
-    background: white;
+    background: linear-gradient(145deg, #ffffff, #f8f7f5);
+    border: 1px solid #e0dcd4;
     border-radius: 0.75rem;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
     padding: 2rem;
     margin-bottom: 2rem;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.order-card:hover {
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    border-color: #2C2C2C;
 }
 
 .status-select {
-    border: 2px solid #d1d5db;
+    background: linear-gradient(145deg, #ffffff, #f8f7f5);
+    border: 1px solid #e0dcd4;
     border-radius: 0.5rem;
     padding: 0.625rem 2.5rem 0.625rem 1.25rem;
     appearance: none;
-    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%236C7559'%3e%3cpath fill-rule='evenodd' d='M12.53 16.28a.75.75 0 01-1.06 0l-7.5-7.5a.75.75 0 011.06-1.06L12 14.69l6.97-6.97a.75.75 0 111.06 1.06l-7.5 7.5z' clip-rule='evenodd'/%3e%3c/svg%3e");
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%232C2C2C'%3e%3cpath fill-rule='evenodd' d='M12.53 16.28a.75.75 0 01-1.06 0l-7.5-7.5a.75.75 0 011.06-1.06L12 14.69l6.97-6.97a.75.75 0 111.06 1.06l-7.5 7.5z' clip-rule='evenodd'/%3e%3c/svg%3e");
     background-repeat: no-repeat;
     background-position: right 1rem center;
     background-size: 1rem;
     font-size: 0.875rem;
     line-height: 1.25rem;
-    color: #1f2937;
-    transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+    color: #2C2C2C;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     cursor: pointer;
 }
 
 .status-select:focus {
     outline: none;
-    border-color: #6C7559;
-    box-shadow: 0 0 0 3px rgba(108, 117, 89, 0.1);
+    border-color: #2C2C2C;
+    box-shadow: 0 0 0 3px rgba(44,44,44,0.1);
 }
 
 .status-select:hover:not(:disabled) {
-    border-color: #9ca3af;
+    border-color: #2C2C2C;
 }
 
 .status-select:disabled {
-    background-color: #f3f4f6;
-    border-color: #e5e7eb;
-    color: #6b7280;
+    background: linear-gradient(145deg, #f8f7f5, #e0dcd4);
+    border-color: #e0dcd4;
+    color: #2C2C2C;
+    opacity: 0.5;
     cursor: not-allowed;
-    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%239ca3af'%3e%3cpath fill-rule='evenodd' d='M12.53 16.28a.75.75 0 01-1.06 0l-7.5-7.5a.75.75 0 011.06-1.06L12 14.69l6.97-6.97a.75.75 0 111.06 1.06l-7.5 7.5z' clip-rule='evenodd'/%3e%3c/svg%3e");
 }
 
 .return-alert {
@@ -55,21 +62,22 @@
     padding: 1.5rem;
     margin-bottom: 2rem;
     border-radius: 0.375rem;
+    transition: all 0.3s ease;
 }
 
 .return-pending {
-    border-color: #eab308;
-    background-color: #fef9c3;
+    border-color: #f8c78d;
+    background: linear-gradient(145deg, #fef9c3, #fef3c7);
 }
 
 .return-approved {
     border-color: #22c55e;
-    background-color: #dcfce7;
+    background: linear-gradient(145deg, #dcfce7, #bbf7d0);
 }
 
 .return-rejected {
     border-color: #ef4444;
-    background-color: #fee2e2;
+    background: linear-gradient(145deg, #fee2e2, #fecaca);
 }
 
 .order-item-card {
@@ -77,7 +85,12 @@
     grid-template-columns: 100px 1fr auto;
     gap: 1.5rem;
     padding: 1.5rem 0;
-    border-bottom: 1px solid #e5e7eb;
+    border-bottom: 1px solid #e0dcd4;
+    transition: all 0.3s ease;
+}
+
+.order-item-card:hover {
+    background: linear-gradient(145deg, #f8f7f5, #ffffff);
 }
 
 .order-item-image {
@@ -85,6 +98,13 @@
     height: 100px;
     object-fit: cover;
     border-radius: 0.5rem;
+    border: 1px solid #e0dcd4;
+    transition: all 0.3s ease;
+}
+
+.order-item-image:hover {
+    transform: scale(1.02);
+    border-color: #2C2C2C;
 }
 
 .status-badge {
@@ -95,42 +115,67 @@
     display: inline-flex;
     align-items: center;
     gap: 0.25rem;
+    transition: all 0.3s ease;
 }
 
-.pending { background-color: #fef3c7; color: #b45309; }
-.confirmed { background-color: #dbeafe; color: #1e40af; }
-.shipped { background-color: #d1fae5; color: #065f46; }
-.delivered { background-color: #dcfce7; color: #166534; }
-.cancelled { background-color: #fee2e2; color: #991b1b; }
+.pending { 
+    background: linear-gradient(145deg, #fef3c7, #fde68a);
+    color: #b45309;
+}
+
+.confirmed { 
+    background: linear-gradient(145deg, #dbeafe, #bfdbfe);
+    color: #1e40af;
+}
+
+.shipped { 
+    background: linear-gradient(145deg, #d1fae5, #a7f3d0);
+    color: #065f46;
+}
+
+.delivered { 
+    background: linear-gradient(145deg, #dcfce7, #bbf7d0);
+    color: #166534;
+}
+
+.cancelled { 
+    background: linear-gradient(145deg, #fee2e2, #fecaca);
+    color: #991b1b;
+}
 
 .action-button {
     padding: 0.5rem 1rem;
     border-radius: 0.375rem;
     font-weight: 500;
-    transition: all 0.2s ease;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .btn-primary {
-    background-color: #6C7559;
-    color: white;
+    background: linear-gradient(135deg, #2C2C2C, #1a1a1a);
+    color: #f8f7f5;
+    border: none;
 }
 
 .btn-primary:hover {
-    background-color: #5a6349;
+    background: linear-gradient(135deg, #1a1a1a, #2C2C2C);
+    transform: translateY(-2px);
 }
 
 .btn-danger {
-    background-color: #dc2626;
-    color: white;
+    background: linear-gradient(135deg, #dc2626, #b91c1c);
+    color: #f8f7f5;
+    border: none;
 }
 
 .btn-danger:hover {
-    background-color: #b91c1c;
+    background: linear-gradient(135deg, #b91c1c, #dc2626);
+    transform: translateY(-2px);
 }
 
 .final-status-message {
     font-style: italic;
-    color: #6b7280;
+    color: #2C2C2C;
+    opacity: 0.75;
     padding: 0.625rem 0;
 }
 
@@ -150,25 +195,24 @@
     <div class="order-detail-container max-w-7xl mx-auto">
         <!-- Return Request Alert -->
         <% if (order.return?.requested) { %>
-        <div class="mb-6 p-4 rounded-lg 
-            <%= order.return.status === 'pending' ? 'bg-yellow-50 border-l-4 border-yellow-400' : '' %>
-            <%= order.return.status === 'approved' ? 'bg-green-50 border-l-4 border-green-400' : '' %>
-            <%= order.return.status === 'rejected' ? 'bg-red-50 border-l-4 border-red-400' : '' %>">
-            <h3 class="font-bold mb-2">Return Request</h3>
-            <p class="mb-1"><span class="font-medium">Reason:</span> <%= order.return.reason %></p>
-            <p class="mb-1"><span class="font-medium">Status:</span> 
+        <div class="return-alert <%= order.return.status === 'pending' ? 'return-pending' : '' %>
+            <%= order.return.status === 'approved' ? 'return-approved' : '' %>
+            <%= order.return.status === 'rejected' ? 'return-rejected' : '' %>">
+            <h3 class="font-bold mb-2 text-[#2C2C2C]">Return Request</h3>
+            <p class="mb-1 text-[#2C2C2C]"><span class="font-medium">Reason:</span> <%= order.return.reason %></p>
+            <p class="mb-1 text-[#2C2C2C]"><span class="font-medium">Status:</span> 
                 <span class="capitalize"><%= order.return.status %></span>
             </p>
-            <p class="text-sm text-gray-500">Requested on: <%= order.return.requestedAt.toLocaleString() %></p>
+            <p class="text-sm text-[#2C2C2C] opacity-75">Requested on: <%= order.return.requestedAt.toLocaleString() %></p>
             
             <% if (order.return.status === 'pending') { %>
                 <div class="flex gap-2 mt-3">
                     <button onclick="handleReturn('approve', '<%= order._id %>')" 
-                            class="px-3 py-1 bg-green-500 text-white rounded text-sm">
+                            class="btn-primary px-3 py-1 rounded text-sm">
                         Approve
                     </button>
                     <button onclick="handleReturn('reject', '<%= order._id %>')" 
-                            class="px-3 py-1 bg-red-500 text-white rounded text-sm">
+                            class="btn-danger px-3 py-1 rounded text-sm">
                         Reject
                     </button>
                 </div>
@@ -180,8 +224,8 @@
         <div class="order-card">
             <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
                 <div>
-                    <h1 class="text-2xl font-bold text-gray-900">Order #<%= order.orderId %></h1>
-                    <p class="text-gray-600 mt-1">
+                    <h1 class="text-2xl font-bold text-[#2C2C2C]">Order #<%= order.orderId %></h1>
+                    <p class="text-[#2C2C2C] opacity-75 mt-1">
                         Placed on <%= order.createdOn.toLocaleDateString('en-US', { 
                             year: 'numeric', 
                             month: 'long', 
@@ -194,11 +238,11 @@
                     <% if (order.status === 'Return Request') { %>
                         <div class="flex gap-2">
                             <button onclick="handleReturn('approve', '<%= order._id %>')" 
-                                    class="px-4 py-2 bg-green-500 text-white rounded-md">
+                                    class="btn-primary px-4 py-2 rounded-md">
                                 Approve Return
                             </button>
                             <button onclick="handleReturn('reject', '<%= order._id %>')" 
-                                    class="px-4 py-2 bg-red-500 text-white rounded-md">
+                                    class="btn-danger px-4 py-2 rounded-md">
                                 Reject Return
                             </button>
                         </div>
@@ -232,8 +276,8 @@
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div>
-                    <h2 class="text-xl font-semibold mb-4 text-gray-900">Shipping Information</h2>
-                    <div class="space-y-2 text-gray-700">
+                    <h2 class="text-xl font-semibold mb-4 text-[#2C2C2C]">Shipping Information</h2>
+                    <div class="space-y-2 text-[#2C2C2C]">
                         <p><%= order.address.name %></p>
                         <p><%= order.address.address %></p>
                         <p><%= order.address.city %>, <%= order.address.state %> <%= order.address.pincode %></p>
@@ -243,20 +287,20 @@
                 </div>
 
                 <div>
-                    <h2 class="text-xl font-semibold mb-4 text-gray-900">Order Summary</h2>
+                    <h2 class="text-xl font-semibold mb-4 text-[#2C2C2C]">Order Summary</h2>
                     <div class="space-y-4">
                         <div class="flex justify-between">
-                            <span class="text-gray-600">Payment Method</span>
-                            <span class="font-medium"><%= order.paymentMethod %></span>
+                            <span class="text-[#2C2C2C] opacity-75">Payment Method</span>
+                            <span class="font-medium text-[#2C2C2C]"><%= order.paymentMethod %></span>
                         </div>
                         <div class="flex justify-between">
-                            <span class="text-gray-600">Order Status</span>
+                            <span class="text-[#2C2C2C] opacity-75">Order Status</span>
                             <span class="status-badge <%= order.status.toLowerCase() %>">
                                 <%= order.status %>
                             </span>
                         </div>
-                        <div class="pt-4 border-t border-gray-200">
-                            <div class="flex justify-between text-lg font-semibold">
+                        <div class="pt-4 border-t border-[#e0dcd4]">
+                            <div class="flex justify-between text-lg font-semibold text-[#2C2C2C]">
                                 <span>Total Amount</span>
                                 <span>$<%= order.finalAmount.toFixed(2) %></span>
                             </div>
@@ -267,7 +311,7 @@
         </div>
 
         <div class="order-card">
-            <h2 class="text-xl font-semibold mb-6 text-gray-900">Order Items</h2>
+            <h2 class="text-xl font-semibold mb-6 text-[#2C2C2C]">Order Items</h2>
             <div class="space-y-6">
                 <% order.orderItems.forEach(item => { %>
                 <div class="order-item-card">
@@ -275,14 +319,14 @@
                          alt="<%= item.product.productName %>" 
                          class="order-item-image">
                     <div>
-                        <h3 class="text-lg font-medium text-gray-900"><%= item.product.productName %></h3>
-                        <p class="text-gray-600">Size: <%= item.size || 'N/A' %></p>
-                        <p class="text-gray-600">Condition: <%= item.condition %></p>
+                        <h3 class="text-lg font-medium text-[#2C2C2C]"><%= item.product.productName %></h3>
+                        <p class="text-[#2C2C2C] opacity-75">Size: <%= item.size || 'N/A' %></p>
+                        <p class="text-[#2C2C2C] opacity-75">Condition: <%= item.condition %></p>
                     </div>
                     <div class="text-right">
-                        <p class="text-lg font-semibold">$<%= (item.price * item.quantity).toFixed(2) %></p>
-                        <p class="text-sm text-gray-600">Quantity: <%= item.quantity %></p>
-                        <p class="text-sm text-gray-600">$<%= item.price.toFixed(2) %> each</p>
+                        <p class="text-lg font-semibold text-[#2C2C2C]">$<%= (item.price * item.quantity).toFixed(2) %></p>
+                        <p class="text-sm text-[#2C2C2C] opacity-75">Quantity: <%= item.quantity %></p>
+                        <p class="text-sm text-[#2C2C2C] opacity-75">$<%= item.price.toFixed(2) %> each</p>
                     </div>
                 </div>
                 <% }) %>
@@ -301,7 +345,7 @@ function updateStatus() {
         text: `Are you sure you want to update status to ${newStatus}?`,
         icon: 'question',
         showCancelButton: true,
-        confirmButtonColor: '#6C7559',
+        confirmButtonColor: '#2C2C2C',
         cancelButtonColor: '#6b7280',
         confirmButtonText: 'Yes, Update'
     }).then((result) => {
@@ -325,7 +369,7 @@ function updateStatus() {
                         icon: 'success',
                         title: 'Status Updated!',
                         text: data.message,
-                        confirmButtonColor: '#6C7559'
+                        confirmButtonColor: '#2C2C2C'
                     }).then(() => window.location.reload());
                 }
             })
@@ -335,7 +379,7 @@ function updateStatus() {
                     icon: 'error',
                     title: 'Update Failed',
                     text: error.message || 'Failed to update order status',
-                    confirmButtonColor: '#6C7559'
+                    confirmButtonColor: '#2C2C2C'
                 });
             });
         }
@@ -348,7 +392,7 @@ function handleReturn(action, orderId) {
         text: `Are you sure you want to ${action} this return request?`,
         icon: 'question',
         showCancelButton: true,
-        confirmButtonColor: '#6C7559',
+        confirmButtonColor: '#2C2C2C',
         cancelButtonColor: '#d33',
         confirmButtonText: `Yes, ${action}`
     }).then((result) => {
@@ -372,7 +416,7 @@ function handleReturn(action, orderId) {
                     title: 'Success!',
                     text: data.message,
                     icon: 'success',
-                    confirmButtonColor: '#6C7559'
+                    confirmButtonColor: '#2C2C2C'
                 }).then(() => {
                     location.reload();
                 });
@@ -383,7 +427,7 @@ function handleReturn(action, orderId) {
                     title: 'Error!',
                     text: err.message,
                     icon: 'error',
-                    confirmButtonColor: '#6C7559'
+                    confirmButtonColor: '#2C2C2C'
                 });
             });
         }

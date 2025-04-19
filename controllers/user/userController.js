@@ -604,7 +604,9 @@ const loadProductPage = async (req, res) => {
       .lean();
 
     if (!product || !product.brand || !product.category) {
-      return res.status(404).render("404", { message: "Product not found" });
+      return res
+        .status(404)
+        .render("page-404", { message: "Product not found" });
     }
 
     res.render("product", { product });
@@ -627,10 +629,17 @@ const loadProfilePage = async (req, res) => {
 
     let ordersQuery = { user: userId };
     if (search) {
+      // First try to find matching products
+      const matchingProducts = await Product.find({
+        productName: { $regex: search, $options: "i" },
+      }).select("_id");
+
+      const productIds = matchingProducts.map((p) => p._id);
+
       ordersQuery.$or = [
         { orderId: { $regex: search, $options: "i" } },
         { status: { $regex: search, $options: "i" } },
-        { "orderItems.product.productName": { $regex: search, $options: "i" } },
+        { "orderItems.product": { $in: productIds } },
       ];
     }
 

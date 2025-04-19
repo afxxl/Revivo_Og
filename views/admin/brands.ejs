@@ -1,704 +1,1379 @@
-<%- include('../partials/admin/admin-header.ejs') %>
-<%- include('../partials/admin/admin-sidebar', {currentPage: 'brands'}) %>
+<%- include('../partials/admin/admin-header.ejs') %> <%-
+include('../partials/admin/admin-sidebar', {currentPage: 'brands'}) %>
 
 <style>
-.cropper-container {
-    width: 100% !important;
-    height: 500px !important;
-    margin: 0 auto;
-    background-color: #f8f9fa;
-}
+  .brand-container {
+    background: linear-gradient(145deg, #ffffff, #f8f7f5);
+    border: 1px solid #e0dcd4;
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
 
-.cropper-modal {
-    background-color: white !important;
-    opacity: 0.7 !important;
-}
+  .brand-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+  }
 
-.cropper-view-box {
-    outline: 2px solid #FFA500; 
-    outline-color: rgba(255, 165, 0, 0.8);
-    box-shadow: 0 0 0 1px #fff, 0 0 0 2px #FFA500; 
-}
+  .brand-title {
+    color: #2C2C2C;
+    font-size: 1.5rem;
+    font-weight: 600;
+  }
 
-.cropper-line {
-    background-color: #FFA500 !important;
-}
-
-.cropper-point {
-    width: 14px !important;
-    height: 14px !important;
-    background-color: #FFA500 !important;
-    border: 2px solid white;
-    opacity: 1 !important;
-}
-
-.cropper-point.point-se {
-    right: -7px !important;
-    bottom: -7px !important;
-}
-
-.cropper-dashed {
-    border-color: rgba(255, 255, 255, 0.5) !important;
-}
-
-.upload-area {
+  .add-brand-btn {
+    background: linear-gradient(135deg, #2C2C2C, #1a1a1a);
+    color: #f8f7f5;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
     transition: all 0.3s ease;
-    border: 2px dashed #d1d5db;
-}
+  }
 
-.upload-area:hover {
-    border-color: #6C7559;
-    background-color: #f8f7f5;
-}
+  .add-brand-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
 
-.current-image-container {
+  .search-container {
+    background: linear-gradient(145deg, #ffffff, #f8f7f5);
+    border: 1px solid #e0dcd4;
+    border-radius: 0.75rem;
+    transition: all 0.3s ease;
+  }
+
+  .search-container:hover {
+    border-color: #2C2C2C;
+  }
+
+  .search-input {
+    background: transparent;
+    border: none;
+    color: #2C2C2C;
+    padding: 0.75rem 1rem 0.75rem 2.5rem;
+    width: 100%;
+    transition: all 0.3s ease;
+  }
+
+  .search-input:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(44,44,44,0.1);
+  }
+
+  .search-icon {
+    position: absolute;
+    left: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #2C2C2C;
+    opacity: 0.75;
+  }
+
+  .clear-search {
+    position: absolute;
+    right: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #2C2C2C;
+    opacity: 0.75;
+    transition: all 0.3s ease;
+  }
+
+  .clear-search:hover {
+    opacity: 1;
+  }
+
+  .table-container {
+    background: linear-gradient(145deg, #ffffff, #f8f7f5);
+    border: 1px solid #e0dcd4;
+    border-radius: 0.75rem;
+    overflow: hidden;
+  }
+
+  .table-header {
+    background: linear-gradient(145deg, #f8f7f5, #e0dcd4);
+    color: #2C2C2C;
+    font-weight: 500;
+  }
+
+  .table-row {
+    background: linear-gradient(145deg, #ffffff, #f8f7f5);
+    border-bottom: 1px solid #e0dcd4;
+    transition: all 0.3s ease;
+  }
+
+  .table-row:hover {
+    background: linear-gradient(145deg, #f8f7f5, #ffffff);
+  }
+
+  .brand-image {
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 9999px;
+    object-fit: cover;
+    border: 1px solid #e0dcd4;
+    background: #f8f7f5;
+  }
+
+  .status-badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 500;
+  }
+
+  .status-active {
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: white;
+  }
+
+  .status-inactive {
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    color: white;
+  }
+
+  .action-buttons {
     display: flex;
     align-items: center;
     gap: 1rem;
-    margin-bottom: 1rem;
-    background-color: #f3f4f6;
-    padding: 1rem;
-    border-radius: 0.5rem;
-}
+  }
 
-.current-image {
-    width: 120px;
-    height: 120px;
-    object-fit: contain;
-    border: 1px solid #e5e7eb;
-    border-radius: 0.5rem;
-    background-color: white;
-    padding: 0.5rem;
-}
+  .edit-btn {
+    color: #3b82f6;
+    transition: all 0.3s ease;
+  }
 
-.crop-control-btn {
-    border: 1px solid #d1d5db;
-    transition: all 0.2s ease;
-}
-
-.crop-control-btn:hover {
+  .edit-btn:hover {
+    color: #2563eb;
     transform: translateY(-1px);
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
+  }
 
-@media (prefers-color-scheme: dark) {
-    .cropper-view-box {
-        outline-color: #FFA500;
-        box-shadow: 0 0 0 1px #000, 0 0 0 2px #FFA500;
-    }
-}
+  .toggle-btn {
+    transition: all 0.3s ease;
+  }
 
-.brand-card {
-    transition: all 0.2s ease;
-}
+  .toggle-btn:hover {
+    transform: translateY(-1px);
+  }
 
-.brand-card:hover {
+  .delete-btn {
+    color: #ef4444;
+    transition: all 0.3s ease;
+  }
+
+  .delete-btn:hover {
+    color: #dc2626;
+    transform: translateY(-1px);
+  }
+
+  .brand-card {
+    background: linear-gradient(145deg, #ffffff, #f8f7f5);
+    border: 1px solid #e0dcd4;
+    border-radius: 0.75rem;
+    padding: 1rem;
+    transition: all 0.3s ease;
+  }
+
+  .brand-card:hover {
     transform: translateY(-2px);
     box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-}
+    border-color: #2C2C2C;
+  }
+
+  .pagination-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 1.5rem;
+  }
+
+  .pagination-btn {
+    min-width: 2.5rem;
+    height: 2.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem 1rem;
+    background: linear-gradient(145deg, #ffffff, #f8f7f5);
+    border: 1px solid #e0dcd4;
+    border-radius: 0.5rem;
+    color: #2C2C2C;
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+  }
+
+  .pagination-btn:hover {
+    background: linear-gradient(145deg, #f8f7f5, #ffffff);
+    border-color: #2C2C2C;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  }
+
+  .pagination-btn.active {
+    background: linear-gradient(135deg, #2C2C2C, #1a1a1a);
+    color: #f8f7f5;
+    border: none;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+
+  .modal-container {
+    background: linear-gradient(145deg, #ffffff, #f8f7f5);
+    border: 1px solid #e0dcd4;
+    border-radius: 0.75rem;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  }
+
+  .modal-header {
+    border-bottom: 1px solid #e0dcd4;
+    padding: 1rem 1.5rem;
+  }
+
+  .modal-title {
+    color: #2C2C2C;
+    font-size: 1.25rem;
+    font-weight: 600;
+  }
+
+  .modal-close {
+    color: #2C2C2C;
+    opacity: 0.75;
+    transition: all 0.3s ease;
+  }
+
+  .modal-close:hover {
+    opacity: 1;
+    transform: rotate(90deg);
+  }
+
+  .form-label {
+    color: #2C2C2C;
+    font-size: 0.875rem;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+  }
+
+  .form-input {
+    background: linear-gradient(145deg, #ffffff, #f8f7f5);
+    border: 1px solid #e0dcd4;
+    border-radius: 0.5rem;
+    padding: 0.75rem 1rem;
+    color: #2C2C2C;
+    transition: all 0.3s ease;
+  }
+
+  .form-input:focus {
+    outline: none;
+    border-color: #2C2C2C;
+    box-shadow: 0 0 0 3px rgba(44,44,44,0.1);
+  }
+
+  .upload-area {
+    background: linear-gradient(145deg, #ffffff, #f8f7f5);
+    border: 2px dashed #e0dcd4;
+    border-radius: 0.75rem;
+    padding: 2rem;
+    transition: all 0.3s ease;
+  }
+
+  .upload-area:hover {
+    border-color: #2C2C2C;
+    background: linear-gradient(145deg, #f8f7f5, #ffffff);
+  }
+
+  .crop-control-btn {
+    background: linear-gradient(145deg, #ffffff, #f8f7f5);
+    border: 1px solid #e0dcd4;
+    border-radius: 0.5rem;
+    padding: 0.5rem 1rem;
+    color: #2C2C2C;
+    transition: all 0.3s ease;
+  }
+
+  .crop-control-btn:hover {
+    background: linear-gradient(145deg, #f8f7f5, #ffffff);
+    border-color: #2C2C2C;
+    transform: translateY(-1px);
+  }
+
+  .modal-footer {
+    border-top: 1px solid #e0dcd4;
+    padding: 1rem 1.5rem;
+  }
+
+  .cancel-btn {
+    color: #2C2C2C;
+    opacity: 0.75;
+    transition: all 0.3s ease;
+  }
+
+  .cancel-btn:hover {
+    opacity: 1;
+    transform: translateX(-2px);
+  }
+
+  .submit-btn {
+    background: linear-gradient(135deg, #2C2C2C, #1a1a1a);
+    color: #f8f7f5;
+    border-radius: 0.5rem;
+    padding: 0.5rem 1rem;
+    transition: all 0.3s ease;
+  }
+
+  .submit-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+
+  /* Mobile Layout Styles */
+  @media (max-width: 768px) {
+    .brand-container {
+      padding: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .brand-header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .brand-title {
+      font-size: 1.25rem;
+    }
+
+    .add-brand-btn {
+      width: 100%;
+      text-align: center;
+    }
+
+    .search-container {
+      width: 100%;
+    }
+
+    .table-container {
+      display: none;
+    }
+
+    .mobile-brands {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1rem;
+      padding: 1rem;
+    }
+
+    .brand-card {
+      display: flex;
+      flex-direction: column;
+      padding: 1rem;
+      gap: 1rem;
+    }
+
+    .brand-card-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .brand-image {
+      width: 3rem;
+      height: 3rem;
+    }
+
+    .brand-info {
+      flex: 1;
+    }
+
+    .brand-name {
+      font-size: 1rem;
+      font-weight: 500;
+      color: #2C2C2C;
+      margin-bottom: 0.25rem;
+    }
+
+    .brand-status {
+      font-size: 0.75rem;
+    }
+
+    .brand-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 0.5rem;
+      margin-top: 0.5rem;
+    }
+
+    .pagination-container {
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      padding: 1rem;
+    }
+
+    .pagination-btn {
+      min-width: 2rem;
+      height: 2rem;
+      font-size: 0.75rem;
+    }
+
+    #addModal {
+      padding: 1rem;
+    }
+
+    .modal-content {
+      width: 100%;
+      margin: 0;
+      padding: 1rem;
+    }
+
+    .modal-header {
+      padding: 0.75rem 1rem;
+    }
+
+    .modal-title {
+      font-size: 1.125rem;
+    }
+
+    .form-input {
+      padding: 0.5rem 0.75rem;
+    }
+
+    .upload-area {
+      padding: 1.5rem;
+    }
+
+    .crop-controls {
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .crop-control-btn {
+      padding: 0.5rem 0.75rem;
+      font-size: 0.75rem;
+    }
+  }
+
+  @media (min-width: 769px) {
+    .mobile-brands {
+      display: none;
+    }
+  }
 </style>
 
 <div class="flex-1 overflow-auto p-3 md:p-6 pt-20">
-    <div class="p-4 md:p-6 bg-white shadow-sm">
-        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-            <h1 class="text-2xl font-semibold text-gray-800">Brands</h1>
-            <button onclick="openAddModal()" 
-                    class="px-4 py-2 bg-[#6C7559] hover:bg-[#5a6349] text-white rounded-lg text-sm">
-                Add New Brand
-            </button>
-        </div>
-        <div class="relative w-full mt-4">
-            <input type="text" 
-                   placeholder="Search brands..." 
-                   class="w-full pl-10 pr-4 py-2 md:py-3 text-sm md:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#6C7559] focus:border-transparent shadow-sm"
-                   onkeyup="searchBrands(this.value)">
-            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <svg class="w-4 h-4 md:w-5 md:h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
-                </svg>
-            </div>
-        </div>
+  <div class="brand-container">
+    <div class="brand-header">
+      <h1 class="brand-title">Brands</h1>
+      <button onclick="openAddModal()" class="add-brand-btn">
+        Add New Brand
+      </button>
     </div>
 
-    <div class="hidden md:block overflow-x-auto m-6">
-        <table class="w-full whitespace-nowrap bg-white rounded-lg shadow">
-            <thead>
-                <tr class="bg-gray-50 text-left">
-                    <th class="px-6 py-3 text-xs font-medium text-gray-500 uppercase">Brand Image</th>
-                    <th class="px-6 py-3 text-xs font-medium text-gray-500 uppercase">Brand Name</th>
-                    <th class="px-6 py-3 text-xs font-medium text-gray-500 uppercase">Status</th>
-                    <th class="px-6 py-3 text-xs font-medium text-gray-500 uppercase">Actions</th>
-                </tr>
-            </thead>
-            <tbody class="divide-y divide-gray-200">
-                <% data.forEach(function(brand) { %>
-                    <tr class="hover:bg-gray-50">
-                        <td class="px-6 py-4">
-                            <% if (brand.brandImage && brand.brandImage.length > 0) { %>
-                                <img src="<%= brand.brandImage[0] %>" 
-                                     alt="<%= brand.brandName %>" 
-                                     class="h-10 w-10 object-cover rounded-full bg-gray-50"
-                                     onerror="this.onerror=null;this.src='/images/default-brand.png'">
-                            <% } else { %>
-                                <img src="/images/default-brand.png" 
-                                     alt="Default" 
-                                     class="h-10 w-10 object-cover rounded-full bg-gray-50">
-                            <% } %>
-                        </td>
-                        <td class="px-6 py-4 text-sm text-gray-900"><%= brand.brandName %></td>
-                        <td class="px-6 py-4 text-sm">
-                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
-                                <%= brand.isActive ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' %>">
-                                <%= brand.isActive ? 'Active' : 'Inactive' %>
-                            </span>
-                        </td>
-                        <td class="px-6 py-4 text-sm">
-                            <div class="flex items-center space-x-3">
-                                <a href="/admin/editBrand/<%= brand._id %>" class="text-blue-600 hover:text-blue-800">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                                              d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
-                                    </svg>
-                                </a>
-                                <a href="/admin/toggleBrand/<%= brand._id %>" class="toggle-brand text-gray-600 hover:text-gray-800">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                                              d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
-                                    </svg>
-                                </a>
-                                <a href="/admin/deleteBrand/<%= brand._id %>" class="delete-brand text-red-600 hover:text-red-800">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                                              d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
-                                    </svg>
-                                </a>
-                            </div>
-                        </td>
-                    </tr>
-                <% }); %>
-            </tbody>
-        </table>
+    <div class="search-container">
+      <div class="relative">
+        <input
+          type="text"
+          id="searchInput"
+          placeholder="Search brands..."
+          class="search-input"
+          onkeyup="searchBrands(this.value)"
+          value="<%= searchQuery || '' %>"
+        />
+        <div class="search-icon">
+          <svg
+            class="w-4 h-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+            />
+          </svg>
+        </div>
+        <% if (searchQuery) { %>
+        <button onclick="clearSearch()" class="clear-search">
+          <svg
+            class="w-4 h-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M6 18L18 6M6 6l12 12"
+            />
+          </svg>
+        </button>
+        <% } %>
+      </div>
     </div>
+  </div>
 
-    <div class="md:hidden space-y-4 m-4">
+  <!-- Desktop Table View -->
+  <div class="table-container">
+    <table class="w-full">
+      <thead>
+        <tr class="table-header">
+          <th class="px-6 py-3 text-left">Brand Image</th>
+          <th class="px-6 py-3 text-left">Brand Name</th>
+          <th class="px-6 py-3 text-left">Status</th>
+          <th class="px-6 py-3 text-left">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
         <% data.forEach(function(brand) { %>
-            <div class="bg-white p-4 rounded-lg shadow brand-card">
-                <div class="flex items-center space-x-4">
-                    <% if (brand.brandImage && brand.brandImage.length > 0) { %>
-                        <img src="<%= brand.brandImage[0] %>" 
-                             alt="<%= brand.brandName %>" 
-                             class="h-12 w-12 object-cover rounded-full bg-gray-50"
-                             onerror="this.onerror=null;this.src='/images/default-brand.png'">
-                    <% } else { %>
-                        <img src="/images/default-brand.png" 
-                             alt="Default" 
-                             class="h-12 w-12 object-cover rounded-full bg-gray-50">
-                    <% } %>
-                    <div class="flex-1">
-                        <h3 class="font-medium text-gray-900"><%= brand.brandName %></h3>
-                    </div>
-                    <span class="px-2 py-1 text-xs font-semibold rounded-full 
-                        <%= brand.isActive ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' %>">
-                        <%= brand.isActive ? 'Active' : 'Inactive' %>
-                    </span>
-                </div>
-                <div class="mt-4 flex justify-end space-x-3">
-                    <a href="/admin/editBrand/<%= brand._id %>" class="text-blue-600 hover:text-blue-800 p-2">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                                  d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
-                        </svg>
-                    </a>
-                    <a href="/admin/toggleBrand/<%= brand._id %>" class="toggle-brand text-gray-600 hover:text-gray-800 p-2">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                                  d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
-                        </svg>
-                    </a>
-                    <a href="/admin/deleteBrand/<%= brand._id %>" class="delete-brand text-red-600 hover:text-red-800 p-2">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                                  d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
-                        </svg>
-                    </a>
-                </div>
-            </div>
-        <% }); %>
-    </div>
-
-<div id="addModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden overflow-y-auto">
-    <div class="min-h-screen flex items-start py-8 justify-center p-4">
-        <div class="bg-white rounded-lg p-6 max-w-2xl w-full mx-4 relative max-h-[90vh] overflow-y-auto">
-            <div class="flex justify-between items-center mb-4 sticky top-0 bg-white pt-2 pb-4 z-10">
-                <h3 class="text-xl font-semibold text-gray-900">Add New Brand</h3>
-                <button type="button" onclick="closeAddModal()" class="text-gray-400 hover:text-gray-500">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-                    </svg>
-                </button>
-            </div>
-            <form id="brandForm" method="POST" enctype="multipart/form-data" class="space-y-4">
-                <div>
-                    <label for="brandName" class="block text-sm font-medium text-gray-700 mb-1">Brand Name</label>
-                    <input type="text" 
-                           id="brandName" 
-                           name="name" 
-                           required
-                           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#6C7559] focus:border-transparent">
-                    <p id="name-error" class="error-message text-red-500 text-sm mt-1 hidden"></p>
-                </div>
-                
-                <div>
-                    <label for="brandImage" class="block text-sm font-medium text-gray-700 mb-1">Brand Image</label>
-                    <input type="file" 
-                           id="brandImage" 
-                           name="image" 
-                           accept="image/*" 
-                           class="hidden"
-                           required>
-                    
-                    <div class="mt-2">
-                        <div id="imagePreviewContainer" class="hidden">
-                            <div class="relative w-full" style="height: 400px; background-color: #f8f9fa;">
-                                <img id="imagePreview" class="max-w-full max-h-full" alt="Preview">
-                            </div>
-                            <div class="mt-4 flex flex-wrap gap-3 justify-center sticky bottom-0 bg-white py-2">
-                                <button type="button" id="zoomInBtn" class="px-4 py-2 bg-gray-100 rounded-lg crop-control-btn">
-                                    <i class="fas fa-search-plus mr-2 text-gray-700"></i>Zoom In
-                                </button>
-                                <button type="button" id="zoomOutBtn" class="px-4 py-2 bg-gray-100 rounded-lg crop-control-btn">
-                                    <i class="fas fa-search-minus mr-2 text-gray-700"></i>Zoom Out
-                                </button>
-                                <button type="button" id="rotateBtn" class="px-4 py-2 bg-gray-100 rounded-lg crop-control-btn">
-                                    <i class="fas fa-undo mr-2 text-gray-700"></i>Rotate
-                                </button>
-                                <button type="button" id="resetBtn" class="px-4 py-2 bg-gray-100 rounded-lg crop-control-btn">
-                                    <i class="fas fa-sync-alt mr-2 text-gray-700"></i>Reset
-                                </button>
-                                <button type="button" id="cropBtn" class="px-4 py-2 bg-[#6C7559] hover:bg-[#5a6349] text-white rounded-lg">
-                                    <i class="fas fa-crop mr-2"></i>Apply Crop
-                                </button>
-                                <button type="button" id="cancelCropBtn" class="px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded-lg">
-                                    <i class="fas fa-times mr-2"></i>Cancel
-                                </button>
-                            </div>
-                        </div>
-                        
-                        <button type="button" id="uploadTrigger" 
-                                class="w-full px-4 py-8 border-2 border-dashed border-gray-300 rounded-lg hover:border-[#6C7559] transition-colors upload-area">
-                            <div class="flex flex-col items-center justify-center text-gray-500">
-                                <i class="fas fa-cloud-upload-alt text-4xl mb-3"></i>
-                                <p class="font-medium text-lg">Click to upload new brand image</p>
-                                <p class="text-sm mt-1">Recommended: Square image (1000×1000 pixels)</p>
-                                <p class="text-xs mt-1 text-gray-400">JPG, PNG, or WEBP (max 10MB)</p>
-                            </div>
-                        </button>
-                    </div>
-                    <p id="image-error" class="error-message text-red-500 text-sm mt-1 hidden"></p>
-                </div>
-                
-                <div class="flex justify-end space-x-4 mt-6 sticky bottom-0 bg-white pt-4 pb-2">
-                    <button type="button" 
-                            onclick="closeAddModal()"
-                            class="px-4 py-2 text-sm text-gray-600 hover:text-gray-800 font-medium">
-                        Cancel
-                    </button>
-                    <button type="submit" 
-                            class="px-4 py-2 bg-[#6C7559] hover:bg-[#5a6349] text-white rounded-lg text-sm">
-                        Add Brand
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-    <% if (totalPages > 1) { %>
-        <div class="flex justify-center items-center space-x-2 my-6">
-            <% for(let i = 1; i <= totalPages; i++) { %>
-                <a href="?page=<%= i %>" 
-                   class="px-3 py-1 rounded <%= currentPage === i ? 'bg-[#6C7559] text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300' %>">
-                    <%= i %>
-                </a>
+        <tr class="table-row">
+          <td class="px-6 py-4">
+            <% if (brand.brandImage && brand.brandImage.length > 0) { %>
+            <img
+              src="<%= brand.brandImage[0] %>"
+              alt="<%= brand.brandName %>"
+              class="brand-image"
+              onerror="this.onerror=null;this.src='/images/default-brand.png'"
+            />
+            <% } else { %>
+            <img
+              src="/images/default-brand.png"
+              alt="Default"
+              class="brand-image"
+            />
             <% } %>
+          </td>
+          <td class="px-6 py-4"><%= brand.brandName %></td>
+          <td class="px-6 py-4">
+            <span class="status-badge <%= brand.isActive ? 'status-active' : 'status-inactive' %>">
+              <%= brand.isActive ? 'Active' : 'Inactive' %>
+            </span>
+          </td>
+          <td class="px-6 py-4">
+            <div class="action-buttons">
+              <a
+                href="/admin/editBrand/<%= brand._id %>"
+                class="edit-btn"
+              >
+                <svg
+                  class="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                  />
+                </svg>
+              </a>
+              <a
+                href="/admin/toggleBrand/<%= brand._id %>"
+                class="toggle-btn <%= brand.isActive ? 'text-green-600' : 'text-red-600' %>"
+              >
+                <svg
+                  class="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <% if (brand.isActive) { %>
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                  />
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                  />
+                  <% } else { %>
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"
+                  />
+                  <% } %>
+                </svg>
+              </a>
+              <a
+                href="/admin/deleteBrand/<%= brand._id %>"
+                class="delete-btn"
+              >
+                <svg
+                  class="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                  />
+                </svg>
+              </a>
+            </div>
+          </td>
+        </tr>
+        <% }); %>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Mobile Card View -->
+  <div class="mobile-brands">
+    <% data.forEach(function(brand) { %>
+      <div class="brand-card">
+        <div class="brand-card-header">
+          <% if (brand.brandImage && brand.brandImage.length > 0) { %>
+            <img
+              src="<%= brand.brandImage[0] %>"
+              alt="<%= brand.brandName %>"
+              class="brand-image"
+              onerror="this.onerror=null;this.src='/images/default-brand.png'"
+            />
+          <% } else { %>
+            <img
+              src="/images/default-brand.png"
+              alt="Default"
+              class="brand-image"
+            />
+          <% } %>
+          <div class="brand-info">
+            <div class="brand-name"><%= brand.brandName %></div>
+            <span class="status-badge <%= brand.isActive ? 'status-active' : 'status-inactive' %>">
+              <%= brand.isActive ? 'Active' : 'Inactive' %>
+            </span>
+          </div>
         </div>
+        <div class="brand-actions">
+          <a
+            href="/admin/editBrand/<%= brand._id %>"
+            class="edit-btn"
+          >
+            <svg
+              class="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+              />
+            </svg>
+          </a>
+          <a
+            href="/admin/toggleBrand/<%= brand._id %>"
+            class="toggle-btn <%= brand.isActive ? 'text-green-600' : 'text-red-600' %>"
+          >
+            <svg
+              class="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <% if (brand.isActive) { %>
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                />
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                />
+              <% } else { %>
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"
+                />
+              <% } %>
+            </svg>
+          </a>
+          <a
+            href="/admin/deleteBrand/<%= brand._id %>"
+            class="delete-btn"
+          >
+            <svg
+              class="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+              />
+            </svg>
+          </a>
+        </div>
+      </div>
+    <% }); %>
+  </div>
+
+  <% if (totalPages > 1) { %>
+  <div class="pagination-container">
+    <% for(let i = 1; i <= totalPages; i++) { %>
+    <a
+      href="?page=<%= i %>"
+      class="pagination-btn <%= currentPage === i ? 'active' : '' %>"
+    >
+      <%= i %>
+    </a>
     <% } %>
+  </div>
+  <% } %>
 </div>
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css">
+<div
+  id="addModal"
+  class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden overflow-y-auto"
+>
+  <div class="min-h-screen flex items-start py-8 justify-center p-4">
+    <div
+      class="bg-white rounded-lg p-6 max-w-2xl w-full mx-4 relative max-h-[90vh] overflow-y-auto"
+    >
+      <div
+        class="flex justify-between items-center mb-4 sticky top-0 bg-white pt-2 pb-4 z-10"
+      >
+        <h3 class="text-xl font-semibold text-gray-900">Add New Brand</h3>
+        <button
+          type="button"
+          onclick="closeAddModal()"
+          class="text-gray-400 hover:text-gray-500"
+        >
+          <svg
+            class="w-6 h-6"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M6 18L18 6M6 6l12 12"
+            />
+          </svg>
+        </button>
+      </div>
+      <form
+        id="brandForm"
+        method="POST"
+        enctype="multipart/form-data"
+        class="space-y-4"
+      >
+        <div>
+          <label
+            for="brandName"
+            class="block text-sm font-medium text-gray-700 mb-1"
+            >Brand Name</label
+          >
+          <input
+            type="text"
+            id="brandName"
+            name="name"
+            required
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#6C7559] focus:border-transparent"
+          />
+          <p
+            id="name-error"
+            class="error-message text-red-500 text-sm mt-1 hidden"
+          ></p>
+        </div>
+
+        <div>
+          <label
+            for="brandImage"
+            class="block text-sm font-medium text-gray-700 mb-1"
+            >Brand Image</label
+          >
+          <input
+            type="file"
+            id="brandImage"
+            name="image"
+            accept="image/*"
+            class="hidden"
+            required
+          />
+
+          <div class="mt-2">
+            <div id="imagePreviewContainer" class="hidden">
+              <div
+                class="relative w-full"
+                style="height: 400px; background-color: #f8f9fa"
+              >
+                <img
+                  id="imagePreview"
+                  class="max-w-full max-h-full"
+                  alt="Preview"
+                />
+              </div>
+              <div
+                class="mt-4 flex flex-wrap gap-3 justify-center sticky bottom-0 bg-white py-2"
+              >
+                <button
+                  type="button"
+                  id="zoomInBtn"
+                  class="px-4 py-2 bg-gray-100 rounded-lg crop-control-btn"
+                >
+                  <i class="fas fa-search-plus mr-2 text-gray-700"></i>Zoom In
+                </button>
+                <button
+                  type="button"
+                  id="zoomOutBtn"
+                  class="px-4 py-2 bg-gray-100 rounded-lg crop-control-btn"
+                >
+                  <i class="fas fa-search-minus mr-2 text-gray-700"></i>Zoom
+                  Out
+                </button>
+                <button
+                  type="button"
+                  id="rotateBtn"
+                  class="px-4 py-2 bg-gray-100 rounded-lg crop-control-btn"
+                >
+                  <i class="fas fa-undo mr-2 text-gray-700"></i>Rotate
+                </button>
+                <button
+                  type="button"
+                  id="resetBtn"
+                  class="px-4 py-2 bg-gray-100 rounded-lg crop-control-btn"
+                >
+                  <i class="fas fa-sync-alt mr-2 text-gray-700"></i>Reset
+                </button>
+                <button
+                  type="button"
+                  id="cropBtn"
+                  class="px-4 py-2 bg-[#6C7559] hover:bg-[#5a6349] text-white rounded-lg"
+                >
+                  <i class="fas fa-crop mr-2"></i>Apply Crop
+                </button>
+                <button
+                  type="button"
+                  id="cancelCropBtn"
+                  class="px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded-lg"
+                >
+                  <i class="fas fa-times mr-2"></i>Cancel
+                </button>
+              </div>
+            </div>
+
+            <button
+              type="button"
+              id="uploadTrigger"
+              class="w-full px-4 py-8 border-2 border-dashed border-gray-300 rounded-lg hover:border-[#6C7559] transition-colors upload-area"
+            >
+              <div
+                class="flex flex-col items-center justify-center text-gray-500"
+              >
+                <i class="fas fa-cloud-upload-alt text-4xl mb-3"></i>
+                <p class="font-medium text-lg">
+                  Click to upload new brand image
+                </p>
+                <p class="text-sm mt-1">
+                  Recommended: Square image (1000×1000 pixels)
+                </p>
+                <p class="text-xs mt-1 text-gray-400">
+                  JPG, PNG, or WEBP (max 10MB)
+                </p>
+              </div>
+            </button>
+          </div>
+          <p
+            id="image-error"
+            class="error-message text-red-500 text-sm mt-1 hidden"
+          ></p>
+        </div>
+
+        <div
+          class="flex justify-end space-x-4 mt-6 sticky bottom-0 bg-white pt-4 pb-2"
+        >
+          <button
+            type="button"
+            onclick="closeAddModal()"
+            class="px-4 py-2 text-sm text-gray-600 hover:text-gray-800 font-medium"
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            class="px-4 py-2 bg-[#6C7559] hover:bg-[#5a6349] text-white rounded-lg text-sm"
+          >
+            Add Brand
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css"
+/>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+/>
 
 <script>
-let cropper;
-let originalImageFile;
+  let cropper;
+  let originalImageFile;
 
-function initCropper(imageElement) {
+  function initCropper(imageElement) {
     return new Cropper(imageElement, {
-        aspectRatio: 1,
-        viewMode: 1,
-        autoCropArea: 0.8,
-        minContainerWidth: 400,
-        minContainerHeight: 400,
-        minCanvasWidth: 400,
-        minCanvasHeight: 400,
-        minCropBoxWidth: 200,
-        minCropBoxHeight: 200,
-        responsive: true,
-        restore: true,
-        guides: false,
-        center: true,
-        highlight: false,
-        cropBoxMovable: true,
-        cropBoxResizable: true,
-        toggleDragModeOnDblclick: false,
-        background: '#f3f4f6',
-        checkCrossOrigin: false,
-        checkOrientation: false,
-        modal: true,
-        dragMode: 'move',
-        preview: '.img-preview',
-        ready: function() {
-            const imageData = this.cropper.getImageData();
-            if (isDarkImage(imageData)) {
-                enhanceDarkImageVisibility();
-            }
+      aspectRatio: 1,
+      viewMode: 1,
+      autoCropArea: 0.8,
+      minContainerWidth: 400,
+      minContainerHeight: 400,
+      minCanvasWidth: 400,
+      minCanvasHeight: 400,
+      minCropBoxWidth: 200,
+      minCropBoxHeight: 200,
+      responsive: true,
+      restore: true,
+      guides: false,
+      center: true,
+      highlight: false,
+      cropBoxMovable: true,
+      cropBoxResizable: true,
+      toggleDragModeOnDblclick: false,
+      background: "#f3f4f6",
+      checkCrossOrigin: false,
+      checkOrientation: false,
+      modal: true,
+      dragMode: "move",
+      preview: ".img-preview",
+      ready: function () {
+        const imageData = this.cropper.getImageData();
+        if (isDarkImage(imageData)) {
+          enhanceDarkImageVisibility();
         }
+      },
     });
-}
+  }
 
-function isDarkImage(imageData) {
-    return imageData.naturalWidth < imageData.width || imageData.naturalHeight < imageData.height;
-}
+  function isDarkImage(imageData) {
+    return (
+      imageData.naturalWidth < imageData.width ||
+      imageData.naturalHeight < imageData.height
+    );
+  }
 
-function enhanceDarkImageVisibility() {
-    document.querySelectorAll('.cropper-line').forEach(line => {
-        line.style.backgroundColor = '#FFA500';
+  function enhanceDarkImageVisibility() {
+    document.querySelectorAll(".cropper-line").forEach((line) => {
+      line.style.backgroundColor = "#FFA500";
     });
-    document.querySelectorAll('.cropper-point').forEach(point => {
-        point.style.backgroundColor = '#FFA500';
-        point.style.border = '2px solid white';
+    document.querySelectorAll(".cropper-point").forEach((point) => {
+      point.style.backgroundColor = "#FFA500";
+      point.style.border = "2px solid white";
     });
-    document.querySelector('.cropper-view-box').style.outline = '2px solid #FFA500';
-}
+    document.querySelector(".cropper-view-box").style.outline =
+      "2px solid #FFA500";
+  }
 
-function openAddModal() {
-    document.getElementById('addModal').classList.remove('hidden');
-    document.body.style.overflow = 'hidden';
-}
+  function openAddModal() {
+    document.getElementById("addModal").classList.remove("hidden");
+    document.body.style.overflow = "hidden";
+  }
 
-function closeAddModal() {
-    document.getElementById('addModal').classList.add('hidden');
-    document.body.style.overflow = 'auto';
+  function closeAddModal() {
+    document.getElementById("addModal").classList.add("hidden");
+    document.body.style.overflow = "auto";
     resetBrandForm();
-}
+  }
 
-document.getElementById('addModal').addEventListener('click', function(e) {
+  document.getElementById("addModal").addEventListener("click", function (e) {
     if (e.target === this) closeAddModal();
-});
-document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape') closeAddModal();
-});
+  });
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape") closeAddModal();
+  });
 
-document.getElementById('brandForm').addEventListener('submit', async function(e) {
-    e.preventDefault();
-    
-    if (!validateBrandForm()) return;
+  document
+    .getElementById("brandForm")
+    .addEventListener("submit", async function (e) {
+      e.preventDefault();
 
-    const formData = new FormData(this);
-    
-    try {
-        const response = await fetch('/admin/addBrand', {
-            method: 'POST',
-            body: formData
+      if (!validateBrandForm()) return;
+
+      const formData = new FormData(this);
+
+      try {
+        const response = await fetch("/admin/addBrand", {
+          method: "POST",
+          body: formData,
         });
 
         const data = await response.json();
 
         if (!response.ok) {
-            throw new Error(data.error || 'Failed to add brand');
+          throw new Error(data.error || "Failed to add brand");
         }
 
         Swal.fire({
-            icon: 'success',
-            title: 'Success!',
-            text: 'Brand added successfully',
-            confirmButtonColor: '#6C7559'
+          icon: "success",
+          title: "Success!",
+          text: "Brand added successfully",
+          confirmButtonColor: "#6C7559",
         }).then(() => {
-            window.location.reload();
+          window.location.reload();
         });
-
-    } catch (error) {
+      } catch (error) {
         Swal.fire({
-            icon: 'error',
-            title: 'Error!',
-            text: error.message,
-            confirmButtonColor: '#6C7559'
+          icon: "error",
+          title: "Error!",
+          text: error.message,
+          confirmButtonColor: "#6C7559",
         });
-    }
-});
+      }
+    });
 
-function validateBrandForm() {
+  function validateBrandForm() {
     let isValid = true;
-    const name = document.getElementById('brandName').value.trim();
-    const imageInput = document.getElementById('brandImage');
+    const name = document.getElementById("brandName").value.trim();
+    const imageInput = document.getElementById("brandImage");
 
-    document.querySelectorAll('.error-message').forEach(el => {
-        el.classList.add('hidden');
+    document.querySelectorAll(".error-message").forEach((el) => {
+      el.classList.add("hidden");
     });
 
     if (!name) {
-        displayError('name-error', 'Brand name is required');
-        isValid = false;
+      displayError("name-error", "Brand name is required");
+      isValid = false;
     } else if (!/^[a-zA-Z0-9\s]+$/.test(name)) {
-        displayError('name-error', 'Brand name can only contain letters, numbers and spaces');
-        isValid = false;
+      displayError(
+        "name-error",
+        "Brand name can only contain letters, numbers and spaces",
+      );
+      isValid = false;
     }
 
     if (!imageInput.files || imageInput.files.length === 0) {
-        displayError('image-error', 'Brand image is required');
-        isValid = false;
+      displayError("image-error", "Brand image is required");
+      isValid = false;
     }
 
     return isValid;
-}
+  }
 
-function displayError(elementId, message) {
+  function displayError(elementId, message) {
     const element = document.getElementById(elementId);
     element.textContent = message;
-    element.classList.remove('hidden');
-}
+    element.classList.remove("hidden");
+  }
 
-function resetBrandForm() {
-    document.getElementById('brandForm').reset();
-    document.querySelectorAll('.error-message').forEach(el => {
-        el.classList.add('hidden');
+  function resetBrandForm() {
+    document.getElementById("brandForm").reset();
+    document.querySelectorAll(".error-message").forEach((el) => {
+      el.classList.add("hidden");
     });
-    
-    const imagePreviewContainer = document.getElementById('imagePreviewContainer');
-    imagePreviewContainer.classList.add('hidden');
-    
+
+    const imagePreviewContainer = document.getElementById(
+      "imagePreviewContainer",
+    );
+    imagePreviewContainer.classList.add("hidden");
+
     if (cropper) {
-        cropper.destroy();
-        cropper = null;
+      cropper.destroy();
+      cropper = null;
     }
-    
-    ['cropBtn', 'cancelCropBtn', 'zoomInBtn', 'zoomOutBtn', 'rotateBtn', 'resetBtn'].forEach(id => {
-        document.getElementById(id).classList.add('hidden');
+
+    [
+      "cropBtn",
+      "cancelCropBtn",
+      "zoomInBtn",
+      "zoomOutBtn",
+      "rotateBtn",
+      "resetBtn",
+    ].forEach((id) => {
+      document.getElementById(id).classList.add("hidden");
     });
-}
+  }
 
-document.getElementById('uploadTrigger').addEventListener('click', function() {
-    document.getElementById('brandImage').click();
-});
+  document
+    .getElementById("uploadTrigger")
+    .addEventListener("click", function () {
+      document.getElementById("brandImage").click();
+    });
 
-document.getElementById('brandImage').addEventListener('change', function(e) {
-    const file = e.target.files[0];
-    if (!file) return;
+  document
+    .getElementById("brandImage")
+    .addEventListener("change", function (e) {
+      const file = e.target.files[0];
+      if (!file) return;
 
-    const validTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
-    if (!validTypes.includes(file.type)) {
-        displayError('image-error', 'Please upload a valid image (JPEG, PNG, GIF, or WEBP)');
+      const validTypes = ["image/jpeg", "image/png", "image/gif", "image/webp"];
+      if (!validTypes.includes(file.type)) {
+        displayError(
+          "image-error",
+          "Please upload a valid image (JPEG, PNG, GIF, or WEBP)",
+        );
         return;
-    }
+      }
 
-    if (file.size > 10 * 1024 * 1024) { // 10MB
-        displayError('image-error', 'Image must be less than 10MB');
+      if (file.size > 10 * 1024 * 1024) {
+        // 10MB
+        displayError("image-error", "Image must be less than 10MB");
         return;
-    }
+      }
 
-    const reader = new FileReader();
-    reader.onload = function(event) {
-        const imagePreview = document.getElementById('imagePreview');
-        const imagePreviewContainer = document.getElementById('imagePreviewContainer');
-        
+      const reader = new FileReader();
+      reader.onload = function (event) {
+        const imagePreview = document.getElementById("imagePreview");
+        const imagePreviewContainer = document.getElementById(
+          "imagePreviewContainer",
+        );
+
         imagePreview.src = event.target.result;
-        imagePreviewContainer.classList.remove('hidden');
-        
-        ['cropBtn', 'cancelCropBtn', 'zoomInBtn', 'zoomOutBtn', 'rotateBtn', 'resetBtn'].forEach(id => {
-            document.getElementById(id).classList.remove('hidden');
+        imagePreviewContainer.classList.remove("hidden");
+
+        [
+          "cropBtn",
+          "cancelCropBtn",
+          "zoomInBtn",
+          "zoomOutBtn",
+          "rotateBtn",
+          "resetBtn",
+        ].forEach((id) => {
+          document.getElementById(id).classList.remove("hidden");
         });
 
         if (cropper) {
-            cropper.destroy();
+          cropper.destroy();
         }
-        
+
         cropper = initCropper(imagePreview);
         originalImageFile = file;
-    };
-    reader.readAsDataURL(file);
-});
+      };
+      reader.readAsDataURL(file);
+    });
 
-document.getElementById('zoomInBtn').addEventListener('click', function() {
+  document.getElementById("zoomInBtn").addEventListener("click", function () {
     cropper.zoom(0.1);
-});
+  });
 
-document.getElementById('zoomOutBtn').addEventListener('click', function() {
+  document.getElementById("zoomOutBtn").addEventListener("click", function () {
     cropper.zoom(-0.1);
-});
+  });
 
-document.getElementById('rotateBtn').addEventListener('click', function() {
+  document.getElementById("rotateBtn").addEventListener("click", function () {
     cropper.rotate(90);
-});
+  });
 
-document.getElementById('resetBtn').addEventListener('click', function() {
+  document.getElementById("resetBtn").addEventListener("click", function () {
     cropper.reset();
-});
+  });
 
-document.getElementById('cropBtn').addEventListener('click', function() {
+  document.getElementById("cropBtn").addEventListener("click", function () {
     if (!cropper) return;
 
     const canvas = cropper.getCroppedCanvas({
-        width: 1000,
-        height: 1000,
-        minWidth: 800,
-        minHeight: 800,
-        maxWidth: 2000,
-        maxHeight: 2000,
-        fillColor: '#fff',
-        imageSmoothingEnabled: true,
-        imageSmoothingQuality: 'high'
+      width: 1000,
+      height: 1000,
+      minWidth: 800,
+      minHeight: 800,
+      maxWidth: 2000,
+      maxHeight: 2000,
+      fillColor: "#fff",
+      imageSmoothingEnabled: true,
+      imageSmoothingQuality: "high",
     });
 
-    canvas.toBlob((blob) => {
+    canvas.toBlob(
+      (blob) => {
         const croppedFile = new File([blob], originalImageFile.name, {
-            type: 'image/jpeg',
-            lastModified: Date.now()
+          type: "image/jpeg",
+          lastModified: Date.now(),
         });
 
         const dataTransfer = new DataTransfer();
         dataTransfer.items.add(croppedFile);
-        
-        document.getElementById('brandImage').files = dataTransfer.files;
-        
-        ['cropBtn', 'cancelCropBtn', 'zoomInBtn', 'zoomOutBtn', 'rotateBtn', 'resetBtn'].forEach(id => {
-            document.getElementById(id).classList.add('hidden');
-        });
-        
-        document.getElementById('imagePreview').src = canvas.toDataURL('image/jpeg', 0.9);
-        
-        cropper.destroy();
-        cropper = null;
-    }, 'image/jpeg', 0.9);
-});
 
-document.getElementById('cancelCropBtn').addEventListener('click', function() {
-    if (cropper) {
+        document.getElementById("brandImage").files = dataTransfer.files;
+
+        [
+          "cropBtn",
+          "cancelCropBtn",
+          "zoomInBtn",
+          "zoomOutBtn",
+          "rotateBtn",
+          "resetBtn",
+        ].forEach((id) => {
+          document.getElementById(id).classList.add("hidden");
+        });
+
+        document.getElementById("imagePreview").src = canvas.toDataURL(
+          "image/jpeg",
+          0.9,
+        );
+
         cropper.destroy();
         cropper = null;
+      },
+      "image/jpeg",
+      0.9,
+    );
+  });
+
+  document
+    .getElementById("cancelCropBtn")
+    .addEventListener("click", function () {
+      if (cropper) {
+        cropper.destroy();
+        cropper = null;
+      }
+
+      document.getElementById("imagePreviewContainer").classList.add("hidden");
+      document.getElementById("brandImage").value = "";
+
+      [
+        "cropBtn",
+        "cancelCropBtn",
+        "zoomInBtn",
+        "zoomOutBtn",
+        "rotateBtn",
+        "resetBtn",
+      ].forEach((id) => {
+        document.getElementById(id).classList.add("hidden");
+      });
+    });
+
+  document.querySelectorAll(".toggle-btn").forEach((link) => {
+    link.addEventListener("click", function (e) {
+      e.preventDefault();
+      const url = this.getAttribute("href");
+
+      Swal.fire({
+        title: "Are you sure?",
+        text: "You're about to change the status of this brand",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#6C7559",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, change it!",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          fetch(url, {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          })
+            .then((response) => {
+              if (!response.ok) {
+                throw new Error("Network response was not ok");
+              }
+              return response.json();
+            })
+            .then((data) => {
+              Swal.fire({
+                icon: "success",
+                title: "Success!",
+                text: data.message || "Brand status updated",
+                confirmButtonColor: "#6C7559",
+              }).then(() => {
+                window.location.reload();
+              });
+            })
+            .catch((error) => {
+              Swal.fire({
+                icon: "error",
+                title: "Error!",
+                text: error.message,
+                confirmButtonColor: "#6C7559",
+              });
+            });
+        }
+      });
+    });
+  });
+
+  document.querySelectorAll(".delete-btn").forEach((link) => {
+    link.addEventListener("click", function (e) {
+      e.preventDefault();
+      const url = this.getAttribute("href");
+
+      Swal.fire({
+        title: "Are you sure?",
+        text: "You won't be able to revert this!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#d33",
+        cancelButtonColor: "#6C7559",
+        confirmButtonText: "Yes, delete it!",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          fetch(url, {
+            method: "DELETE",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          })
+            .then((response) => {
+              if (!response.ok) {
+                throw new Error("Network response was not ok");
+              }
+              return response.json();
+            })
+            .then((data) => {
+              Swal.fire({
+                icon: "success",
+                title: "Deleted!",
+                text: data.message || "Brand has been deleted",
+                confirmButtonColor: "#6C7559",
+              }).then(() => {
+                window.location.reload();
+              });
+            })
+            .catch((error) => {
+              Swal.fire({
+                icon: "error",
+                title: "Error!",
+                text: error.message,
+                confirmButtonColor: "#6C7559",
+              });
+            });
+        }
+      });
+    });
+  });
+
+  function searchBrands(query) {
+    if (query.trim() === "") {
+      clearSearch();
+      return;
     }
-    
-    document.getElementById('imagePreviewContainer').classList.add('hidden');
-    document.getElementById('brandImage').value = '';
-    
-    ['cropBtn', 'cancelCropBtn', 'zoomInBtn', 'zoomOutBtn', 'rotateBtn', 'resetBtn'].forEach(id => {
-        document.getElementById(id).classList.add('hidden');
-    });
-});
-
-document.querySelectorAll('.toggle-brand').forEach(link => {
-    link.addEventListener('click', function(e) {
-        e.preventDefault();
-        const url = this.getAttribute('href');
-        
-        Swal.fire({
-            title: 'Are you sure?',
-            text: "You're about to change the status of this brand",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#6C7559',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Yes, change it!'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                fetch(url, {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok');
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Success!',
-                        text: data.message || 'Brand status updated',
-                        confirmButtonColor: '#6C7559'
-                    }).then(() => {
-                        window.location.reload();
-                    });
-                })
-                .catch(error => {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error!',
-                        text: error.message,
-                        confirmButtonColor: '#6C7559'
-                    });
-                });
-            }
-        });
-    });
-});
-
-document.querySelectorAll('.delete-brand').forEach(link => {
-    link.addEventListener('click', function(e) {
-        e.preventDefault();
-        const url = this.getAttribute('href');
-        
-        Swal.fire({
-            title: 'Are you sure?',
-            text: "You won't be able to revert this!",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#d33',
-            cancelButtonColor: '#6C7559',
-            confirmButtonText: 'Yes, delete it!'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                fetch(url, {
-                    method: 'DELETE',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok');
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Deleted!',
-                        text: data.message || 'Brand has been deleted',
-                        confirmButtonColor: '#6C7559'
-                    }).then(() => {
-                        window.location.reload();
-                    });
-                })
-                .catch(error => {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error!',
-                        text: error.message,
-                        confirmButtonColor: '#6C7559'
-                    });
-                });
-            }
-        });
-    });
-});
-
-function searchBrands(query) {
     window.location.href = `/admin/brands?search=${encodeURIComponent(query)}`;
-}
+  }
+
+  function clearSearch() {
+    window.location.href = "/admin/brands";
+  }
 </script>
 
 <%- include('../partials/admin/admin-footer') %>

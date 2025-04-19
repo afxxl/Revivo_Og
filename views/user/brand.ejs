@@ -11,21 +11,186 @@
 
     <style>
       .product-card {
+        position: relative;
         transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         background-color: white;
+        border-radius: 0.75rem;
+        overflow: hidden;
+        border: 1px solid rgba(232, 232, 232, 0.5);
+        height: 100%;
+        display: flex;
+        flex-direction: column;
       }
+      
       .product-card:hover {
         transform: translateY(-8px);
-        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+        border-color: rgba(248, 199, 141, 0.3);
       }
-      .font-henny {
-        font-family: 'Henny Penny', cursive;
+      
+      .product-image-container {
+        position: relative;
+        overflow: hidden;
+        padding-top: 100%; /* 1:1 Aspect Ratio */
+        background-color: rgba(248, 247, 245, 0.5);
       }
-      .font-playfair {
-        font-family: 'Playfair Display', serif;
+      
+      .product-image {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        object-position: center;
+        transition: transform 0.5s ease;
+        padding: 1rem;
       }
-      .font-montserrat {
+      
+      .product-card:hover .product-image {
+        transform: scale(1.05);
+      }
+      
+      .product-overlay {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(to top, rgba(44, 44, 44, 0.8) 0%, rgba(44, 44, 44, 0) 100%);
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        display: flex;
+        align-items: flex-end;
+        justify-content: center;
+        padding-bottom: 1rem;
+      }
+      
+      .product-card:hover .product-overlay {
+        opacity: 1;
+      }
+      
+      .product-badge {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        z-index: 10;
         font-family: 'Montserrat', sans-serif;
+        font-size: 0.65rem;
+        font-weight: 600;
+        padding: 0.25rem 0.75rem;
+        border-radius: 2rem;
+        letter-spacing: 0.05rem;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      }
+      
+      .product-badge.featured {
+        background-color: #2C2C2C;
+        color: #f8c78d;
+      }
+      
+      .product-badge.new {
+        background-color: #f8c78d;
+        color: #2C2C2C;
+      }
+      
+      .product-content {
+        padding: 1.25rem;
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1;
+        position: relative;
+      }
+      
+      .product-category {
+        font-size: 0.7rem;
+        text-transform: uppercase;
+        font-family: 'Montserrat', sans-serif;
+        letter-spacing: 0.05rem;
+        margin-bottom: 0.5rem;
+        color: rgba(44, 44, 44, 0.6);
+      }
+      
+      .product-title {
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 500;
+        font-size: 0.9rem;
+        line-height: 1.4;
+        margin-bottom: 0.75rem;
+        transition: color 0.3s ease;
+        letter-spacing: 0.03rem;
+        overflow: hidden;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+      }
+      
+      .product-card:hover .product-title {
+        color: #f8c78d;
+      }
+      
+      .product-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: auto;
+      }
+      
+      .product-price {
+        font-family: 'Montserrat', sans-serif;
+      }
+      
+      .current-price {
+        font-weight: 600;
+        font-size: 0.95rem;
+        color: #2C2C2C;
+      }
+      
+      .original-price {
+        font-size: 0.75rem;
+        text-decoration: line-through;
+        color: rgba(44, 44, 44, 0.5);
+        margin-left: 0.5rem;
+      }
+      
+      .cart-button {
+        background-color: #2C2C2C;
+        color: white;
+        border-radius: 50%;
+        width: 2.5rem;
+        height: 2.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+        border: 2px solid #2C2C2C;
+      }
+      
+      .cart-button:hover {
+        background-color: #f8c78d;
+        color: #2C2C2C;
+        transform: scale(1.1);
+        border-color: #f8c78d;
+      }
+      
+      .quick-view-button {
+        background-color: white;
+        color: #2C2C2C;
+        font-size: 0.7rem;
+        font-weight: 600;
+        padding: 0.5rem 1.25rem;
+        border-radius: 2rem;
+        transition: all 0.3s ease;
+        transform: translateY(1rem);
+        opacity: 0;
+        letter-spacing: 0.05rem;
+      }
+      
+      .product-card:hover .quick-view-button {
+        transform: translateY(0);
+        opacity: 1;
+      }
+      
+      .quick-view-button:hover {
+        background-color: #f8c78d;
+        color: #2C2C2C;
       }
     </style>
   </head>
@@ -148,42 +313,52 @@
         <% if (products.length > 0) { %>
           <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
             <% products.forEach(product => { %>
-              <div class="product-card group relative bg-white border border-[#e0dcd4]/50 p-4 hover:shadow-lg transition-all duration-300 rounded-md">
-                <div class="relative aspect-[1/1] overflow-hidden mb-4 bg-white/20 group-hover:shadow-md transition-all">
-                  <a href="/product/<%= product._id %>">
-                    <img src="<%= product.productImage[0] || '/Images/placeholder.jpg' %>" 
-                         alt="<%= product.productName %>" 
-                         class="w-full h-full object-contain p-2 group-hover:scale-105 transition-transform duration-500"
-                         onerror="this.src='/Images/placeholder.jpg'">
-                  </a>
-                  <div class="absolute inset-0 bg-[#2C2C2C]/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                    <a href="/product/<%= product._id %>" class="px-4 py-2 bg-white text-[#2C2C2C] rounded-full text-xs font-montserrat hover:bg-[#f8c78d] transition-colors">
-                      Quick View
-                    </a>
+              <div class="product-card">
+                <!-- Badge - Show either NEW or FEATURED, prioritizing NEW -->
+                <% if (product.isNew) { %>
+                  <div class="product-badge new">NEW</div>
+                <% } else if (product.isFeatured) { %>
+                  <div class="product-badge featured">FEATURED</div>
+                <% } %>
+                
+                <!-- Image Container -->
+                <div class="product-image-container">
+                  <img 
+                    src="<%= product.productImage[0] || '/Images/placeholder.jpg' %>" 
+                    alt="<%= product.productName %>" 
+                    class="product-image"
+                    onerror="this.src='/Images/placeholder.jpg'"
+                  >
+                  <div class="product-overlay">
+                    <a href="/product/<%= product._id %>" class="quick-view-button font-montserrat">Quick View</a>
                   </div>
                 </div>
                 
-                <div class="px-2">
-                  <div class="mb-2">
-                    <span class="text-xs text-[#2C2C2C]/60 font-montserrat"><%= product.category?.name || 'Vintage' %></span>
+                <!-- Content -->
+                <div class="product-content">
+                  <div class="product-category">
+                    <%= product.category?.name || 'Vintage' %>
                   </div>
                   
-                  <h3 class="text-[#333] font-medium mb-2 uppercase text-sm tracking-wider font-montserrat">
-                    <a href="/product/<%= product._id %>" class="hover:text-[#f8c78d] transition-colors"><%= product.productName %></a>
+                  <h3 class="product-title uppercase">
+                    <a href="/product/<%= product._id %>"><%= product.productName %></a>
                   </h3>
                   
-                  <div class="flex items-center justify-between">
-                    <div>
-                      <p class="text-[#333] text-sm font-montserrat">$<%= product.salesPrice %> $</p>
+                  <div class="product-footer">
+                    <div class="product-price">
+                      <span class="current-price">$<%= product.salesPrice %></span>
                       <% if (product.originalPrice) { %>
-                        <p class="text-[#333]/60 text-xs font-montserrat line-through">$<%= product.originalPrice %> $</p>
+                        <span class="original-price">$<%= product.originalPrice %></span>
                       <% } %>
                     </div>
-                    <button onclick="addToCart('<%= product._id %>')"
-                            class="w-10 h-10 flex items-center justify-center bg-[#2C2C2C] text-white rounded-full hover:bg-[#f8c78d] hover:text-[#2C2C2C] transition-colors transform hover:scale-110"
-                            title="Add to cart">
-                      <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
+                    
+                    <button 
+                      onclick="addToCart('<%= product._id %>')"
+                      class="cart-button"
+                      title="Add to cart"
+                    >
+                      <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
                       </svg>
                     </button>
                   </div>

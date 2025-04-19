@@ -43,6 +43,7 @@ const productInfo = async (req, res) => {
       perPage: limit,
       brands: brands,
       categories: categories,
+      searchQuery: search, // Add this line to pass the search query to the view
     });
   } catch (err) {
     console.error(err);

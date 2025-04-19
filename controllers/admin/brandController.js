@@ -11,16 +11,17 @@ const getBrandPage = async (req, res) => {
     const limit = 4;
     const skip = (page - 1) * limit;
 
-    const brandData = await Brand.find({
-      brandName: { $regex: ".*" + search + ".*", $options: "i" },
-    })
+    let query = {};
+    if (search) {
+      query.brandName = { $regex: ".*" + search + ".*", $options: "i" };
+    }
+
+    const brandData = await Brand.find(query)
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(limit);
 
-    const totalBrands = await Brand.countDocuments({
-      brandName: { $regex: ".*" + search + ".*", $options: "i" },
-    });
+    const totalBrands = await Brand.countDocuments(query);
     const totalPages = Math.ceil(totalBrands / limit);
 
     res.render("brands", {
@@ -28,6 +29,7 @@ const getBrandPage = async (req, res) => {
       currentPage: page,
       totalPages: totalPages,
       totalBrands: totalBrands,
+      searchQuery: search, // Make sure to pass this to the view
     });
   } catch (err) {
     console.error("Get Brand Error:", err);

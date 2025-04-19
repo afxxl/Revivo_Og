@@ -25,6 +25,7 @@ const categoryInfo = async (req, res) => {
       currentPage: page,
       totalCategories: count,
       perPage: limit,
+      searchQuery: search, // Add this line
     });
   } catch (err) {
     console.error(err);

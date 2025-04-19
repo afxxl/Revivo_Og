@@ -6,7 +6,7 @@
     width: 100% !important;
     height: 500px !important;
     margin: 0 auto;
-    background-color: #f8f9fa;
+    background-color: #f8f7f5;
   }
 
   .cropper-modal {
@@ -15,20 +15,20 @@
   }
 
   .cropper-view-box {
-    outline: 2px solid #FFA500;
-    outline-color: rgba(255, 165, 0, 0.8);
-    box-shadow: 0 0 0 1px #fff, 0 0 0 2px #FFA500;
+    outline: 2px solid #f8c78d;
+    outline-color: rgba(248, 199, 141, 0.8);
+    box-shadow: 0 0 0 1px #fff, 0 0 0 2px #f8c78d;
   }
 
   .cropper-line {
-    background-color: #FFA500 !important;
+    background-color: #f8c78d !important;
   }
 
   .cropper-point {
     width: 14px !important;
     height: 14px !important;
-    background-color: #FFA500 !important; 
-    border: 2px solid white; 
+    background-color: #f8c78d !important;
+    border: 2px solid white;
     opacity: 1 !important;
   }
 
@@ -46,6 +46,7 @@
     height: 60px;
     object-fit: cover;
     border-radius: 4px;
+    border: 1px solid #e0dcd4;
   }
 
   .status-badge {
@@ -56,33 +57,38 @@
   }
 
   .in-stock {
-    background-color: #D1FAE5;
-    color: #065F46;
+    background-color: #d1fae5;
+    color: #065f46;
   }
 
   .out-of-stock {
-    background-color: #FEE2E2;
-    color: #B91C1C;
+    background-color: #fee2e2;
+    color: #b91c1c;
   }
 
   .upload-area {
     transition: all 0.3s ease;
-    border: 2px dashed #d1d5db;
+    border: 2px dashed #e0dcd4;
+    background: linear-gradient(145deg, #ffffff, #f8f7f5);
   }
 
   .upload-area:hover {
-    border-color: #6C7559;
-    background-color: #f8f7f5;
+    border-color: #2C2C2C;
+    background: linear-gradient(145deg, #f8f7f5, #ffffff);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
   }
 
   .crop-control-btn {
-    border: 1px solid #d1d5db;
-    transition: all 0.2s ease;
+    border: 1px solid #e0dcd4;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    background: linear-gradient(145deg, #ffffff, #f8f7f5);
   }
 
   .crop-control-btn:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    border-color: #2C2C2C;
   }
 
   @media (prefers-color-scheme: dark) {
@@ -94,22 +100,30 @@
 
   .existing-images {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
     gap: 1rem;
     margin-top: 1rem;
   }
 
   .existing-image {
     position: relative;
-    width: 100px;
-    height: 100px;
+    width: 120px;
+    height: 120px;
+    border-radius: 0.5rem;
+    overflow: hidden;
+    border: 1px solid #e0dcd4;
+    background: linear-gradient(145deg, #ffffff, #f8f7f5);
   }
 
   .existing-image img {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    border-radius: 4px;
+    transition: transform 0.3s ease;
+  }
+
+  .existing-image:hover img {
+    transform: scale(1.05);
   }
 
   .delete-image {
@@ -119,13 +133,93 @@
     background: #ef4444;
     color: white;
     border-radius: 50%;
-    width: 20px;
-    height: 20px;
+    width: 24px;
+    height: 24px;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    font-size: 12px;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+
+  .delete-image:hover {
+    transform: scale(1.1);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  }
+
+  .form-input {
+    background: linear-gradient(145deg, #ffffff, #f8f7f5);
+    border: 1px solid #e0dcd4;
+    border-radius: 0.5rem;
+    padding: 0.75rem 1rem;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .form-input:focus {
+    border-color: #2C2C2C;
+    box-shadow: 0 0 0 3px rgba(44,44,44,0.1);
+    outline: none;
+  }
+
+  .form-label {
+    color: #2C2C2C;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+  }
+
+  .checkbox-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+    transition: all 0.3s ease;
+  }
+
+  .checkbox-wrapper:hover {
+    background: linear-gradient(145deg, #f8f7f5, #ffffff);
+  }
+
+  .checkbox-input {
+    width: 1.25rem;
+    height: 1.25rem;
+    border: 2px solid #e0dcd4;
+    border-radius: 0.25rem;
+    transition: all 0.3s ease;
+  }
+
+  .checkbox-input:checked {
+    background-color: #2C2C2C;
+    border-color: #2C2C2C;
+  }
+
+  .submit-button {
+    background: linear-gradient(135deg, #2C2C2C, #1a1a1a);
+    color: #f8f7f5;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .submit-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  }
+
+  .cancel-button {
+    background: linear-gradient(145deg, #ffffff, #f8f7f5);
+    color: #2C2C2C;
+    border: 1px solid #e0dcd4;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .cancel-button:hover {
+    border-color: #2C2C2C;
+    transform: translateY(-2px);
   }
 
   #image-preview-container {
@@ -155,27 +249,26 @@
 </style>
 
 <div class="flex-1 overflow-auto p-3 md:p-6 pt-20">
-  <div class="p-4 md:p-6 bg-white shadow-sm">
+  <div class="p-4 md:p-6 bg-white shadow-sm rounded-lg">
     <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-      <h1 class="text-2xl font-semibold text-gray-800">Edit Product</h1>
+      <h1 class="text-2xl font-semibold text-[#2C2C2C]">Edit Product</h1>
     </div>
   </div>
 
   <div class="bg-white rounded-lg shadow p-6 mt-6">
-    <form id="editProductForm" action="/admin/updateProduct/<%= product._id %>" method="POST" enctype="multipart/form-data" class="space-y-4">
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <form id="editProductForm" action="/admin/updateProduct/<%= product._id %>" method="POST" enctype="multipart/form-data" class="space-y-6">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div class="space-y-4">
           <div>
-            <label for="productName" class="block text-sm font-medium text-gray-700 mb-1">Product Name*</label>
+            <label for="productName" class="form-label">Product Name*</label>
             <input type="text" id="productName" name="productName" value="<%= product.productName %>" required
-                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#6C7559] focus:border-transparent">
+                   class="form-input w-full">
             <p id="productName-error" class="error-message text-red-500 text-sm mt-1 hidden"></p>
           </div>
 
           <div>
-            <label for="brand" class="block text-sm font-medium text-gray-700 mb-1">Brand*</label>
-            <select id="brand" name="brand" required
-                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#6C7559] focus:border-transparent">
+            <label for="brand" class="form-label">Brand*</label>
+            <select id="brand" name="brand" required class="form-input w-full">
               <option value="">Select Brand</option>
               <% brands.forEach(brand => { %>
                 <option value="<%= brand._id %>" <%= product.brand._id.toString() === brand._id.toString() ? 'selected' : '' %>><%= brand.brandName %></option>
@@ -185,9 +278,8 @@
           </div>
 
           <div>
-            <label for="category" class="block text-sm font-medium text-gray-700 mb-1">Category*</label>
-            <select id="category" name="category" required
-                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#6C7559] focus:border-transparent">
+            <label for="category" class="form-label">Category*</label>
+            <select id="category" name="category" required class="form-input w-full">
               <option value="">Select Category</option>
               <% categories.forEach(category => { %>
                 <option value="<%= category._id %>" <%= product.category._id.toString() === category._id.toString() ? 'selected' : '' %>><%= category.name %></option>
@@ -197,16 +289,14 @@
           </div>
 
           <div>
-            <label for="size" class="block text-sm font-medium text-gray-700 mb-1">Size*</label>
-            <input type="text" id="size" name="size" value="<%= product.size %>" required
-                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#6C7559] focus:border-transparent">
+            <label for="size" class="form-label">Size*</label>
+            <input type="text" id="size" name="size" value="<%= product.size %>" required class="form-input w-full">
             <p id="size-error" class="error-message text-red-500 text-sm mt-1 hidden"></p>
           </div>
 
           <div>
-            <label for="condition" class="block text-sm font-medium text-gray-700 mb-1">Condition*</label>
-            <select id="condition" name="condition" required
-                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#6C7559] focus:border-transparent">
+            <label for="condition" class="form-label">Condition*</label>
+            <select id="condition" name="condition" required class="form-input w-full">
               <option value="">Select Condition</option>
               <option value="Like New" <%= product.condition === 'Like New' ? 'selected' : '' %>>Like New</option>
               <option value="Gently Used" <%= product.condition === 'Gently Used' ? 'selected' : '' %>>Gently Used</option>
@@ -218,49 +308,45 @@
 
         <div class="space-y-4">
           <div>
-            <label for="regularPrice" class="block text-sm font-medium text-gray-700 mb-1">Regular Price*</label>
+            <label for="regularPrice" class="form-label">Regular Price*</label>
             <input type="number" id="regularPrice" name="regularPrice" value="<%= product.regularPrice %>" min="0" step="0.01" required
-                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#6C7559] focus:border-transparent">
+                   class="form-input w-full">
             <p id="regularPrice-error" class="error-message text-red-500 text-sm mt-1 hidden"></p>
           </div>
 
           <div>
-            <label for="salesPrice" class="block text-sm font-medium text-gray-700 mb-1">Sale Price*</label>
+            <label for="salesPrice" class="form-label">Sale Price*</label>
             <input type="number" id="salesPrice" name="salesPrice" value="<%= product.salesPrice %>" min="0" step="0.01" required
-                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#6C7559] focus:border-transparent">
+                   class="form-input w-full">
             <p id="salesPrice-error" class="error-message text-red-500 text-sm mt-1 hidden"></p>
           </div>
 
           <div>
-            <label for="productOffer" class="block text-sm font-medium text-gray-700 mb-1">Product Offer (%)</label>
+            <label for="productOffer" class="form-label">Product Offer (%)</label>
             <input type="number" id="productOffer" name="productOffer" value="<%= product.productOffer %>" min="0" max="100" step="1"
-                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#6C7559] focus:border-transparent">
+                   class="form-input w-full">
             <p id="productOffer-error" class="error-message text-red-500 text-sm mt-1 hidden"></p>
           </div>
 
           <div>
-            <label for="stock" class="block text-sm font-medium text-gray-700 mb-1">Stock Quantity*</label>
-            <input type="number" id="stock" name="stock" value="<%= product.stock %>" min="0" required
-                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#6C7559] focus:border-transparent">
+            <label for="stock" class="form-label">Stock Quantity*</label>
+            <input type="number" id="stock" name="stock" value="<%= product.stock %>" min="0" required class="form-input w-full">
             <p id="stock-error" class="error-message text-red-500 text-sm mt-1 hidden"></p>
           </div>
 
           <div>
-            <label for="heritage" class="block text-sm font-medium text-gray-700 mb-1">Heritage Collection</label>
-            <select id="heritage" name="heritage"
-                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#6C7559] focus:border-transparent">
+            <label for="heritage" class="form-label">Heritage Collection</label>
+            <select id="heritage" name="heritage" class="form-input w-full">
               <option value="None" <%= product.heritage === 'None' ? 'selected' : '' %>>None</option>
               <option value="Prime Layers" <%= product.heritage === 'Prime Layers' ? 'selected' : '' %>>Prime Layers</option>
               <option value="Vintage Athletics" <%= product.heritage === 'Vintage Athletics' ? 'selected' : '' %>>Vintage Athletics</option>
               <option value="Y2K Essentials" <%= product.heritage === 'Y2K Essentials' ? 'selected' : '' %>>Y2K Essentials</option>
             </select>
-            <p id="heritage-error" class="error-message text-red-500 text-sm mt-1 hidden"></p>
           </div>
 
           <div>
-            <label for="status" class="block text-sm font-medium text-gray-700 mb-1">Status*</label>
-            <select id="status" name="status" required
-                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#6C7559] focus:border-transparent">
+            <label for="status" class="form-label">Status*</label>
+            <select id="status" name="status" required class="form-input w-full">
               <option value="Available" <%= product.status === 'Available' ? 'selected' : '' %>>Available</option>
               <option value="Out of stock" <%= product.status === 'Out of stock' ? 'selected' : '' %>>Out of stock</option>
               <option value="Discontinued" <%= product.status === 'Discontinued' ? 'selected' : '' %>>Discontinued</option>
@@ -270,35 +356,34 @@
         </div>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
-          <label for="description" class="block text-sm font-medium text-gray-700 mb-1">Description*</label>
-          <textarea id="description" name="description" rows="3" required
-                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#6C7559] focus:border-transparent"><%= product.description %></textarea>
+          <label for="description" class="form-label">Description*</label>
+          <textarea id="description" name="description" rows="3" required class="form-input w-full"><%= product.description %></textarea>
           <p id="description-error" class="error-message text-red-500 text-sm mt-1 hidden"></p>
         </div>
 
-        <div class="space-y-2">
-          <div class="flex items-center">
+        <div class="space-y-3">
+          <div class="checkbox-wrapper">
             <input type="checkbox" id="isFeatured" name="isFeatured" <%= product.isFeatured ? 'checked' : '' %>
-                   class="w-4 h-4 text-[#6C7559] border-gray-300 rounded focus:ring-[#6C7559]">
-            <label for="isFeatured" class="ml-2 text-sm text-gray-700">Featured Product</label>
+                   class="checkbox-input">
+            <label for="isFeatured" class="text-[#2C2C2C]">Featured Product</label>
           </div>
-          <div class="flex items-center">
+          <div class="checkbox-wrapper">
             <input type="checkbox" id="isNew" name="isNew" <%= product.isNew ? 'checked' : '' %>
-                   class="w-4 h-4 text-[#6C7559] border-gray-300 rounded focus:ring-[#6C7559]">
-            <label for="isNew" class="ml-2 text-sm text-gray-700">Mark as New</label>
+                   class="checkbox-input">
+            <label for="isNew" class="text-[#2C2C2C]">Mark as New</label>
           </div>
-          <div class="flex items-center">
+          <div class="checkbox-wrapper">
             <input type="checkbox" id="isListed" name="isListed" <%= product.isListed ? 'checked' : '' %>
-                   class="w-4 h-4 text-[#6C7559] border-gray-300 rounded focus:ring-[#6C7559]">
-            <label for="isListed" class="ml-2 text-sm text-gray-700">List Product</label>
+                   class="checkbox-input">
+            <label for="isListed" class="text-[#2C2C2C]">List Product</label>
           </div>
         </div>
       </div>
 
       <div>
-        <label class="block text-sm font-medium text-gray-700 mb-1">Existing Images (Minimum 3 required)*</label>
+        <label class="form-label">Existing Images (Minimum 3 required)*</label>
         <div class="existing-images" id="existing-images">
           <% product.productImage.forEach((image, index) => { %>
             <div class="existing-image" data-image-path="<%= image %>">
@@ -311,42 +396,41 @@
       </div>
 
       <div>
-        <label class="block text-sm font-medium text-gray-700 mb-1">Upload New Images</label>
-        <div class="mt-1 flex items-center">
+        <label class="form-label">Upload New Images</label>
+        <div class="mt-1">
           <input type="file" id="images" name="images" multiple accept="image/*" class="hidden">
-          <button type="button" id="uploadTrigger"
-                  class="px-4 py-2 border-2 border-dashed border-gray-300 rounded-lg hover:border-[#6C7559] transition-colors upload-area w-full">
-            <div class="flex flex-col items-center justify-center text-gray-500">
+          <button type="button" id="uploadTrigger" class="upload-area w-full">
+            <div class="flex flex-col items-center justify-center text-[#2C2C2C]">
               <i class="fas fa-cloud-upload-alt text-4xl mb-3"></i>
               <p class="font-medium text-lg">Click to upload new product images</p>
               <p class="text-sm mt-1">Recommended: Square images (1000×1000 pixels)</p>
-              <p class="text-xs mt-1 text-gray-400">JPG, PNG, or WEBP (max 10MB each)</p>
+              <p class="text-xs mt-1 text-[#2C2C2C] opacity-50">JPG, PNG, or WEBP (max 10MB each)</p>
             </div>
           </button>
-          <span id="file-chosen" class="ml-2 text-sm text-gray-500 hidden">No files chosen</span>
+          <span id="file-chosen" class="ml-2 text-sm text-[#2C2C2C] opacity-50 hidden">No files chosen</span>
         </div>
 
         <div id="image-preview-container" class="hidden">
-          <div class="relative w-full" style="height: 500px; background-color: #f3f4f6;">
+          <div class="relative w-full" style="height: 500px; background-color: #f8f7f5;">
             <img id="image-preview-cropper" class="max-w-full max-h-full" alt="Preview">
           </div>
           <div class="mt-4 flex flex-wrap gap-3 justify-center">
-            <button type="button" id="zoomInBtn" class="px-4 py-2 bg-gray-100 rounded-lg crop-control-btn">
-              <i class="fas fa-search-plus mr-2 text-gray-700"></i>Zoom In
+            <button type="button" id="zoomInBtn" class="crop-control-btn px-4 py-2">
+              <i class="fas fa-search-plus mr-2 text-[#2C2C2C]"></i>Zoom In
             </button>
-            <button type="button" id="zoomOutBtn" class="px-4 py-2 bg-gray-100 rounded-lg crop-control-btn">
-              <i class="fas fa-search-minus mr-2 text-gray-700"></i>Zoom Out
+            <button type="button" id="zoomOutBtn" class="crop-control-btn px-4 py-2">
+              <i class="fas fa-search-minus mr-2 text-[#2C2C2C]"></i>Zoom Out
             </button>
-            <button type="button" id="rotateBtn" class="px-4 py-2 bg-gray-100 rounded-lg crop-control-btn">
-              <i class="fas fa-undo mr-2 text-gray-700"></i>Rotate
+            <button type="button" id="rotateBtn" class="crop-control-btn px-4 py-2">
+              <i class="fas fa-undo mr-2 text-[#2C2C2C]"></i>Rotate
             </button>
-            <button type="button" id="resetBtn" class="px-4 py-2 bg-gray-100 rounded-lg crop-control-btn">
-              <i class="fas fa-sync-alt mr-2 text-gray-700"></i>Reset
+            <button type="button" id="resetBtn" class="crop-control-btn px-4 py-2">
+              <i class="fas fa-sync-alt mr-2 text-[#2C2C2C]"></i>Reset
             </button>
-            <button type="button" id="cropBtn" class="px-4 py-2 bg-[#6C7559] hover:bg-[#5a6349] text-white rounded-lg">
+            <button type="button" id="cropBtn" class="submit-button px-4 py-2">
               <i class="fas fa-crop mr-2"></i>Apply Crop
             </button>
-            <button type="button" id="cancelCropBtn" class="px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded-lg">
+            <button type="button" id="cancelCropBtn" class="cancel-button px-4 py-2">
               <i class="fas fa-times mr-2"></i>Cancel
             </button>
           </div>
@@ -359,8 +443,8 @@
       <input type="hidden" id="deletedImages" name="deletedImages" value="[]">
 
       <div class="flex justify-end space-x-4 mt-6">
-        <a href="/admin/products" class="px-4 py-2 text-sm text-gray-600 hover:text-gray-800 font-medium">Cancel</a>
-        <button type="submit" class="px-4 py-2 bg-[#6C7559] hover:bg-[#5a6349] text-white rounded-lg text-sm">
+        <a href="/admin/products" class="cancel-button">Cancel</a>
+        <button type="submit" class="submit-button">
           Update Product
         </button>
       </div>

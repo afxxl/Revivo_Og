@@ -45,7 +45,7 @@ include('../partials/admin/admin-sidebar', {currentPage: 'products' }) %>
     height: 50vh !important;
     max-height: 500px;
     margin: 0 auto;
-    background-color: #f8f9fa;
+    background-color: #f8f7f5;
   }
 
   .cropper-modal {
@@ -54,32 +54,23 @@ include('../partials/admin/admin-sidebar', {currentPage: 'products' }) %>
   }
 
   .cropper-view-box {
-    outline: 2px solid #ffa500;
-    outline-color: rgba(255, 165, 0, 0.8);
+    outline: 2px solid #f8c78d;
+    outline-color: rgba(248, 199, 141, 0.8);
     box-shadow:
       0 0 0 1px #fff,
-      0 0 0 2px #ffa500;
+      0 0 0 2px #f8c78d;
   }
 
   .cropper-line {
-    background-color: #ffa500 !important;
+    background-color: #f8c78d !important;
   }
 
   .cropper-point {
     width: 14px !important;
     height: 14px !important;
-    background-color: #ffa500 !important;
+    background-color: #f8c78d !important;
     border: 2px solid white;
     opacity: 1 !important;
-  }
-
-  .cropper-point.point-se {
-    right: -7px !important;
-    bottom: -7px !important;
-  }
-
-  .cropper-dashed {
-    border-color: rgba(255, 255, 255, 0.5) !important;
   }
 
   .product-image {
@@ -87,6 +78,7 @@ include('../partials/admin/admin-sidebar', {currentPage: 'products' }) %>
     height: 60px;
     object-fit: cover;
     border-radius: 4px;
+    border: 1px solid #e0dcd4;
   }
 
   @media (max-width: 640px) {
@@ -131,7 +123,7 @@ include('../partials/admin/admin-sidebar', {currentPage: 'products' }) %>
   }
 
   tr:hover {
-    background-color: #f9fafb;
+    background-color: #f8f7f5;
   }
 
   .truncate {
@@ -146,11 +138,11 @@ include('../partials/admin/admin-sidebar', {currentPage: 'products' }) %>
 
   .upload-area {
     transition: all 0.3s ease;
-    border: 2px dashed #d1d5db;
+    border: 2px dashed #e0dcd4;
   }
 
   .upload-area:hover {
-    border-color: #6c7559;
+    border-color: #2C2C2C;
     background-color: #f8f7f5;
   }
 
@@ -159,7 +151,7 @@ include('../partials/admin/admin-sidebar', {currentPage: 'products' }) %>
     align-items: center;
     gap: 1rem;
     margin-bottom: 1rem;
-    background-color: #f3f4f6;
+    background-color: #f8f7f5;
     padding: 1rem;
     border-radius: 0.5rem;
   }
@@ -168,7 +160,7 @@ include('../partials/admin/admin-sidebar', {currentPage: 'products' }) %>
     width: 120px;
     height: 120px;
     object-fit: contain;
-    border: 1px solid #e5e7eb;
+    border: 1px solid #e0dcd4;
     border-radius: 0.5rem;
     background-color: white;
     padding: 0.5rem;
@@ -182,7 +174,7 @@ include('../partials/admin/admin-sidebar', {currentPage: 'products' }) %>
   }
 
   .crop-control-btn {
-    border: 1px solid #d1d5db;
+    border: 1px solid #e0dcd4;
     transition: all 0.2s ease;
   }
 
@@ -202,10 +194,10 @@ include('../partials/admin/admin-sidebar', {currentPage: 'products' }) %>
 
   @media (prefers-color-scheme: dark) {
     .cropper-view-box {
-      outline-color: #ffa500;
+      outline-color: #f8c78d;
       box-shadow:
         0 0 0 1px #000,
-        0 0 0 2px #ffa500;
+        0 0 0 2px #f8c78d;
     }
   }
 
@@ -231,7 +223,7 @@ include('../partials/admin/admin-sidebar', {currentPage: 'products' }) %>
     height: 100px;
     object-fit: cover;
     border-radius: 0.25rem;
-    border: 1px solid #e5e7eb;
+    border: 1px solid #e0dcd4;
   }
 
   @media (max-width: 640px) {
@@ -249,10 +241,89 @@ include('../partials/admin/admin-sidebar', {currentPage: 'products' }) %>
     .table-container {
       overflow-x: auto;
       -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+
+    .table-container::-webkit-scrollbar {
+      display: none;
     }
 
     table {
-      min-width: 700px;
+      min-width: 100%;
+      table-layout: fixed;
+      white-space: nowrap;
+    }
+
+    th, td {
+      padding: 0.5rem;
+      font-size: 0.875rem;
+      max-width: 150px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .product-image {
+      width: 40px;
+      height: 40px;
+      min-width: 40px;
+    }
+
+    .status-badge {
+      padding: 0.2rem 0.4rem;
+      font-size: 0.65rem;
+      white-space: nowrap;
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: 0.5rem;
+      min-width: 120px;
+    }
+
+    .action-button {
+      padding: 0.25rem;
+      min-width: 32px;
+      min-height: 32px;
+    }
+
+    .action-button svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    .truncate {
+      max-width: 120px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .min-w-0 {
+      min-width: 0;
+      max-width: 120px;
+    }
+
+    .text-sm {
+      font-size: 0.75rem;
+    }
+
+    .text-xs {
+      font-size: 0.65rem;
+    }
+
+    .px-4, .px-6 {
+      padding-left: 0.5rem;
+      padding-right: 0.5rem;
+    }
+
+    .py-3, .py-4 {
+      padding-top: 0.375rem;
+      padding-bottom: 0.375rem;
+    }
+
+    .space-x-2, .space-x-3 {
+      gap: 0.25rem;
     }
   }
 
@@ -265,6 +336,7 @@ include('../partials/admin/admin-sidebar', {currentPage: 'products' }) %>
     background-color: white;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
     margin-bottom: 0.75rem;
+    border: 1px solid #e0dcd4;
   }
 
   .mobile-product-image {
@@ -272,22 +344,27 @@ include('../partials/admin/admin-sidebar', {currentPage: 'products' }) %>
     height: 60px;
     object-fit: cover;
     border-radius: 0.25rem;
+    flex-shrink: 0;
+    border: 1px solid #e0dcd4;
   }
 
   .mobile-product-details {
     flex: 1;
-    margin-top: 0.5rem;
+    min-width: 0;
   }
 
   .mobile-product-name {
     font-weight: 500;
     font-size: 0.9375rem;
-    color: #111827;
+    color: #2C2C2C;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   .mobile-product-meta {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 0.5rem;
     margin-top: 0.5rem;
     font-size: 0.8125rem;
@@ -296,16 +373,23 @@ include('../partials/admin/admin-sidebar', {currentPage: 'products' }) %>
   .mobile-product-meta-item {
     display: flex;
     flex-direction: column;
+    min-width: 0;
   }
 
   .mobile-product-meta-label {
     color: #6b7280;
     margin-bottom: 0.125rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   .mobile-product-meta-value {
-    color: #111827;
+    color: #2C2C2C;
     font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   .mobile-product-actions {
@@ -336,15 +420,324 @@ include('../partials/admin/admin-sidebar', {currentPage: 'products' }) %>
     }
   }
 
-  .relative {
-    position: relative;
+  /* Enhanced Product Page Styles */
+  .product-page {
+    background: linear-gradient(145deg, #f8f7f5, #ffffff);
+    min-height: 100vh;
   }
 
-  .absolute {
+  .search-container {
+    position: relative;
+    background: linear-gradient(145deg, #ffffff, #f8f7f5);
+    border: 1px solid #e0dcd4;
+    border-radius: 1rem;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .search-container:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+  }
+
+  .search-input {
+    background: linear-gradient(145deg, #ffffff, #f8f7f5);
+    border: 1px solid #e0dcd4;
+    border-radius: 0.75rem;
+    padding: 0.75rem 1rem 0.75rem 3rem;
+    width: 100%;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .search-input:focus {
+    border-color: #2C2C2C;
+    box-shadow: 0 0 0 3px rgba(44,44,44,0.1);
+    outline: none;
+  }
+
+  .search-icon {
     position: absolute;
-    left: 10px;
+    left: 1.25rem;
     top: 50%;
     transform: translateY(-50%);
+    color: #2C2C2C;
+    opacity: 0.5;
+    transition: all 0.3s ease;
+  }
+
+  .search-input:focus + .search-icon {
+    opacity: 1;
+    transform: translateY(-50%) scale(1.1);
+  }
+
+  .add-product-button {
+    background: linear-gradient(135deg, #2C2C2C, #1a1a1a);
+    color: #f8f7f5;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.75rem;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .add-product-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0));
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .add-product-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+  }
+
+  .add-product-button:hover::before {
+    opacity: 1;
+  }
+
+  /* Enhanced Table Styles */
+  .product-table {
+    background: linear-gradient(145deg, #ffffff, #f8f7f5);
+    border: 1px solid #e0dcd4;
+    border-radius: 1rem;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .product-table:hover {
+    box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+  }
+
+  .table-header {
+    background: linear-gradient(to right, #f8f7f5, #ffffff);
+    border-bottom: 2px solid #e0dcd4;
+  }
+
+  .table-header th {
+    padding: 1rem 1.5rem;
+    font-weight: 600;
+    color: #2C2C2C;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 0.05em;
+  }
+
+  .table-row {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border-bottom: 1px solid #e0dcd4;
+  }
+
+  .table-row:hover {
+    background: linear-gradient(to right, #f8f7f5, #ffffff);
+    transform: translateX(4px);
+  }
+
+  .table-row td {
+    padding: 1rem 1.5rem;
+    color: #2C2C2C;
+  }
+
+  /* Enhanced Status Badge Styles */
+  .status-badge {
+    padding: 0.5rem 1rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.025em;
+    transition: all 0.3s ease;
+  }
+
+  .in-stock {
+    background: linear-gradient(135deg, #d1fae5, #a7f3d0);
+    color: #065f46;
+  }
+
+  .out-of-stock {
+    background: linear-gradient(135deg, #fee2e2, #fecaca);
+    color: #991b1b;
+  }
+
+  /* Enhanced Action Button Styles */
+  .action-button {
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .action-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0));
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .action-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  }
+
+  .action-button:hover::before {
+    opacity: 1;
+  }
+
+  .edit-button {
+    color: #2563eb;
+  }
+
+  .delete-button {
+    color: #dc2626;
+  }
+
+  .toggle-button {
+    color: #f8c78d;
+  }
+
+  /* Enhanced Pagination Styles */
+  .pagination-container {
+    background: linear-gradient(145deg, #ffffff, #f8f7f5);
+    border: 1px solid #e0dcd4;
+    border-radius: 1rem;
+    padding: 1rem;
+    margin-top: 2rem;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+  }
+
+  .pagination-button {
+    padding: 0.5rem 1rem;
+    border: 1px solid #e0dcd4;
+    border-radius: 0.5rem;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .pagination-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(44,44,44,0.1), rgba(44,44,44,0));
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .pagination-button:hover {
+    background-color: #f8f7f5;
+    border-color: #2C2C2C;
+    transform: translateY(-2px);
+  }
+
+  .pagination-button:hover::before {
+    opacity: 1;
+  }
+
+  .pagination-button.active {
+    background: linear-gradient(135deg, #2C2C2C, #1a1a1a);
+    color: #f8f7f5;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  }
+
+  /* Enhanced Modal Styles */
+  .modal-overlay {
+    background: rgba(0,0,0,0.5);
+    backdrop-filter: blur(4px);
+  }
+
+  .modal-content {
+    background: linear-gradient(145deg, #ffffff, #f8f7f5);
+    border: 1px solid #e0dcd4;
+    border-radius: 1rem;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+    transform: translateY(0);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .modal-content:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 48px rgba(0,0,0,0.15);
+  }
+
+  /* Enhanced Form Styles */
+  .form-input {
+    background: linear-gradient(145deg, #ffffff, #f8f7f5);
+    border: 1px solid #e0dcd4;
+    border-radius: 0.75rem;
+    padding: 0.75rem 1rem;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .form-input:focus {
+    border-color: #2C2C2C;
+    box-shadow: 0 0 0 3px rgba(44,44,44,0.1);
+    outline: none;
+  }
+
+  .form-label {
+    color: #2C2C2C;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+  }
+
+  /* Enhanced Upload Area Styles */
+  .upload-area {
+    background: linear-gradient(145deg, #ffffff, #f8f7f5);
+    border: 2px dashed #e0dcd4;
+    border-radius: 1rem;
+    padding: 2rem;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .upload-area:hover {
+    border-color: #2C2C2C;
+    background: linear-gradient(145deg, #f8f7f5, #ffffff);
+    transform: translateY(-2px);
+  }
+
+  /* Enhanced Button Styles */
+  .submit-button {
+    background: linear-gradient(135deg, #2C2C2C, #1a1a1a);
+    color: #f8f7f5;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.75rem;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .submit-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+  }
+
+  .cancel-button {
+    background: linear-gradient(145deg, #ffffff, #f8f7f5);
+    color: #2C2C2C;
+    border: 1px solid #e0dcd4;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.75rem;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .cancel-button:hover {
+    background: linear-gradient(145deg, #f8f7f5, #ffffff);
+    border-color: #2C2C2C;
+    transform: translateY(-2px);
   }
 </style>
 
@@ -363,28 +756,50 @@ include('../partials/admin/admin-sidebar', {currentPage: 'products' }) %>
     </div>
     <!-- Search Bar -->
     <div class="relative w-full mt-4 px-2 sm:px-4">
-      <input
-        type="text"
-        placeholder="Search products..."
-        class="w-full pl-10 pr-4 py-2 sm:py-3 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#6C7559] focus:border-transparent shadow-sm"
-        onkeyup="searchProducts(this.value)"
-      />
-      <div
-        class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
-      >
-        <svg
-          class="w-4 h-4 sm:w-5 sm:h-5 text-gray-400"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
+      <div class="relative">
+        <input
+          type="text"
+          id="searchInput"
+          placeholder="Search products..."
+          class="w-full pl-10 pr-4 py-2 sm:py-3 text-sm border border-[#e0dcd4] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2C2C2C] focus:border-transparent shadow-sm bg-[#f8f7f5]"
+          onkeyup="searchProducts(this.value)"
+          value="<%= searchQuery || '' %>"
+        />
+        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+          <svg
+            class="w-5 h-5 text-[#2C2C2C] opacity-50"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+            />
+          </svg>
+        </div>
+        <% if (searchQuery) { %>
+        <button 
+          onclick="clearSearch()" 
+          class="absolute inset-y-0 right-0 pr-3 flex items-center"
         >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-          />
-        </svg>
+          <svg
+            class="w-5 h-5 text-[#2C2C2C] opacity-50 hover:opacity-100"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M6 18L18 6M6 6l12 12"
+            />
+          </svg>
+        </button>
+        <% } %>
       </div>
     </div>
   </div>
@@ -395,61 +810,12 @@ include('../partials/admin/admin-sidebar', {currentPage: 'products' }) %>
       <table class="w-full whitespace-nowrap bg-white rounded-lg shadow">
         <thead>
           <tr class="bg-gray-50 text-left">
-            <th
-              class="px-4 sm:px-6 py-3 text-xs font-medium text-gray-500 uppercase"
-            >
-              Product
-            </th>
-            <th
-              class="px-4 sm:px-6 py-3 text-xs font-medium text-gray-500 uppercase"
-            >
-              Brand
-            </th>
-            <th
-              class="px-4 sm:px-6 py-3 text-xs font-medium text-gray-500 uppercase"
-            >
-              Category
-            </th>
-            <th
-              class="px-4 sm:px-6 py-3 text-xs font-medium text-gray-500 uppercase"
-            >
-              Size
-            </th>
-            <th
-              class="px-4 sm:px-6 py-3 text-xs font-medium text-gray-500 uppercase"
-            >
-              Price
-            </th>
-            <th
-              class="px-4 sm:px-6 py-3 text-xs font-medium text-gray-500 uppercase"
-            >
-              Stock
-            </th>
-            <th
-              class="px-4 sm:px-6 py-3 text-xs font-medium text-gray-500 uppercase"
-            >
-              Heritage
-            </th>
-            <th
-              class="px-4 sm:px-6 py-3 text-xs font-medium text-gray-500 uppercase"
-            >
-              Status
-            </th>
-            <th
-              class="px-4 sm:px-6 py-3 text-xs font-medium text-gray-500 uppercase"
-            >
-              Listing
-            </th>
-            <th
-              class="px-4 sm:px-6 py-3 text-xs font-medium text-gray-500 uppercase"
-            >
-              Last Updated
-            </th>
-            <th
-              class="px-4 sm:px-6 py-3 text-xs font-medium text-gray-500 uppercase"
-            >
-              Actions
-            </th>
+            <th class="px-4 sm:px-6 py-3 text-xs font-medium text-gray-500 uppercase w-1/6">Product</th>
+            <th class="px-4 sm:px-6 py-3 text-xs font-medium text-gray-500 uppercase w-1/6">Brand</th>
+            <th class="px-4 sm:px-6 py-3 text-xs font-medium text-gray-500 uppercase w-1/6">Category</th>
+            <th class="px-4 sm:px-6 py-3 text-xs font-medium text-gray-500 uppercase w-1/6">Price</th>
+            <th class="px-4 sm:px-6 py-3 text-xs font-medium text-gray-500 uppercase w-1/6">Stock</th>
+            <th class="px-4 sm:px-6 py-3 text-xs font-medium text-gray-500 uppercase w-1/6">Actions</th>
           </tr>
         </thead>
         <tbody class="divide-y divide-gray-200">
@@ -457,8 +823,7 @@ include('../partials/admin/admin-sidebar', {currentPage: 'products' }) %>
           <tr class="hover:bg-gray-50">
             <td class="px-4 sm:px-6 py-4">
               <div class="flex items-center">
-                <% if (product.productImage && product.productImage.length> 0) {
-                %>
+                <% if (product.productImage && product.productImage.length> 0) { %>
                 <img
                   src="<%= product.productImage[0] %>"
                   alt="<%= product.productName %>"
@@ -489,45 +854,18 @@ include('../partials/admin/admin-sidebar', {currentPage: 'products' }) %>
               <%= product.category?.name || 'N/A' %>
             </td>
             <td class="px-4 sm:px-6 py-4 text-sm text-gray-900">
-              <%= product.size || 'N/A' %>
-            </td>
-            <td class="px-4 sm:px-6 py-4 text-sm text-gray-900">
               $<%= product.regularPrice.toFixed(2) %>
             </td>
-            <td class="px-4 sm:px-6 py-4 text-sm text-gray-900">
-              <%= product.stock %>
-            </td>
-            <td class="px-4 sm:px-6 py-4 text-sm text-gray-900">
-              <% if (product.heritage && product.heritage !=='None' ) { %>
-              <span class="px-2 py-1 bg-[#f3f4f6] rounded text-xs">
-                <%= product.heritage %>
-              </span>
-              <% } else { %>
-              <span class="text-gray-400">-</span>
-              <% } %>
-            </td>
             <td class="px-4 sm:px-6 py-4 text-sm">
-              <span
-                class="status-badge <%= product.stock > 0 ? 'in-stock' : 'out-of-stock' %>"
-              >
+              <span class="status-badge <%= product.stock > 0 ? 'in-stock' : 'out-of-stock' %>">
                 <%= product.stock> 0 ? 'In Stock' : 'Out of Stock' %>
               </span>
             </td>
             <td class="px-4 sm:px-6 py-4 text-sm">
-              <span
-                class="status-badge <%= product.isListed ? 'listed' : 'unlisted' %>"
-              >
-                <%= product.isListed ? 'Listed' : 'Unlisted' %>
-              </span>
-            </td>
-            <td class="px-4 sm:px-6 py-4 text-sm text-gray-500">
-              <%= new Date(product.updatedAt).toLocaleDateString() %>
-            </td>
-            <td class="px-4 sm:px-6 py-4 text-sm">
-              <div class="flex items-center space-x-2 sm:space-x-3">
+              <div class="action-buttons">
                 <a
                   href="/admin/editProduct/<%= product._id %>"
-                  class="text-blue-600 hover:text-blue-800"
+                  class="action-button text-blue-600 hover:text-blue-800"
                 >
                   <svg
                     class="w-5 h-5"
@@ -545,7 +883,7 @@ include('../partials/admin/admin-sidebar', {currentPage: 'products' }) %>
                 </a>
                 <a
                   href="/admin/deleteProduct/<%= product._id %>"
-                  class="text-red-600 hover:text-red-800 delete-product"
+                  class="action-button text-red-600 hover:text-red-800 delete-product"
                 >
                   <svg
                     class="w-5 h-5"
@@ -563,7 +901,7 @@ include('../partials/admin/admin-sidebar', {currentPage: 'products' }) %>
                 </a>
                 <a
                   href="/admin/toggleProduct/<%= product._id %>"
-                  class="text-yellow-600 hover:text-yellow-800 toggle-product"
+                  class="action-button text-yellow-600 hover:text-yellow-800 toggle-product"
                 >
                   <svg
                     class="w-5 h-5"
@@ -571,12 +909,27 @@ include('../partials/admin/admin-sidebar', {currentPage: 'products' }) %>
                     stroke="currentColor"
                     viewBox="0 0 24 24"
                   >
+                    <% if (product.isListed) { %>
                     <path
                       stroke-linecap="round"
                       stroke-linejoin="round"
                       stroke-width="2"
-                      d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                      d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
                     />
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                    />
+                    <% } else { %>
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"
+                    />
+                    <% } %>
                   </svg>
                 </a>
               </div>
@@ -611,11 +964,9 @@ include('../partials/admin/admin-sidebar', {currentPage: 'products' }) %>
         </div>
         <div class="mobile-product-details">
           <div class="flex justify-between items-start">
-            <h3 class="mobile-product-name truncate">
-              <%= product.productName %>
-            </h3>
+            <h3 class="mobile-product-name"><%= product.productName %></h3>
             <span
-              class="status-badge <%= product.stock > 0 ? 'in-stock' : 'out-of-stock' %> ml-2"
+              class="status-badge <%= product.stock > 0 ? 'in-stock' : 'out-of-stock' %> ml-2 flex-shrink-0"
             >
               <%= product.stock> 0 ? 'In Stock' : 'Out of Stock' %>
             </span>
@@ -623,13 +974,13 @@ include('../partials/admin/admin-sidebar', {currentPage: 'products' }) %>
           <div class="mobile-product-meta">
             <div class="mobile-product-meta-item">
               <span class="mobile-product-meta-label">Brand</span>
-              <span class="mobile-product-meta-value truncate">
+              <span class="mobile-product-meta-value">
                 <%= product.brand?.brandName || 'N/A' %>
               </span>
             </div>
             <div class="mobile-product-meta-item">
               <span class="mobile-product-meta-label">Category</span>
-              <span class="mobile-product-meta-value truncate">
+              <span class="mobile-product-meta-value">
                 <%= product.category?.name || 'N/A' %>
               </span>
             </div>
@@ -649,6 +1000,12 @@ include('../partials/admin/admin-sidebar', {currentPage: 'products' }) %>
               <span class="mobile-product-meta-label">Condition</span>
               <span class="mobile-product-meta-value">
                 <%= product.condition || 'N/A' %>
+              </span>
+            </div>
+            <div class="mobile-product-meta-item">
+              <span class="mobile-product-meta-label">Stock</span>
+              <span class="mobile-product-meta-value">
+                <%= product.stock %>
               </span>
             </div>
             <div class="mobile-product-meta-item">
@@ -1601,6 +1958,16 @@ include('../partials/admin/admin-sidebar', {currentPage: 'products' }) %>
       }
     });
   }
+
+  document.querySelectorAll(".toggle-product").forEach((btn) => {
+    btn.addEventListener("click", function (e) {
+      e.preventDefault();
+      const productId = this.getAttribute("href").split("/").pop();
+      const isListed = this.querySelector("svg path[d*='M15 12']") !== null;
+      toggleProduct(productId, isListed);
+    });
+  });
+
   function displayError(elementId, message) {
     const element = document.getElementById(elementId);
     if (element) {
@@ -1627,18 +1994,14 @@ include('../partials/admin/admin-sidebar', {currentPage: 'products' }) %>
       deleteProduct(productId);
     });
   });
-  document.querySelectorAll(".toggle-product").forEach((btn) => {
-    btn.addEventListener("click", function (e) {
-      e.preventDefault();
-      const productId = this.getAttribute("href").split("/").pop();
-      const isListed =
-        this.closest("tr")?.querySelector(".status-badge.listed") !== null ||
-        this.closest(".bg-white")?.querySelector(".text-green-600") !== null;
-      toggleProduct(productId, isListed);
-    });
-  });
+
   function searchProducts(query) {
     window.location.href = `/admin/products?search=${encodeURIComponent(query)}`;
+  }
+
+  function clearSearch() {
+    document.getElementById("searchInput").value = "";
+    window.location.href = "/admin/products";
   }
 </script>
 

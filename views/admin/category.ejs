@@ -6,145 +6,400 @@
         height: 64px;
         object-fit: cover;
         border-radius: 0.375rem;
+        border: 1px solid #e0dcd4;
+        background: linear-gradient(145deg, #ffffff, #f8f7f5);
+        transition: all 0.3s ease;
     }
+
+    .category-image:hover {
+        transform: scale(1.05);
+        box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    }
+
     .image-placeholder {
         width: 64px;
         height: 64px;
-        background-color: #f3f4f6;
+        background: linear-gradient(145deg, #ffffff, #f8f7f5);
+        border: 1px dashed #e0dcd4;
         border-radius: 0.375rem;
         display: flex;
         align-items: center;
         justify-content: center;
+        transition: all 0.3s ease;
+    }
+
+    .image-placeholder:hover {
+        border-color: #2C2C2C;
+        background: linear-gradient(145deg, #f8f7f5, #ffffff);
+    }
+
+    .search-input {
+        background: linear-gradient(145deg, #ffffff, #f8f7f5);
+        border: 1px solid #e0dcd4;
+        border-radius: 0.5rem;
+        padding: 0.75rem 1rem 0.75rem 2.5rem;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .search-input:focus {
+        border-color: #2C2C2C;
+        box-shadow: 0 0 0 3px rgba(44,44,44,0.1);
+        outline: none;
+    }
+
+    .search-icon {
+        position: absolute;
+        left: 0.75rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #2C2C2C;
+        opacity: 0.5;
+        transition: all 0.3s ease;
+    }
+
+    .search-icon:hover {
+        opacity: 0.8;
+    }
+
+    .clear-search {
+        color: #2C2C2C;
+        opacity: 0.5;
+        transition: all 0.3s ease;
+    }
+
+    .clear-search:hover {
+        opacity: 0.8;
+        transform: scale(1.1);
+    }
+
+    .table-container {
+        background: linear-gradient(145deg, #ffffff, #f8f7f5);
+        border-radius: 0.5rem;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+
+    .table-header {
+        background: linear-gradient(145deg, #f8f7f5, #ffffff);
+        color: #2C2C2C;
+        font-weight: 500;
+        border-bottom: 1px solid #e0dcd4;
+    }
+
+    .table-row {
+        transition: all 0.3s ease;
+        border-bottom: 1px solid #e0dcd4;
+    }
+
+    .table-row:hover {
+        background: linear-gradient(145deg, #f8f7f5, #ffffff);
+    }
+
+    .status-badge {
+        padding: 0.25rem 0.75rem;
+        border-radius: 0.375rem;
+        font-size: 0.75rem;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+
+    .status-listed {
+        background: linear-gradient(145deg, #d1fae5, #a7f3d0);
+        color: #065f46;
+    }
+
+    .status-unlisted {
+        background: linear-gradient(145deg, #fee2e2, #fecaca);
+        color: #b91c1c;
+    }
+
+    .action-button {
+        padding: 0.5rem;
+        border-radius: 0.375rem;
+        transition: all 0.3s ease;
+    }
+
+    .action-button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    }
+
+    .edit-button {
+        color: #3b82f6;
+    }
+
+    .edit-button:hover {
+        color: #2563eb;
+    }
+
+    .toggle-button {
+        color: #10b981;
+    }
+
+    .toggle-button:hover {
+        color: #059669;
+    }
+
+    .modal-container {
+        background: linear-gradient(145deg, #ffffff, #f8f7f5);
+        border-radius: 0.5rem;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+
+    .modal-header {
+        border-bottom: 1px solid #e0dcd4;
+    }
+
+    .modal-title {
+        color: #2C2C2C;
+        font-weight: 600;
+    }
+
+    .modal-close {
+        color: #2C2C2C;
+        opacity: 0.5;
+        transition: all 0.3s ease;
+    }
+
+    .modal-close:hover {
+        opacity: 0.8;
+        transform: rotate(90deg);
+    }
+
+    .form-input {
+        background: linear-gradient(145deg, #ffffff, #f8f7f5);
+        border: 1px solid #e0dcd4;
+        border-radius: 0.5rem;
+        padding: 0.75rem 1rem;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .form-input:focus {
+        border-color: #2C2C2C;
+        box-shadow: 0 0 0 3px rgba(44,44,44,0.1);
+        outline: none;
+    }
+
+    .form-label {
+        color: #2C2C2C;
+        font-weight: 500;
+        margin-bottom: 0.5rem;
+    }
+
+    .submit-button {
+        background: linear-gradient(135deg, #2C2C2C, #1a1a1a);
+        color: #f8f7f5;
+        padding: 0.75rem 1.5rem;
+        border-radius: 0.5rem;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .submit-button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+
+    .cancel-button {
+        background: linear-gradient(145deg, #ffffff, #f8f7f5);
+        color: #2C2C2C;
+        border: 1px solid #e0dcd4;
+        padding: 0.75rem 1.5rem;
+        border-radius: 0.5rem;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .cancel-button:hover {
+        border-color: #2C2C2C;
+        transform: translateY(-2px);
+    }
+
+    .pagination-button {
+        padding: 0.5rem 1rem;
+        border-radius: 0.375rem;
+        transition: all 0.3s ease;
+    }
+
+    .pagination-active {
+        background: linear-gradient(135deg, #2C2C2C, #1a1a1a);
+        color: #f8f7f5;
+    }
+
+    .pagination-inactive {
+        background: linear-gradient(145deg, #ffffff, #f8f7f5);
+        color: #2C2C2C;
+        border: 1px solid #e0dcd4;
+    }
+
+    .pagination-inactive:hover {
+        border-color: #2C2C2C;
+        transform: translateY(-2px);
     }
 </style>
 
 
 <div class="flex-1 overflow-auto p-3 md:p-6 pt-20">
-    <div class="p-4 md:p-6 bg-white shadow-sm">
+    <div class="p-4 md:p-6 bg-white shadow-sm rounded-lg">
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-            <h1 class="text-2xl font-semibold text-gray-800">Categories</h1>
+            <h1 class="text-2xl font-semibold text-[#2C2C2C]">Categories</h1>
             <button onclick="openAddModal()" 
-                    class="px-4 py-2 bg-[#6C7559] hover:bg-[#5a6349] text-white rounded-lg text-sm">
+                    class="submit-button">
                 Add New Category
             </button>
         </div>
+
         <div class="relative w-full mt-4">
-            <input type="text" 
-                   placeholder="Search categories..." 
-                   class="w-full pl-10 pr-4 py-2 md:py-3 text-sm md:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#6C7559] focus:border-transparent shadow-sm"
-                   onkeyup="searchCategories(this.value)">
-            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <svg class="w-4 h-4 md:w-5 md:h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
-                </svg>
-            </div>
+            <form id="searchForm" action="/admin/category" method="GET">
+                <div class="relative">
+                    <input type="text" 
+                           name="search"
+                           value="<%= searchQuery || '' %>"
+                           placeholder="Search categories..." 
+                           class="search-input w-full"
+                           onkeyup="debounceSearch(this.value)">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <svg class="w-5 h-5 search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                        </svg>
+                    </div>
+                    <% if (searchQuery) { %>
+                        <button type="button" onclick="clearSearch()" class="absolute inset-y-0 right-2 flex items-center clear-search">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                            </svg>
+                        </button>
+                    <% } %>
+                </div>
+            </form>
         </div>
     </div>
 
     <div class="hidden md:block overflow-x-auto m-6">
-        <table class="w-full whitespace-nowrap bg-white rounded-lg shadow">
-            <thead>
-                <tr class="bg-gray-50 text-left">
-<th class="px-6 py-3 text-xs font-medium text-gray-500 uppercase">Image</th>
-                    <th class="px-6 py-3 text-xs font-medium text-gray-500 uppercase">Category Name</th>
-                    <th class="px-6 py-3 text-xs font-medium text-gray-500 uppercase">Description</th>
-                    <th class="px-6 py-3 text-xs font-medium text-gray-500 uppercase">Status</th>
-                    <th class="px-6 py-3 text-xs font-medium text-gray-500 uppercase">Actions</th>
-                </tr>
-            </thead>
-<tbody class="divide-y divide-gray-200">
-    <% cat.forEach(category => { %>
-        <tr class="hover:bg-gray-50">
-            <td class="px-6 py-4">
-                <% if (category.image) { %>
-                    <img src="<%= category.image %>" alt="<%= category.name %>" 
-                         class="w-16 h-16 object-cover rounded-md">
-                <% } else { %>
-                    <div class="w-16 h-16 bg-gray-100 rounded-md flex items-center justify-center">
-                        <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-                        </svg>
-                    </div>
-                <% } %>
-            </td>
-            <td class="px-6 py-4 text-sm text-gray-900"><%= category.name %></td>
-            <td class="px-6 py-4 text-sm text-gray-500"><%= category.description %></td>
-            <td class="px-6 py-4 text-sm text-gray-500">
-                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium <%= category.isListed ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' %>">
-                    <%= category.isListed ? 'Listed' : 'Unlisted' %>
-                </span>
-            </td>
-            <td class="px-6 py-4 text-sm text-gray-500">
-                <div class="flex items-center space-x-3">
-                    <a href="/admin/editCategory/<%= category._id %>" class="text-blue-600 hover:text-blue-800">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                                  d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
-                        </svg>
-                    </a>
-                    <a href="/admin/toggleCategory/<%= category._id %>" class="text-gray-600 hover:text-gray-800">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                                  d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
-                        </svg>
-                    </a>
-                </div>
-            </td>
-        </tr>
-    <% }); %>
-</tbody>
-                    </table>
+        <div class="table-container">
+            <table class="w-full whitespace-nowrap">
+                <thead>
+                    <tr class="table-header">
+                        <th class="px-6 py-3 text-sm font-medium">Image</th>
+                        <th class="px-6 py-3 text-sm font-medium">Category Name</th>
+                        <th class="px-6 py-3 text-sm font-medium">Description</th>
+                        <th class="px-6 py-3 text-sm font-medium">Status</th>
+                        <th class="px-6 py-3 text-sm font-medium">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-200">
+                    <% cat.forEach(category => { %>
+                        <tr class="table-row">
+                            <td class="px-6 py-4">
+                                <% if (category.image) { %>
+                                    <img src="<%= category.image %>" alt="<%= category.name %>" 
+                                         class="category-image">
+                                <% } else { %>
+                                    <div class="image-placeholder">
+                                        <svg class="w-6 h-6 text-[#2C2C2C] opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                        </svg>
+                                    </div>
+                                <% } %>
+                            </td>
+                            <td class="px-6 py-4 text-sm text-[#2C2C2C]"><%= category.name %></td>
+                            <td class="px-6 py-4 text-sm text-[#2C2C2C]"><%= category.description %></td>
+                            <td class="px-6 py-4 text-sm">
+                                <span class="status-badge <%= category.isListed ? 'status-listed' : 'status-unlisted' %>">
+                                    <%= category.isListed ? 'Listed' : 'Unlisted' %>
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 text-sm">
+                                <div class="flex items-center space-x-3">
+                                    <a href="/admin/editCategory/<%= category._id %>" class="action-button edit-button">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                                  d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                                        </svg>
+                                    </a>
+                                    <a href="/admin/toggleCategory/<%= category._id %>" class="action-button toggle-button">
+                                        <% if (category.isListed) { %>
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                                      d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                                      d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                                            </svg>
+                                        <% } else { %>
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                                      d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.4.916A3 3 0 0012 6.75a3 3 0 00-3-3m0 0a3 3 0 00-3 3m3-3v.75M12 4.5v15m7.5-7.5h-15"/>
+                                            </svg>
+                                        <% } %>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    <% }); %>
+                </tbody>
+            </table>
+        </div>
     </div>
 
-<div class="md:hidden space-y-4 m-4">
-    <% cat.forEach(category => { %>
-        <div class="bg-white p-4 rounded-lg shadow">
-            <div class="flex items-start gap-4">
-                <% if (category.image) { %>
-                    <img src="<%= category.image %>" alt="<%= category.name %>" 
-                         class="w-16 h-16 object-cover rounded-md">
-                <% } else { %>
-                    <div class="w-16 h-16 bg-gray-100 rounded-md flex items-center justify-center">
-                        <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-                        </svg>
-                    </div>
-                <% } %>
-                <div class="flex-1">
-                    <div class="flex justify-between items-start">
-                        <div>
-                            <h3 class="font-medium text-gray-900"><%= category.name %></h3>
-                            <p class="text-sm text-gray-500 mt-1"><%= category.description %></p>
+    <div class="md:hidden space-y-4 m-4">
+        <% cat.forEach(category => { %>
+            <div class="bg-white p-4 rounded-lg shadow">
+                <div class="flex items-start gap-4">
+                    <% if (category.image) { %>
+                        <img src="<%= category.image %>" alt="<%= category.name %>" 
+                             class="w-16 h-16 object-cover rounded-md">
+                    <% } else { %>
+                        <div class="w-16 h-16 bg-gray-100 rounded-md flex items-center justify-center">
+                            <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                            </svg>
                         </div>
-                        <span class="px-2 py-1 text-xs font-semibold rounded-full 
-                            <%= category.isListed ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' %>">
-                            <%= category.isListed ? 'Listed' : 'Unlisted' %>
-                        </span>
-                    </div>
-                    <div class="mt-4 flex justify-end space-x-3">
-                        <a href="/admin/editCategory/<%= category._id %>" class="text-blue-600 hover:text-blue-800 p-2">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                                      d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
-                            </svg>
-                        </a>
-                        <a href="/admin/toggleCategory/<%= category._id %>" class="text-gray-600 hover:text-gray-800 p-2">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                                      d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
-                            </svg>
-                        </a>
+                    <% } %>
+                    <div class="flex-1">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <h3 class="font-medium text-gray-900"><%= category.name %></h3>
+                                <p class="text-sm text-gray-500 mt-1"><%= category.description %></p>
+                            </div>
+                            <span class="px-2 py-1 text-xs font-semibold rounded-full 
+                                <%= category.isListed ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' %>">
+                                <%= category.isListed ? 'Listed' : 'Unlisted' %>
+                            </span>
+                        </div>
+
+                        <div class="mt-4 flex justify-end space-x-3">
+                            <a href="/admin/editCategory/<%= category._id %>" class="text-blue-600 hover:text-blue-800 p-2">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                          d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                                </svg>
+                            </a>
+
+                            <a href="/admin/toggleCategory/<%= category._id %>" 
+                               class="p-2 <%= category.isListed ? 'text-green-600 hover:text-green-800' : 'text-red-600 hover:text-red-800' %>">
+                                <% if (category.isListed) { %>
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                              d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                              d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                                    </svg>
+                                <% } else { %>
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                              d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.4.916A3 3 0 0012 6.75a3 3 0 00-3-3m0 0a3 3 0 00-3 3m3-3v.75M12 4.5v15m7.5-7.5h-15"/>
+                                    </svg>
+                                <% } %>
+                            </a>
+                        </div>
+                            
                     </div>
                 </div>
             </div>
-        </div>
-    <% }); %>
-</div>
+        <% }); %>
+    </div>
     <% if (totalPages > 1) { %>
         <div class="flex justify-center items-center space-x-2 my-6">
             <% for(let i = 1; i <= totalPages; i++) { %>
-                <a href="?page=<%= i %>" 
-                   class="px-3 py-1 rounded <%= currentPage === i ? 'bg-[#6C7559] text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300' %>">
+                <a href="?page=<%= i %><% if (searchQuery) { %>&search=<%= searchQuery %><% } %>" 
+                   class="pagination-button <%= currentPage === i ? 'pagination-active' : 'pagination-inactive' %>">
                     <%= i %>
                 </a>
             <% } %>
@@ -154,10 +409,10 @@
 
 <div id="addModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden">
     <div class="min-h-screen flex items-center justify-center p-4">
-        <div class="bg-white rounded-lg p-6 max-w-md w-full mx-4 relative">
-            <div class="flex justify-between items-center mb-4">
-                <h3 class="text-xl font-semibold text-gray-900">Add New Category</h3>
-                <button type="button" onclick="closeAddModal()" class="text-gray-400 hover:text-gray-500">
+        <div class="modal-container p-6 max-w-md w-full mx-4 relative">
+            <div class="modal-header flex justify-between items-center mb-4">
+                <h3 class="modal-title text-xl">Add New Category</h3>
+                <button type="button" onclick="closeAddModal()" class="modal-close">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                     </svg>
@@ -165,30 +420,25 @@
             </div>
             <form action="/admin/addCategory" method="POST" class="space-y-4" onsubmit="handleFormSubmit(event)">
                 <div>
-                    <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Category Name</label>
-                    <input type="text" id="name" name="name" required
-                           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#6C7559] focus:border-transparent">
-                    <p id="name-error" class="error-message text-red-500 text-sm mt-1" style="display: none;"></p>
+                    <label for="name" class="form-label">Category Name</label>
+                    <input type="text" id="name" name="name" required class="form-input w-full">
+                    <p id="name-error" class="error-message text-red-500 text-sm mt-1 hidden"></p>
                 </div>
                 <div>
-                    <label for="description" class="block text-sm font-medium text-gray-700 mb-1">Description</label>
-                    <textarea id="description" name="description" rows="3" required
-                              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#6C7559] focus:border-transparent"></textarea>
-                    <p id="description-error" class="error-message text-red-500 text-sm mt-1" style="display: none;"></p>
+                    <label for="description" class="form-label">Description</label>
+                    <textarea id="description" name="description" rows="3" required class="form-input w-full"></textarea>
+                    <p id="description-error" class="error-message text-red-500 text-sm mt-1 hidden"></p>
                 </div>
-<div>
-    <label for="categoryImage" class="block text-sm font-medium text-gray-700 mb-1">Category Image</label>
-    <input type="file" id="categoryImage" name="categoryImage" 
-           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#6C7559] focus:border-transparent">
-    <p id="image-error" class="error-message text-red-500 text-sm mt-1" style="display: none;"></p>
-  </div>
+                <div>
+                    <label for="categoryImage" class="form-label">Category Image</label>
+                    <input type="file" id="categoryImage" name="categoryImage" class="form-input w-full">
+                    <p id="image-error" class="error-message text-red-500 text-sm mt-1 hidden"></p>
+                </div>
                 <div class="flex justify-end space-x-4 mt-6">
-                    <button type="button" onclick="closeAddModal()"
-                            class="px-4 py-2 text-sm text-gray-600 hover:text-gray-800 font-medium">
+                    <button type="button" onclick="closeAddModal()" class="cancel-button">
                         Cancel
                     </button>
-                    <button type="submit" 
-                            class="px-4 py-2 bg-[#6C7559] hover:bg-[#5a6349] text-white rounded-lg text-sm">
+                    <button type="submit" class="submit-button">
                         Add Category
                     </button>
                 </div>
@@ -219,45 +469,45 @@
             closeAddModal();
         }
     });
-function handleFormSubmit(event) {
-    event.preventDefault();
-    if (!validateForm()) {
-        return;
-    }
-    
-    const formData = new FormData();
-    formData.append('name', document.getElementById("name").value);
-    formData.append('description', document.getElementById("description").value);
-    
-    const imageInput = document.getElementById("categoryImage");
-    if (imageInput.files.length > 0) {
-        formData.append('categoryImage', imageInput.files[0]);
-    }
 
-    fetch('/admin/addCategory', {
-        method: 'POST',
-        body: formData
-    }).then(response => {
-        if (!response.ok) {
-            return response.json().then(err => {
-                throw new Error(err.error);
-            });
+    function handleFormSubmit(event) {
+        event.preventDefault();
+        if (!validateForm()) {
+            return;
         }
-        return response.json();
-    }).then(data => {
-        location.reload();
-    }).catch(error => {
-        Swal.fire({
-            icon: 'error',
-            title: "Oops",
-            text: error.message === "Category already exists"
-                ? "Category already exists"
-                : "An error occurred while adding the category"
-        });
-    });
-}
+        
+        const formData = new FormData();
+        formData.append('name', document.getElementById("name").value);
+        formData.append('description', document.getElementById("description").value);
+        
+        const imageInput = document.getElementById("categoryImage");
+        if (imageInput.files.length > 0) {
+            formData.append('categoryImage', imageInput.files[0]);
+        }
 
-    
+        fetch('/admin/addCategory', {
+            method: 'POST',
+            body: formData
+        }).then(response => {
+            if (!response.ok) {
+                return response.json().then(err => {
+                    throw new Error(err.error);
+                });
+            }
+            return response.json();
+        }).then(data => {
+            location.reload();
+        }).catch(error => {
+            Swal.fire({
+                icon: 'error',
+                title: "Oops",
+                text: error.message === "Category already exists"
+                    ? "Category already exists"
+                    : "An error occurred while adding the category"
+            });
+        });
+    }
+
     function validateForm() {
         clearErrorMessages();
         const name = document.getElementById("name").value.trim();
@@ -277,18 +527,19 @@ function handleFormSubmit(event) {
             displayErrorMessage("description-error", "Please enter a description");
             isValid = false;
         }
-if (imageInput && imageInput.files.length > 0) {
-    const file = imageInput.files[0];
-    const validTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp','image/jpg'];
-    if (!validTypes.includes(file.type)) {
-      displayErrorMessage("image-error", "Please upload a valid image (JPEG, PNG, GIF, or WEBP)");
-      isValid = false;
-    }
-    if (file.size > 12 * 1024 * 1024) { 
-      displayErrorMessage("image-error", "Image must be less than 12MB");
-      isValid = false;
-    }
-  }
+
+        if (imageInput && imageInput.files.length > 0) {
+            const file = imageInput.files[0];
+            const validTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp','image/jpg'];
+            if (!validTypes.includes(file.type)) {
+                displayErrorMessage("image-error", "Please upload a valid image (JPEG, PNG, GIF, or WEBP)");
+                isValid = false;
+            }
+            if (file.size > 12 * 1024 * 1024) { 
+                displayErrorMessage("image-error", "Image must be less than 12MB");
+                isValid = false;
+            }
+        }
 
         return isValid;
     }
@@ -309,59 +560,79 @@ if (imageInput && imageInput.files.length > 0) {
         });
     }
 
-document.querySelectorAll('a[href^="/admin/toggleCategory/"]').forEach(link => {
-    link.addEventListener('click', function(e) {
-        e.preventDefault();
-        
-        Swal.fire({
-            title: 'Are you sure?',
-            text: "You're about to change the listing status of this category",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#6C7559',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Yes, change it!'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                fetch(this.getAttribute('href'), {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                })
-                .then(response => {
-                    if (!response.ok) {
-                        return response.json().then(err => {
-                            throw new Error(err.error);
+    document.querySelectorAll('a[href^="/admin/toggleCategory/"]').forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You're about to change the listing status of this category",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#6C7559',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, change it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    fetch(this.getAttribute('href'), {
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    })
+                    .then(response => {
+                        if (!response.ok) {
+                            return response.json().then(err => {
+                                throw new Error(err.error);
+                            });
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Success',
+                            text: data.message
+                        }).then(() => {
+                            location.reload();
                         });
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Success',
-                        text: data.message
-                    }).then(() => {
-                        location.reload();
+                    })
+                    .catch(error => {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: error.message
+                        });
                     });
-                })
-                .catch(error => {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: error.message
-                    });
-                });
-            }
+                }
+            });
         });
     });
-});
 
-function searchCategories(query) {
-    window.location.href = `/admin/category?search=${encodeURIComponent(query)}`;
-}
+    let debounceTimer;
 
+    function debounceSearch(query) {
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(() => {
+            if (query.trim() === '') {
+                clearSearch();
+            } else {
+                document.getElementById('searchForm').submit();
+            }
+        }, 500);
+    }
+
+    function clearSearch() {
+        window.location.href = '/admin/category';
+    }
+
+    function searchCategories(query) {
+        if (query.trim() === '') {
+            clearSearch();
+        } else {
+            window.location.href = `/admin/category?search=${encodeURIComponent(query)}`;
+        }
+    }
 </script>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

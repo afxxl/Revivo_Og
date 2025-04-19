@@ -1,51 +1,158 @@
 <%- include('../partials/admin/admin-header.ejs') %>
 <%- include('../partials/admin/admin-sidebar', {currentPage: 'category'}) %>
 
+<style>
+    .form-container {
+        background: linear-gradient(145deg, #ffffff, #f8f7f5);
+        border: 1px solid #e0dcd4;
+        border-radius: 0.75rem;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .form-container:hover {
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        border-color: #2C2C2C;
+    }
+
+    .form-label {
+        color: #2C2C2C;
+        font-weight: 500;
+        margin-bottom: 0.5rem;
+    }
+
+    .form-input {
+        background: linear-gradient(145deg, #ffffff, #f8f7f5);
+        border: 1px solid #e0dcd4;
+        border-radius: 0.5rem;
+        padding: 0.75rem 1rem;
+        color: #2C2C2C;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .form-input:focus {
+        border-color: #2C2C2C;
+        box-shadow: 0 0 0 3px rgba(44,44,44,0.1);
+        outline: none;
+    }
+
+    .form-input:hover:not(:focus) {
+        border-color: #2C2C2C;
+    }
+
+    .error-message {
+        color: #ef4444;
+        font-size: 0.875rem;
+        margin-top: 0.25rem;
+    }
+
+    .current-image {
+        border: 1px solid #e0dcd4;
+        border-radius: 0.5rem;
+        transition: all 0.3s ease;
+    }
+
+    .current-image:hover {
+        transform: scale(1.02);
+        border-color: #2C2C2C;
+    }
+
+    .cancel-button {
+        color: #2C2C2C;
+        opacity: 0.75;
+        transition: all 0.3s ease;
+    }
+
+    .cancel-button:hover {
+        opacity: 1;
+        transform: translateX(-2px);
+    }
+
+    .submit-button {
+        background: linear-gradient(135deg, #2C2C2C, #1a1a1a);
+        color: #f8f7f5;
+        border: none;
+        border-radius: 0.5rem;
+        padding: 0.5rem 1rem;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .submit-button:hover {
+        background: linear-gradient(135deg, #1a1a1a, #2C2C2C);
+        transform: translateY(-2px);
+    }
+
+    .file-input {
+        background: linear-gradient(145deg, #ffffff, #f8f7f5);
+        border: 1px solid #e0dcd4;
+        border-radius: 0.5rem;
+        padding: 0.75rem 1rem;
+        color: #2C2C2C;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .file-input:focus {
+        border-color: #2C2C2C;
+        box-shadow: 0 0 0 3px rgba(44,44,44,0.1);
+        outline: none;
+    }
+
+    .file-input:hover:not(:focus) {
+        border-color: #2C2C2C;
+    }
+
+    .helper-text {
+        color: #2C2C2C;
+        opacity: 0.75;
+        font-size: 0.75rem;
+        margin-top: 0.25rem;
+    }
+</style>
+
 <div class="flex-1 overflow-auto p-3 md:p-6 pt-20">
-    <div class="max-w-2xl mx-auto bg-white p-6 rounded-lg shadow">
-        <h2 class="text-2xl font-semibold mb-6">Edit Category</h2>
+    <div class="max-w-2xl mx-auto form-container p-6">
+        <h2 class="text-2xl font-semibold mb-6 text-[#2C2C2C]">Edit Category</h2>
         
         <form id="editCategoryForm" enctype="multipart/form-data" class="space-y-4">
             <div>
-                <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Category Name</label>
+                <label for="name" class="form-label">Category Name</label>
                 <input type="text" id="name" name="name" value="<%= category.name %>" required
-                       class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#6C7559] focus:border-transparent">
-                <p id="name-error" class="error-message text-red-500 text-sm mt-1" style="display: none;"></p>
+                       class="form-input w-full">
+                <p id="name-error" class="error-message" style="display: none;"></p>
             </div>
             
             <div>
-                <label for="description" class="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                <label for="description" class="form-label">Description</label>
                 <textarea id="description" name="description" rows="3" required
-                          class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#6C7559] focus:border-transparent"><%= category.description %></textarea>
-                <p id="description-error" class="error-message text-red-500 text-sm mt-1" style="display: none;"></p>
+                          class="form-input w-full"><%= category.description %></textarea>
+                <p id="description-error" class="error-message" style="display: none;"></p>
             </div>
             
             <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Current Image</label>
+                <label class="form-label">Current Image</label>
                 <% if (category.image) { %>
                     <div class="mb-2">
-                        <img src="<%= category.image %>" alt="Current Category Image" class="h-32 object-cover rounded-md">
+                        <img src="<%= category.image %>" alt="Current Category Image" class="current-image h-32 object-cover">
                     </div>
                     <input type="hidden" name="existingImage" value="<%= category.image %>">
                 <% } else { %>
-                    <p class="text-gray-500 text-sm">No image uploaded</p>
+                    <p class="text-[#2C2C2C] opacity-75 text-sm">No image uploaded</p>
                 <% } %>
             </div>
             
             <div>
-                <label for="categoryImage" class="block text-sm font-medium text-gray-700 mb-1">Update Image</label>
+                <label for="categoryImage" class="form-label">Update Image</label>
                 <input type="file" id="categoryImage" name="categoryImage" accept="image/*"
-                       class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#6C7559] focus:border-transparent">
-                <p id="image-error" class="error-message text-red-500 text-sm mt-1" style="display: none;"></p>
-                <p class="text-xs text-gray-500 mt-1">Upload a new image to replace the current one (JPEG, PNG, GIF, WEBP)</p>
+                       class="file-input w-full">
+                <p id="image-error" class="error-message" style="display: none;"></p>
+                <p class="helper-text">Upload a new image to replace the current one (JPEG, PNG, GIF, WEBP)</p>
             </div>
             
             <div class="flex justify-end space-x-4">
-                <a href="/admin/category" class="px-4 py-2 text-sm text-gray-600 hover:text-gray-800 font-medium">
+                <a href="/admin/category" class="cancel-button px-4 py-2 text-sm font-medium">
                     Cancel
                 </a>
-                <button type="submit" 
-                        class="px-4 py-2 bg-[#6C7559] hover:bg-[#5a6349] text-white rounded-lg text-sm">
+                <button type="submit" class="submit-button px-4 py-2 text-sm">
                     Update Category
                 </button>
             </div>
@@ -91,7 +198,8 @@
             Swal.fire({
                 icon: 'success',
                 title: 'Success',
-                text: data.message
+                text: data.message,
+                confirmButtonColor: '#2C2C2C'
             }).then(() => {
                 window.location.href = '/admin/category';
             });
@@ -100,7 +208,8 @@
             Swal.fire({
                 icon: 'error',
                 title: 'Error',
-                text: error.message
+                text: error.message,
+                confirmButtonColor: '#2C2C2C'
             });
         });
     });

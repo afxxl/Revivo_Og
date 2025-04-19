@@ -35,7 +35,7 @@ const userSchema = new mongoose.Schema({
   },
   profileImage: {
     type: String,
-    default: "/images/default-profile.jpg",
+    default: "/Images/default-profile.jpg",
   },
   addresses: [
     {

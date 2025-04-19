@@ -1,18 +1,646 @@
 <%- include('../partials/admin/admin-header.ejs') %>
 <%- include('../partials/admin/admin-sidebar', {currentPage: 'dashboard'}) %>
 
+<style>
+    /* Enhanced Dashboard Styles */
+    .dashboard-card {
+        background: linear-gradient(145deg, #ffffff, #f8f7f5);
+        border: 1px solid #e0dcd4;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .dashboard-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, #2C2C2C, #6C7559);
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    .dashboard-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+    }
+
+    .dashboard-card:hover::before {
+        opacity: 1;
+    }
+
+    .stat-icon {
+        background: linear-gradient(135deg, #2C2C2C, #1a1a1a);
+        color: #f8f7f5;
+        padding: 1rem;
+        border-radius: 0.75rem;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+
+    .stat-icon:hover {
+        transform: scale(1.1) rotate(5deg);
+        box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+    }
+
+    .download-button {
+        background-color: #2C2C2C;
+        color: #f8f7f5;
+        transition: all 0.3s ease;
+    }
+
+    .download-button:hover {
+        background-color: #1a1a1a;
+        transform: translateY(-1px);
+    }
+
+    .table-header {
+        background: linear-gradient(to right, #f8f7f5, #ffffff);
+        border-bottom: 2px solid #e0dcd4;
+    }
+
+    .table-row {
+        transition: all 0.2s ease;
+    }
+
+    .table-row:hover {
+        background: linear-gradient(to right, #f8f7f5, #ffffff);
+        transform: translateX(4px);
+    }
+
+    .pagination-button {
+        border: 1px solid #e0dcd4;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .pagination-button::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(135deg, rgba(44,44,44,0.1), rgba(44,44,44,0));
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    .pagination-button:hover {
+        background-color: #f8f7f5;
+        border-color: #2C2C2C;
+        transform: translateY(-2px);
+    }
+
+    .pagination-button:hover::before {
+        opacity: 1;
+    }
+
+    .pagination-button.active {
+        background: linear-gradient(135deg, #2C2C2C, #1a1a1a);
+        color: #f8f7f5;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+
+    /* Enhanced Product Image Styles */
+    .product-image {
+        border: 1px solid #e0dcd4;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .product-image::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(135deg, rgba(44,44,44,0.1), rgba(44,44,44,0));
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    .product-image:hover {
+        transform: scale(1.1);
+        box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+    }
+
+    .product-image:hover::after {
+        opacity: 1;
+    }
+
+    /* New Styles */
+    .chart-container {
+        background: linear-gradient(145deg, #ffffff, #f8f7f5);
+        border: 1px solid #e0dcd4;
+        border-radius: 1rem;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        transition: all 0.3s ease;
+    }
+
+    .chart-container:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+    }
+
+    .activity-card {
+        background: linear-gradient(145deg, #ffffff, #f8f7f5);
+        border: 1px solid #e0dcd4;
+        border-radius: 0.75rem;
+        padding: 1.25rem;
+        margin-bottom: 1rem;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .activity-card::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 4px;
+        height: 100%;
+        background: linear-gradient(to bottom, #2C2C2C, #6C7559);
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    .activity-card:hover {
+        transform: translateX(4px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .activity-card:hover::after {
+        opacity: 1;
+    }
+
+    .status-badge {
+        padding: 0.5rem 1rem;
+        border-radius: 9999px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        letter-spacing: 0.025em;
+        transition: all 0.3s ease;
+    }
+
+    .status-pending {
+        background: linear-gradient(135deg, #fef3c7, #fde68a);
+        color: #92400e;
+    }
+
+    .status-completed {
+        background: linear-gradient(135deg, #d1fae5, #a7f3d0);
+        color: #065f46;
+    }
+
+    .status-cancelled {
+        background: linear-gradient(135deg, #fee2e2, #fecaca);
+        color: #991b1b;
+    }
+
+    .trend-indicator {
+        display: flex;
+        align-items: center;
+        font-size: 0.875rem;
+        padding: 0.25rem 0.5rem;
+        border-radius: 0.5rem;
+        background-color: rgba(0,0,0,0.03);
+        transition: all 0.3s ease;
+    }
+
+    .trend-indicator:hover {
+        background-color: rgba(0,0,0,0.05);
+    }
+
+    .trend-up {
+        color: #059669;
+    }
+
+    .trend-down {
+        color: #dc2626;
+    }
+
+    .quick-actions {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+        margin-bottom: 2rem;
+    }
+
+    .action-button {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 1.25rem;
+        border-radius: 0.75rem;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .action-button::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0));
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    .action-button:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+    }
+
+    .action-button:hover::before {
+        opacity: 1;
+    }
+
+    .action-button.add {
+        background-color: #f0fdf4;
+        color: #166534;
+        border: 1px solid #bbf7d0;
+    }
+
+    .action-button.edit {
+        background-color: #eff6ff;
+        color: #1e40af;
+        border: 1px solid #bfdbfe;
+    }
+
+    .action-button.delete {
+        background-color: #fef2f2;
+        color: #991b1b;
+        border: 1px solid #fecaca;
+    }
+
+    .action-button.export {
+        background-color: #faf5ff;
+        color: #6b21a8;
+        border: 1px solid #e9d5ff;
+    }
+
+    /* Update action button styles */
+    .action-button.analytics {
+        background-color: #e0f2fe;
+        color: #0369a1;
+        border: 1px solid #bae6fd;
+    }
+
+    .action-button.reports {
+        background-color: #f0fdfa;
+        color: #0d9488;
+        border: 1px solid #ccfbf1;
+    }
+
+    .action-button.notifications {
+        background-color: #fef3f2;
+        color: #dc2626;
+        border: 1px solid #fecaca;
+    }
+
+    .action-button.settings {
+        background-color: #f5f3ff;
+        color: #7c3aed;
+        border: 1px solid #ddd6fe;
+    }
+
+    /* Mobile Responsive Fixes */
+    @media (max-width: 640px) {
+        .flex-1 {
+            padding: 0.5rem;
+            overflow-x: hidden;
+        }
+
+        .grid {
+            grid-template-columns: 1fr;
+            gap: 1rem;
+        }
+
+        .dashboard-card {
+            padding: 1rem;
+            margin: 0;
+        }
+
+        .stat-icon {
+            padding: 0.75rem;
+        }
+
+        .stat-icon svg {
+            width: 1.5rem;
+            height: 1.5rem;
+        }
+
+        .trend-indicator {
+            font-size: 0.75rem;
+            padding: 0.25rem;
+        }
+
+        .trend-indicator svg {
+            width: 1rem;
+            height: 1rem;
+        }
+
+        .quick-actions {
+            grid-template-columns: 1fr;
+            gap: 0.75rem;
+            padding: 0.5rem;
+        }
+
+        .action-button {
+            padding: 0.75rem;
+            font-size: 0.875rem;
+        }
+
+        .action-button svg {
+            width: 1.25rem;
+            height: 1.25rem;
+        }
+
+        .chart-container {
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .chart-container h3 {
+            font-size: 1rem;
+        }
+
+        .activity-card {
+            padding: 0.75rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .status-badge {
+            padding: 0.25rem 0.5rem;
+            font-size: 0.625rem;
+        }
+
+        .overflow-x-auto {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        .overflow-x-auto::-webkit-scrollbar {
+            display: none;
+        }
+
+        table {
+            min-width: 600px;
+        }
+
+        .pagination-container {
+            flex-wrap: wrap;
+            gap: 0.25rem;
+            padding: 0.5rem;
+        }
+
+        .pagination-button {
+            padding: 0.25rem 0.5rem;
+            font-size: 0.75rem;
+        }
+
+        .download-button {
+            padding: 0.5rem;
+            font-size: 0.875rem;
+        }
+
+        .download-button svg {
+            width: 1rem;
+            height: 1rem;
+        }
+
+        .product-image {
+            width: 2rem;
+            height: 2rem;
+        }
+
+        .text-2xl {
+            font-size: 1.25rem;
+        }
+
+        .text-3xl {
+            font-size: 1.5rem;
+        }
+
+        .text-lg {
+            font-size: 1rem;
+        }
+
+        .text-sm {
+            font-size: 0.75rem;
+        }
+
+        .text-xs {
+            font-size: 0.625rem;
+        }
+
+        .px-6 {
+            padding-left: 0.75rem;
+            padding-right: 0.75rem;
+        }
+
+        .py-4 {
+            padding-top: 0.5rem;
+            padding-bottom: 0.5rem;
+        }
+
+        .py-3 {
+            padding-top: 0.375rem;
+            padding-bottom: 0.375rem;
+        }
+
+        .px-3 {
+            padding-left: 0.375rem;
+            padding-right: 0.375rem;
+        }
+
+        .py-1 {
+            padding-top: 0.125rem;
+            padding-bottom: 0.125rem;
+        }
+
+        .space-x-4 {
+            gap: 0.5rem;
+        }
+
+        .space-y-4 {
+            gap: 0.5rem;
+        }
+
+        .gap-4 {
+            gap: 0.5rem;
+        }
+
+        .gap-6 {
+            gap: 0.75rem;
+        }
+
+        .p-6 {
+            padding: 0.75rem;
+        }
+
+        .p-4 {
+            padding: 0.5rem;
+        }
+
+        .m-4 {
+            margin: 0.5rem;
+        }
+
+        .m-6 {
+            margin: 0.75rem;
+        }
+
+        .mt-1 {
+            margin-top: 0.125rem;
+        }
+
+        .mt-2 {
+            margin-top: 0.25rem;
+        }
+
+        .mb-4 {
+            margin-bottom: 0.5rem;
+        }
+
+        .mb-3 {
+            margin-bottom: 0.375rem;
+        }
+
+        .ml-0 {
+            margin-left: 0;
+        }
+
+        .mr-1 {
+            margin-right: 0.125rem;
+        }
+
+        .mr-2 {
+            margin-right: 0.25rem;
+        }
+
+        .mr-3 {
+            margin-right: 0.375rem;
+        }
+
+        .mr-4 {
+            margin-right: 0.5rem;
+        }
+
+        .ml-2 {
+            margin-left: 0.25rem;
+        }
+
+        .ml-4 {
+            margin-left: 0.5rem;
+        }
+
+        .ml-6 {
+            margin-left: 0.75rem;
+        }
+
+        .ml-8 {
+            margin-left: 1rem;
+        }
+
+        .ml-12 {
+            margin-left: 1.5rem;
+        }
+
+        .ml-16 {
+            margin-left: 2rem;
+        }
+
+        .ml-20 {
+            margin-left: 2.5rem;
+        }
+
+        .ml-24 {
+            margin-left: 3rem;
+        }
+
+        .ml-28 {
+            margin-left: 3.5rem;
+        }
+
+        .ml-32 {
+            margin-left: 4rem;
+        }
+
+        .ml-36 {
+            margin-left: 4.5rem;
+        }
+
+        .ml-40 {
+            margin-left: 5rem;
+        }
+
+        .ml-44 {
+            margin-left: 5.5rem;
+        }
+
+        .ml-48 {
+            margin-left: 6rem;
+        }
+
+        .ml-52 {
+            margin-left: 6.5rem;
+        }
+
+        .ml-56 {
+            margin-left: 7rem;
+        }
+
+        .ml-60 {
+            margin-left: 7.5rem;
+        }
+
+        .ml-64 {
+            margin-left: 8rem;
+        }
+
+        .ml-72 {
+            margin-left: 9rem;
+        }
+
+        .ml-80 {
+            margin-left: 10rem;
+        }
+
+        .ml-96 {
+            margin-left: 12rem;
+        }
+    }
+</style>
+
 <div class="flex-1 overflow-auto md:ml-0 pt-16 md:pt-0">
     <header class="md:hidden fixed top-0 left-0 right-0 bg-white shadow-sm z-20">
         <div class="flex justify-center items-center h-16">
-            <h1 class="text-xl font-semibold text-gray-800">Dashboard</h1>
+            <h1 class="text-xl font-semibold text-[#2C2C2C]">Dashboard</h1>
         </div>
     </header>
 
     <header class="bg-white shadow-sm">
         <div class="flex justify-between items-center px-6 py-4">
-            <h1 class="text-2xl font-semibold text-gray-800">Dashboard</h1>
+            <h1 class="text-2xl font-semibold text-[#2C2C2C]">Dashboard</h1>
             <div class="flex items-center space-x-4">
-                <button class="flex items-center space-x-2 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600">
+                <button class="download-button flex items-center space-x-2 px-4 py-2 rounded-lg shadow-sm hover:shadow-md">
                     <span>Download PDF</span>
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
@@ -22,102 +650,256 @@
         </div>
     </header>
 
+    <!-- Quick Actions -->
+    <div class="quick-actions p-6">
+        <button class="action-button analytics">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+            </svg>
+            <span>View Analytics</span>
+        </button>
+        <button class="action-button reports">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+            </svg>
+            <span>Generate Reports</span>
+        </button>
+        <button class="action-button notifications">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path>
+            </svg>
+            <span>View Notifications</span>
+        </button>
+        <button class="action-button settings">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+            </svg>
+            <span>Settings</span>
+        </button>
+    </div>
+
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 p-4 md:p-6">
-        <div class="bg-purple-500 rounded-lg p-6 text-white">
+        <div class="dashboard-card rounded-lg p-6">
             <div class="flex justify-between items-center">
                 <div>
-                    <p class="text-sm opacity-75">Total Users</p>
-                    <h3 class="text-2xl md:text-3xl font-bold mt-1">29</h3>
+                    <p class="text-sm text-[#2C2C2C]/70">Total Users</p>
+                    <h3 class="text-2xl md:text-3xl font-bold mt-1 text-[#2C2C2C]">29</h3>
+                    <div class="trend-indicator trend-up mt-2">
+                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"></path>
+                        </svg>
+                        <span>12% increase</span>
+                    </div>
                 </div>
-                <svg class="w-8 h-8 opacity-75" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
-                </svg>
+                <div class="stat-icon">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                    </svg>
+                </div>
             </div>
         </div>
 
-        <div class="bg-purple-500 rounded-lg p-6 text-white">
+        <div class="dashboard-card rounded-lg p-6">
             <div class="flex justify-between items-center">
                 <div>
-                    <p class="text-sm opacity-75">Items Sold</p>
-                    <h3 class="text-2xl md:text-3xl font-bold mt-1">19</h3>
+                    <p class="text-sm text-[#2C2C2C]/70">Items Sold</p>
+                    <h3 class="text-2xl md:text-3xl font-bold mt-1 text-[#2C2C2C]">19</h3>
+                    <div class="trend-indicator trend-up mt-2">
+                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"></path>
+                        </svg>
+                        <span>8% increase</span>
+                    </div>
                 </div>
-                <svg class="w-8 h-8 opacity-75" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
-                </svg>
+                <div class="stat-icon">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+                    </svg>
+                </div>
             </div>
         </div>
 
-        <div class="bg-purple-500 rounded-lg p-6 text-white">
+        <div class="dashboard-card rounded-lg p-6">
             <div class="flex justify-between items-center">
                 <div>
-                    <p class="text-sm opacity-75">Total Sales</p>
-                    <h3 class="text-2xl md:text-3xl font-bold mt-1">₹998,156</h3>
+                    <p class="text-sm text-[#2C2C2C]/70">Total Sales</p>
+                    <h3 class="text-2xl md:text-3xl font-bold mt-1 text-[#2C2C2C]">₹998,156</h3>
+                    <div class="trend-indicator trend-up mt-2">
+                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"></path>
+                        </svg>
+                        <span>15% increase</span>
+                    </div>
                 </div>
-                <svg class="w-8 h-8 opacity-75" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                </svg>
+                <div class="stat-icon">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                </div>
             </div>
         </div>
 
-        <div class="bg-purple-500 rounded-lg p-6 text-white">
+        <div class="dashboard-card rounded-lg p-6">
             <div class="flex justify-between items-center">
                 <div>
-                    <p class="text-sm opacity-75">Pending Orders</p>
-                    <h3 class="text-2xl md:text-3xl font-bold mt-1">12</h3>
+                    <p class="text-sm text-[#2C2C2C]/70">Pending Orders</p>
+                    <h3 class="text-2xl md:text-3xl font-bold mt-1 text-[#2C2C2C]">12</h3>
+                    <div class="trend-indicator trend-down mt-2">
+                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+                        </svg>
+                        <span>5% decrease</span>
+                    </div>
                 </div>
-                <svg class="w-8 h-8 opacity-75" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                </svg>
+                <div class="stat-icon">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                </div>
             </div>
         </div>
     </div>
 
+    <!-- Charts Section -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 p-6">
+        <div class="chart-container">
+            <h3 class="text-lg font-semibold text-[#2C2C2C] mb-4">Sales Overview</h3>
+            <div class="h-64 bg-[#f8f7f5] rounded-lg p-4">
+                <div class="flex items-end h-full space-x-2">
+                    <div class="flex-1 bg-[#2C2C2C] h-16 rounded-t"></div>
+                    <div class="flex-1 bg-[#2C2C2C] h-24 rounded-t"></div>
+                    <div class="flex-1 bg-[#2C2C2C] h-32 rounded-t"></div>
+                    <div class="flex-1 bg-[#2C2C2C] h-20 rounded-t"></div>
+                    <div class="flex-1 bg-[#2C2C2C] h-28 rounded-t"></div>
+                    <div class="flex-1 bg-[#2C2C2C] h-36 rounded-t"></div>
+                    <div class="flex-1 bg-[#2C2C2C] h-24 rounded-t"></div>
+                </div>
+                <div class="flex justify-between mt-4 text-xs text-[#2C2C2C]/70">
+                    <span>Mon</span>
+                    <span>Tue</span>
+                    <span>Wed</span>
+                    <span>Thu</span>
+                    <span>Fri</span>
+                    <span>Sat</span>
+                    <span>Sun</span>
+                </div>
+            </div>
+        </div>
+        <div class="chart-container">
+            <h3 class="text-lg font-semibold text-[#2C2C2C] mb-4">Revenue by Category</h3>
+            <div class="h-64 bg-[#f8f7f5] rounded-lg p-4">
+                <div class="flex items-end h-full space-x-4">
+                    <div class="flex flex-col items-center">
+                        <div class="w-8 bg-[#2C2C2C] h-32 rounded-t"></div>
+                        <span class="text-xs text-[#2C2C2C]/70 mt-2">Electronics</span>
+                    </div>
+                    <div class="flex flex-col items-center">
+                        <div class="w-8 bg-[#2C2C2C] h-24 rounded-t"></div>
+                        <span class="text-xs text-[#2C2C2C]/70 mt-2">Fashion</span>
+                    </div>
+                    <div class="flex flex-col items-center">
+                        <div class="w-8 bg-[#2C2C2C] h-40 rounded-t"></div>
+                        <span class="text-xs text-[#2C2C2C]/70 mt-2">Home</span>
+                    </div>
+                    <div class="flex flex-col items-center">
+                        <div class="w-8 bg-[#2C2C2C] h-28 rounded-t"></div>
+                        <span class="text-xs text-[#2C2C2C]/70 mt-2">Sports</span>
+                    </div>
+                    <div class="flex flex-col items-center">
+                        <div class="w-8 bg-[#2C2C2C] h-36 rounded-t"></div>
+                        <span class="text-xs text-[#2C2C2C]/70 mt-2">Books</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Activity -->
     <div class="p-6">
         <div class="bg-white rounded-lg shadow">
-            <div class="px-6 py-4 border-b">
-                <h2 class="text-lg font-semibold text-gray-800">Top Sold Products</h2>
+            <div class="px-6 py-4 border-b border-[#e0dcd4]">
+                <h2 class="text-lg font-semibold text-[#2C2C2C]">Recent Activity</h2>
+            </div>
+            <div class="p-6 space-y-4">
+                <div class="activity-card">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <p class="text-sm font-medium text-[#2C2C2C]">New order received</p>
+                            <p class="text-xs text-[#2C2C2C]/70">Order #1234 from John Doe</p>
+                        </div>
+                        <span class="status-badge status-pending">Pending</span>
+                    </div>
+                </div>
+                <div class="activity-card">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <p class="text-sm font-medium text-[#2C2C2C]">Product added</p>
+                            <p class="text-xs text-[#2C2C2C]/70">Nike Air Max added to inventory</p>
+                        </div>
+                        <span class="status-badge status-completed">Completed</span>
+                    </div>
+                </div>
+                <div class="activity-card">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <p class="text-sm font-medium text-[#2C2C2C]">Order cancelled</p>
+                            <p class="text-xs text-[#2C2C2C]/70">Order #1235 from Jane Smith</p>
+                        </div>
+                        <span class="status-badge status-cancelled">Cancelled</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Top Sold Products Table -->
+    <div class="p-6">
+        <div class="bg-white rounded-lg shadow">
+            <div class="px-6 py-4 border-b border-[#e0dcd4]">
+                <h2 class="text-lg font-semibold text-[#2C2C2C]">Top Sold Products</h2>
             </div>
             <div class="overflow-x-auto">
                 <table class="w-full">
-                    <thead class="bg-gray-50">
+                    <thead class="table-header">
                         <tr>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">ID</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Product Image</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Product Name</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Brand</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Amount</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Revenue</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Qty Sold</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-[#2C2C2C]/70 uppercase">ID</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-[#2C2C2C]/70 uppercase">Product Image</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-[#2C2C2C]/70 uppercase">Product Name</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-[#2C2C2C]/70 uppercase">Brand</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-[#2C2C2C]/70 uppercase">Amount</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-[#2C2C2C]/70 uppercase">Revenue</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-[#2C2C2C]/70 uppercase">Qty Sold</th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-gray-200">
-                        <tr class="hover:bg-gray-50">
-                            <td class="px-6 py-4 text-sm text-gray-500">#1225</td>
+                    <tbody class="divide-y divide-[#e0dcd4]">
+                        <tr class="table-row">
+                            <td class="px-6 py-4 text-sm text-[#2C2C2C]/70">#1225</td>
                             <td class="px-6 py-4">
-                                <img src="/path/to/product/image.jpg" alt="Product" class="h-12 w-12 object-cover rounded">
+                                <img src="/path/to/product/image.jpg" alt="Product" class="product-image h-12 w-12 object-cover rounded">
                             </td>
-                            <td class="px-6 py-4 text-sm text-gray-900">Nike Sports</td>
-                            <td class="px-6 py-4 text-sm text-gray-500">NIKE</td>
-                            <td class="px-6 py-4 text-sm text-gray-900">$1480</td>
-                            <td class="px-6 py-4 text-sm text-gray-900">$3483</td>
-                            <td class="px-6 py-4 text-sm text-gray-900">1</td>
+                            <td class="px-6 py-4 text-sm text-[#2C2C2C]">Nike Sports</td>
+                            <td class="px-6 py-4 text-sm text-[#2C2C2C]/70">NIKE</td>
+                            <td class="px-6 py-4 text-sm text-[#2C2C2C]">$1480</td>
+                            <td class="px-6 py-4 text-sm text-[#2C2C2C]">$3483</td>
+                            <td class="px-6 py-4 text-sm text-[#2C2C2C]">1</td>
                         </tr>
                     </tbody>
                 </table>
             </div>
-            <div class="px-6 py-4 flex items-center justify-between border-t">
-                <div class="text-sm text-gray-500">
+            <div class="px-6 py-4 flex items-center justify-between border-t border-[#e0dcd4]">
+                <div class="text-sm text-[#2C2C2C]/70">
                     Showing 1 of 10
                 </div>
                 <div class="flex space-x-2">
-                    <button class="px-3 py-1 rounded border hover:bg-gray-50">&lt;</button>
-                    <button class="px-3 py-1 rounded border bg-purple-500 text-white">1</button>
-                    <button class="px-3 py-1 rounded border hover:bg-gray-50">2</button>
-                    <button class="px-3 py-1 rounded border hover:bg-gray-50">3</button>
-                    <button class="px-3 py-1 rounded border hover:bg-gray-50">...</button>
-                    <button class="px-3 py-1 rounded border hover:bg-gray-50">8</button>
-                    <button class="px-3 py-1 rounded border hover:bg-gray-50">9</button>
-                    <button class="px-3 py-1 rounded border hover:bg-gray-50">&gt;</button>
+                    <button class="pagination-button px-3 py-1 rounded">&lt;</button>
+                    <button class="pagination-button active px-3 py-1 rounded">1</button>
+                    <button class="pagination-button px-3 py-1 rounded">2</button>
+                    <button class="pagination-button px-3 py-1 rounded">3</button>
+                    <button class="pagination-button px-3 py-1 rounded">...</button>
+                    <button class="pagination-button px-3 py-1 rounded">8</button>
+                    <button class="pagination-button px-3 py-1 rounded">9</button>
+                    <button class="pagination-button px-3 py-1 rounded">&gt;</button>
                 </div>
             </div>
         </div>

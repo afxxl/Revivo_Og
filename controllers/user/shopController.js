@@ -689,7 +689,7 @@ const createOrder = async (req, res) => {
 
     const cart = await Cart.findOne({ userId }).populate({
       path: "items.productId",
-      populate: [{ path: "brand [brand" }, { path: "category" }],
+      populate: [{ path: "brand" }, { path: "category" }],
     });
 
     if (!addressId) {

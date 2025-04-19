@@ -1,92 +1,187 @@
-
-
 <%- include('../partials/admin/admin-header.ejs') %>
 <%- include('../partials/admin/admin-sidebar', {currentPage: 'orders'}) %>
 
 <style>
-.status-badge {
-    padding: 0.25rem 0.5rem;
-    border-radius: 0.25rem;
-    font-size: 0.75rem;
-    font-weight: 600;
-}
-
-.pending { background-color: #FEF3C7; color: #B45309; }
-.confirmed { background-color: #DBEAFE; color: #1E40AF; }
-.shipped { background-color: #D1FAE5; color: #065F46; }
-.delivered { background-color: #DCFCE7; color: #166534; }
-.cancelled { background-color: #FEE2E2; color: #991B1B; }
-
-.order-card {
-    background: white;
-    border-radius: 0.5rem;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-    transition: transform 0.2s ease;
-}
-
-.order-card:hover {
-    transform: translateY(-2px);
-}
-
-.search-container {
-    position: relative;
-    width: 100%;
-    max-width: 400px;
-}
-
-.clear-search {
-    position: absolute;
-    right: 10px;
-    top: 50%;
-    transform: translateY(-50%);
-    cursor: pointer;
-    display: <%= typeof search !== 'undefined' && search !== '' ? 'block' : 'none' %>;
-}
-
-.pagination-btn {
-    padding: 0.5rem 1rem;
-    border-radius: 0.375rem;
-    transition: all 0.2s ease;
-}
-
-.pagination-btn:hover {
-    background-color: #e5e7eb;
-}
-
-.current-page {
-    background-color: #6C7559;
-    color: white;
-}
-
-.current-page:hover {
-    background-color: #5a6349;
-}
-
-@media (max-width: 768px) {
-    .order-mobile-view {
-        padding: 1rem;
-        border-bottom: 1px solid #e5e7eb;
+    .status-badge {
+        padding: 0.25rem 0.75rem;
+        border-radius: 0.375rem;
+        font-size: 0.75rem;
+        font-weight: 500;
+        transition: all 0.3s ease;
     }
-    
-    .order-mobile-view:last-child {
-        border-bottom: none;
+
+    .pending { 
+        background: linear-gradient(145deg, #fef3c7, #fde68a);
+        color: #b45309;
     }
-}
+
+    .confirmed { 
+        background: linear-gradient(145deg, #dbeafe, #bfdbfe);
+        color: #1e40af;
+    }
+
+    .shipped { 
+        background: linear-gradient(145deg, #d1fae5, #a7f3d0);
+        color: #065f46;
+    }
+
+    .delivered { 
+        background: linear-gradient(145deg, #dcfce7, #bbf7d0);
+        color: #166534;
+    }
+
+    .cancelled { 
+        background: linear-gradient(145deg, #fee2e2, #fecaca);
+        color: #991b1b;
+    }
+
+    .order-card {
+        background: linear-gradient(145deg, #ffffff, #f8f7f5);
+        border: 1px solid #e0dcd4;
+        border-radius: 0.5rem;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .order-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        border-color: #2C2C2C;
+    }
+
+    .search-container {
+        position: relative;
+        width: 100%;
+        max-width: 400px;
+    }
+
+    .search-input {
+        background: linear-gradient(145deg, #ffffff, #f8f7f5);
+        border: 1px solid #e0dcd4;
+        border-radius: 0.5rem;
+        padding: 0.75rem 1rem 0.75rem 2.5rem;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .search-input:focus {
+        border-color: #2C2C2C;
+        box-shadow: 0 0 0 3px rgba(44,44,44,0.1);
+        outline: none;
+    }
+
+    .search-icon {
+        position: absolute;
+        left: 0.75rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #2C2C2C;
+        opacity: 0.5;
+        transition: all 0.3s ease;
+    }
+
+    .clear-search {
+        position: absolute;
+        right: 0.75rem;
+        top: 50%;
+        transform: translateY(-50%);
+        cursor: pointer;
+        color: #2C2C2C;
+        opacity: 0.5;
+        transition: all 0.3s ease;
+    }
+
+    .clear-search:hover {
+        opacity: 0.8;
+        transform: translateY(-50%) scale(1.1);
+    }
+
+    .table-container {
+        background: linear-gradient(145deg, #ffffff, #f8f7f5);
+        border-radius: 0.5rem;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        border: 1px solid #e0dcd4;
+    }
+
+    .table-header {
+        background: linear-gradient(145deg, #f8f7f5, #ffffff);
+        color: #2C2C2C;
+        font-weight: 500;
+        border-bottom: 1px solid #e0dcd4;
+    }
+
+    .table-row {
+        transition: all 0.3s ease;
+        border-bottom: 1px solid #e0dcd4;
+    }
+
+    .table-row:hover {
+        background: linear-gradient(145deg, #f8f7f5, #ffffff);
+    }
+
+    .view-button {
+        color: #2C2C2C;
+        transition: all 0.3s ease;
+    }
+
+    .view-button:hover {
+        color: #f8c78d;
+        transform: translateX(2px);
+    }
+
+    .pagination-btn {
+        padding: 0.5rem 1rem;
+        border-radius: 0.375rem;
+        transition: all 0.3s ease;
+        background: linear-gradient(145deg, #ffffff, #f8f7f5);
+        border: 1px solid #e0dcd4;
+        color: #2C2C2C;
+    }
+
+    .pagination-btn:hover {
+        border-color: #2C2C2C;
+        transform: translateY(-2px);
+    }
+
+    .current-page {
+        background: linear-gradient(135deg, #2C2C2C, #1a1a1a);
+        color: #f8f7f5;
+        border: none;
+    }
+
+    .current-page:hover {
+        background: linear-gradient(135deg, #1a1a1a, #2C2C2C);
+    }
+
+    @media (max-width: 768px) {
+        .order-mobile-view {
+            padding: 1rem;
+            border-bottom: 1px solid #e0dcd4;
+        }
+        
+        .order-mobile-view:last-child {
+            border-bottom: none;
+        }
+    }
 </style>
 
 <div class="flex-1 overflow-auto p-3 md:p-6 pt-20">
-    <div class="p-4 md:p-6 bg-white shadow-sm">
+    <div class="p-4 md:p-6 bg-white shadow-sm rounded-lg">
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-            <h1 class="text-2xl font-semibold text-gray-800">Order Management</h1>
+            <h1 class="text-2xl font-semibold text-[#2C2C2C]">Order Management</h1>
             <div class="search-container">
                 <input type="text" 
                        id="searchInput"
                        placeholder="Search by Order ID, Name, Email, or Status..." 
-                       class="w-full pl-4 pr-10 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#6C7559]"
+                       class="search-input w-full"
                        value="<%= typeof search !== 'undefined' ? search : '' %>"
                        onkeyup="debounceSearch(this.value)">
-                <span class="clear-search text-gray-400 hover:text-gray-600" onclick="clearSearch()">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <svg class="w-5 h-5 search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                    </svg>
+                </div>
+                <span class="clear-search" onclick="clearSearch()" style="display: <%= typeof search !== 'undefined' && search !== '' ? 'block' : 'none' %>">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                     </svg>
                 </span>
@@ -95,52 +190,50 @@
     </div>
 
     <div class="hidden md:block overflow-x-auto m-6">
-        <div class="inline-block min-w-full align-middle">
-            <table class="w-full whitespace-nowrap bg-white rounded-lg shadow">
-                <thead class="bg-gray-50">
-                    <tr class="text-left">
-                        <th class="px-6 py-3 text-xs font-medium text-gray-500 uppercase">User</th>
-                        <th class="px-6 py-3 text-xs font-medium text-gray-500 uppercase">Order ID</th>
-                        <th class="px-6 py-3 text-xs font-medium text-gray-500 uppercase">Amount</th>
-                        <th class="px-6 py-3 text-xs font-medium text-gray-500 uppercase">Date</th>
-                        <th class="px-6 py-3 text-xs font-medium text-gray-500 uppercase">Status</th>
-                        <th class="px-6 py-3 text-xs font-medium text-gray-500 uppercase">Payment</th>
-                        <th class="px-6 py-3 text-xs font-medium text-gray-500 uppercase">Actions</th>
+        <div class="table-container">
+            <table class="w-full whitespace-nowrap">
+                <thead>
+                    <tr class="table-header">
+                        <th class="px-6 py-3 text-sm font-medium">User</th>
+                        <th class="px-6 py-3 text-sm font-medium">Order ID</th>
+                        <th class="px-6 py-3 text-sm font-medium">Amount</th>
+                        <th class="px-6 py-3 text-sm font-medium">Date</th>
+                        <th class="px-6 py-3 text-sm font-medium">Status</th>
+                        <th class="px-6 py-3 text-sm font-medium">Payment</th>
+                        <th class="px-6 py-3 text-sm font-medium">Actions</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-200">
                     <% orders.forEach(order => { %>
-                    <tr class="hover:bg-gray-50">
+                    <tr class="table-row">
                         <td class="px-6 py-4">
                             <div class="flex items-center">
                                 <div class="ml-4">
-                                    <div class="text-sm font-medium text-gray-900 truncate">
+                                    <div class="text-sm font-medium text-[#2C2C2C] truncate">
                                         <%= order.user.name %>
                                     </div>
-                                    <div class="text-sm text-gray-500 truncate">
+                                    <div class="text-sm text-[#2C2C2C] opacity-75 truncate">
                                         <%= order.user.email %>
                                     </div>
                                 </div>
                             </div>
                         </td>
-                        <td class="px-6 py-4 text-sm text-gray-500 font-mono"><%= order.orderId %></td>
-                        <td class="px-6 py-4 text-sm text-gray-900">$<%= order.finalAmount.toFixed(2) %></td>
-                        <td class="px-6 py-4 text-sm text-gray-500"><%= order.createdOn.toLocaleDateString() %></td>
-
-<td class="px-6 py-4">
-  <span class="status-badge <%= order.status.toLowerCase().replace(' ', '-') %>">
-    <%= order.status %>
-    <% if (order.return?.requested && order.return.status === 'pending') { %>
-      <span class="ml-1 text-xs">(Pending)</span>
-    <% } else if (order.cancellation?.requested) { %>
-      <span class="ml-1 text-xs">(Cancel Requested)</span>
-    <% } %>
-  </span>
-</td>
-                                                <td class="px-6 py-4 text-sm text-gray-500"><%= order.paymentMethod %></td>
+                        <td class="px-6 py-4 text-sm text-[#2C2C2C] font-mono"><%= order.orderId %></td>
+                        <td class="px-6 py-4 text-sm text-[#2C2C2C]">$<%= order.finalAmount.toFixed(2) %></td>
+                        <td class="px-6 py-4 text-sm text-[#2C2C2C]"><%= order.createdOn.toLocaleDateString() %></td>
                         <td class="px-6 py-4">
-                            <a href="/admin/orders/<%= order._id %>" 
-                               class="text-[#6C7559] hover:text-[#5a6349] flex items-center">
+                            <span class="status-badge <%= order.status.toLowerCase().replace(' ', '-') %>">
+                                <%= order.status %>
+                                <% if (order.return?.requested && order.return.status === 'pending') { %>
+                                    <span class="ml-1 text-xs">(Pending)</span>
+                                <% } else if (order.cancellation?.requested) { %>
+                                    <span class="ml-1 text-xs">(Cancel Requested)</span>
+                                <% } %>
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 text-sm text-[#2C2C2C]"><%= order.paymentMethod %></td>
+                        <td class="px-6 py-4">
+                            <a href="/admin/orders/<%= order._id %>" class="view-button flex items-center">
                                 <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
@@ -161,33 +254,33 @@
             <div class="grid grid-cols-2 gap-3">
                 <div class="col-span-2">
                     <div class="flex justify-between items-center">
-                        <span class="text-sm font-medium text-gray-900">#<%= order.orderId %></span>
+                        <span class="text-sm font-medium text-[#2C2C2C]">#<%= order.orderId %></span>
                         <span class="status-badge <%= order.status.toLowerCase() %>">
                             <%= order.status %>
                             <% if (order.cancellation?.requested) { %>
-                            <span class="ml-1 text-xs">(Cancel)</span>
+                                <span class="ml-1 text-xs">(Cancel)</span>
                             <% } %>
                         </span>
                     </div>
                 </div>
                 
                 <div class="col-span-2">
-                    <p class="text-sm text-gray-600 truncate"><%= order.user.name %></p>
-                    <p class="text-xs text-gray-400"><%= order.user.email %></p>
+                    <p class="text-sm text-[#2C2C2C] truncate"><%= order.user.name %></p>
+                    <p class="text-xs text-[#2C2C2C] opacity-75"><%= order.user.email %></p>
                 </div>
 
                 <div>
-                    <p class="text-xs text-gray-500">Date</p>
-                    <p class="text-sm font-medium"><%= order.createdOn.toLocaleDateString() %></p>
+                    <p class="text-xs text-[#2C2C2C] opacity-75">Date</p>
+                    <p class="text-sm font-medium text-[#2C2C2C]"><%= order.createdOn.toLocaleDateString() %></p>
                 </div>
                 
                 <div>
-                    <p class="text-xs text-gray-500">Amount</p>
-                    <p class="text-sm font-medium">$<%= order.finalAmount.toFixed(2) %></p>
+                    <p class="text-xs text-[#2C2C2C] opacity-75">Amount</p>
+                    <p class="text-sm font-medium text-[#2C2C2C]">$<%= order.finalAmount.toFixed(2) %></p>
                 </div>
 
                 <div class="col-span-2 text-right">
-                    <a href="/admin/orders/<%= order._id %>" class="text-[#6C7559] text-sm font-medium">
+                    <a href="/admin/orders/<%= order._id %>" class="view-button text-sm font-medium">
                         View Details →
                     </a>
                 </div>
