@@ -4,7 +4,7 @@ const userInfo = async (req, res) => {
   try {
     let searchQuery = req.query.search || "";
     let page = parseInt(req.query.page) || 1;
-    const limit = 3;
+    const limit = 5;
 
     const searchConditions = {
       isAdmin: false,

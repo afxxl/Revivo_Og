@@ -209,10 +209,11 @@
                 <label class="text-xs text-[#2C2C2C]/60 font-montserrat mb-1 block">Quantity</label>
                 <div class="flex items-center border border-[#e0dcd4] rounded-md w-32">
                   <button class="px-3 py-2 text-[#2C2C2C]" onclick="decreaseQuantity()">-</button>
-                  <input type="number" id="quantity" value="1" min="1" max="<%= product.stock %>" 
+                  <input type="number" id="quantity" value="1" min="1" max="<%= Math.min(product.stock, 10) %>" 
                          class="w-full text-center border-x border-[#e0dcd4] py-2 font-montserrat">
                   <button class="px-3 py-2 text-[#2C2C2C]" onclick="increaseQuantity()">+</button>
                 </div>
+                <p class="text-xs text-[#2C2C2C]/60 font-montserrat mt-1">Maximum 10 per order</p>
               </div>
 
               <button 
@@ -297,10 +298,12 @@
 
       function increaseQuantity() {
         const quantityInput = document.getElementById('quantity');
-        const max = parseInt(quantityInput.max);
+        const max = Math.min(parseInt(quantityInput.max), 10);
         let value = parseInt(quantityInput.value);
         if (value < max) {
           quantityInput.value = value + 1;
+        } else if (value >= 10) {
+          showToast('Maximum 10 items per product allowed', 'warning');
         }
       }
 

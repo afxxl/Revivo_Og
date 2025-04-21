@@ -434,6 +434,15 @@ const updateCart = async (req, res) => {
           availableStock: product.stock,
         });
       }
+
+      // Enforce maximum purchase limit of 10 per product
+      if (item.quantity > 10) {
+        return res.status(400).json({
+          success: false,
+          message: `Maximum purchase limit is 10 items per product`,
+          productId: item.productId,
+        });
+      }
     }
 
     // Update only the specified items, preserving others
@@ -543,9 +552,10 @@ const loadCartPage = async (req, res) => {
         // Remove invalid item from cart
         continue;
       } else {
-        item.quantity = Math.min(item.quantity, product.stock);
+        // Enforce max quantity of 10 per product
+        item.quantity = Math.min(item.quantity, product.stock, 10);
         item.totalPrice = item.quantity * item.price; // Ensure totalPrice is updated
-        item.maxStock = product.stock;
+        item.maxStock = Math.min(product.stock, 10);
         updatedItems.push(item);
       }
     }
