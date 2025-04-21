@@ -23,6 +23,15 @@ const productInfo = async (req, res) => {
       .skip((page - 1) * limit)
       .exec();
 
+    // Calculate best offer (max of product offer and category offer) for each product
+    for (let product of productData) {
+      const productOffer = product.productOffer || 0;
+      const categoryOffer = product.category?.categoryOffer || 0;
+      product.bestOffer = Math.max(productOffer, categoryOffer);
+      product.offerSource = product.bestOffer > 0 ? 
+                           (product.bestOffer === productOffer ? 'product' : 'category') : null;
+    }
+
     const count = await Product.countDocuments({
       $or: [
         { productName: { $regex: ".*" + search + ".*", $options: "i" } },
@@ -428,6 +437,53 @@ const toggleProductStatus = async (req, res) => {
   }
 };
 
+const updateProductOffer = async (req, res) => {
+  try {
+    const productId = req.params.id;
+    const { productOffer } = req.body;
+
+    // Validate offer percentage
+    if (productOffer !== undefined) {
+      if (isNaN(productOffer) || productOffer < 0 || productOffer > 100) {
+        return res.status(400).json({
+          success: false,
+          error: "Product offer must be a number between 0 and 100",
+        });
+      }
+    }
+
+    const product = await Product.findById(productId);
+    if (!product) {
+      return res.status(404).json({
+        success: false,
+        error: "Product not found",
+      });
+    }
+
+    // If productOffer is 0, we're removing the offer
+    const offerValue = productOffer || 0;
+
+    // Update product offer
+    product.productOffer = offerValue;
+    await product.save();
+
+    return res.status(200).json({
+      success: true,
+      message:
+        offerValue > 0
+          ? "Product offer added successfully"
+          : "Product offer removed successfully",
+      productOffer: offerValue,
+    });
+  } catch (error) {
+    console.error("Update Product Offer Error:", error);
+    return res.status(500).json({
+      success: false,
+      error: "An error occurred while updating the product offer",
+    });
+  }
+};
+
 module.exports = {
   productInfo,
   addProduct,
@@ -435,4 +491,5 @@ module.exports = {
   editProduct,
   updateProduct,
   toggleProductStatus,
+  updateProductOffer,
 };

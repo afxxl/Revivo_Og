@@ -194,7 +194,22 @@
                     </div>
 
                     <div class="col-span-4 md:col-span-2 text-center font-montserrat text-[#2C2C2C]">
-                      $<%= item.price.toFixed(2) %>
+                      <% 
+                        // The item.price should already be the final price with offer applied from controller
+                        const productOffer = item.productId.productOffer || 0;
+                        const categoryOffer = item.productId.category && item.productId.category.categoryOffer ? item.productId.category.categoryOffer : 0;
+                        const bestOfferPercentage = Math.max(productOffer, categoryOffer);
+                      %>
+                      
+                      <% if (bestOfferPercentage > 0) { %>
+                        <div class="flex flex-col items-center">
+                          <span class="bg-green-100 text-green-700 text-xs font-semibold px-1.5 py-0.5 rounded-sm mb-1">-<%= bestOfferPercentage %>%</span>
+                          <span class="font-medium">$<%= item.price.toFixed(2) %></span>
+                          <span class="line-through text-xs text-[#2C2C2C]/60">$<%= item.productId.salesPrice.toFixed(2) %></span>
+                        </div>
+                      <% } else { %>
+                        $<%= item.price.toFixed(2) %>
+                      <% } %>
                     </div>
 
                     <div class="col-span-4 md:col-span-3 flex items-center justify-center">
@@ -261,20 +276,35 @@
             <div class="bg-white rounded-sm shadow-sm p-6 sticky top-4">
               <h2 class="text-xl font-henny mb-6 text-[#2C2C2C]">Order Summary</h2>
               
+              <% 
+                let totalSavings = 0;
+                cart.items.forEach(item => {
+                  const originalPrice = item.productId.salesPrice * item.quantity;
+                  const discountAmount = originalPrice - item.totalPrice;
+                  totalSavings += discountAmount;
+                });
+              %>
               <div class="space-y-4">
-                <div class="flex justify-between items-center">
-                  <span class="text-[#2C2C2C]/70 font-montserrat">Subtotal</span>
-                  <span class="subtotal-display text-[#2C2C2C] font-montserrat">$<%= subtotal.toFixed(2) %></span>
+                <div class="flex justify-between">
+                  <span class="font-montserrat text-sm text-[#2C2C2C]/80">Subtotal</span>
+                  <span class="font-montserrat font-medium subtotal-display">$<%= subtotal.toFixed(2) %></span>
                 </div>
-                <div class="flex justify-between items-center">
-                  <span class="text-[#2C2C2C]/70 font-montserrat">Shipping</span>
-                  <span class="shipping-display text-[#2C2C2C] font-montserrat">$<%= shipping.toFixed(2) %></span>
+                
+                <% if (totalSavings > 0) { %>
+                <div class="flex justify-between text-green-600">
+                  <span class="font-montserrat text-sm font-medium">Total Savings</span>
+                  <span class="font-montserrat font-medium total-savings-display">-$<%= totalSavings.toFixed(2) %></span>
                 </div>
-                <div class="border-t border-[#e0dcd4] pt-4 mt-2">
-                  <div class="flex justify-between items-center">
-                    <span class="text-[#2C2C2C] font-montserrat font-medium">Total</span>
-                    <span class="total-display text-[#2C2C2C] font-montserrat font-medium">$<%= total.toFixed(2) %></span>
-                  </div>
+                <% } %>
+                
+                <div class="flex justify-between">
+                  <span class="font-montserrat text-sm text-[#2C2C2C]/80">Shipping</span>
+                  <span class="font-montserrat font-medium shipping-display">$<%= shipping.toFixed(2) %></span>
+                </div>
+                
+                <div class="border-t border-[#e0dcd4] pt-3 flex justify-between">
+                  <span class="font-montserrat font-medium">Total</span>
+                  <span class="font-montserrat font-medium text-lg total-display">$<%= total.toFixed(2) %></span>
                 </div>
               </div>
 
@@ -369,10 +399,33 @@ document.addEventListener('DOMContentLoaded', function() {
         const subtotalEl = document.querySelector('.subtotal-display');
         const shippingEl = document.querySelector('.shipping-display');
         const totalEl = document.querySelector('.total-display');
+        const totalSavingsEl = document.querySelector('.total-savings-display');
 
+        // Update order summary
         if (subtotalEl) subtotalEl.textContent = `$${data.cart.subtotal.toFixed(2)}`;
         if (shippingEl) shippingEl.textContent = `$${data.cart.shipping.toFixed(2)}`;
         if (totalEl) totalEl.textContent = `$${data.cart.total.toFixed(2)}`;
+        
+        // Recalculate total savings
+        if (totalSavingsEl) {
+          // Calculate total savings based on updated cart items
+          let newTotalSavings = 0;
+          data.cart.items.forEach(item => {
+            if (item.productId && item.price) {
+              const originalPrice = item.productId.salesPrice * item.quantity;
+              const discountAmount = originalPrice - item.totalPrice;
+              newTotalSavings += discountAmount;
+            }
+          });
+          
+          // Update the total savings display if it exists
+          if (newTotalSavings > 0) {
+            totalSavingsEl.textContent = `-$${newTotalSavings.toFixed(2)}`;
+            totalSavingsEl.closest('.flex').style.display = 'flex';
+          } else {
+            totalSavingsEl.closest('.flex').style.display = 'none';
+          }
+        }
 
         // Update the individual item's total price in the DOM
         const updatedItem = data.cart.items.find(item => item.productId._id.toString() === productId);
@@ -527,10 +580,31 @@ document.addEventListener('DOMContentLoaded', function() {
         const subtotalEl = document.querySelector('.subtotal-display');
         const shippingEl = document.querySelector('.shipping-display');
         const totalEl = document.querySelector('.total-display');
+        const totalSavingsEl = document.querySelector('.total-savings-display');
 
         if (subtotalEl) subtotalEl.textContent = `$${data.cart.subtotal.toFixed(2)}`;
         if (shippingEl) shippingEl.textContent = `$${data.cart.shipping.toFixed(2)}`;
         if (totalEl) totalEl.textContent = `$${data.cart.total.toFixed(2)}`;
+        
+        // If there are no more items with savings, hide the savings row
+        if (totalSavingsEl) {
+          let newTotalSavings = 0;
+          data.cart.items.forEach(item => {
+            const product = item.productId;
+            if (product) {
+              const originalPrice = product.salesPrice * item.quantity;
+              const discountAmount = originalPrice - item.totalPrice;
+              newTotalSavings += discountAmount;
+            }
+          });
+          
+          if (newTotalSavings > 0) {
+            totalSavingsEl.textContent = `-$${newTotalSavings.toFixed(2)}`;
+            totalSavingsEl.closest('.flex').style.display = 'flex';
+          } else {
+            totalSavingsEl.closest('.flex').style.display = 'none';
+          }
+        }
 
         // Update checkout button *before* replacing the container
         const checkoutBtn = document.querySelector('.checkout-btn');

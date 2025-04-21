@@ -236,6 +236,37 @@ include('../partials/admin/admin-sidebar', {currentPage: 'products' }) %>
     }
   }
 
+  /* Checkbox styling */
+  .checkbox-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+    transition: all 0.3s ease;
+  }
+
+  .checkbox-wrapper:hover {
+    background: linear-gradient(145deg, #f8f7f5, #ffffff);
+  }
+
+  .checkbox-input {
+    width: 1.25rem !important;
+    height: 1.25rem !important;
+    border: 2px solid #e0dcd4;
+    border-radius: 0.25rem;
+    transition: all 0.3s ease;
+  }
+
+  .checkbox-input:checked {
+    background-color: #2C2C2C;
+    border-color: #2C2C2C;
+    background-image: url("data:image/svg+xml,%3csvg viewBox='0 0 16 16' fill='white' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='M12.207 4.793a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0l-2-2a1 1 0 011.414-1.414L6.5 9.086l4.293-4.293a1 1 0 011.414 0z'/%3e%3c/svg%3e");
+    background-size: 100% 100%;
+    background-position: center;
+    background-repeat: no-repeat;
+  }
+
   /* Responsive table styles */
   @media (max-width: 1023px) {
     .table-container {
@@ -813,7 +844,7 @@ include('../partials/admin/admin-sidebar', {currentPage: 'products' }) %>
             <th class="px-4 sm:px-6 py-3 text-xs font-medium text-gray-500 uppercase w-1/6">Product</th>
             <th class="px-4 sm:px-6 py-3 text-xs font-medium text-gray-500 uppercase w-1/6">Brand</th>
             <th class="px-4 sm:px-6 py-3 text-xs font-medium text-gray-500 uppercase w-1/6">Category</th>
-            <th class="px-4 sm:px-6 py-3 text-xs font-medium text-gray-500 uppercase w-1/6">Price</th>
+            <th class="px-4 sm:px-6 py-3 text-xs font-medium text-gray-500 uppercase w-1/6">Sale Price</th>
             <th class="px-4 sm:px-6 py-3 text-xs font-medium text-gray-500 uppercase w-1/6">Stock</th>
             <th class="px-4 sm:px-6 py-3 text-xs font-medium text-gray-500 uppercase w-1/6">Actions</th>
           </tr>
@@ -854,7 +885,29 @@ include('../partials/admin/admin-sidebar', {currentPage: 'products' }) %>
               <%= product.category?.name || 'N/A' %>
             </td>
             <td class="px-4 sm:px-6 py-4 text-sm text-gray-900">
-              $<%= product.regularPrice.toFixed(2) %>
+              <% if (product.bestOffer && product.bestOffer > 0) { %>
+                <div class="flex flex-col">
+                  <span class="line-through text-gray-500">$<%= product.salesPrice.toFixed(2) %></span>
+                  <span class="font-medium text-green-600">
+                    $<%= (product.salesPrice - (product.salesPrice * product.bestOffer / 100)).toFixed(2) %>
+                    <span class="ml-1 text-xs bg-green-100 text-green-800 px-1.5 py-0.5 rounded">
+                      -<%= product.bestOffer %>% 
+                      <% if (product.offerSource === 'category') { %>
+                        (Category)
+                      <% } %>
+                    </span>
+                  </span>
+                </div>
+              <% } else { %>
+                <% if (product.regularPrice !== product.salesPrice) { %>
+                  <div class="flex flex-col">
+                    <span class="line-through text-gray-500">$<%= product.regularPrice.toFixed(2) %></span>
+                    <span class="font-medium text-green-600">$<%= product.salesPrice.toFixed(2) %></span>
+                  </div>
+                <% } else { %>
+                  $<%= product.salesPrice.toFixed(2) %>
+                <% } %>
+              <% } %>
             </td>
             <td class="px-4 sm:px-6 py-4 text-sm">
               <span class="status-badge <%= product.stock > 0 ? 'in-stock' : 'out-of-stock' %>">
@@ -932,6 +985,51 @@ include('../partials/admin/admin-sidebar', {currentPage: 'products' }) %>
                     <% } %>
                   </svg>
                 </a>
+                <% if (product.productOffer && product.productOffer > 0) { %>
+                <a
+                  href="#"
+                  class="action-button text-purple-600 hover:text-purple-800 remove-offer"
+                  data-id="<%= product._id %>"
+                  data-name="<%= product.productName %>"
+                  title="Remove <%= product.productOffer %>% Offer"
+                >
+                  <svg
+                    class="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M15 12H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"
+                    />
+                  </svg>
+                </a>
+                <% } else { %>
+                <a
+                  href="#"
+                  class="action-button text-green-600 hover:text-green-800 add-offer"
+                  data-id="<%= product._id %>"
+                  data-name="<%= product.productName %>"
+                  title="Add Offer"
+                >
+                  <svg
+                    class="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"
+                    />
+                  </svg>
+                </a>
+                <% } %>
               </div>
             </td>
           </tr>
@@ -991,11 +1089,42 @@ include('../partials/admin/admin-sidebar', {currentPage: 'products' }) %>
               </span>
             </div>
             <div class="mobile-product-meta-item">
-              <span class="mobile-product-meta-label">Price</span>
-              <span class="mobile-product-meta-value"
-                >$<%= product.regularPrice.toFixed(2) %>
+              <span class="mobile-product-meta-label">Sale Price</span>
+              <% if (product.bestOffer && product.bestOffer > 0) { %>
+                <div class="flex flex-col">
+                  <span class="line-through text-gray-500">$<%= product.salesPrice.toFixed(2) %></span>
+                  <span class="font-medium text-green-600">
+                    $<%= (product.salesPrice - (product.salesPrice * product.bestOffer / 100)).toFixed(2) %>
+                    <span class="ml-1 text-xs bg-green-100 text-green-800 px-1.5 py-0.5 rounded">
+                      -<%= product.bestOffer %>% 
+                      <% if (product.offerSource === 'category') { %>
+                        (Category)
+                      <% } %>
+                    </span>
+                  </span>
+                </div>
+              <% } else { %>
+                <% if (product.regularPrice !== product.salesPrice) { %>
+                  <div class="flex flex-col">
+                    <span class="line-through text-gray-500">$<%= product.regularPrice.toFixed(2) %></span>
+                    <span class="font-medium text-green-600">$<%= product.salesPrice.toFixed(2) %></span>
+                  </div>
+                <% } else { %>
+                  $<%= product.salesPrice.toFixed(2) %>
+                <% } %>
+              <% } %>
+            </div>
+            <% if (product.bestOffer && product.bestOffer > 0) { %>
+            <div class="mobile-product-meta-item">
+              <span class="mobile-product-meta-label">Final Price</span>
+              <span class="mobile-product-meta-value font-bold text-green-600">
+                $<%= (product.salesPrice - (product.salesPrice * product.bestOffer / 100)).toFixed(2) %>
+                <% if (product.offerSource === 'category') { %>
+                  <span class="text-xs bg-amber-100 text-amber-800 px-1 py-0.5 rounded ml-1">Category</span>
+                <% } %>
               </span>
             </div>
+            <% } %>
             <div class="mobile-product-meta-item">
               <span class="mobile-product-meta-label">Condition</span>
               <span class="mobile-product-meta-value">
@@ -1074,6 +1203,51 @@ include('../partials/admin/admin-sidebar', {currentPage: 'products' }) %>
             />
           </svg>
         </a>
+        <% if (product.productOffer && product.productOffer > 0) { %>
+        <a
+          href="#"
+          class="text-purple-600 hover:text-purple-800 p-2 remove-offer"
+          data-id="<%= product._id %>"
+          data-name="<%= product.productName %>"
+          title="Remove <%= product.productOffer %>% Offer"
+        >
+          <svg
+            class="w-5 h-5"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M15 12H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"
+            />
+          </svg>
+        </a>
+        <% } else { %>
+        <a
+          href="#"
+          class="text-green-600 hover:text-green-800 p-2 add-offer"
+          data-id="<%= product._id %>"
+          data-name="<%= product.productName %>"
+          title="Add Offer"
+        >
+          <svg
+            class="w-5 h-5"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"
+            />
+          </svg>
+        </a>
+        <% } %>
       </div>
     </div>
     <% }); %>
@@ -1379,35 +1553,35 @@ include('../partials/admin/admin-sidebar', {currentPage: 'products' }) %>
             ></p>
           </div>
           <div class="space-y-2">
-            <div class="flex items-center">
+            <div class="flex items-center checkbox-wrapper">
               <input
                 type="checkbox"
                 id="isFeatured"
                 name="isFeatured"
-                class="w-4 h-4 text-[#6C7559] border-gray-300 rounded focus:ring-[#6C7559]"
+                class="checkbox-input w-5 h-5 text-[#2C2C2C] border-gray-300 rounded focus:ring-[#2C2C2C]"
               />
               <label for="isFeatured" class="ml-2 text-sm text-gray-700"
                 >Featured Product</label
               >
             </div>
-            <div class="flex items-center">
+            <div class="flex items-center checkbox-wrapper">
               <input
                 type="checkbox"
                 id="isNew"
                 name="isNew"
-                class="w-4 h-4 text-[#6C7559] border-gray-300 rounded focus:ring-[#6C7559]"
+                class="checkbox-input w-5 h-5 text-[#2C2C2C] border-gray-300 rounded focus:ring-[#2C2C2C]"
               />
               <label for="isNew" class="ml-2 text-sm text-gray-700"
                 >Mark as New</label
               >
             </div>
-            <div class="flex items-center">
+            <div class="flex items-center checkbox-wrapper">
               <input
                 type="checkbox"
                 id="isListed"
                 name="isListed"
                 checked
-                class="w-4 h-4 text-[#6C7559] border-gray-300 rounded focus:ring-[#6C7559]"
+                class="checkbox-input w-5 h-5 text-[#2C2C2C] border-gray-300 rounded focus:ring-[#2C2C2C]"
               />
               <label for="isListed" class="ml-2 text-sm text-gray-700"
                 >List Product</label
@@ -2003,6 +2177,139 @@ include('../partials/admin/admin-sidebar', {currentPage: 'products' }) %>
     document.getElementById("searchInput").value = "";
     window.location.href = "/admin/products";
   }
+
+  // Add offer function
+  function addOffer(productId, productName) {
+    Swal.fire({
+      title: 'Add Offer',
+      html: `
+        <p class="mb-2 text-left">Product: <strong>${productName}</strong></p>
+        <div class="mt-4">
+          <label for="offerPercentage" class="block text-sm font-medium text-gray-700 text-left mb-1">Offer Percentage (%)*</label>
+          <input type="number" id="offerPercentage" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#6C7559]" 
+            min="1" max="100" value="10">
+        </div>
+      `,
+      showCancelButton: true,
+      confirmButtonColor: '#6C7559',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Add Offer',
+      preConfirm: () => {
+        const offerPercentage = document.getElementById('offerPercentage').value;
+        if (!offerPercentage || isNaN(offerPercentage) || offerPercentage < 1 || offerPercentage > 100) {
+          Swal.showValidationMessage('Please enter a valid percentage between 1 and 100');
+          return false;
+        }
+        return offerPercentage;
+      }
+    }).then((result) => {
+      if (result.isConfirmed) {
+        const offerPercentage = result.value;
+        
+        // Submit the offer to the server
+        fetch(`/admin/updateProductOffer/${productId}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ productOffer: offerPercentage })
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            Swal.fire({
+              icon: 'success',
+              title: 'Offer Added!',
+              text: data.message,
+              confirmButtonColor: '#6C7559'
+            }).then(() => {
+              window.location.reload();
+            });
+          } else {
+            throw new Error(data.error);
+          }
+        })
+        .catch(error => {
+          Swal.fire({
+            icon: 'error',
+            title: 'Error!',
+            text: error.message || 'Failed to add offer',
+            confirmButtonColor: '#6C7559'
+          });
+        });
+      }
+    });
+  }
+
+  // Remove offer function
+  function removeOffer(productId, productName) {
+    Swal.fire({
+      title: 'Remove Offer',
+      text: `Are you sure you want to remove the offer from ${productName}?`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#6C7559',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, remove it!'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // Submit the offer removal to the server
+        fetch(`/admin/updateProductOffer/${productId}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ productOffer: 0 })
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            Swal.fire({
+              icon: 'success',
+              title: 'Offer Removed!',
+              text: data.message,
+              confirmButtonColor: '#6C7559'
+            }).then(() => {
+              window.location.reload();
+            });
+          } else {
+            throw new Error(data.error);
+          }
+        })
+        .catch(error => {
+          Swal.fire({
+            icon: 'error',
+            title: 'Error!',
+            text: error.message || 'Failed to remove offer',
+            confirmButtonColor: '#6C7559'
+          });
+        });
+      }
+    });
+  }
+
+  // Add event listeners for add and remove offer buttons
+  document.addEventListener('DOMContentLoaded', function() {
+    // Add offer button event listeners
+    document.querySelectorAll('.add-offer').forEach(button => {
+      button.addEventListener('click', function(e) {
+        e.preventDefault();
+        const productId = this.getAttribute('data-id');
+        const productName = this.getAttribute('data-name');
+        addOffer(productId, productName);
+      });
+    });
+
+    // Remove offer button event listeners
+    document.querySelectorAll('.remove-offer').forEach(button => {
+      button.addEventListener('click', function(e) {
+        e.preventDefault();
+        const productId = this.getAttribute('data-id');
+        const productName = this.getAttribute('data-name');
+        removeOffer(productId, productName);
+      });
+    });
+  });
 </script>
 
 <%- include('../partials/admin/admin-footer') %>

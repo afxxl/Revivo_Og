@@ -148,6 +148,13 @@
                 <p class="helper-text">Upload a new image to replace the current one (JPEG, PNG, GIF, WEBP)</p>
             </div>
             
+            <div>
+                <label for="categoryOffer" class="form-label">Category Offer (%)</label>
+                <input type="number" id="categoryOffer" name="categoryOffer" min="0" max="100" value="<%= category.categoryOffer || 0 %>" class="form-input w-full">
+                <p id="offer-error" class="error-message" style="display: none;"></p>
+                <p class="helper-text">Enter a percentage between 0 and 100 (0 means no offer)</p>
+            </div>
+            
             <div class="flex justify-end space-x-4">
                 <a href="/admin/category" class="cancel-button px-4 py-2 text-sm font-medium">
                     Cancel
@@ -171,6 +178,7 @@
         const formData = new FormData();
         formData.append('name', document.getElementById('name').value);
         formData.append('description', document.getElementById('description').value);
+        formData.append('categoryOffer', document.getElementById('categoryOffer').value);
         
         const imageInput = document.getElementById('categoryImage');
         if (imageInput.files.length > 0) {
@@ -219,6 +227,7 @@
         const name = document.getElementById("name").value.trim();
         const description = document.getElementById("description").value.trim();
         const imageInput = document.getElementById("categoryImage");
+        const categoryOffer = document.getElementById("categoryOffer").value;
         let isValid = true;
 
         if (name === "") {
@@ -231,6 +240,11 @@
 
         if (description === "") {
             displayErrorMessage("description-error", "Please enter a description");
+            isValid = false;
+        }
+
+        if (categoryOffer === "" || isNaN(categoryOffer) || categoryOffer < 0 || categoryOffer > 100) {
+            displayErrorMessage("offer-error", "Offer must be a number between 0 and 100");
             isValid = false;
         }
 

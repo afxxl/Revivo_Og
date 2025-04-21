@@ -324,8 +324,18 @@
                 const response = await fetch('/api/check-session');
                 if (!response.ok) throw new Error('Network response was not ok');
                 
-                const { loggedIn, user } = await response.json();
+                const { loggedIn, user, isBlocked } = await response.json();
                 const authSection = document.getElementById('auth-state');
+                
+                if (isBlocked) {
+                    // Show blocked message
+                    showBlockedMessage();
+                    // Redirect to login after a short delay
+                    setTimeout(() => {
+                        window.location.href = '/login';
+                    }, 3000);
+                    return;
+                }
                 
                 if (authSection) {
                     const serverLoggedIn = loggedIn;
@@ -383,9 +393,54 @@
             }
         }
         
+        // Function to show blocked message to user
+        function showBlockedMessage() {
+            // Create toast notification
+            const toast = document.createElement('div');
+            toast.className = 'fixed top-4 right-4 bg-red-600 text-white px-6 py-4 rounded-lg shadow-xl z-50 max-w-sm';
+            toast.innerHTML = `
+                <div class="flex items-center">
+                    <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                    </svg>
+                    <div>
+                        <h3 class="font-bold mb-1">Account Blocked</h3>
+                        <p class="text-sm">Your account has been blocked by admin. You are being logged out.</p>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(toast);
+            
+            // Remove toast after delay
+            setTimeout(() => {
+                toast.remove();
+            }, 5000);
+        }
+        
         checkSession();
         
-        setInterval(checkSession, 300000);
+        setInterval(checkSession, 30000);
     });
+
+    // Utility function to calculate best offer price
+    function calculateBestOfferPrice(salesPrice, productOffer, categoryOffer) {
+        const productOfferAmount = salesPrice * (productOffer / 100);
+        const categoryOfferAmount = salesPrice * (categoryOffer / 100);
+        
+        // Use the larger discount (smaller final price)
+        const bestOfferAmount = Math.max(productOfferAmount, categoryOfferAmount);
+        
+        if (bestOfferAmount > 0) {
+            // Round to 2 decimal places
+            return (salesPrice - bestOfferAmount).toFixed(2);
+        }
+        
+        return salesPrice.toFixed(2);
+    }
+
+    // Utility function to get the best offer percentage
+    function getBestOfferPercentage(productOffer, categoryOffer) {
+        return Math.max(productOffer || 0, categoryOffer || 0);
+    }
 </script>
 

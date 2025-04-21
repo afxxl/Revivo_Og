@@ -91,6 +91,11 @@
         color: #2C2C2C;
       }
       
+      .product-badge.offer {
+        background-color: #f8c78d;
+        color: #2C2C2C;
+      }
+      
       .product-content {
         padding: 1.25rem;
         display: flex;
@@ -192,6 +197,75 @@
         background-color: #f8c78d;
         color: #2C2C2C;
       }
+      
+      /* Category Tags */
+      .category-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin-bottom: 2rem;
+      }
+      
+      .category-tag {
+        padding: 0.5rem 1rem;
+        border-radius: 2rem;
+        font-size: 0.8rem;
+        font-weight: 500;
+        transition: all 0.2s ease;
+        white-space: nowrap;
+        font-family: 'Montserrat', sans-serif;
+      }
+      
+      /* Filter Button and Sidebar */
+      .filter-button {
+        position: fixed;
+        bottom: 2rem;
+        right: 2rem;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background-color: #2C2C2C;
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        z-index: 48;
+        transition: all 0.3s ease;
+      }
+      
+      .filter-button:hover {
+        transform: scale(1.1);
+        background-color: #f8c78d;
+        color: #2C2C2C;
+      }
+      
+      .filter-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0,0,0,0.5);
+        z-index: 49;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.3s ease-in-out;
+      }
+      
+      .filter-sidebar {
+        position: fixed;
+        top: 0;
+        right: -100%;
+        width: 320px;
+        height: 100vh;
+        background-color: white;
+        z-index: 50;
+        transition: right 0.3s ease-in-out;
+        overflow-y: auto;
+        box-shadow: -5px 0 15px rgba(0,0,0,0.1);
+        padding: 2rem;
+      }
     </style>
   </head>
 
@@ -256,67 +330,44 @@
           </h2>
         </div>
 
-        <div class="mb-12 bg-white p-6 rounded-lg shadow-sm border border-[#e0dcd4]/50">
-          <div class="flex justify-between items-center mb-4">
-            <h3 class="text-lg font-playfair text-[#2C2C2C]">Filter Products</h3>
-            <button id="toggleFilters" class="md:hidden text-[#2C2C2C] hover:text-[#f8c78d] focus:outline-none">
-              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-              </svg>
-            </button>
-          </div>
-
-          <form id="filterForm" class="filter-container hidden md:grid grid-cols-1 md:grid-cols-4 gap-4">
-            <div>
-              <label class="block text-sm font-montserrat text-[#2C2C2C]/70 mb-2">Size</label>
-              <select name="size" class="w-full border border-[#e0dcd4] p-2 rounded-md focus:ring-2 focus:ring-[#f8c78d]/30 focus:outline-none">
-                <option value="">All Sizes</option>
-                <option value="S" <%= filters.size === 'S' ? 'selected' : '' %>>S</option>
-                <option value="M" <%= filters.size === 'M' ? 'selected' : '' %>>M</option>
-                <option value="L" <%= filters.size === 'L' ? 'selected' : '' %>>L</option>
-                <option value="XL" <%= filters.size === 'XL' ? 'selected' : '' %>>XL</option>
-              </select>
-            </div>
-
-            <div>
-              <label class="block text-sm font-montserrat text-[#2C2C2C]/70 mb-2">Condition</label>
-              <select name="condition" class="w-full border border-[#e0dcd4] p-2 rounded-md focus:ring-2 focus:ring-[#f8c78d]/30 focus:outline-none">
-                <option value="">All Conditions</option>
-                <option value="Like New" <%= filters.condition === 'Like New' ? 'selected' : '' %>>Like New</option>
-                <option value="Gently Used" <%= filters.condition === 'Gently Used' ? 'selected' : '' %>>Gently Used</option>
-                <option value="Fair Condition" <%= filters.condition === 'Fair Condition' ? 'selected' : '' %>>Fair Condition</option>
-              </select>
-            </div>
-
-            <div class="md:col-span-2">
-              <label class="block text-sm font-montserrat text-[#2C2C2C]/70 mb-2">Price Range</label>
-              <div class="flex items-center gap-2">
-                <input type="number" name="minPrice" placeholder="Min" value="<%= filters.minPrice || '' %>" 
-                       class="w-1/2 border border-[#e0dcd4] p-2 rounded-md focus:ring-2 focus:ring-[#f8c78d]/30 focus:outline-none">
-                <span>-</span>
-                <input type="number" name="maxPrice" placeholder="Max" value="<%= filters.maxPrice || '' %>" 
-                       class="w-1/2 border border-[#e0dcd4] p-2 rounded-md focus:ring-2 focus:ring-[#f8c78d]/30 focus:outline-none">
-              </div>
-            </div>
-
-            <div class="md:col-span-4 flex gap-4">
-              <button type="submit" class="px-6 py-2 bg-[#2C2C2C] text-white rounded-md hover:bg-[#1a1a1a] font-montserrat transition-colors">
-                Apply Filters
-              </button>
-              <a href="/shop/brand/<%= brand._id %>" class="px-6 py-2 border border-[#e0dcd4] text-[#2C2C2C] rounded-md hover:bg-[#f8c78d]/10 font-montserrat transition-colors">
-                Clear Filters
+        <!-- Category Tags -->
+        <div class="mb-8">
+          <div class="category-tags">
+            <a href="/shop/brand/<%= brand._id %>" 
+               class="category-tag border <%= !filters.condition ? 'bg-[#2C2C2C] text-white border-[#2C2C2C]' : 'bg-white border-[#e0dcd4] text-[#2C2C2C] hover:bg-[#f8c78d]/10 hover:border-[#f8c78d]/30' %>">
+              All Conditions
+            </a>
+            <% ['Like New', 'Gently Used', 'Fair Condition'].forEach(condition => { %>
+              <a href="/shop/brand/<%= brand._id %>?condition=<%= condition %>" 
+                 class="category-tag border <%= filters.condition === condition ? 'bg-[#2C2C2C] text-white border-[#2C2C2C]' : 'bg-white border-[#e0dcd4] text-[#2C2C2C] hover:bg-[#f8c78d]/10 hover:border-[#f8c78d]/30' %>">
+                <%= condition %>
               </a>
-            </div>
-          </form>
+            <% }); %>
+          </div>
         </div>
 
         <% if (products.length > 0) { %>
-          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+          <!-- Product Grid -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6">
             <% products.forEach(product => { %>
               <div class="product-card">
                 <!-- Badge - Show either NEW or FEATURED, prioritizing NEW -->
+                <% 
+                  const productOffer = product.productOffer || 0;
+                  const categoryOffer = product.category && product.category.categoryOffer ? product.category.categoryOffer : 0;
+                  const bestOfferPercentage = Math.max(productOffer, categoryOffer);
+                  const originalPrice = product.salesPrice;
+                  let finalPrice = originalPrice;
+                  
+                  if (bestOfferPercentage > 0) {
+                    const offerAmount = originalPrice * (bestOfferPercentage / 100);
+                    finalPrice = originalPrice - offerAmount;
+                  }
+                %>
                 <% if (product.isNew) { %>
                   <div class="product-badge new">NEW</div>
+                <% } else if (bestOfferPercentage > 0) { %>
+                  <div class="product-badge offer">-<%= bestOfferPercentage %>% OFF</div>
                 <% } else if (product.isFeatured) { %>
                   <div class="product-badge featured">FEATURED</div>
                 <% } %>
@@ -346,9 +397,12 @@
                   
                   <div class="product-footer">
                     <div class="product-price">
-                      <span class="current-price">$<%= product.salesPrice %></span>
-                      <% if (product.originalPrice) { %>
-                        <span class="original-price">$<%= product.originalPrice %></span>
+                      <% if (bestOfferPercentage > 0) { %>
+                        <span class="current-price">$<%= finalPrice.toFixed(2) %></span>
+                        <span class="original-price">$<%= originalPrice.toFixed(2) %></span>
+                        <span class="text-xs font-semibold text-green-600 ml-1">Save <%= bestOfferPercentage %>%</span>
+                      <% } else { %>
+                        <span class="current-price">$<%= product.salesPrice.toFixed(2) %></span>
                       <% } %>
                     </div>
                     
@@ -422,23 +476,150 @@
           </div>
         <% } %>
       </div>
+      
+      <!-- Filter Button -->
+      <button id="open-filter" class="filter-button fixed bottom-6 right-6 w-12 h-12 rounded-full bg-[#2C2C2C] text-white flex items-center justify-center shadow-lg z-40 hover:bg-[#f8c78d] hover:text-[#2C2C2C] transition-all">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path>
+        </svg>
+      </button>
+      
+      <!-- Filter Overlay -->
+      <div class="filter-overlay fixed inset-0 bg-black/50 z-40 opacity-0 invisible transition-opacity"></div>
+      
+      <!-- Sliding Filter Panel -->
+      <div class="filter-sidebar fixed top-0 right-[-100%] w-80 h-full bg-white z-50 p-6 overflow-y-auto shadow-lg transition-all duration-300">
+        <div class="flex justify-between items-center mb-6">
+          <h3 class="text-xl font-playfair text-[#2C2C2C]">Filter Products</h3>
+          <button id="close-filter" class="text-[#2C2C2C] hover:text-[#f8c78d] focus:outline-none">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+          </button>
+        </div>
+        
+        <form id="filterSidebarForm" class="space-y-6">
+          <div>
+            <label class="block text-sm font-montserrat text-[#2C2C2C]/70 mb-2">Size</label>
+            <select name="size" class="w-full border border-[#e0dcd4] p-2 rounded-md focus:ring-2 focus:ring-[#f8c78d]/30 focus:outline-none">
+              <option value="">All Sizes</option>
+              <option value="S" <%= filters.size === 'S' ? 'selected' : '' %>>S</option>
+              <option value="M" <%= filters.size === 'M' ? 'selected' : '' %>>M</option>
+              <option value="L" <%= filters.size === 'L' ? 'selected' : '' %>>L</option>
+              <option value="XL" <%= filters.size === 'XL' ? 'selected' : '' %>>XL</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-sm font-montserrat text-[#2C2C2C]/70 mb-2">Condition</label>
+            <select name="condition" class="w-full border border-[#e0dcd4] p-2 rounded-md focus:ring-2 focus:ring-[#f8c78d]/30 focus:outline-none">
+              <option value="">All Conditions</option>
+              <option value="Like New" <%= filters.condition === 'Like New' ? 'selected' : '' %>>Like New</option>
+              <option value="Gently Used" <%= filters.condition === 'Gently Used' ? 'selected' : '' %>>Gently Used</option>
+              <option value="Fair Condition" <%= filters.condition === 'Fair Condition' ? 'selected' : '' %>>Fair Condition</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-sm font-montserrat text-[#2C2C2C]/70 mb-2">Price Range</label>
+            <div class="flex items-center gap-2">
+              <input type="number" name="minPrice" placeholder="Min" value="<%= filters.minPrice || '' %>" 
+                     class="w-1/2 border border-[#e0dcd4] p-2 rounded-md focus:ring-2 focus:ring-[#f8c78d]/30 focus:outline-none">
+              <span>-</span>
+              <input type="number" name="maxPrice" placeholder="Max" value="<%= filters.maxPrice || '' %>" 
+                     class="w-1/2 border border-[#e0dcd4] p-2 rounded-md focus:ring-2 focus:ring-[#f8c78d]/30 focus:outline-none">
+            </div>
+          </div>
+
+          <div class="pt-4 flex flex-col gap-4">
+            <button type="submit" class="w-full px-6 py-3 bg-[#2C2C2C] text-white rounded-md hover:bg-[#1a1a1a] font-montserrat transition-colors">
+              Apply Filters
+            </button>
+            <a href="/shop/brand/<%= brand._id %>" class="w-full text-center px-6 py-3 border border-[#e0dcd4] text-[#2C2C2C] rounded-md hover:bg-[#f8c78d]/10 font-montserrat transition-colors">
+              Clear Filters
+            </a>
+          </div>
+        </form>
+      </div>
     </section>
 
     <%- include('../partials/user/footer.ejs') %>
 
     <script>
-      const toggleButton = document.getElementById('toggleFilters');
-      const filterContainer = document.querySelector('.filter-container');
+      // Filter sidebar functionality
+      document.addEventListener('DOMContentLoaded', function() {
+        const openFilterBtn = document.getElementById('open-filter');
+        const closeFilterBtn = document.getElementById('close-filter');
+        const filterSidebar = document.querySelector('.filter-sidebar');
+        const filterOverlay = document.querySelector('.filter-overlay');
+        
+        // Open filter sidebar
+        if (openFilterBtn) {
+          openFilterBtn.addEventListener('click', function() {
+            filterSidebar.style.right = '0';
+            filterOverlay.classList.add('opacity-100');
+            filterOverlay.classList.remove('invisible');
+            document.body.style.overflow = 'hidden'; // Prevent scrolling
+          });
+        }
+        
+        // Close filter sidebar
+        function closeFilterSidebar() {
+          filterSidebar.style.right = '-100%';
+          filterOverlay.classList.remove('opacity-100');
+          filterOverlay.classList.add('invisible');
+          document.body.style.overflow = ''; // Allow scrolling
+        }
+        
+        if (closeFilterBtn) {
+          closeFilterBtn.addEventListener('click', closeFilterSidebar);
+        }
+        
+        if (filterOverlay) {
+          filterOverlay.addEventListener('click', closeFilterSidebar);
+        }
+        
+        // Handle form submission from sidebar
+        const filterSidebarForm = document.getElementById('filterSidebarForm');
+        if (filterSidebarForm) {
+          filterSidebarForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+            const params = new URLSearchParams();
+            for (const [key, value] of formData) {
+              if (value && value !== '' && value !== 'undefined') {
+                params.append(key, value);
+              }
+            }
+            window.location.href = `/shop/brand/<%= brand._id %>?${params.toString()}`;
+          });
+        }
+        
+        // For backward compatibility
+        const toggleButton = document.getElementById('toggleFilters');
+        const filterContainer = document.querySelector('.filter-container');
 
-      toggleButton.addEventListener('click', () => {
-        filterContainer.classList.toggle('hidden');
-      });
-
-      document.getElementById('filterForm').addEventListener('submit', function(e) {
-        e.preventDefault();
-        const formData = new FormData(this);
-        const params = new URLSearchParams(formData).toString();
-        window.location.href = `/shop/brand/<%= brand._id %>?${params}`;
+        if (toggleButton && filterContainer) {
+          toggleButton.addEventListener('click', () => {
+            filterContainer.classList.toggle('hidden');
+          });
+        }
+        
+        // Original filter form
+        const filterForm = document.getElementById('filterForm');
+        if (filterForm) {
+          filterForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+            const params = new URLSearchParams();
+            for (const [key, value] of formData) {
+              if (value && value !== '' && value !== 'undefined') {
+                params.append(key, value);
+              }
+            }
+            window.location.href = `/shop/brand/<%= brand._id %>?${params.toString()}`;
+          });
+        }
       });
 
       async function addToCart(productId) {

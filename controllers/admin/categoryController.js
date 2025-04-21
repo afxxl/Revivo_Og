@@ -34,7 +34,7 @@ const categoryInfo = async (req, res) => {
 };
 const addCategory = async (req, res) => {
   try {
-    const { name, description } = req.body;
+    const { name, description, categoryOffer } = req.body;
     const image = req.file
       ? `/uploads/category-images/${req.file.filename}`
       : "";
@@ -43,6 +43,15 @@ const addCategory = async (req, res) => {
       return res
         .status(400)
         .json({ error: "Name and description are required" });
+    }
+
+    // Validate categoryOffer if provided
+    const offerValue =
+      categoryOffer !== undefined ? parseFloat(categoryOffer) : 0;
+    if (isNaN(offerValue) || offerValue < 0 || offerValue > 100) {
+      return res.status(400).json({
+        error: "Category offer must be a number between 0 and 100",
+      });
     }
 
     const slug = name
@@ -69,6 +78,7 @@ const addCategory = async (req, res) => {
       image: image,
       slug: slug,
       isListed: true,
+      categoryOffer: offerValue,
     });
 
     await newCategory.save();
@@ -102,7 +112,7 @@ const editCategory = async (req, res) => {
 const updateCategory = async (req, res) => {
   try {
     const categoryId = req.params.id;
-    const { name, description } = req.body;
+    const { name, description, categoryOffer } = req.body;
     const image = req.file
       ? `/uploads/category-images/${req.file.filename}`
       : req.body.existingImage;
@@ -111,6 +121,18 @@ const updateCategory = async (req, res) => {
       return res
         .status(400)
         .json({ error: "Name and description are required" });
+    }
+
+    // Validate categoryOffer if provided
+    const offerValue =
+      categoryOffer !== undefined ? parseFloat(categoryOffer) : undefined;
+    if (
+      offerValue !== undefined &&
+      (isNaN(offerValue) || offerValue < 0 || offerValue > 100)
+    ) {
+      return res.status(400).json({
+        error: "Category offer must be a number between 0 and 100",
+      });
     }
 
     const newSlug = name
@@ -134,14 +156,21 @@ const updateCategory = async (req, res) => {
         .json({ error: "category with this name already exists" });
     }
 
+    const updateData = {
+      name: name.trim(),
+      description: description.trim(),
+      image: image,
+      slug: newSlug,
+    };
+
+    // Add categoryOffer to updateData if provided
+    if (offerValue !== undefined) {
+      updateData.categoryOffer = offerValue;
+    }
+
     const updateCategory = await Category.findByIdAndUpdate(
       categoryId,
-      {
-        name: name.trim(),
-        description: description.trim(),
-        image: image,
-        slug: newSlug,
-      },
+      updateData,
       { new: true },
     );
 
@@ -188,10 +217,96 @@ const toggleCategoryStatus = async (req, res) => {
   }
 };
 
+const updateCategoryOffer = async (req, res) => {
+  try {
+    const categoryId = req.params.id;
+    const { categoryOffer } = req.body;
+
+    // Validate offer percentage
+    if (categoryOffer !== undefined) {
+      if (isNaN(categoryOffer) || categoryOffer < 0 || categoryOffer > 100) {
+        return res.status(400).json({
+          success: false,
+          error: "Category offer must be a number between 0 and 100",
+        });
+      }
+    }
+
+    const category = await Category.findById(categoryId);
+    if (!category) {
+      return res.status(404).json({
+        success: false,
+        error: "Category not found",
+      });
+    }
+
+    // If categoryOffer is 0, we're removing the offer
+    const offerValue = categoryOffer || 0;
+
+    // Update category offer
+    category.categoryOffer = offerValue;
+    await category.save();
+
+    return res.status(200).json({
+      success: true,
+      message:
+        offerValue > 0
+          ? "Category offer added successfully"
+          : "Category offer removed successfully",
+      categoryOffer: offerValue,
+    });
+  } catch (error) {
+    console.error("Update Category Offer Error:", error);
+    return res.status(500).json({
+      success: false,
+      error: "An error occurred while updating the category offer",
+    });
+  }
+};
+
+const deleteCategory = async (req, res) => {
+  try {
+    const categoryId = req.params.id;
+    const category = await Category.findById(categoryId);
+
+    if (!category) {
+      return res.status(404).json({
+        success: false,
+        error: "Category not found",
+      });
+    }
+
+    // Check if products are associated with this category
+    // This check would require the Product model, so you might need to import it
+    // const productsWithCategory = await Product.countDocuments({ category: categoryId });
+    // if (productsWithCategory > 0) {
+    //   return res.status(400).json({
+    //     success: false,
+    //     error: "Cannot delete category because it has associated products"
+    //   });
+    // }
+
+    await Category.findByIdAndDelete(categoryId);
+
+    return res.status(200).json({
+      success: true,
+      message: "Category deleted successfully",
+    });
+  } catch (error) {
+    console.error("Error deleting category:", error);
+    return res.status(500).json({
+      success: false,
+      error: "An error occurred while deleting the category",
+    });
+  }
+};
+
 module.exports = {
   categoryInfo,
   addCategory,
   editCategory,
   updateCategory,
   toggleCategoryStatus,
+  updateCategoryOffer,
+  deleteCategory,
 };

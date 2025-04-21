@@ -27,7 +27,7 @@ const loadHomepage = async (req, res) => {
       brand: { $in: activeBrandIds },
     })
       .sort({ createdAt: -1 })
-      .limit(6)
+      .limit(8)
       .populate({
         path: "brand",
         match: { isActive: true },
@@ -552,6 +552,17 @@ const addToCart = async (req, res) => {
       });
     }
 
+    // Calculate the best offer price
+    const productOffer = product.productOffer || 0;
+    const categoryOffer = product.category.categoryOffer || 0;
+    const bestOfferPercentage = Math.max(productOffer, categoryOffer);
+
+    let finalPrice = product.salesPrice;
+    if (bestOfferPercentage > 0) {
+      const offerAmount = product.salesPrice * (bestOfferPercentage / 100);
+      finalPrice = product.salesPrice - offerAmount;
+    }
+
     // Find or create cart
     let cart = await Cart.findOne({ userId });
     if (!cart) {
@@ -574,13 +585,14 @@ const addToCart = async (req, res) => {
       }
 
       existingItem.quantity = newQuantity;
-      existingItem.totalPrice = existingItem.quantity * product.salesPrice;
+      existingItem.price = finalPrice; // Update price with current offer price
+      existingItem.totalPrice = existingItem.quantity * finalPrice;
     } else {
       cart.items.push({
         productId,
         quantity: parseInt(quantity),
-        price: product.salesPrice,
-        totalPrice: parseInt(quantity) * product.salesPrice,
+        price: finalPrice,
+        totalPrice: parseInt(quantity) * finalPrice,
       });
     }
 

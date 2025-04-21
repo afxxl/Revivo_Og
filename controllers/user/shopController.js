@@ -13,7 +13,7 @@ const path = require("path");
 const shopPage = async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
-    const perPage = 8;
+    const perPage = 15;
     const skip = (page - 1) * perPage;
 
     const filters = {
@@ -94,7 +94,7 @@ const loadBrandPage = async (req, res) => {
   try {
     const brandId = req.params.brandId;
     const page = parseInt(req.query.page) || 1;
-    const perPage = 8;
+    const perPage = 15;
     const skip = (page - 1) * perPage;
 
     const categories = await Category.find({ isListed: true }).lean();
@@ -165,7 +165,7 @@ const loadBrandPage = async (req, res) => {
 const loadPrimeLayers = async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
-    const perPage = 8;
+    const perPage = 15;
     const skip = (page - 1) * perPage;
 
     const filters = {
@@ -235,7 +235,7 @@ const loadPrimeLayers = async (req, res) => {
 const loadVintageAthletics = async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
-    const perPage = 8;
+    const perPage = 15;
     const skip = (page - 1) * perPage;
 
     const filters = {
@@ -305,7 +305,7 @@ const loadVintageAthletics = async (req, res) => {
 const loadY2kEssentials = async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
-    const perPage = 8;
+    const perPage = 15;
     const skip = (page - 1) * perPage;
 
     const filters = {
@@ -394,7 +394,10 @@ const updateCart = async (req, res) => {
       });
     }
 
-    let cart = await Cart.findOne({ userId }).populate("items.productId");
+    let cart = await Cart.findOne({ userId }).populate({
+      path: "items.productId",
+      populate: [{ path: "brand" }, { path: "category" }],
+    });
 
     if (!cart) {
       cart = new Cart({ userId, items: [] });
@@ -416,7 +419,7 @@ const updateCart = async (req, res) => {
         _id: item.productId,
         status: "Available",
         isListed: true,
-      });
+      }).populate("category");
 
       if (!product) {
         return res.status(400).json({
@@ -446,7 +449,7 @@ const updateCart = async (req, res) => {
     }
 
     // Update only the specified items, preserving others
-    const updatedItems = [...cart.items]; // Copy existing items
+    const updatedItems = [...cart.items];
 
     for (const item of items) {
       const existingItemIndex = updatedItems.findIndex(
@@ -457,23 +460,53 @@ const updateCart = async (req, res) => {
         // Update existing item
         console.log(`Updating existing item: ${item.productId}`);
         const existingItem = updatedItems[existingItemIndex];
+
+        // Get product and calculate best offer price
+        const product = await Product.findById(item.productId).populate(
+          "category",
+        );
+        const productOffer = product.productOffer || 0;
+        const categoryOffer = product.category?.categoryOffer || 0;
+        const bestOfferPercentage = Math.max(productOffer, categoryOffer);
+
+        let finalPrice = product.salesPrice;
+        if (bestOfferPercentage > 0) {
+          const offerAmount = product.salesPrice * (bestOfferPercentage / 100);
+          finalPrice = product.salesPrice - offerAmount;
+        }
+
         updatedItems[existingItemIndex] = {
           ...existingItem.toObject(),
           quantity: item.quantity,
-          totalPrice: item.quantity * existingItem.price,
+          price: finalPrice,
+          totalPrice: item.quantity * finalPrice,
         };
       } else {
         // Add new item
         console.log(`Adding new item: ${item.productId}`);
-        const product = await Product.findById(item.productId);
+        const product = await Product.findById(item.productId).populate(
+          "category",
+        );
         if (!product) {
           throw new Error(`Product not found: ${item.productId}`);
         }
+
+        // Calculate best offer price
+        const productOffer = product.productOffer || 0;
+        const categoryOffer = product.category?.categoryOffer || 0;
+        const bestOfferPercentage = Math.max(productOffer, categoryOffer);
+
+        let finalPrice = product.salesPrice;
+        if (bestOfferPercentage > 0) {
+          const offerAmount = product.salesPrice * (bestOfferPercentage / 100);
+          finalPrice = product.salesPrice - offerAmount;
+        }
+
         updatedItems.push({
           productId: item.productId,
           quantity: item.quantity,
-          price: product.salesPrice,
-          totalPrice: item.quantity * product.salesPrice,
+          price: finalPrice,
+          totalPrice: item.quantity * finalPrice,
         });
       }
     }
@@ -486,9 +519,10 @@ const updateCart = async (req, res) => {
 
     await cart.save();
 
-    const updatedCart = await Cart.findById(cart._id).populate(
-      "items.productId",
-    );
+    const updatedCart = await Cart.findById(cart._id).populate({
+      path: "items.productId",
+      populate: [{ path: "brand" }, { path: "category" }],
+    });
 
     const cartCount = updatedCart.items.reduce(
       (sum, item) => sum + item.quantity,
@@ -513,12 +547,10 @@ const updateCart = async (req, res) => {
       cartCount,
     });
   } catch (err) {
-    console.error("Error updating cart:", err);
+    console.log("Error updating cart:", err);
     res.status(500).json({
       success: false,
-      message: "Failed to update cart",
-      error: err.message,
-      stack: process.env.NODE_ENV === "development" ? err.stack : undefined,
+      message: "Error updating cart",
     });
   }
 };
@@ -527,12 +559,16 @@ const loadCartPage = async (req, res) => {
   try {
     const userId = req.session.user;
 
-    let cart = await Cart.findOne({ userId }).populate("items.productId");
+    let cart = await Cart.findOne({ userId }).populate({
+      path: "items.productId",
+      populate: [{ path: "brand" }, { path: "category" }],
+    });
 
     if (!cart) {
       return res.render("cart", {
         cart: { items: [] },
         subtotal: 0,
+        shipping: 0,
         total: 0,
         canCheckout: true,
       });
@@ -542,7 +578,9 @@ const loadCartPage = async (req, res) => {
     const updatedItems = [];
 
     for (const item of cart.items) {
-      const product = await Product.findById(item.productId._id);
+      const product = await Product.findById(item.productId._id).populate(
+        "category",
+      );
       if (
         !product ||
         product.stock === 0 ||
@@ -554,13 +592,26 @@ const loadCartPage = async (req, res) => {
       } else {
         // Enforce max quantity of 10 per product
         item.quantity = Math.min(item.quantity, product.stock, 10);
-        item.totalPrice = item.quantity * item.price; // Ensure totalPrice is updated
+
+        // Recalculate price with current offers
+        const productOffer = product.productOffer || 0;
+        const categoryOffer = product.category?.categoryOffer || 0;
+        const bestOfferPercentage = Math.max(productOffer, categoryOffer);
+
+        let finalPrice = product.salesPrice;
+        if (bestOfferPercentage > 0) {
+          const offerAmount = product.salesPrice * (bestOfferPercentage / 100);
+          finalPrice = product.salesPrice - offerAmount;
+        }
+
+        item.price = finalPrice;
+        item.totalPrice = item.quantity * finalPrice;
         item.maxStock = Math.min(product.stock, 10);
         updatedItems.push(item);
       }
     }
 
-    // Update cart in database if items were removed
+    // Update cart in database if items were removed or prices changed
     if (updatedItems.length !== cart.items.length) {
       cart.items = updatedItems;
       await cart.save();
@@ -732,6 +783,22 @@ const createOrder = async (req, res) => {
           productId: product._id,
         });
       }
+
+      // Recalculate price with current offers to ensure accuracy
+      const productOffer = product.productOffer || 0;
+      const categoryOffer = product.category?.categoryOffer || 0;
+      const bestOfferPercentage = Math.max(productOffer, categoryOffer);
+
+      let finalPrice = product.salesPrice;
+      if (bestOfferPercentage > 0) {
+        const offerAmount = product.salesPrice * (bestOfferPercentage / 100);
+        finalPrice = product.salesPrice - offerAmount;
+      }
+
+      // Update item price and total price
+      item.price = finalPrice;
+      item.totalPrice = item.quantity * finalPrice;
+
       subtotal += item.totalPrice;
     }
 

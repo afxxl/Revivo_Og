@@ -5,7 +5,7 @@ const Brand = require("../../models/brandSchema.js");
 const featuredPage = async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
-    const perPage = 8;
+    const perPage = 15;
     const skip = (page - 1) * perPage;
 
     const filters = {
@@ -26,11 +26,20 @@ const featuredPage = async (req, res) => {
       isFeatured: true,
       status: "Available",
       isListed: true, // Ensure only listed products are fetched
-      category: { $in: listedCategoryIds },
       brand: { $in: activeBrandIds },
     };
 
-    if (filters.category) query.category = filters.category;
+    // Only apply category filter if user specifically selected a category
+    if (filters.category) {
+      query.category = filters.category;
+    } else {
+      // Otherwise include products with any valid category (or null category)
+      query.$or = [
+        { category: { $in: listedCategoryIds } },
+        { category: { $exists: true } }
+      ];
+    }
+
     if (filters.brand) query.brand = filters.brand;
     if (filters.size) query.size = filters.size;
     if (filters.condition) query.condition = filters.condition;

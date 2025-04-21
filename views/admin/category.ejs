@@ -305,6 +305,11 @@
                                 <span class="status-badge <%= category.isListed ? 'status-listed' : 'status-unlisted' %>">
                                     <%= category.isListed ? 'Listed' : 'Unlisted' %>
                                 </span>
+                                <% if (category.categoryOffer && category.categoryOffer > 0) { %>
+                                <span class="status-badge ml-2" style="background: linear-gradient(145deg, #fef3c7, #fcd34d); color: #92400e;">
+                                    <%= category.categoryOffer %>% Off
+                                </span>
+                                <% } %>
                             </td>
                             <td class="px-6 py-4 text-sm">
                                 <div class="flex items-center space-x-3">
@@ -328,6 +333,36 @@
                                                       d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.4.916A3 3 0 0012 6.75a3 3 0 00-3-3m0 0a3 3 0 00-3 3m3-3v.75M12 4.5v15m7.5-7.5h-15"/>
                                             </svg>
                                         <% } %>
+                                    </a>
+                                    <% if (category.categoryOffer && category.categoryOffer > 0) { %>
+                                    <a href="#" class="action-button text-purple-600 hover:text-purple-800 remove-category-offer" 
+                                       data-id="<%= category._id %>" 
+                                       data-name="<%= category.name %>"
+                                       title="Remove <%= category.categoryOffer %>% Offer">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                                  d="M15 12H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                        </svg>
+                                    </a>
+                                    <% } else { %>
+                                    <a href="#" class="action-button text-green-600 hover:text-green-800 add-category-offer" 
+                                       data-id="<%= category._id %>" 
+                                       data-name="<%= category.name %>"
+                                       title="Add Offer">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                                  d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                        </svg>
+                                    </a>
+                                    <% } %>
+                                    <a href="#" class="action-button delete-category text-red-600 hover:text-red-800" 
+                                       data-id="<%= category._id %>" 
+                                       data-name="<%= category.name %>"
+                                       title="Delete Category">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                                  d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                                        </svg>
                                     </a>
                                 </div>
                             </td>
@@ -358,10 +393,17 @@
                                 <h3 class="font-medium text-gray-900"><%= category.name %></h3>
                                 <p class="text-sm text-gray-500 mt-1"><%= category.description %></p>
                             </div>
-                            <span class="px-2 py-1 text-xs font-semibold rounded-full 
-                                <%= category.isListed ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' %>">
-                                <%= category.isListed ? 'Listed' : 'Unlisted' %>
-                            </span>
+                            <div class="flex flex-col gap-1 items-end">
+                                <span class="px-2 py-1 text-xs font-semibold rounded-full 
+                                    <%= category.isListed ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' %>">
+                                    <%= category.isListed ? 'Listed' : 'Unlisted' %>
+                                </span>
+                                <% if (category.categoryOffer && category.categoryOffer > 0) { %>
+                                <span class="px-2 py-1 text-xs font-semibold rounded-full bg-amber-100 text-amber-800">
+                                    <%= category.categoryOffer %>% Off
+                                </span>
+                                <% } %>
+                            </div>
                         </div>
 
                         <div class="mt-4 flex justify-end space-x-3">
@@ -387,6 +429,40 @@
                                               d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.4.916A3 3 0 0012 6.75a3 3 0 00-3-3m0 0a3 3 0 00-3 3m3-3v.75M12 4.5v15m7.5-7.5h-15"/>
                                     </svg>
                                 <% } %>
+                            </a>
+                            
+                            <% if (category.categoryOffer && category.categoryOffer > 0) { %>
+                            <a href="#" 
+                               class="p-2 text-purple-600 hover:text-purple-800 remove-category-offer" 
+                               data-id="<%= category._id %>" 
+                               data-name="<%= category.name %>"
+                               title="Remove <%= category.categoryOffer %>% Offer">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                          d="M15 12H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                </svg>
+                            </a>
+                            <% } else { %>
+                            <a href="#" 
+                               class="p-2 text-green-600 hover:text-green-800 add-category-offer" 
+                               data-id="<%= category._id %>" 
+                               data-name="<%= category.name %>"
+                               title="Add Offer">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                          d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                </svg>
+                            </a>
+                            <% } %>
+                            <a href="#" 
+                               class="p-2 text-red-600 hover:text-red-800 delete-category" 
+                               data-id="<%= category._id %>" 
+                               data-name="<%= category.name %>"
+                               title="Delete Category">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                          d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                                </svg>
                             </a>
                         </div>
                             
@@ -433,6 +509,12 @@
                     <label for="categoryImage" class="form-label">Category Image</label>
                     <input type="file" id="categoryImage" name="categoryImage" class="form-input w-full">
                     <p id="image-error" class="error-message text-red-500 text-sm mt-1 hidden"></p>
+                </div>
+                <div>
+                    <label for="categoryOffer" class="form-label">Category Offer (%)</label>
+                    <input type="number" id="categoryOffer" name="categoryOffer" min="0" max="100" value="0" class="form-input w-full">
+                    <p id="offer-error" class="error-message text-red-500 text-sm mt-1 hidden"></p>
+                    <p class="text-gray-500 text-sm mt-1">Enter a percentage between 0 and 100 (0 means no offer)</p>
                 </div>
                 <div class="flex justify-end space-x-4 mt-6">
                     <button type="button" onclick="closeAddModal()" class="cancel-button">
@@ -484,6 +566,9 @@
         if (imageInput.files.length > 0) {
             formData.append('categoryImage', imageInput.files[0]);
         }
+        
+        const offerInput = document.getElementById("categoryOffer");
+        formData.append('categoryOffer', offerInput.value);
 
         fetch('/admin/addCategory', {
             method: 'POST',
@@ -496,7 +581,14 @@
             }
             return response.json();
         }).then(data => {
-            location.reload();
+            Swal.fire({
+                icon: 'success',
+                title: 'Success',
+                text: data.message,
+                confirmButtonColor: '#2C2C2C'
+            }).then(() => {
+                location.reload();
+            });
         }).catch(error => {
             Swal.fire({
                 icon: 'error',
@@ -513,6 +605,7 @@
         const name = document.getElementById("name").value.trim();
         const description = document.getElementById("description").value.trim();
         const imageInput = document.getElementById("categoryImage");
+        const categoryOffer = document.getElementById("categoryOffer").value;
         let isValid = true;
 
         if (name === "") {
@@ -525,6 +618,11 @@
 
         if (description === "") {
             displayErrorMessage("description-error", "Please enter a description");
+            isValid = false;
+        }
+
+        if (categoryOffer === "" || isNaN(categoryOffer) || categoryOffer < 0 || categoryOffer > 100) {
+            displayErrorMessage("offer-error", "Offer must be a number between 0 and 100");
             isValid = false;
         }
 
@@ -632,6 +730,195 @@
         } else {
             window.location.href = `/admin/category?search=${encodeURIComponent(query)}`;
         }
+    }
+
+    // Add category offer function
+    function addCategoryOffer(categoryId, categoryName) {
+        Swal.fire({
+            title: 'Add Category Offer',
+            html: `
+                <p class="mb-2 text-left">Category: <strong>${categoryName}</strong></p>
+                <div class="mt-4">
+                    <label for="offerPercentage" class="block text-sm font-medium text-gray-700 text-left mb-1">Offer Percentage (%)*</label>
+                    <input type="number" id="offerPercentage" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#6C7559]" 
+                        min="1" max="100" value="10">
+                </div>
+            `,
+            showCancelButton: true,
+            confirmButtonColor: '#6C7559',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Add Offer',
+            preConfirm: () => {
+                const offerPercentage = document.getElementById('offerPercentage').value;
+                if (!offerPercentage || isNaN(offerPercentage) || offerPercentage < 1 || offerPercentage > 100) {
+                    Swal.showValidationMessage('Please enter a valid percentage between 1 and 100');
+                    return false;
+                }
+                return offerPercentage;
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                const offerPercentage = result.value;
+                
+                // Submit the offer to the server
+                fetch(`/admin/updateCategoryOffer/${categoryId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ categoryOffer: offerPercentage })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Offer Added!',
+                            text: data.message,
+                            confirmButtonColor: '#6C7559'
+                        }).then(() => {
+                            window.location.reload();
+                        });
+                    } else {
+                        throw new Error(data.error);
+                    }
+                })
+                .catch(error => {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error!',
+                        text: error.message || 'Failed to add offer',
+                        confirmButtonColor: '#6C7559'
+                    });
+                });
+            }
+        });
+    }
+
+    // Remove category offer function
+    function removeCategoryOffer(categoryId, categoryName) {
+        Swal.fire({
+            title: 'Remove Category Offer',
+            text: `Are you sure you want to remove the offer from ${categoryName}?`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#6C7559',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, remove it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Submit the offer removal to the server
+                fetch(`/admin/updateCategoryOffer/${categoryId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ categoryOffer: 0 })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Offer Removed!',
+                            text: data.message,
+                            confirmButtonColor: '#6C7559'
+                        }).then(() => {
+                            window.location.reload();
+                        });
+                    } else {
+                        throw new Error(data.error);
+                    }
+                })
+                .catch(error => {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error!',
+                        text: error.message || 'Failed to remove offer',
+                        confirmButtonColor: '#6C7559'
+                    });
+                });
+            }
+        });
+    }
+
+    // Add event listeners for add and remove offer buttons
+    document.addEventListener('DOMContentLoaded', function() {
+        // Add category offer button event listeners
+        document.querySelectorAll('.add-category-offer').forEach(button => {
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+                const categoryId = this.getAttribute('data-id');
+                const categoryName = this.getAttribute('data-name');
+                addCategoryOffer(categoryId, categoryName);
+            });
+        });
+
+        // Remove category offer button event listeners
+        document.querySelectorAll('.remove-category-offer').forEach(button => {
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+                const categoryId = this.getAttribute('data-id');
+                const categoryName = this.getAttribute('data-name');
+                removeCategoryOffer(categoryId, categoryName);
+            });
+        });
+
+        // Delete category button event listeners
+        document.querySelectorAll('.delete-category').forEach(button => {
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+                const categoryId = this.getAttribute('data-id');
+                const categoryName = this.getAttribute('data-name');
+                deleteCategory(categoryId, categoryName);
+            });
+        });
+    });
+
+    // Function to handle category deletion
+    function deleteCategory(categoryId, categoryName) {
+        Swal.fire({
+            title: 'Delete Category',
+            html: `Are you sure you want to delete <strong>${categoryName}</strong>?<br><br>This action cannot be undone.`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#ef4444',
+            cancelButtonColor: '#6C7559',
+            confirmButtonText: 'Yes, delete it!',
+            cancelButtonText: 'Cancel'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                fetch(`/admin/deleteCategory/${categoryId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Deleted!',
+                            text: data.message,
+                            confirmButtonColor: '#6C7559'
+                        }).then(() => {
+                            window.location.reload();
+                        });
+                    } else {
+                        throw new Error(data.error);
+                    }
+                })
+                .catch(error => {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error!',
+                        text: error.message || 'Failed to delete category',
+                        confirmButtonColor: '#6C7559'
+                    });
+                });
+            }
+        });
     }
 </script>
 

@@ -97,6 +97,12 @@
         color: #2C2C2C;
       }
       
+      .product-badge.offer {
+        background-color: #f8c78d;
+        color: #2C2C2C;
+        font-weight: 500;
+      }
+      
       .product-content {
         padding: 1.25rem;
         display: flex;
@@ -244,13 +250,347 @@
       .font-montserrat {
         font-family: 'Montserrat', sans-serif;
       }
+      
+      /* New thrift shop hero styles */
+      .thrift-hero-section {
+        background-color: #f8f7f5;
+        position: relative;
+        overflow: hidden;
+      }
+      
+      .thrift-pattern-bg {
+        position: absolute;
+        inset: 0;
+        background-image: 
+          linear-gradient(30deg, #f8c78d 12%, transparent 12.5%, transparent 87%, #f8c78d 87.5%, #f8c78d),
+          linear-gradient(150deg, #f8c78d 12%, transparent 12.5%, transparent 87%, #f8c78d 87.5%, #f8c78d),
+          linear-gradient(30deg, #f8c78d 12%, transparent 12.5%, transparent 87%, #f8c78d 87.5%, #f8c78d),
+          linear-gradient(150deg, #f8c78d 12%, transparent 12.5%, transparent 87%, #f8c78d 87.5%, #f8c78d),
+          linear-gradient(60deg, #f8c78d77 25%, transparent 25.5%, transparent 75%, #f8c78d77 75%, #f8c78d77),
+          linear-gradient(60deg, #f8c78d77 25%, transparent 25.5%, transparent 75%, #f8c78d77 75%, #f8c78d77);
+        background-position: 0 0, 0 0, 25px 50px, 25px 50px, 0 0, 25px 50px;
+        background-size: 50px 100px;
+        opacity: 0.05;
+      }
+      
+      .vintage-tag {
+        display: inline-block;
+        background: #2C2C2C;
+        color: #fff;
+        padding: 0.5rem 1.5rem;
+        position: relative;
+        font-family: 'Montserrat', sans-serif;
+        text-transform: uppercase;
+        font-size: 0.8rem;
+        letter-spacing: 0.15rem;
+        font-weight: 600;
+        clip-path: polygon(5% 0%, 100% 0%, 95% 100%, 0% 100%);
+        transform: rotate(-2deg);
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      }
+      
+      .price-tag {
+        position: absolute;
+        top: -15px;
+        right: -15px;
+        background: #f8c78d;
+        color: #2C2C2C;
+        width: 65px;
+        height: 65px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        font-weight: bold;
+        font-family: 'Montserrat', sans-serif;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        border: 2px dashed #2C2C2C;
+        transform: rotate(15deg);
+        z-index: 5;
+      }
+      
+      .polaroid-container {
+        background: white;
+        padding: 1rem 1rem 2rem 1rem;
+        box-shadow: 0 15px 25px rgba(0,0,0,0.1);
+        position: relative;
+        transform: rotate(3deg);
+        transition: all 0.3s ease;
+      }
+      
+      .polaroid-container:hover {
+        transform: rotate(0deg) translateY(-10px);
+        box-shadow: 0 20px 30px rgba(0,0,0,0.15);
+      }
+      
+      .polaroid-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center;
+        transition: all 0.4s ease;
+        filter: contrast(1.05) brightness(1.05) sepia(0.15);
+        border: 1px solid rgba(200, 200, 200, 0.5);
+      }
+      
+      .polaroid-container:hover .polaroid-image {
+        transform: scale(1.05);
+        filter: contrast(1.1) brightness(1.1) sepia(0.1);
+      }
+      
+      .polaroid-container::before {
+        content: '';
+        position: absolute;
+        bottom: 0.5rem;
+        left: 0;
+        right: 0;
+        height: 1.2rem;
+        background: linear-gradient(to right, rgba(0,0,0,0.02), rgba(0,0,0,0.04), rgba(0,0,0,0.02));
+        z-index: 1;
+      }
+      
+      .polaroid-tape {
+        position: absolute;
+        width: 40px;
+        height: 15px;
+        background-color: rgba(255, 255, 255, 0.6);
+        transform: rotate(var(--rotation));
+        opacity: 0.7;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      }
+      
+      /* Add a subtle vintage texture to the polaroid */
+      .polaroid-container::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.07'/%3E%3C/svg%3E");
+        opacity: 0.3;
+        pointer-events: none;
+      }
+      
+      .polaroid-tape-top {
+        top: -5px;
+        left: calc(50% - 20px);
+        --rotation: -2deg;
+      }
+      
+      .polaroid-tape-corner {
+        bottom: 30px;
+        right: -10px;
+        --rotation: 45deg;
+      }
+      
+      .clothesline {
+        position: absolute;
+        top: 50px;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background-color: #2C2C2C;
+        z-index: 1;
+        transform: rotate(-1deg);
+      }
+      
+      .clothespin {
+        position: absolute;
+        top: -15px;
+        width: 20px;
+        height: 40px;
+        background-color: #8B5A2B;
+        border-radius: 2px;
+        z-index: 2;
+      }
+      
+      .clothespin::before, .clothespin::after {
+        content: '';
+        position: absolute;
+        width: 20px;
+        height: 15px;
+        background-color: #A67C52;
+        border-radius: 2px;
+      }
+      
+      .clothespin::before {
+        top: 0;
+      }
+      
+      .clothespin::after {
+        bottom: 0;
+      }
+      
+      .vintage-button {
+        background: #2C2C2C;
+        color: #fff;
+        border: none;
+        padding: 0.75rem 2rem;
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 600;
+        font-size: 0.85rem;
+        letter-spacing: 0.1rem;
+        position: relative;
+        overflow: hidden;
+        z-index: 1;
+        transition: color 0.3s ease;
+        border-radius: 0;
+        text-transform: uppercase;
+      }
+      
+      .vintage-button::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: #f8c78d;
+        transition: transform 0.3s ease;
+        z-index: -1;
+      }
+      
+      .vintage-button:hover {
+        color: #2C2C2C;
+      }
+      
+      .vintage-button:hover::before {
+        transform: translateX(100%);
+      }
+      
+      .rustic-headline {
+        font-family: 'Playfair Display', serif;
+        font-weight: 700;
+        position: relative;
+        display: inline-block;
+      }
+      
+      .text-handwritten {
+        font-family: 'Henny Penny', cursive;
+      }
+      
+      .rustic-divider {
+        height: 4px;
+        background: repeating-linear-gradient(90deg, #f8c78d, #f8c78d 10px, transparent 10px, transparent 20px);
+        margin: 1.5rem 0;
+        width: 40%;
+      }
+      
+      .stitched-border {
+        border: 2px dashed #2C2C2C;
+        padding: 2px;
+        position: relative;
+      }
+      
+      .stitched-border::after {
+        content: '';
+        position: absolute;
+        top: 5px;
+        left: 5px;
+        right: 5px;
+        bottom: 5px;
+        border: 1px solid #f8c78d;
+        z-index: -1;
+      }
+      
+      .retro-tag {
+        position: absolute;
+        top: 20px;
+        right: -30px;
+        background: #f8c78d;
+        color: #2C2C2C;
+        padding: 0.5rem 2rem;
+        transform: rotate(45deg);
+        font-weight: 600;
+        font-size: 0.75rem;
+        letter-spacing: 0.1rem;
+        text-transform: uppercase;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        z-index: 5;
+      }
+      
       html {
         scroll-behavior: smooth;
       }
+      
       @media (max-width: 768px) {
         .clip-path-wave {
           height: 6px;
         }
+      }
+      
+      /* Sliding Filter Panel Styles */
+      .filter-sidebar {
+        position: fixed;
+        top: 0;
+        right: -100%;
+        width: 320px;
+        height: 100vh;
+        background-color: white;
+        z-index: 50;
+        transition: right 0.3s ease-in-out;
+        overflow-y: auto;
+        box-shadow: -5px 0 15px rgba(0,0,0,0.1);
+        padding: 2rem;
+      }
+      
+      .filter-sidebar.active {
+        right: 0;
+      }
+      
+      .filter-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0,0,0,0.5);
+        z-index: 49;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.3s ease-in-out;
+      }
+      
+      .filter-overlay.active {
+        opacity: 1;
+        visibility: visible;
+      }
+      
+      .filter-button {
+        position: fixed;
+        bottom: 2rem;
+        right: 2rem;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background-color: #2C2C2C;
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        z-index: 48;
+        transition: all 0.3s ease;
+      }
+      
+      .filter-button:hover {
+        transform: scale(1.1);
+        background-color: #f8c78d;
+        color: #2C2C2C;
+      }
+      
+      .category-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin-bottom: 2rem;
+      }
+      
+      .category-tag {
+        padding: 0.5rem 1rem;
+        border-radius: 2rem;
+        font-size: 0.8rem;
+        font-weight: 500;
+        transition: all 0.2s ease;
+        white-space: nowrap;
       }
     </style>
   </head>
@@ -259,198 +599,138 @@
 
     <%- include('../partials/user/header.ejs') %>
 
-    <section class="relative py-24 hero-section text-white overflow-hidden">
-      <div class="absolute inset-0" style="background-image: url('/Images/images/OLD_PAPER_TEXTURE.jpg'); opacity: 0.2; background-size: cover;"></div>
-      <div class="absolute inset-0 bg-gradient-to-r from-[#1a1a1a]/90 to-transparent"></div>
+    <section class="thrift-hero-section py-20 md:py-28 overflow-hidden">
+      <!-- Pattern Background -->
+      <div class="thrift-pattern-bg"></div>
       
-      <div class="container mx-auto px-4 relative z-10">
-        <div class="flex flex-col md:flex-row items-center justify-between">
-          <div class="text-left max-w-xl mb-8 md:mb-0">
-            <h4 class="text-[#f8c78d] text-sm tracking-widest uppercase mb-2 hero-subheading">Curated Collection</h4>
-            <h1 class="text-5xl md:text-6xl hero-heading mb-6 leading-tight">Discover <span class="text-[#f8c78d]">Vintage</span> Treasures</h1>
-            <p class="text-[#ffffff]/80 hero-subheading mb-8 text-lg">Each piece tells a story, each design has a history. Find your perfect vintage statement piece today.</p>
-            <div class="flex flex-wrap gap-4">
-              <a href="#featured-collection" class="px-8 py-3 bg-[#f8c78d] text-[#2C2C2C] rounded-full hover:bg-[#e5b67d] transition-all font-montserrat font-medium tracking-wider">Explore Collection</a>
-              <a href="/new-arrivals" class="px-8 py-3 bg-transparent border border-white/30 text-white rounded-full hover:bg-white/10 transition-all font-montserrat font-medium tracking-wider">New Arrivals</a>
-            </div>
+      <!-- Clothesline Decoration -->
+      <div class="clothesline hidden lg:block">
+        <div class="clothespin" style="left: 20%;"></div>
+        <div class="clothespin" style="left: 50%;"></div>
+        <div class="clothespin" style="left: 80%;"></div>
           </div>
           
-          <div class="relative hidden md:block">
-            <div class="w-80 h-80 rounded-full bg-[#f8c78d]/20 backdrop-blur-sm relative overflow-hidden border border-white/10">
-              <div class="absolute -right-20 -bottom-20 w-64 h-64 rounded-full bg-[#f8c78d]/30"></div>
-              <div class="absolute left-10 top-10 w-16 h-16 rounded-full bg-white/20"></div>
+      <div class="container mx-auto px-4 relative">
+        <div class="flex flex-col lg:flex-row items-center justify-between gap-12">
+          
+          <!-- Left Content -->
+          <div class="lg:w-1/2 z-10 relative order-2 lg:order-1">
+            <div class="vintage-tag mb-5 shadow-lg">Sustainable Fashion</div>
+            
+            <h1 class="text-4xl md:text-5xl lg:text-6xl mb-6 text-[#2C2C2C] rustic-headline leading-tight">
+              Treasures of <br><span class="text-handwritten text-[#f8c78d] relative inline-block transform -rotate-2">Yesterday</span>
+            </h1>
+            
+            <div class="rustic-divider"></div>
+            
+            <p class="text-[#2C2C2C]/80 mb-8 text-lg font-montserrat max-w-xl">
+              Discover unique pre-loved clothing with stories to tell. Every stitch, every fabric, 
+              every piece has been carefully selected to bring sustainable style to your wardrobe.
+            </p>
+            
+            <div class="flex flex-wrap gap-4">
+              <a href="#featured-collection" class="vintage-button hover:shadow-lg transition-all">
+                Explore Collection
+              </a>
+              <a href="/new-arrivals" class="vintage-button bg-transparent border-2 border-[#2C2C2C] hover:border-[#f8c78d] hover:text-[#2C2C2C] hover:bg-[#f8c78d]/10 transition-all">
+                New Arrivals
+              </a>
             </div>
-            <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-              <svg class="w-16 h-16 text-white/70" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
-                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
-              </svg>
+            
+            <!-- Decorative Element -->
+            <div class="absolute -bottom-10 -left-5 w-24 h-24 border-2 border-dashed border-[#f8c78d]/40 rounded-full hidden lg:block"></div>
+        </div>
+
+          <!-- Right Content - Polaroid Gallery -->
+          <div class="lg:w-1/2 flex justify-center items-center relative order-1 lg:order-2">
+            <div class="relative">
+              <!-- Main Polaroid -->
+              <div class="polaroid-container stitched-border relative z-20 bg-white">
+                <img src="/Images/placeholder.jpg" alt="Vintage Collection" class="polaroid-image w-full h-64 md:h-80" id="polaroid-main">
+                <div class="polaroid-tape polaroid-tape-top"></div>
+                <div class="polaroid-tape polaroid-tape-corner"></div>
+          </div>
+
+              <!-- Secondary Polaroids -->
+              <div class="polaroid-container absolute top-20 -left-16 md:-left-28 z-10 transform -rotate-6 w-32 md:w-48 hidden md:block">
+                <img src="/Images/placeholder.jpg" alt="Vintage Item" class="polaroid-image w-full h-28 md:h-32" id="polaroid-left">
+                <div class="polaroid-tape polaroid-tape-top" style="--rotation: 5deg;"></div>
             </div>
+
+              <div class="polaroid-container absolute -bottom-10 -right-10 md:-right-16 z-10 transform rotate-12 w-36 md:w-48 hidden md:block">
+                <img src="/Images/placeholder.jpg" alt="Vintage Accessories" class="polaroid-image w-full h-28 md:h-32" id="polaroid-right">
+                <div class="polaroid-tape polaroid-tape-corner" style="--rotation: -30deg; left: -10px; right: auto; bottom: 40px;"></div>
+            </div>
+
+              <!-- Retro Tag -->
+              <div class="retro-tag">Eco-Friendly</div>
+            </div>
+
+            <!-- Decorative Elements -->
+            <div class="absolute top-1/4 right-1/4 w-12 h-12 rounded-full bg-[#2C2C2C]/5 animate-ping"></div>
+            <div class="absolute bottom-10 right-10 w-20 h-20 border border-[#f8c78d]/20 rounded-full"></div>
+            <div class="absolute -top-5 -left-5 w-10 h-10 border border-[#2C2C2C]/10 rounded-full"></div>
           </div>
         </div>
-      </div>
-      
-      <div class="absolute bottom-0 left-0 w-full h-8 bg-[#f8f7f5] clip-path-wave"></div>
-      <div class="absolute -bottom-6 right-12 transform rotate-45 w-24 h-24 border border-[#f8c78d]/30 rounded-md"></div>
-      <div class="absolute top-12 right-12 w-8 h-8 rounded-full bg-[#f8c78d]/40"></div>
+            </div>
+
+      <!-- Decorative Bottom Wave -->
+      <svg class="w-full h-12 text-white mt-8" viewBox="0 0 1200 120" preserveAspectRatio="none">
+        <path d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z" fill="#FFFFFF"></path>
+      </svg>
     </section>
 
-    <section class="py-16" id="featured-collection">
+    <section class="py-16" id="shop-section">
       <div class="container mx-auto px-4">
-        <div class="relative mb-16 rounded-lg overflow-hidden shadow-lg">
-          <div class="absolute inset-0 bg-gradient-to-r from-[#2C2C2C]/90 to-[#2C2C2C]/50" style="z-index: 1;"></div>
-          <div class="absolute inset-0" style="background-image: url('/Images/images/OLD_PAPER_TEXTURE.jpg'); opacity: 0.1; background-size: cover;"></div>
-          <div class="relative z-10 flex flex-col md:flex-row items-center justify-between p-8 md:p-12">
-            <div class="text-white mb-6 md:mb-0">
-              <h3 class="text-sm font-montserrat tracking-widest text-[#f8c78d] uppercase mb-2">This Month</h3>
-              <h2 class="text-3xl mb-4 font-playfair">Featured Collection</h2>
-              <p class="text-white/80 max-w-md mb-6">Explore our carefully curated selection of rare and unique vintage finds from around the world.</p>
-              <a href="#featured" class="inline-block px-6 py-2 border-b-2 border-[#f8c78d] text-[#f8c78d] hover:text-white hover:border-white transition-colors">View Featured</a>
-            </div>
-            <div class="flex space-x-2">
-              <div class="w-16 h-16 md:w-24 md:h-24 rounded-lg bg-white/10 backdrop-blur-sm flex items-center justify-center border border-white/20 transform rotate-3">
-                <span class="text-2xl md:text-3xl text-white font-playfair">20%</span>
-              </div>
-              <div class="w-16 h-16 md:w-24 md:h-24 rounded-lg bg-[#f8c78d]/20 backdrop-blur-sm flex items-center justify-center border border-[#f8c78d]/30 transform -rotate-3">
-                <span class="text-xs md:text-sm text-white font-montserrat tracking-wider text-center">LIMITED<br>OFFER</span>
-              </div>
-            </div>
-          </div>
-        </div>
-        
-        <div class="mb-16">
-          <div class="flex items-center justify-between mb-8">
+        <!-- Category Navigation -->
+        <div class="mb-12">
+          <div class="flex items-center justify-between mb-6">
             <div>
-              <h4 class="text-[#f8c78d] text-xs tracking-widest uppercase mb-2 font-montserrat">Browse By</h4>
-              <h2 class="text-3xl section-heading text-[#2C2C2C]">Our Collections</h2>
+              <h4 class="text-[#f8c78d] text-xs tracking-widest uppercase mb-2 font-montserrat">Discover</h4>
+              <h2 class="text-3xl section-heading text-[#2C2C2C]">Vintage Collection</h2>
+              </div>
             </div>
-            <div class="flex items-center gap-2">
-              <span class="text-sm text-[#2C2C2C]/70 font-montserrat">Filter:</span>
-              <select id="mobile-category-filter" class="md:hidden border border-[#e0dcd4] bg-white px-3 py-2 rounded-full text-sm font-montserrat focus:ring-2 focus:ring-[#f8c78d]/30 focus:outline-none">
-                <option value="all">All Categories</option>
-                <% categories.forEach(category => { %>
-                  <option value="<%= category._id %>" <%= selectedCategory === category._id.toString() ? 'selected' : '' %>>
-                    <%= category.name %>
-                  </option>
-                <% }); %>
-              </select>
-            </div>
-          </div>
-          
-          <div class="hidden md:block">
-            <div class="flex gap-3 overflow-x-auto pb-2 category-filter">
-              <a href="/shop" 
-                 class="whitespace-nowrap px-6 py-3 rounded-full border font-montserrat text-sm transition-all duration-300 <%= selectedCategory === 'all' ? 'bg-[#2C2C2C] text-white border-[#2C2C2C] shadow-md' : 'bg-white border-[#e0dcd4] text-[#2C2C2C] hover:bg-[#f8c78d]/10 hover:border-[#f8c78d]/30' %>">
-                All Categories
+
+          <div class="category-tags">
+            <a href="/shop" 
+               class="category-tag border <%= selectedCategory === 'all' ? 'bg-[#2C2C2C] text-white border-[#2C2C2C]' : 'bg-white border-[#e0dcd4] text-[#2C2C2C] hover:bg-[#f8c78d]/10 hover:border-[#f8c78d]/30' %>">
+              All Categories
+            </a>
+            <% categories.forEach(category => { %>
+              <a href="/shop?category=<%= category._id %>" 
+                 class="category-tag border <%= selectedCategory === category._id.toString() ? 'bg-[#2C2C2C] text-white border-[#2C2C2C]' : 'bg-white border-[#e0dcd4] text-[#2C2C2C] hover:bg-[#f8c78d]/10 hover:border-[#f8c78d]/30' %>">
+                <%= category.name %>
               </a>
-              <% categories.forEach(category => { %>
-                <a href="/shop?category=<%= category._id %>" 
-                   class="whitespace-nowrap px-6 py-3 rounded-full border font-montserrat text-sm transition-all duration-300 <%= selectedCategory === category._id.toString() ? 'bg-[#2C2C2C] text-white border-[#2C2C2C] shadow-md' : 'bg-white border-[#e0dcd4] text-[#2C2C2C] hover:bg-[#f8c78d]/10 hover:border-[#f8c78d]/30' %>">
-                  <%= category.name %>
-                </a>
-              <% }); %>
+            <% }); %>
             </div>
-          </div>
         </div>
 
-        <div class="mb-12 bg-white p-6 rounded-lg shadow-sm border border-[#e0dcd4]/50">
-          <div class="flex justify-between items-center mb-4">
-            <h3 class="text-lg font-playfair text-[#2C2C2C]">Filter Products</h3>
-            <button id="toggleFilters" class="md:hidden text-[#2C2C2C] hover:text-[#f8c78d] focus:outline-none">
-              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-              </svg>
-            </button>
-          </div>
-
-          <form id="filterForm" class="filter-container hidden md:grid grid-cols-1 md:grid-cols-4 gap-4">
-            <div>
-              <label class="block text-sm font-montserrat text-[#2C2C2C]/70 mb-2">Category</label>
-              <select name="category" class="w-full border border-[#e0dcd4] p-2 rounded-md focus:ring-2 focus:ring-[#f8c78d]/30 focus:outline-none">
-                <option value="all">All Categories</option>
-                <% categories.forEach(category => { %>
-                  <option value="<%= category._id %>" <%= filters.category === category._id.toString() ? 'selected' : '' %>>
-                    <%= category.name %>
-                  </option>
-                <% }); %>
-              </select>
-            </div>
-
-            <div>
-              <label class="block text-sm font-montserrat text-[#2C2C2C]/70 mb-2">Brand</label>
-              <select name="brand" class="w-full border border-[#e0dcd4] p-2 rounded-md focus:ring-2 focus:ring-[#f8c78d]/30 focus:outline-none">
-                <option value="">All Brands</option>
-                <% brands.forEach(brand => { %>
-                  <option value="<%= brand._id %>" <%= filters.brand === brand._id.toString() ? 'selected' : '' %>>
-                    <%= brand.brandName %>
-                  </option>
-                <% }); %>
-              </select>
-            </div>
-
-            <div>
-              <label class="block text-sm font-montserrat text-[#2C2C2C]/70 mb-2">Size</label>
-              <select name="size" class="w-full border border-[#e0dcd4] p-2 rounded-md focus:ring-2 focus:ring-[#f8c78d]/30 focus:outline-none">
-                <option value="">All Sizes</option>
-                <option value="S" <%= filters.size === 'S' ? 'selected' : '' %>>S</option>
-                <option value="M" <%= filters.size === 'M' ? 'selected' : '' %>>M</option>
-                <option value="L" <%= filters.size === 'L' ? 'selected' : '' %>>L</option>
-                <option value="XL" <%= filters.size === 'XL' ? 'selected' : '' %>>XL</option>
-              </select>
-            </div>
-
-            <div>
-              <label class="block text-sm font-montserrat text-[#2C2C2C]/70 mb-2">Condition</label>
-              <select name="condition" class="w-full border border-[#e0dcd4] p-2 rounded-md focus:ring-2 focus:ring-[#f8c78d]/30 focus:outline-none">
-                <option value="">All Conditions</option>
-                <option value="Like New" <%= filters.condition === 'Like New' ? 'selected' : '' %>>Like New</option>
-                <option value="Gently Used" <%= filters.condition === 'Gently Used' ? 'selected' : '' %>>Gently Used</option>
-                <option value="Fair Condition" <%= filters.condition === 'Fair Condition' ? 'selected' : '' %>>Fair Condition</option>
-              </select>
-            </div>
-
-            <div>
-              <label class="block text-sm font-montserrat text-[#2C2C2C]/70 mb-2">Heritage</label>
-              <select name="heritage" class="w-full border border-[#e0dcd4] p-2 rounded-md focus:ring-2 focus:ring-[#f8c78d]/30 focus:outline-none">
-                <option value="">All Heritage</option>
-                <option value="Prime Layers" <%= filters.heritage === 'Prime Layers' ? 'selected' : '' %>>Prime Layers</option>
-                <option value="Vintage Athletics" <%= filters.heritage === 'Vintage Athletics' ? 'selected' : '' %>>Vintage Athletics</option>
-                <option value="Y2K Essentials" <%= filters.heritage === 'Y2K Essentials' ? 'selected' : '' %>>Y2K Essentials</option>
-              </select>
-            </div>
-
-            <div class="md:col-span-2">
-              <label class="block text-sm font-montserrat text-[#2C2C2C]/70 mb-2">Price Range</label>
-              <div class="flex items-center gap-2">
-                <input type="number" name="minPrice" placeholder="Min" value="<%= filters.minPrice || '' %>" 
-                       class="w-1/2 border border-[#e0dcd4] p-2 rounded-md focus:ring-2 focus:ring-[#f8c78d]/30 focus:outline-none">
-                <span>-</span>
-                <input type="number" name="maxPrice" placeholder="Max" value="<%= filters.maxPrice || '' %>" 
-                       class="w-1/2 border border-[#e0dcd4] p-2 rounded-md focus:ring-2 focus:ring-[#f8c78d]/30 focus:outline-none">
-              </div>
-            </div>
-
-            <div class="md:col-span-4 flex gap-4">
-              <button type="submit" class="px-6 py-2 bg-[#2C2C2C] text-white rounded-md hover:bg-[#1a1a1a] font-montserrat transition-colors">
-                Apply Filters
-              </button>
-              <a href="/shop" class="px-6 py-2 border border-[#e0dcd4] text-[#2C2C2C] rounded-md hover:bg-[#f8c78d]/10 font-montserrat transition-colors">
-                Clear Filters
-              </a>
-            </div>
-          </form>
-        </div>
-
+        <!-- Product Grid -->
         <div class="relative">
           <div class="absolute -top-8 -left-8 w-16 h-16 border border-[#f8c78d]/20 rounded-full hidden lg:block"></div>
           <div class="absolute -bottom-8 -right-8 w-24 h-24 border-2 border-[#f8c78d]/10 rounded-full hidden lg:block"></div>
           
-          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6">
             <% if (products && products.length > 0) { %>
               <% products.forEach(product => { %>
                 <div class="product-card">
-                  <!-- Badge - Show either NEW or FEATURED, prioritizing NEW -->
+                  <!-- Badge - Show either NEW, FEATURED, or OFFER, prioritizing NEW then OFFER -->
+                  <% 
+                    const productOffer = product.productOffer || 0;
+                    const categoryOffer = product.category && product.category.categoryOffer ? product.category.categoryOffer : 0;
+                    const bestOfferPercentage = Math.max(productOffer, categoryOffer);
+                    const originalPrice = product.salesPrice;
+                    let finalPrice = originalPrice;
+                    
+                    if (bestOfferPercentage > 0) {
+                      const offerAmount = originalPrice * (bestOfferPercentage / 100);
+                      finalPrice = originalPrice - offerAmount;
+                    }
+                  %>
                   <% if (product.isNew) { %>
                     <div class="product-badge new">NEW</div>
+                  <% } else if (bestOfferPercentage > 0) { %>
+                    <div class="product-badge offer">-<%= bestOfferPercentage %>% OFF</div>
                   <% } else if (product.isFeatured) { %>
                     <div class="product-badge featured">FEATURED</div>
                   <% } %>
@@ -480,9 +760,12 @@
                     
                     <div class="product-footer">
                       <div class="product-price">
-                        <span class="current-price">$<%= product.salesPrice %></span>
-                        <% if (product.originalPrice) { %>
-                          <span class="original-price">$<%= product.originalPrice %></span>
+                        <% if (bestOfferPercentage > 0) { %>
+                          <span class="current-price">$<%= finalPrice.toFixed(2) %></span>
+                          <span class="original-price">$<%= originalPrice.toFixed(2) %></span>
+                          <span class="text-xs font-semibold text-green-600 ml-1">Save <%= bestOfferPercentage %>%</span>
+                        <% } else { %>
+                          <span class="current-price">$<%= product.salesPrice.toFixed(2) %></span>
                         <% } %>
                       </div>
                       
@@ -516,6 +799,7 @@
           </div>
         </div>
         
+        <!-- Pagination -->
         <% if (totalPages > 1) { %>
         <div class="mt-16 flex justify-center">
           <div class="inline-flex rounded-md shadow-sm">
@@ -557,18 +841,138 @@
         </div>
         <% } %>
       </div>
+      
+      <!-- Filter Button -->
+      <button id="open-filter" class="filter-button">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path>
+        </svg>
+      </button>
+      
+      <!-- Filter Overlay -->
+      <div class="filter-overlay"></div>
+      
+      <!-- Sliding Filter Panel -->
+      <div class="filter-sidebar">
+        <div class="flex justify-between items-center mb-6">
+          <h3 class="text-xl font-playfair text-[#2C2C2C]">Filter Products</h3>
+          <button id="close-filter" class="text-[#2C2C2C] hover:text-[#f8c78d] focus:outline-none">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+          </button>
+        </div>
+        
+        <form id="filterForm" class="space-y-6">
+          <div>
+            <label class="block text-sm font-montserrat text-[#2C2C2C]/70 mb-2">Category</label>
+            <select name="category" class="w-full border border-[#e0dcd4] p-2 rounded-md focus:ring-2 focus:ring-[#f8c78d]/30 focus:outline-none">
+              <option value="all">All Categories</option>
+              <% categories.forEach(category => { %>
+                <option value="<%= category._id %>" <%= filters.category === category._id.toString() ? 'selected' : '' %>>
+                  <%= category.name %>
+                </option>
+              <% }); %>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-sm font-montserrat text-[#2C2C2C]/70 mb-2">Brand</label>
+            <select name="brand" class="w-full border border-[#e0dcd4] p-2 rounded-md focus:ring-2 focus:ring-[#f8c78d]/30 focus:outline-none">
+              <option value="">All Brands</option>
+              <% brands.forEach(brand => { %>
+                <option value="<%= brand._id %>" <%= filters.brand === brand._id.toString() ? 'selected' : '' %>>
+                  <%= brand.brandName %>
+                </option>
+              <% }); %>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-sm font-montserrat text-[#2C2C2C]/70 mb-2">Size</label>
+            <select name="size" class="w-full border border-[#e0dcd4] p-2 rounded-md focus:ring-2 focus:ring-[#f8c78d]/30 focus:outline-none">
+              <option value="">All Sizes</option>
+              <option value="S" <%= filters.size === 'S' ? 'selected' : '' %>>S</option>
+              <option value="M" <%= filters.size === 'M' ? 'selected' : '' %>>M</option>
+              <option value="L" <%= filters.size === 'L' ? 'selected' : '' %>>L</option>
+              <option value="XL" <%= filters.size === 'XL' ? 'selected' : '' %>>XL</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-sm font-montserrat text-[#2C2C2C]/70 mb-2">Condition</label>
+            <select name="condition" class="w-full border border-[#e0dcd4] p-2 rounded-md focus:ring-2 focus:ring-[#f8c78d]/30 focus:outline-none">
+              <option value="">All Conditions</option>
+              <option value="Like New" <%= filters.condition === 'Like New' ? 'selected' : '' %>>Like New</option>
+              <option value="Gently Used" <%= filters.condition === 'Gently Used' ? 'selected' : '' %>>Gently Used</option>
+              <option value="Fair Condition" <%= filters.condition === 'Fair Condition' ? 'selected' : '' %>>Fair Condition</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-sm font-montserrat text-[#2C2C2C]/70 mb-2">Heritage</label>
+            <select name="heritage" class="w-full border border-[#e0dcd4] p-2 rounded-md focus:ring-2 focus:ring-[#f8c78d]/30 focus:outline-none">
+              <option value="">All Heritage</option>
+              <option value="Prime Layers" <%= filters.heritage === 'Prime Layers' ? 'selected' : '' %>>Prime Layers</option>
+              <option value="Vintage Athletics" <%= filters.heritage === 'Vintage Athletics' ? 'selected' : '' %>>Vintage Athletics</option>
+              <option value="Y2K Essentials" <%= filters.heritage === 'Y2K Essentials' ? 'selected' : '' %>>Y2K Essentials</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-sm font-montserrat text-[#2C2C2C]/70 mb-2">Price Range</label>
+            <div class="flex items-center gap-2">
+              <input type="number" name="minPrice" placeholder="Min" value="<%= filters.minPrice || '' %>" 
+                     class="w-1/2 border border-[#e0dcd4] p-2 rounded-md focus:ring-2 focus:ring-[#f8c78d]/30 focus:outline-none">
+              <span>-</span>
+              <input type="number" name="maxPrice" placeholder="Max" value="<%= filters.maxPrice || '' %>" 
+                     class="w-1/2 border border-[#e0dcd4] p-2 rounded-md focus:ring-2 focus:ring-[#f8c78d]/30 focus:outline-none">
+            </div>
+          </div>
+
+          <div class="pt-4 flex flex-col gap-4">
+            <button type="submit" class="w-full px-6 py-3 bg-[#2C2C2C] text-white rounded-md hover:bg-[#1a1a1a] font-montserrat transition-colors">
+              Apply Filters
+            </button>
+            <a href="/shop" class="w-full text-center px-6 py-3 border border-[#e0dcd4] text-[#2C2C2C] rounded-md hover:bg-[#f8c78d]/10 font-montserrat transition-colors">
+              Clear Filters
+            </a>
+          </div>
+        </form>
+      </div>
     </section>
 
     <%- include('../partials/user/footer.ejs') %>
 
     <script>
-      const toggleButton = document.getElementById('toggleFilters');
-      const filterContainer = document.querySelector('.filter-container');
-
-      toggleButton.addEventListener('click', () => {
-        filterContainer.classList.toggle('hidden');
-      });
-
+      // Load random images when page loads
+      document.addEventListener('DOMContentLoaded', loadRandomShopImages);
+      
+      // Filter sidebar functionality
+      document.addEventListener('DOMContentLoaded', function() {
+        const openFilterBtn = document.getElementById('open-filter');
+        const closeFilterBtn = document.getElementById('close-filter');
+        const filterSidebar = document.querySelector('.filter-sidebar');
+        const filterOverlay = document.querySelector('.filter-overlay');
+        
+        // Open filter sidebar
+        openFilterBtn.addEventListener('click', function() {
+          filterSidebar.classList.add('active');
+          filterOverlay.classList.add('active');
+          document.body.style.overflow = 'hidden'; // Prevent scrolling
+        });
+        
+        // Close filter sidebar
+        function closeFilterSidebar() {
+          filterSidebar.classList.remove('active');
+          filterOverlay.classList.remove('active');
+          document.body.style.overflow = ''; // Allow scrolling
+        }
+        
+        closeFilterBtn.addEventListener('click', closeFilterSidebar);
+        filterOverlay.addEventListener('click', closeFilterSidebar);
+        
+        // Handle form submission
       document.getElementById('filterForm').addEventListener('submit', function(e) {
         e.preventDefault();
         const formData = new FormData(this);
@@ -579,7 +983,18 @@
           }
         }
         window.location.href = `/shop?${params.toString()}`;
+        });
       });
+      
+      // Original event listeners (keeping for compatibility)
+      const toggleButton = document.getElementById('toggleFilters');
+      const filterContainer = document.querySelector('.filter-container');
+
+      if (toggleButton && filterContainer) {
+        toggleButton.addEventListener('click', () => {
+          filterContainer.classList.toggle('hidden');
+        });
+      }
 
       document.getElementById('mobile-category-filter')?.addEventListener('change', function() {
         const categoryId = this.value;
@@ -591,6 +1006,95 @@
         }
         params.delete('page'); // Reset to page 1 on category change
         window.location.href = `/shop?${params.toString()}`;
+      });
+
+      // Category slider functionality
+      document.addEventListener('DOMContentLoaded', function() {
+        const slider = document.querySelector('.category-slider');
+        const prevBtn = document.getElementById('prev-category');
+        const nextBtn = document.getElementById('next-category');
+        const sliderContainer = document.querySelector('.category-slider-container');
+        
+        if (!slider || !prevBtn || !nextBtn || !sliderContainer) return;
+        
+        let position = 0;
+        const scrollAmount = 300; // Amount to scroll on each click
+        const totalWidth = slider.scrollWidth;
+        const visibleWidth = sliderContainer.offsetWidth;
+        const maxPosition = Math.max(0, totalWidth - visibleWidth);
+        
+        function updateSliderPosition() {
+          slider.style.transform = `translateX(-${position}px)`;
+          
+          // Disable buttons when at the start or end
+          prevBtn.disabled = position === 0;
+          nextBtn.disabled = position >= maxPosition;
+          
+          prevBtn.style.opacity = position === 0 ? '0.5' : '1';
+          nextBtn.style.opacity = position >= maxPosition ? '0.5' : '1';
+        }
+        
+        // Check if scrolling is needed
+        function checkScrollNeeded() {
+          if (totalWidth <= visibleWidth) {
+            prevBtn.style.display = 'none';
+            nextBtn.style.display = 'none';
+          } else {
+            prevBtn.style.display = 'flex';
+            nextBtn.style.display = 'flex';
+          }
+        }
+        
+        prevBtn.addEventListener('click', () => {
+          position = Math.max(0, position - scrollAmount);
+          updateSliderPosition();
+        });
+        
+        nextBtn.addEventListener('click', () => {
+          position = Math.min(maxPosition, position + scrollAmount);
+          updateSliderPosition();
+        });
+        
+        // Initialize button states
+        updateSliderPosition();
+        checkScrollNeeded();
+        
+        // Update on window resize
+        window.addEventListener('resize', () => {
+          const newVisibleWidth = sliderContainer.offsetWidth;
+          const newMaxPosition = Math.max(0, slider.scrollWidth - newVisibleWidth);
+          position = Math.min(position, newMaxPosition);
+          updateSliderPosition();
+          checkScrollNeeded();
+        });
+        
+        // Touch events for mobile swipe
+        let touchStartX = 0;
+        let touchEndX = 0;
+        
+        sliderContainer.addEventListener('touchstart', (e) => {
+          touchStartX = e.changedTouches[0].screenX;
+        }, { passive: true });
+        
+        sliderContainer.addEventListener('touchend', (e) => {
+          touchEndX = e.changedTouches[0].screenX;
+          handleSwipe();
+        }, { passive: true });
+        
+        function handleSwipe() {
+          const swipeDistance = touchStartX - touchEndX;
+          const swipeThreshold = 50; // Minimum distance to trigger swipe
+          
+          if (swipeDistance > swipeThreshold) {
+            // Swipe left - go right
+            position = Math.min(maxPosition, position + scrollAmount);
+            updateSliderPosition();
+          } else if (swipeDistance < -swipeThreshold) {
+            // Swipe right - go left
+            position = Math.max(0, position - scrollAmount);
+            updateSliderPosition();
+          }
+        }
       });
 
       function showToast(message, type = 'success') {
@@ -638,6 +1142,82 @@
           console.error('Error adding to cart:', error);
           showToast(error.message || 'Failed to add to cart', 'error');
         }
+      }
+
+      // Helper function to set polaroid images
+      function setPolaroidImage(imageId, imageUrl, altText = '') {
+        const imageElement = document.getElementById(imageId);
+        if (imageElement) {
+          imageElement.src = imageUrl;
+          if (altText) {
+            imageElement.alt = altText;
+          }
+          // Add error handler in case image doesn't load
+          imageElement.onerror = function() {
+            this.src = '/Images/placeholder.jpg';
+          };
+        }
+      }
+      
+      // Function to load random images for the polaroids
+      function loadRandomShopImages() {
+        // Get all the product images from the page
+        const productImages = Array.from(document.querySelectorAll('.product-image'))
+          .map(img => img.src)
+          .filter(src => !src.includes('placeholder.jpg'));
+        
+        if (productImages.length === 0) {
+          // If no product images found, use placeholders
+          setPolaroidImage('polaroid-main', '/Images/placeholder.jpg', 'Vintage Collection');
+          setPolaroidImage('polaroid-left', '/Images/placeholder.jpg', 'Retro Finds');
+          setPolaroidImage('polaroid-right', '/Images/placeholder.jpg', 'Unique Pieces');
+          return;
+        }
+        
+        // Shuffle the array to get random order
+        const shuffledImages = [...productImages].sort(() => 0.5 - Math.random());
+        
+        // Get the first 3 images or repeat if not enough
+        setPolaroidImage('polaroid-main', shuffledImages[0] || productImages[0], 'Vintage Collection');
+        setPolaroidImage('polaroid-left', shuffledImages[1] || productImages[0], 'Retro Finds');
+        setPolaroidImage('polaroid-right', shuffledImages[2] || productImages[0], 'Unique Pieces');
+        
+        // Add vintage date stamps to polaroids
+        addVintageDateStamp();
+      }
+      
+      // Function to add vintage date stamps to the polaroids
+      function addVintageDateStamp() {
+        // Generate random years between 1970 and 1999 for true vintage feel
+        const vintageYears = ['1979', '1983', '1985', '1991', '1995', '1997'];
+        const months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
+        const days = Array.from({length: 28}, (_, i) => i + 1);
+        
+        // For each polaroid, add a date stamp
+        const polaroids = document.querySelectorAll('.polaroid-container');
+        
+        polaroids.forEach(polaroid => {
+          // Create a date stamp element
+          const dateStamp = document.createElement('div');
+          
+          // Get random date components
+          const month = months[Math.floor(Math.random() * months.length)];
+          const day = days[Math.floor(Math.random() * days.length)];
+          const year = vintageYears[Math.floor(Math.random() * vintageYears.length)];
+          
+          // Style the date stamp
+          dateStamp.innerHTML = `${day} ${month} ${year}`;
+          dateStamp.style.position = 'absolute';
+          dateStamp.style.bottom = '0.5rem';
+          dateStamp.style.right = '1rem';
+          dateStamp.style.fontSize = '0.65rem';
+          dateStamp.style.fontFamily = 'monospace';
+          dateStamp.style.color = 'rgba(0,0,0,0.5)';
+          dateStamp.style.transform = 'rotate(-2deg)';
+          
+          // Add the date stamp to the polaroid
+          polaroid.appendChild(dateStamp);
+        });
       }
     </script>
   </body>

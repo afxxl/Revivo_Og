@@ -12,10 +12,12 @@
       }
       .product-gallery-thumbnail:hover {
         transform: scale(1.05);
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        border-color: #f8c78d;
       }
       .product-gallery-thumbnail.active {
-        border-color: #2C2C2C;
+        border-color: #f8c78d;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
       }
       .section-heading {
         font-family: 'Playfair Display', serif;
@@ -48,8 +50,93 @@
       }
       .trust-badge {
         background-color: #f8f7f5;
-        border-radius: 6px;
-        padding: 8px 12px;
+        border-radius: 8px;
+        padding: 12px 16px;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+      }
+      .trust-badge:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 15px rgba(0, 0, 0, 0.05);
+      }
+      
+      /* Image zoom container */
+      .img-zoom-container {
+        position: relative;
+        overflow: hidden;
+        background-color: white;
+        border-radius: 0.5rem;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      }
+      
+      .img-zoom-container img {
+        transition: transform 0.5s ease;
+        width: 100%;
+        height: auto;
+        object-fit: contain;
+        max-height: 500px;
+      }
+      
+      /* Custom quantity input styles */
+      .custom-number-input button {
+        background-color: #f8f7f5;
+        border: 1px solid #e0dcd4;
+        color: #2C2C2C;
+        width: 32px;
+        height: 32px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 16px;
+        transition: all 0.2s ease;
+      }
+      
+      .custom-number-input button:hover {
+        background-color: #e0dcd4;
+      }
+      
+      .custom-number-input input {
+        border: 1px solid #e0dcd4;
+        width: 40px;
+        height: 32px;
+        text-align: center;
+        font-size: 14px;
+        -moz-appearance: textfield;
+      }
+      
+      /* Remove arrows from number input */
+      .custom-number-input input::-webkit-outer-spin-button,
+      .custom-number-input input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+      }
+      
+      /* Add to cart button effect */
+      .add-to-cart-btn {
+        background-color: #2C2C2C;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+      }
+      
+      .add-to-cart-btn::after {
+        content: '';
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: -100%;
+        background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.3) 50%, rgba(255,255,255,0) 100%);
+        transition: all 0.6s ease;
+      }
+      
+      .add-to-cart-btn:hover {
+        background-color: #1a1a1a;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+      }
+      
+      .add-to-cart-btn:hover::after {
+        left: 100%;
       }
     </style>
   </head>
@@ -67,7 +154,7 @@
 
         <div class="flex flex-col lg:flex-row gap-12">
           <div class="lg:w-1/2">
-            <div class="bg-white p-4 rounded-lg shadow-sm mb-4">
+            <div class="img-zoom-container p-4 mb-4" id="imageZoomContainer">
               <img 
                 id="mainProductImage"
                 src="<%= product.productImage[0] %>" 
@@ -80,7 +167,7 @@
             <div class="flex gap-3 overflow-x-auto py-2">
               <% product.productImage.forEach((image, index) => { %>
                 <div 
-                  class="product-gallery-thumbnail flex-shrink-0 w-20 h-20 bg-white border border-[#e0dcd4] rounded-md p-1 cursor-pointer <%= index === 0 ? 'active' : '' %>"
+                  class="product-gallery-thumbnail flex-shrink-0 w-20 h-20 bg-white border-2 border-[#e0dcd4] rounded-md p-1 cursor-pointer <%= index === 0 ? 'active' : '' %>"
                   onclick="changeMainImage('<%= image %>', this)"
                 >
                   <img 
@@ -93,40 +180,40 @@
               <% }); %>
             </div>
 
-            <div class="mt-6 grid grid-cols-2 gap-3">
-              <div class="trust-badge flex items-center gap-2">
-                <div class="text-[#2C2C2C]">
+            <div class="mt-8 grid grid-cols-2 gap-4">
+              <div class="trust-badge flex items-center gap-3">
+                <div class="text-[#f8c78d] text-xl">
                   <i class="fas fa-shield-alt"></i>
                 </div>
                 <div>
-                  <p class="text-xs font-montserrat font-medium">100% Authentic</p>
+                  <p class="text-sm font-montserrat font-medium">100% Authentic</p>
                   <p class="text-xs text-[#2C2C2C]/70">Quality Guaranteed</p>
                 </div>
               </div>
-              <div class="trust-badge flex items-center gap-2">
-                <div class="text-[#2C2C2C]">
+              <div class="trust-badge flex items-center gap-3">
+                <div class="text-[#f8c78d] text-xl">
                   <i class="fas fa-truck"></i>
                 </div>
                 <div>
-                  <p class="text-xs font-montserrat font-medium">Free Shipping</p>
+                  <p class="text-sm font-montserrat font-medium">Free Shipping</p>
                   <p class="text-xs text-[#2C2C2C]/70">On orders over $50</p>
                 </div>
               </div>
-              <div class="trust-badge flex items-center gap-2">
-                <div class="text-[#2C2C2C]">
+              <div class="trust-badge flex items-center gap-3">
+                <div class="text-[#f8c78d] text-xl">
                   <i class="fas fa-undo"></i>
                 </div>
                 <div>
-                  <p class="text-xs font-montserrat font-medium">Easy Returns</p>
+                  <p class="text-sm font-montserrat font-medium">Easy Returns</p>
                   <p class="text-xs text-[#2C2C2C]/70">14-Day Policy</p>
                 </div>
               </div>
-              <div class="trust-badge flex items-center gap-2">
-                <div class="text-[#2C2C2C]">
+              <div class="trust-badge flex items-center gap-3">
+                <div class="text-[#f8c78d] text-xl">
                   <i class="fas fa-money-bill-wave"></i>
                 </div>
                 <div>
-                  <p class="text-xs font-montserrat font-medium">Cash on Delivery</p>
+                  <p class="text-sm font-montserrat font-medium">Cash on Delivery</p>
                   <p class="text-xs text-[#2C2C2C]/70">Pay when received</p>
                 </div>
               </div>
@@ -134,7 +221,7 @@
           </div>
 
           <div class="lg:w-1/2">
-            <div class="bg-white p-6 rounded-lg shadow-sm">
+            <div class="bg-white p-8 rounded-lg shadow-sm">
               <% if (!product.isListed || !product.brand.isActive || !product.category.isListed || product.stock <= 0 || product.status !== 'Available') { %>
                 <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-6" role="alert">
                   <p class="font-bold">Product Unavailable</p>
@@ -153,7 +240,7 @@
               <% } %>
 
               <div class="mb-4">
-                <span class="text-xs text-[#2C2C2C]/60 font-montserrat">
+                <span class="text-xs text-[#2C2C2C]/60 font-montserrat uppercase tracking-wider">
                   <%= product.category?.name || 'Vintage' %> / <%= product.brand?.brandName || 'Generic' %>
                 </span>
               </div>
@@ -172,29 +259,58 @@
               </div>
 
               <div class="mb-6">
-                <p class="text-2xl font-montserrat font-medium text-[#2C2C2C]">$<%= product.salesPrice %></p>
-                <% if (product.originalPrice) { %>
-                  <p class="text-[#2C2C2C]/60 text-sm font-montserrat line-through">$<%= product.originalPrice %></p>
+                <% 
+                  const productOffer = product.productOffer || 0;
+                  const categoryOffer = product.category && product.category.categoryOffer ? product.category.categoryOffer : 0;
+                  const bestOfferPercentage = Math.max(productOffer, categoryOffer);
+                  const originalPrice = product.salesPrice;
+                  let finalPrice = originalPrice;
+                  
+                  if (bestOfferPercentage > 0) {
+                    const offerAmount = originalPrice * (bestOfferPercentage / 100);
+                    finalPrice = originalPrice - offerAmount;
+                  }
+                %>
+                
+                <% if (bestOfferPercentage > 0) { %>
+                  <div class="bg-green-100 text-green-700 px-3 py-1.5 rounded-md inline-block text-xs font-montserrat font-medium mb-2">
+                    <% if (productOffer > categoryOffer) { %>
+                      Product Offer: <%= productOffer %>% off
+                    <% } else if (categoryOffer > 0) { %>
+                      Category Offer: <%= categoryOffer %>% off
+                    <% } %>
+                  </div>
+                  <div>
+                    <p class="text-2xl font-montserrat font-medium text-[#2C2C2C]">
+                      $<%= finalPrice.toFixed(2) %>
+                      <span class="ml-2 text-xs font-semibold text-green-700 bg-green-50 px-2 py-0.5 rounded">Save $<%= (originalPrice - finalPrice).toFixed(2) %></span>
+                    </p>
+                    <p class="text-[#2C2C2C]/60 text-sm font-montserrat line-through">
+                      $<%= originalPrice.toFixed(2) %>
+                    </p>
+                  </div>
+                <% } else { %>
+                  <p class="text-2xl font-montserrat font-medium text-[#2C2C2C]">$<%= originalPrice.toFixed(2) %></p>
                 <% } %>
               </div>
 
               <% if (product.stock > 0 && product.stock < 10) { %>
-                <div class="mb-4 bg-[#fff8f0] p-3 rounded-lg">
-                  <p class="text-sm font-montserrat text-[#2C2C2C]">
-                    <i class="fas fa-exclamation-circle text-[#f8c78d] mr-1"></i>
+                <div class="mb-4 bg-amber-50 p-3 rounded-lg border-l-4 border-amber-500">
+                  <p class="text-sm font-montserrat text-amber-800 flex items-center">
+                    <i class="fas fa-exclamation-triangle text-amber-500 mr-2"></i>
                     Only <%= product.stock %> left in stock - order soon!
                   </p>
                 </div>
               <% } %>
 
               <div class="mb-6 grid grid-cols-2 gap-4">
-                <div>
+                <div class="bg-[#f8f7f5] p-3 rounded-lg">
                   <p class="text-xs text-[#2C2C2C]/60 font-montserrat mb-1">Condition</p>
-                  <p class="font-montserrat"><%= product.condition %></p>
+                  <p class="font-montserrat font-medium"><%= product.condition %></p>
                 </div>
-                <div>
+                <div class="bg-[#f8f7f5] p-3 rounded-lg">
                   <p class="text-xs text-[#2C2C2C]/60 font-montserrat mb-1">Size</p>
-                  <p class="font-montserrat"><%= product.size %></p>
+                  <p class="font-montserrat font-medium"><%= product.size %></p>
                 </div>
               </div>
 
@@ -206,39 +322,39 @@
               </div>
 
               <div class="mb-6">
-                <label class="text-xs text-[#2C2C2C]/60 font-montserrat mb-1 block">Quantity</label>
-                <div class="flex items-center border border-[#e0dcd4] rounded-md w-32">
-                  <button class="px-3 py-2 text-[#2C2C2C]" onclick="decreaseQuantity()">-</button>
+                <label class="text-xs text-[#2C2C2C]/60 font-montserrat mb-2 block">Quantity</label>
+                <div class="custom-number-input flex items-center w-32">
+                  <button class="rounded-l-md" onclick="decreaseQuantity()">-</button>
                   <input type="number" id="quantity" value="1" min="1" max="<%= Math.min(product.stock, 10) %>" 
-                         class="w-full text-center border-x border-[#e0dcd4] py-2 font-montserrat">
-                  <button class="px-3 py-2 text-[#2C2C2C]" onclick="increaseQuantity()">+</button>
+                         class="font-montserrat">
+                  <button class="rounded-r-md" onclick="increaseQuantity()">+</button>
                 </div>
-                <p class="text-xs text-[#2C2C2C]/60 font-montserrat mt-1">Maximum 10 per order</p>
+                <p class="text-xs text-[#2C2C2C]/60 font-montserrat mt-2">Maximum 10 per order</p>
               </div>
 
               <button 
                 onclick="addToCart('<%= product._id %>')"
-                class="w-full py-3 bg-[#2C2C2C] text-white rounded-md hover:bg-[#1a1a1a] transition-colors font-montserrat mb-6"
+                class="w-full py-3 text-white rounded-md transition-all duration-300 font-montserrat mb-6 add-to-cart-btn"
                 <%= (!product.isListed || !product.brand.isActive || !product.category.isListed || product.stock <= 0 || product.status !== 'Available') ? 'disabled' : '' %>
               >
                 <%= (!product.isListed || !product.brand.isActive || !product.category.isListed || product.stock <= 0 || product.status !== 'Available') ? 'Unavailable' : 'Add to Cart' %>
               </button>
 
-              <div class="mb-6 p-3 bg-[#f8f7f5] rounded-lg border border-[#e0dcd4]">
+              <div class="mb-8 p-4 bg-[#f8f7f5] rounded-lg border border-[#e0dcd4]">
                 <div class="flex items-center justify-center gap-2">
-                  <i class="fas fa-lock text-[#2C2C2C]"></i>
+                  <i class="fas fa-lock text-[#f8c78d]"></i>
                   <p class="text-sm font-montserrat">Secure Checkout</p>
                 </div>
               </div>
 
-              <div class="mb-6">
-                <h3 class="text-lg font-playfair mb-3 section-heading">Description</h3>
+              <div class="mb-8">
+                <h3 class="text-lg font-playfair mb-4 section-heading">Description</h3>
                 <p class="text-[#2C2C2C]/80 font-montserrat leading-relaxed"><%= product.description %></p>
               </div>
 
-              <div class="mb-6">
-                <h3 class="text-lg font-playfair mb-3 section-heading">Product Details</h3>
-                <ul class="text-[#2C2C2C]/80 font-montserrat leading-relaxed space-y-2">
+              <div class="mb-8">
+                <h3 class="text-lg font-playfair mb-4 section-heading">Product Details</h3>
+                <ul class="text-[#2C2C2C]/80 font-montserrat leading-relaxed space-y-3">
                   <li class="flex items-start">
                     <i class="fas fa-check text-[#f8c78d] mr-2 mt-1 text-xs"></i>
                     <span>Authentic vintage item carefully curated</span>
@@ -255,10 +371,10 @@
               </div>
 
               <div class="mb-6">
-                <h3 class="text-lg font-playfair mb-3 section-heading">Shipping & Returns</h3>
-                <div class="space-y-3">
-                  <div class="flex items-start gap-3">
-                    <div class="text-[#2C2C2C] mt-1">
+                <h3 class="text-lg font-playfair mb-4 section-heading">Shipping & Returns</h3>
+                <div class="space-y-4">
+                  <div class="flex items-start gap-3 bg-[#f8f7f5] p-3 rounded-lg">
+                    <div class="text-[#f8c78d] mt-1">
                       <i class="fas fa-shipping-fast"></i>
                     </div>
                     <div>
@@ -266,8 +382,8 @@
                       <p class="text-xs text-[#2C2C2C]/70">Typically ships within 1-2 business days</p>
                     </div>
                   </div>
-                  <div class="flex items-start gap-3">
-                    <div class="text-[#2C2C2C] mt-1">
+                  <div class="flex items-start gap-3 bg-[#f8f7f5] p-3 rounded-lg">
+                    <div class="text-[#f8c78d] mt-1">
                       <i class="fas fa-undo"></i>
                     </div>
                     <div>
@@ -286,6 +402,27 @@
     <%- include('../partials/user/footer.ejs') %>
 
     <script>
+      // Image zoom functionality
+      document.addEventListener('DOMContentLoaded', function() {
+        const container = document.getElementById('imageZoomContainer');
+        const img = document.getElementById('mainProductImage');
+        
+        if (container && img) {
+          container.addEventListener('mousemove', function(e) {
+            const { left, top, width, height } = container.getBoundingClientRect();
+            const x = (e.clientX - left) / width;
+            const y = (e.clientY - top) / height;
+            
+            img.style.transformOrigin = `${x * 100}% ${y * 100}%`;
+            img.style.transform = 'scale(1.5)';
+          });
+          
+          container.addEventListener('mouseleave', function() {
+            img.style.transform = 'scale(1)';
+          });
+        }
+      });
+
       function changeMainImage(src, element) {
         document.getElementById('mainProductImage').src = src;
         

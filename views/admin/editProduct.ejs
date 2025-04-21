@@ -271,7 +271,7 @@
             <select id="brand" name="brand" required class="form-input w-full">
               <option value="">Select Brand</option>
               <% brands.forEach(brand => { %>
-                <option value="<%= brand._id %>" <%= product.brand._id.toString() === brand._id.toString() ? 'selected' : '' %>><%= brand.brandName %></option>
+                <option value="<%= brand._id %>" <%= (product.brand && product.brand._id && product.brand._id.toString() === brand._id.toString()) ? 'selected' : '' %>><%= brand.brandName %></option>
               <% }); %>
             </select>
             <p id="brand-error" class="error-message text-red-500 text-sm mt-1 hidden"></p>
@@ -282,7 +282,7 @@
             <select id="category" name="category" required class="form-input w-full">
               <option value="">Select Category</option>
               <% categories.forEach(category => { %>
-                <option value="<%= category._id %>" <%= product.category._id.toString() === category._id.toString() ? 'selected' : '' %>><%= category.name %></option>
+                <option value="<%= category._id %>" <%= (product.category && product.category._id && product.category._id.toString() === category._id.toString()) ? 'selected' : '' %>><%= category.name %></option>
               <% }); %>
             </select>
             <p id="category-error" class="error-message text-red-500 text-sm mt-1 hidden"></p>

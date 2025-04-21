@@ -74,6 +74,21 @@ router.get("/api/check-session", async (req, res) => {
       req.user ||
       (req.session.user ? await User.findById(req.session.user) : null);
 
+    if (user && user.isBlocked) {
+      // User is blocked - destroy session
+      req.session.destroy((err) => {
+        if (err) {
+          console.error("Error destroying session:", err);
+        }
+      });
+      
+      return res.json({
+        loggedIn: false,
+        isBlocked: true,
+        user: null,
+      });
+    }
+
     res.json({
       loggedIn: !!user,
       user: user

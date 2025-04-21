@@ -17,6 +17,12 @@ const categorySchema = new mongoose.Schema({
     type: Boolean,
     default: true,
   },
+  categoryOffer: {
+    type: Number,
+    default: 0,
+    min: 0,
+    max: 100,
+  },
   slug: {
     type: String,
     unique: true,

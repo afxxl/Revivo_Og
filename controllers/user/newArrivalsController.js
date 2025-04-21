@@ -5,7 +5,7 @@ const Brand = require("../../models/brandSchema.js");
 const newArrivalsPage = async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
-    const perPage = 8;
+    const perPage = 15;
     const skip = (page - 1) * perPage;
 
     const thirtyDaysAgo = new Date();
@@ -29,11 +29,20 @@ const newArrivalsPage = async (req, res) => {
       createdAt: { $gte: thirtyDaysAgo },
       isNew: true,
       isListed: true, // Ensure only listed products are fetched
-      category: { $in: listedCategoryIds },
       brand: { $in: activeBrandIds },
     };
 
-    if (filters.category) query.category = filters.category;
+    // Only apply category filter if user specifically selected a category
+    if (filters.category) {
+      query.category = filters.category;
+    } else {
+      // Otherwise include products with any valid category (or null category)
+      query.$or = [
+        { category: { $in: listedCategoryIds } },
+        { category: { $exists: true } }
+      ];
+    }
+
     if (filters.brand) query.brand = filters.brand;
     if (filters.size) query.size = filters.size;
     if (filters.condition) query.condition = filters.condition;

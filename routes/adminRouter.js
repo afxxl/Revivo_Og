@@ -41,6 +41,12 @@ router.get(
   adminAuth,
   categoryController.toggleCategoryStatus,
 );
+router.post(
+  "/updateCategoryOffer/:id",
+  adminAuth,
+  categoryController.updateCategoryOffer,
+);
+router.delete("/deleteCategory/:id", adminAuth, categoryController.deleteCategory);
 
 //Brands
 router.get("/brands", adminAuth, brandController.getBrandPage);
@@ -80,6 +86,11 @@ router.get(
   "/toggleProduct/:id",
   adminAuth,
   productController.toggleProductStatus,
+);
+router.post(
+  "/updateProductOffer/:id",
+  adminAuth,
+  productController.updateProductOffer,
 );
 
 //order
