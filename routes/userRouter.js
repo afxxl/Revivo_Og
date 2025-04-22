@@ -10,8 +10,11 @@ const { uploadProfile } = require("../helpers/multer.js");
 const getCartCount = require("../middlewares/cartCount.js");
 const validationController = require("../controllers/user/validationController.js");
 const User = require("../models/userSchema.js");
+const wishlistController = require("../controllers/user/wishlistController.js");
+const getWishlistCount = require("../middlewares/wishlistCount.js");
 
 router.use(getCartCount);
+router.use(getWishlistCount);
 
 router.get("/pageNotFound", userController.pageNotFound);
 
@@ -81,7 +84,7 @@ router.get("/api/check-session", async (req, res) => {
           console.error("Error destroying session:", err);
         }
       });
-      
+
       return res.json({
         loggedIn: false,
         isBlocked: true,
@@ -224,5 +227,19 @@ router.get(
   userAuth,
   shopController.generateInvoice,
 );
+
+// Wishlist routes
+router.get("/wishlist", userAuth, wishlistController.loadWishlistPage);
+router.post("/add-to-wishlist", userAuth, wishlistController.addToWishlist);
+router.post(
+  "/remove-from-wishlist",
+  userAuth,
+  wishlistController.removeFromWishlist,
+);
+router.get(
+  "/check-wishlist-status/:productId",
+  wishlistController.checkWishlistStatus,
+);
+router.get("/get-wishlist-count", wishlistController.getWishlistCount);
 
 module.exports = router;

@@ -10,6 +10,7 @@ const Order = require("../../models/orderSchema.js");
 const Cart = require("../../models/cartSchema.js");
 const fs = require("fs");
 const path = require("path");
+const Wishlist = require("../../models/wishlistSchema");
 
 const loadHomepage = async (req, res) => {
   try {
@@ -488,10 +489,30 @@ const addToCart = async (req, res) => {
     const { productId, quantity = 1 } = req.body;
     const userId = req.session.user;
 
+    console.log("Add to cart request received:", {
+      productId,
+      quantity,
+      userId: userId || "not logged in",
+    });
+
     if (!userId) {
+      console.log("User not logged in, returning 401");
       return res.status(401).json({
         success: false,
         message: "Please login to add items to cart",
+      });
+    }
+
+    // Validate productId format
+    if (
+      !productId ||
+      typeof productId !== "string" ||
+      !productId.match(/^[0-9a-fA-F]{24}$/)
+    ) {
+      console.error(`Invalid product ID format: ${productId}`);
+      return res.status(400).json({
+        success: false,
+        message: "Invalid product ID format",
       });
     }
 
@@ -501,11 +522,16 @@ const addToCart = async (req, res) => {
       .populate("category");
 
     if (!product) {
+      console.log(`Product not found with ID: ${productId}`);
       return res.status(404).json({
         success: false,
         message: "Product not found",
       });
     }
+
+    console.log(
+      `Found product: ${product.productName}, isListed: ${product.isListed}, stock: ${product.stock}, status: ${product.status}`,
+    );
 
     // Check if product is listed, brand is active, and category is listed
     if (!product.isListed) {
@@ -515,14 +541,14 @@ const addToCart = async (req, res) => {
       });
     }
 
-    if (!product.brand.isActive) {
+    if (!product.brand || !product.brand.isActive) {
       return res.status(400).json({
         success: false,
         message: "This product's brand is not available",
       });
     }
 
-    if (!product.category.isListed) {
+    if (!product.category || !product.category.isListed) {
       return res.status(400).json({
         success: false,
         message: "This product's category is not available",
@@ -554,7 +580,7 @@ const addToCart = async (req, res) => {
 
     // Calculate the best offer price
     const productOffer = product.productOffer || 0;
-    const categoryOffer = product.category.categoryOffer || 0;
+    const categoryOffer = product.category?.categoryOffer || 0;
     const bestOfferPercentage = Math.max(productOffer, categoryOffer);
 
     let finalPrice = product.salesPrice;
@@ -563,20 +589,46 @@ const addToCart = async (req, res) => {
       finalPrice = product.salesPrice - offerAmount;
     }
 
-    // Find or create cart
+    // Find or create cart - make sure we have a Cart schema
     let cart = await Cart.findOne({ userId });
+
+    // If cart doesn't exist, create a new one
     if (!cart) {
-      cart = new Cart({ userId, items: [] });
+      console.log(`Creating new cart for user ${userId}`);
+      cart = new Cart({
+        userId,
+        items: [],
+        updatedAt: new Date(),
+        createdAt: new Date(),
+      });
     }
 
-    // Check if product is already in cart
-    const existingItem = cart.items.find(
-      (item) => item.productId.toString() === productId,
-    );
+    // Check if items array exists, create if not
+    if (!cart.items) {
+      console.log(`Items array doesn't exist, creating it`);
+      cart.items = [];
+    }
 
-    if (existingItem) {
+    // Log current cart items
+    console.log(`Current cart has ${cart.items.length} items before update`);
+
+    // Safely find existing item to avoid errors
+    let existingItemIndex = -1;
+    if (cart.items && cart.items.length > 0) {
+      existingItemIndex = cart.items.findIndex(
+        (item) =>
+          item.productId && item.productId.toString() === productId.toString(),
+      );
+    }
+
+    console.log(`Existing item found: ${existingItemIndex !== -1}`);
+
+    if (existingItemIndex !== -1) {
+      // Item exists, update quantity
+      const existingItem = cart.items[existingItemIndex];
       // Check that adding the new quantity won't exceed the limit of 10
       const newQuantity = existingItem.quantity + parseInt(quantity);
+
       if (newQuantity > 10) {
         return res.status(400).json({
           success: false,
@@ -584,30 +636,87 @@ const addToCart = async (req, res) => {
         });
       }
 
+      console.log(
+        `Updating existing item in cart. New quantity: ${newQuantity}`,
+      );
+
+      // Update the existing item
       existingItem.quantity = newQuantity;
       existingItem.price = finalPrice; // Update price with current offer price
       existingItem.totalPrice = existingItem.quantity * finalPrice;
+
+      // Update in the array
+      cart.items[existingItemIndex] = existingItem;
     } else {
-      cart.items.push({
+      console.log(`Adding new item to cart. Quantity: ${quantity}`);
+
+      // Prepare the new item
+      const newItem = {
         productId,
         quantity: parseInt(quantity),
         price: finalPrice,
         totalPrice: parseInt(quantity) * finalPrice,
-      });
+        status: "active",
+        cancelationReason: "none",
+      };
+
+      // Add to cart items array
+      cart.items.push(newItem);
     }
 
+    // Save the cart with updated items
     await cart.save();
+    console.log("Cart saved successfully");
+
+    // Remove product from wishlist if it exists there
+    try {
+      const wishlist = await Wishlist.findOne({ userId });
+      if (wishlist) {
+        // Check if product is in wishlist
+        const inWishlist = wishlist.items.some(
+          (item) => item.productId.toString() === productId,
+        );
+
+        if (inWishlist) {
+          console.log(`Removing product ${productId} from wishlist`);
+          // Remove from wishlist using findOneAndUpdate with $pull for atomic operation
+          await Wishlist.findOneAndUpdate(
+            { userId },
+            { $pull: { items: { productId: productId } } },
+            { new: true },
+          );
+        }
+      }
+    } catch (wishlistErr) {
+      console.error("Error handling wishlist during add to cart:", wishlistErr);
+      // Continue with cart process even if wishlist operation fails
+    }
 
     // Update cart count
     const cartCount = cart.items.reduce((sum, item) => sum + item.quantity, 0);
+
+    // Get wishlist count after potential removal
+    let wishlistCount = 0;
+    try {
+      const updatedWishlist = await Wishlist.findOne({ userId });
+      wishlistCount = updatedWishlist ? updatedWishlist.items.length : 0;
+    } catch (err) {
+      console.error("Error getting wishlist count:", err);
+    }
+
+    console.log(
+      `Response: success=true, cartCount=${cartCount}, wishlistCount=${wishlistCount}`,
+    );
 
     res.json({
       success: true,
       message: "Product added to cart",
       cartCount,
+      wishlistCount,
     });
   } catch (err) {
     console.error("Error adding to cart:", err);
+    console.error("Stack trace:", err.stack);
     res.status(500).json({
       success: false,
       message: "Failed to add to cart",
@@ -617,6 +726,14 @@ const addToCart = async (req, res) => {
 const loadProductPage = async (req, res) => {
   try {
     const productId = req.params.id;
+
+    // Validate productId format before querying database
+    if (!productId || !productId.match(/^[0-9a-fA-F]{24}$/)) {
+      console.log(`Invalid product ID format requested: ${productId}`);
+      return res.status(404).render("user/page-404", {
+        message: "Product not found - Invalid ID format",
+      });
+    }
 
     const product = await Product.findOne({
       _id: productId,
@@ -635,13 +752,30 @@ const loadProductPage = async (req, res) => {
     if (!product || !product.brand || !product.category) {
       return res
         .status(404)
-        .render("page-404", { message: "Product not found" });
+        .render("user/page-404", { message: "Product not found" });
+    }
+
+    // Ensure product ID is a string
+    if (product._id) {
+      product._id = product._id.toString();
     }
 
     res.render("product", { product });
   } catch (error) {
     console.error("Error loading product page:", error);
-    res.status(500).render("500", { message: "Server Error" });
+
+    // Handle CastError specifically (invalid ObjectId)
+    if (error.name === "CastError" && error.kind === "ObjectId") {
+      return res.status(404).render("user/page-404", {
+        message: "Product not found - Invalid ID format",
+      });
+    }
+
+    // For other errors, render a generic error page
+    return res.status(500).render("user/page-404", {
+      message:
+        "An error occurred while loading the product. Please try again later.",
+    });
   }
 };
 

@@ -1,0 +1,657 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>Revivo - Your Wishlist</title>
+    <link href="/css/styles.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Henny+Penny&family=Playfair+Display:wght@400;500;600&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
+
+<style>
+  .wishlist-item {
+    transition: all 0.3s ease;
+  }
+  .wishlist-item:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  }
+  .remove-btn {
+    transition: all 0.2s ease;
+  }
+  .remove-btn:hover {
+    color: #d32f2f;
+  }
+  .add-to-cart-btn {
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+  .add-to-cart-btn::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: -100%;
+    background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.3) 50%, rgba(255,255,255,0) 100%);
+    transition: all 0.6s ease;
+  }
+  .add-to-cart-btn:hover {
+    background-color: #1a1a1a;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+  }
+  .add-to-cart-btn:hover::after {
+    left: 100%;
+  }
+  .unavailable-item {
+    opacity: 0.7;
+    position: relative;
+  }
+  .unavailable-item::after {
+    content: "Unavailable";
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: #f8c78d;
+    color: #2C2C2C;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: bold;
+  }
+  /* Spinner */
+  .spinner-border {
+    display: inline-block;
+    width: 1rem;
+    height: 1rem;
+    vertical-align: text-bottom;
+    border: 0.15em solid currentColor;
+    border-right-color: transparent;
+    border-radius: 50%;
+    animation: spinner-border .75s linear infinite;
+  }
+  @keyframes spinner-border {
+    to { transform: rotate(360deg); }
+  }
+  /* Toast Confirmation Dialog */
+  .toast-confirm {
+    transform: translateY(0);
+    opacity: 1;
+    transition: all 0.3s ease;
+  }
+  .toast-confirm.hidden {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  /* Enhanced styles for empty wishlist message */
+  .empty-wishlist-message {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    text-align: center !important;
+    width: 100%;
+  }
+  .empty-wishlist-message a {
+    display: block !important;
+    margin: 0 auto !important;
+    text-align: center !important;
+  }
+  .empty-wishlist-message .flex {
+    display: flex !important;
+    justify-content: center !important;
+    width: 100% !important;
+  }
+</style>
+  </head>
+
+  <body class="bg-[#f8f7f5]">
+    <%- include('../partials/user/header.ejs') %>
+
+    <div class="container mx-auto px-4 py-12 max-w-7xl">
+      <div class="flex items-center gap-3 mb-8">
+        <a href="/" class="text-[#2C2C2C]/60 hover:text-[#2C2C2C] transition-colors font-montserrat text-sm">Home</a>
+        <span class="text-[#2C2C2C]/40">/</span>
+        <span class="text-[#2C2C2C] font-montserrat text-sm">Wishlist</span>
+      </div>
+
+      <h1 class="text-3xl font-henny mb-8 text-[#2C2C2C]">Your Wishlist</h1>
+
+      <% if (unavailableItems && unavailableItems.length > 0) { %>
+        <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-6" role="alert">
+          <p class="font-bold">Some items are unavailable</p>
+          <p>Some items in your wishlist are no longer available.</p>
+        </div>
+      <% } %>
+
+      <% if (wishlistItems.length === 0 && (!unavailableItems || unavailableItems.length === 0)) { %>
+        <div class="text-center py-16 empty-wishlist-message">
+          <svg class="w-16 h-16 mx-auto text-[#2C2C2C]/30 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+          </svg>
+          <h2 class="text-xl font-medium text-[#2C2C2C] mb-4">Your wishlist is empty</h2>
+          <p class="text-[#2C2C2C]/70 mb-6 font-montserrat">Save items you love to your wishlist</p>
+          <a href="/shop" class="inline-block px-6 py-3 bg-[#2C2C2C] text-white rounded-sm hover:bg-[#1a1a1a] transition-colors font-montserrat">
+            Discover Products
+          </a>
+        </div>
+      <% } else { %>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <% wishlistItems.forEach((item, index) => { %>
+            <div class="wishlist-item bg-white rounded-sm shadow-sm p-4 group">
+              <div class="relative">
+                <a href="/product/<%= item.productId._id %>" class="block relative h-48 w-full overflow-hidden">
+                  <img 
+                    src="<%= item.productId.productImage[0] || '/Images/placeholder.jpg' %>" 
+                    alt="<%= item.productId.productName %>"
+                    class="w-full h-full object-contain transform group-hover:scale-105 transition-transform duration-300"
+                    onerror="this.src='/Images/placeholder.jpg'"
+                  >
+                </a>
+                <button 
+                  class="remove-btn absolute top-2 right-2 text-[#2C2C2C]/40 hover:text-[#d32f2f] bg-white rounded-full p-2 shadow-md opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                  data-product-id="<%= item.productId._id %>"
+                  data-product-name="<%= item.productId.productName %>"
+                >
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                  </svg>
+                </button>
+              </div>
+
+              <div class="mt-4">
+                <div class="mb-1">
+                  <span class="text-xs text-[#2C2C2C]/60 font-montserrat uppercase tracking-wider">
+                    <%= item.productId.category?.name || 'Vintage' %> / <%= item.productId.brand?.brandName || 'Generic' %>
+                  </span>
+                </div>
+                <a href="/product/<%= item.productId._id %>" class="font-medium text-[#2C2C2C] hover:text-[#f8c78d] transition-colors font-montserrat">
+                  <%= item.productId.productName %>
+                </a>
+
+                <div class="mt-2">
+                  <% if (item.offerPercentage > 0) { %>
+                    <div class="flex items-center">
+                      <span class="bg-green-100 text-green-700 text-xs font-semibold px-1.5 py-0.5 rounded-sm mr-2">-<%= item.offerPercentage %>%</span>
+                      <span class="font-medium text-[#2C2C2C]">$<%= item.finalPrice.toFixed(2) %></span>
+                      <span class="ml-2 text-xs text-[#2C2C2C]/60 line-through">$<%= item.originalPrice.toFixed(2) %></span>
+                    </div>
+                  <% } else { %>
+                    <p class="font-medium text-[#2C2C2C]">$<%= item.originalPrice.toFixed(2) %></p>
+                  <% } %>
+                </div>
+
+                <div class="mt-4 flex items-center justify-between">
+                  <span class="text-xs text-green-600 flex items-center gap-1">
+                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                    </svg>
+                    In Stock
+                  </span>
+                  <span class="text-xs text-[#2C2C2C]/60">
+                    Added <%= new Date(item.addedAt).toLocaleDateString() %>
+                  </span>
+                </div>
+
+                <button 
+                  class="w-full mt-4 py-2.5 bg-[#2C2C2C] text-white rounded-sm add-to-cart-btn text-sm font-montserrat"
+                  data-product-id="<%= String(item.productId._id) %>"
+                  data-product-name="<%= item.productId.productName %>"
+                  data-product-index="<%= index %>"
+                >
+                  Add to Cart
+                </button>
+              </div>
+            </div>
+          <% }); %>
+        </div>
+
+        <% if (unavailableItems && unavailableItems.length > 0) { %>
+          <h2 class="text-xl font-henny mt-12 mb-6 text-[#2C2C2C]">Unavailable Items</h2>
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <% unavailableItems.forEach(item => { %>
+              <div class="wishlist-item bg-white rounded-sm shadow-sm p-4 unavailable-item">
+                <div class="relative h-32 w-full overflow-hidden mb-3">
+                  <img 
+                    src="<%= item.productId?.productImage?.[0] || '/Images/placeholder.jpg' %>" 
+                    alt="<%= item.productId?.productName || 'Unavailable Product' %>"
+                    class="w-full h-full object-contain grayscale"
+                    onerror="this.src='/Images/placeholder.jpg'"
+                  >
+                </div>
+                <div>
+                  <h3 class="font-medium text-[#2C2C2C] font-montserrat text-sm">
+                    <%= item.productId?.productName || 'Unavailable Product' %>
+                  </h3>
+                  <p class="text-xs text-red-600 mt-1">No longer available</p>
+                  <button 
+                    class="w-full mt-3 py-2 bg-gray-200 text-[#2C2C2C]/60 rounded-sm text-xs font-montserrat"
+                    data-product-id="<%= item.productId?._id %>"
+                    onclick="removeFromWishlist('<%= item.productId?._id %>', '<%= item.productId?.productName || 'This item' %>')"
+                  >
+                    Remove
+                  </button>
+                </div>
+              </div>
+            <% }); %>
+          </div>
+        <% } %>
+
+        <div class="mt-6">
+          <a href="/shop" class="text-[#2C2C2C] hover:text-[#f8c78d] transition-colors font-montserrat flex items-center gap-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+            </svg>
+            Continue Shopping
+          </a>
+        </div>
+      <% } %>
+    </div>
+
+    <%- include('../partials/user/footer.ejs') %>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  console.log("DOM fully loaded");
+  
+  // Replace all onclick attributes with direct event listeners
+  document.querySelectorAll('.add-to-cart-btn').forEach((btn, index) => {
+    // Remove the inline onclick attribute to prevent double execution
+    const productId = btn.getAttribute('data-product-id');
+    const productName = btn.getAttribute('data-product-name');
+    const productIndex = btn.getAttribute('data-product-index');
+    
+    console.log(`Setting up button ${index} for product ${productId} (${productName})`);
+    
+    // Remove the inline onclick attribute
+    btn.removeAttribute('onclick');
+    
+    // Add our own event listener
+    btn.addEventListener('click', function(event) {
+      event.preventDefault();
+      event.stopPropagation();
+      console.log(`Button clicked for product: ${productId}, index: ${productIndex}`);
+      addToCart(productId, productName);
+      return false;
+    });
+  });
+  
+  // Add event listeners to all remove buttons
+  document.querySelectorAll('.remove-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+      const productId = this.getAttribute('data-product-id');
+      const productName = this.getAttribute('data-product-name');
+      
+      showConfirmToast(
+        `Remove <strong>${productName}</strong> from wishlist?`,
+        () => removeFromWishlist(productId, productName),
+        () => showToast('Remove action cancelled', 'info')
+      );
+    });
+  });
+});
+
+// Expose debug function to global scope for manual testing
+function debugWishlistButtons() {
+  console.log("==== WISHLIST DEBUG ====");
+  
+  // Find all Add to Cart buttons
+  const allButtons = document.querySelectorAll('.add-to-cart-btn');
+  console.log(`Found ${allButtons.length} Add to Cart buttons`);
+  
+  allButtons.forEach((btn, index) => {
+    const productId = btn.getAttribute('data-product-id');
+    const productName = btn.getAttribute('data-product-name');
+    const onclickAttr = btn.getAttribute('onclick');
+    
+    console.log(`Button ${index + 1}:`);
+    console.log(`- Product ID: ${productId}`);
+    console.log(`- Product Name: ${productName}`);
+    console.log(`- onclick attribute: ${onclickAttr}`);
+    
+    // Check if this is a valid ObjectId format
+    const isValidObjectId = /^[0-9a-fA-F]{24}$/.test(productId);
+    console.log(`- Valid ObjectId format: ${isValidObjectId}`);
+    
+    // Check if the button has proper event listeners
+    btn.addEventListener('click', function(event) {
+      console.log(`Button ${index + 1} clicked directly via event listener`);
+    });
+  });
+  
+  console.log("==== END WISHLIST DEBUG ====");
+}
+
+// Add this debug function to window load to auto-execute
+window.addEventListener('DOMContentLoaded', function() {
+  debugWishlistButtons();
+  
+  // Also add a manual way to test specific product IDs
+  window.testAddToCart = function(productId, productName) {
+    console.log(`Manually testing addToCart with ID: ${productId}, Name: ${productName}`);
+    addToCart(productId, productName);
+  };
+});
+
+async function addToCart(productId, productName) {
+  console.log("==== ADD TO CART CALLED ====");
+  console.log("Product ID:", productId);
+  console.log("Product Name:", productName);
+  console.log("Type of productId:", typeof productId);
+  console.log("Length of productId:", productId ? productId.length : 'N/A');
+  
+  // Validate productId format
+  if (!productId || productId === "undefined" || productId === "null") {
+    console.error("Invalid product ID:", productId);
+    showToast('Error: Invalid product ID', 'error');
+    return false;
+  }
+
+  // Log the exact ID we're testing for debugging
+  console.log("Testing ObjectId format for:", productId);
+  console.log("Regex test result:", /^[0-9a-fA-F]{24}$/.test(productId));
+  
+  // Ensure productId is a valid MongoDB ObjectId
+  if (!/^[0-9a-fA-F]{24}$/.test(productId)) {
+    console.error("Invalid MongoDB ObjectId format:", productId);
+    showToast('Error: Invalid product ID format', 'error');
+    return false;
+  }
+
+  try {
+    console.log(`Sending fetch request to add product ${productId} to cart`);
+    const requestBody = JSON.stringify({ 
+      productId: productId.toString(), // Ensure ID is a string
+      quantity: 1 // Default to adding 1 item
+    });
+    console.log("Request payload:", requestBody);
+    
+    const response = await fetch('/add-to-cart', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: requestBody,
+      credentials: 'include'
+    });
+
+    console.log(`Response status:`, response.status);
+
+    // Handle unauthorized response
+    if (response.status === 401) {
+      showToast('Please login to add items to cart', 'warning');
+      setTimeout(() => {
+        window.location.href = '/login';
+      }, 2000);
+      return false;
+    }
+
+    const text = await response.text();
+    console.log("Raw response:", text);
+    
+    let data;
+    try {
+      data = JSON.parse(text);
+      console.log("Parsed response data:", data);
+    } catch (e) {
+      console.error("Error parsing JSON response:", e);
+      showToast('Error parsing server response', 'error');
+      return false;
+    }
+
+    if (data.success) {
+      showToast(`Added ${productName} to cart!`, 'success');
+      
+      // Update cart count in header
+      const cartCountEl = document.getElementById('cart-count');
+      if (cartCountEl) {
+        cartCountEl.textContent = data.cartCount || 0;
+      }
+      
+      // Update wishlist count and UI if the item was in wishlist and got removed
+      if (data.wishlistCount !== undefined) {
+        // Update all wishlist count elements
+        document.querySelectorAll('#wishlist-count').forEach(el => {
+          el.textContent = data.wishlistCount;
+        });
+        
+        // Find and remove the wishlist item from UI - look for any element with matching productId
+        const productCards = document.querySelectorAll(`[data-product-id="${productId}"]`);
+        let itemRemoved = false;
+
+        console.log(`Found ${productCards.length} elements with product ID ${productId}`);
+        
+        productCards.forEach(el => {
+          const card = el.closest('.wishlist-item');
+          if (card) {
+            itemRemoved = true;
+            console.log("Removing item from UI");
+            card.classList.add('opacity-0', 'transform', 'scale-95');
+            setTimeout(() => {
+              card.remove();
+              
+              // After removing, check if there are any wishlist items left
+              const remainingItems = document.querySelectorAll('.wishlist-item');
+              console.log(`${remainingItems.length} wishlist items remaining`);
+              
+              if (remainingItems.length === 0) {
+                // Replace with empty wishlist message
+                showEmptyWishlistUI();
+              }
+            }, 300);
+          }
+        });
+
+        if (!itemRemoved) {
+          console.warn('Could not find product card to remove, will reload page');
+          setTimeout(() => window.location.reload(), 500);
+        }
+      }
+    } else {
+      throw new Error(data.message || 'Failed to add to cart');
+    }
+  } catch (error) {
+    console.error('Error adding to cart:', error);
+    showToast(error.message || 'Error adding to cart', 'error');
+  }
+  
+  console.log("==== END ADD TO CART ====");
+  return false; // Prevent default action
+}
+
+async function removeFromWishlist(productId, productName) {
+  try {
+    const response = await fetch('/remove-from-wishlist', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ productId }),
+      credentials: 'include',
+    });
+
+    // Handle unauthorized response
+    if (response.status === 401) {
+      showToast('Please login to manage your wishlist', 'warning');
+      setTimeout(() => {
+        window.location.href = '/login';
+      }, 2000);
+      return;
+    }
+
+    const data = await response.json();
+
+    if (data.success) {
+      showToast(`Removed ${productName} from wishlist`, 'success');
+      
+      // Update all wishlist count elements
+      document.querySelectorAll('#wishlist-count').forEach(el => {
+        el.textContent = data.wishlistCount;
+      });
+      
+      // Find and remove the wishlist item from UI
+      const productCards = document.querySelectorAll(`[data-product-id="${productId}"]`);
+      let itemRemoved = false;
+
+      productCards.forEach(el => {
+        const card = el.closest('.wishlist-item');
+        if (card) {
+          itemRemoved = true;
+          card.classList.add('opacity-0', 'transform', 'scale-95');
+          setTimeout(() => {
+            card.remove();
+            
+            // Check if there are any items left
+            const remainingItems = document.querySelectorAll('.wishlist-item');
+            if (remainingItems.length === 0) {
+              showEmptyWishlistUI();
+            }
+          }, 300);
+        }
+      });
+
+      if (!itemRemoved) {
+        console.warn('Could not find product card to remove, will reload page');
+        setTimeout(() => window.location.reload(), 500);
+      }
+    } else {
+      throw new Error(data.message || 'Failed to remove from wishlist');
+    }
+  } catch (error) {
+    console.error('Error removing from wishlist:', error);
+    showToast(error.message || 'Error removing from wishlist', 'error');
+  }
+}
+
+// Helper function to show empty wishlist UI
+function showEmptyWishlistUI() {
+  const container = document.querySelector('.container');
+  if (container) {
+    container.innerHTML = `
+      <div class="flex items-center gap-3 mb-8">
+        <a href="/" class="text-[#2C2C2C]/60 hover:text-[#2C2C2C] transition-colors font-montserrat text-sm">Home</a>
+        <span class="text-[#2C2C2C]/40">/</span>
+        <span class="text-[#2C2C2C] font-montserrat text-sm">Wishlist</span>
+      </div>
+      <h1 class="text-3xl font-henny mb-8 text-[#2C2C2C]">Your Wishlist</h1>
+      <div class="text-center py-16 empty-wishlist-message">
+        <svg class="w-16 h-16 mx-auto text-[#2C2C2C]/30 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+        </svg>
+        <h2 class="text-xl font-medium text-[#2C2C2C] mb-4">Your wishlist is empty</h2>
+        <p class="text-[#2C2C2C]/70 mb-6 font-montserrat">Save items you love to your wishlist</p>
+        <a href="/shop" class="inline-block px-6 py-3 bg-[#2C2C2C] text-white rounded-sm hover:bg-[#1a1a1a] transition-colors font-montserrat">
+          Discover Products
+        </a>
+      </div>
+    `;
+  }
+}
+
+function showToast(message, type = 'success') {
+  const toast = document.createElement('div');
+  toast.className = `fixed bottom-4 right-4 ${
+    type === 'success' ? 'bg-[#2C2C2C]' : 
+    type === 'warning' ? 'bg-yellow-500' : 
+    type === 'info' ? 'bg-blue-500' : 'bg-red-500'
+  } text-white px-6 py-3 rounded-lg shadow-xl transform translate-y-0 opacity-100 transition-all duration-300 z-50 flex items-center`;
+
+  const icon = document.createElement('span');
+  icon.className = 'mr-2';
+  icon.innerHTML = 
+    type === 'success' ? '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>' :
+    type === 'warning' ? '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>' :
+    type === 'info' ? '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>' :
+    '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>';
+
+  const text = document.createElement('span');
+  text.innerHTML = message;
+  text.className = 'font-montserrat';
+
+  toast.appendChild(icon);
+  toast.appendChild(text);
+  document.body.appendChild(toast);
+
+  setTimeout(() => {
+    toast.classList.add('translate-y-full', 'opacity-0');
+    setTimeout(() => toast.remove(), 300);
+  }, 3000);
+}
+
+function showConfirmToast(message, onConfirm, onCancel) {
+  const toast = document.createElement('div');
+  toast.className = 'toast-confirm fixed bottom-4 right-4 bg-[#2C2C2C] text-white px-6 py-4 rounded-lg shadow-xl z-50';
+  let isDismissing = false; // Flag to prevent further timeouts
+
+  toast.innerHTML = `
+    <div class="flex flex-col">
+      <p class="font-montserrat mb-3">${message}</p>
+      <div class="flex gap-2 justify-end">
+        <button class="cancel-btn px-3 py-1 bg-gray-500 text-white rounded text-sm font-montserrat">
+          Cancel
+        </button>
+        <button class="confirm-btn px-3 py-1 bg-red-500 text-white rounded text-sm font-montserrat">
+          Remove
+        </button>
+      </div>
+    </div>
+  `;
+
+  document.body.appendChild(toast);
+
+  const confirmBtn = toast.querySelector('.confirm-btn');
+  const cancelBtn = toast.querySelector('.cancel-btn');
+
+  let timeout = setTimeout(() => {
+    if (!isDismissing) {
+      isDismissing = true;
+      toast.classList.add('hidden');
+      setTimeout(() => {
+        toast.remove();
+        onCancel();
+      }, 300);
+    }
+  }, 5000);
+
+  confirmBtn.addEventListener('click', () => {
+    if (isDismissing) return;
+    isDismissing = true;
+    clearTimeout(timeout);
+    toast.classList.add('hidden');
+    setTimeout(() => {
+      toast.remove();
+      onConfirm();
+    }, 300);
+  });
+
+  cancelBtn.addEventListener('click', () => {
+    if (isDismissing) return;
+    isDismissing = true;
+    clearTimeout(timeout);
+    toast.classList.add('hidden');
+    setTimeout(() => {
+      toast.remove();
+      onCancel();
+    }, 300);
+  });
+
+  toast.addEventListener('mouseenter', () => {
+    clearTimeout(timeout);
+  });
+
+  toast.addEventListener('mouseleave', () => {
+    if (isDismissing) return;
+    timeout = setTimeout(() => {
+      if (!isDismissing) {
+        isDismissing = true;
+        toast.classList.add('hidden');
+        setTimeout(() => {
+          toast.remove();
+          onCancel();
+        }, 300);
+      }
+    }, 2000);
+  });
+}
+</script>
+  </body>
+</html> 

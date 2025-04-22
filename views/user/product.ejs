@@ -138,6 +138,26 @@
       .add-to-cart-btn:hover::after {
         left: 100%;
       }
+
+      .wishlist-btn {
+        position: relative;
+        overflow: hidden;
+      }
+      .wishlist-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      }
+      .wishlist-btn[disabled] {
+        opacity: 0.6;
+        cursor: not-allowed;
+      }
+      .wishlist-icon.active {
+        fill: #f8c78d;
+        stroke: #f8c78d;
+      }
+      .wishlist-btn.active {
+        border-color: #f8c78d;
+      }
     </style>
   </head>
 
@@ -332,13 +352,29 @@
                 <p class="text-xs text-[#2C2C2C]/60 font-montserrat mt-2">Maximum 10 per order</p>
               </div>
 
-              <button 
-                onclick="addToCart('<%= product._id %>')"
-                class="w-full py-3 text-white rounded-md transition-all duration-300 font-montserrat mb-6 add-to-cart-btn"
-                <%= (!product.isListed || !product.brand.isActive || !product.category.isListed || product.stock <= 0 || product.status !== 'Available') ? 'disabled' : '' %>
-              >
-                <%= (!product.isListed || !product.brand.isActive || !product.category.isListed || product.stock <= 0 || product.status !== 'Available') ? 'Unavailable' : 'Add to Cart' %>
-              </button>
+              <div class="flex gap-3 mb-6">
+                <button 
+                  onclick="addToCart('<%= product._id %>')"
+                  class="flex-1 py-3 text-white rounded-md transition-all duration-300 font-montserrat add-to-cart-btn"
+                  <%= (!product.isListed || !product.brand.isActive || !product.category.isListed || product.stock <= 0 || product.status !== 'Available') ? 'disabled' : '' %>
+                >
+                  <%= (!product.isListed || !product.brand.isActive || !product.category.isListed || product.stock <= 0 || product.status !== 'Available') ? 'Unavailable' : 'Add to Cart' %>
+                </button>
+                
+                <button 
+                  id="wishlist-btn"
+                  type="button"
+                  class="wishlist-btn w-14 bg-white border border-[#e0dcd4] text-[#2C2C2C] rounded-md flex items-center justify-center transition-all duration-300 hover:bg-[#f8f7f5]"
+                  <%= (!product.isListed || !product.brand.isActive || !product.category.isListed || product.stock <= 0 || product.status !== 'Available') ? 'disabled' : '' %>
+                  data-in-wishlist="false"
+                  data-product-id="<%= product._id %>"
+                  data-product-name="<%= product.productName %>"
+                >
+                  <svg class="w-5 h-5 wishlist-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+                  </svg>
+                </button>
+              </div>
 
               <div class="mb-8 p-4 bg-[#f8f7f5] rounded-lg border border-[#e0dcd4]">
                 <div class="flex items-center justify-center gap-2">
@@ -471,12 +507,33 @@
 
           if (data.success) {
             showToast('Added to cart successfully!', 'success');
+            
+            // Update cart count
             if (data.cartCount) {
-              const cartCountElements = document.querySelectorAll('.cart-count');
+              const cartCountElements = document.querySelectorAll('#cart-count');
               cartCountElements.forEach(el => {
                 el.textContent = data.cartCount;
                 el.classList.remove('hidden');
               });
+            }
+            
+            // If item was in wishlist and got removed, update wishlist UI
+            if (data.wishlistCount !== undefined) {
+              // Update wishlist count
+              const wishlistCountElements = document.querySelectorAll('#wishlist-count');
+              wishlistCountElements.forEach(el => {
+                el.textContent = data.wishlistCount;
+              });
+              
+              // Update wishlist button to show item is not in wishlist
+              const wishlistBtn = document.getElementById('wishlist-btn');
+              const wishlistIcon = document.querySelector('.wishlist-icon');
+              
+              if (wishlistBtn && wishlistIcon) {
+                wishlistIcon.classList.remove('active');
+                wishlistBtn.classList.remove('active');
+                wishlistBtn.setAttribute('data-in-wishlist', 'false');
+              }
             }
           } else {
             throw new Error(data.message || 'Failed to add to cart');
@@ -515,6 +572,289 @@
           toast.classList.add('translate-y-full', 'opacity-0');
           setTimeout(() => toast.remove(), 300);
         }, 3000);
+      }
+
+      // Check if item is in wishlist when page loads
+      document.addEventListener('DOMContentLoaded', function() {
+        // Debounce function to prevent multiple rapid clicks
+        function debounce(func, wait) {
+          let timeout;
+          return function(...args) {
+            clearTimeout(timeout);
+            timeout = setTimeout(() => {
+              func.apply(this, args);
+            }, wait);
+          };
+        }
+        
+        // Initialize the wishlist button
+        initializeWishlistButton();
+        
+        // Create debounced version of toggleWishlist
+        const debouncedToggleWishlist = debounce((productId, productName) => {
+          toggleWishlist(productId, productName);
+        }, 300);
+        
+        // Track if a wishlist operation is in progress
+        window.wishlistOperationInProgress = false;
+        
+        // Add click event listener to wishlist button
+        document.body.addEventListener('click', function(event) {
+          // Check if click target is the wishlist button or any of its children
+          const wishlistBtn = document.getElementById('wishlist-btn');
+          if (!wishlistBtn) return;
+          
+          // Find if the clicked element is wishlist button or its child
+          let targetElement = event.target;
+          let isWishlistClick = false;
+          
+          while (targetElement != null) {
+            if (targetElement === wishlistBtn) {
+              isWishlistClick = true;
+              break;
+            }
+            targetElement = targetElement.parentElement;
+          }
+          
+          if (isWishlistClick) {
+            event.preventDefault();
+            
+            // Prevent multiple clicks while operation is in progress
+            if (window.wishlistOperationInProgress) {
+              return;
+            }
+            
+            const productId = wishlistBtn.getAttribute('data-product-id');
+            const productName = wishlistBtn.getAttribute('data-product-name');
+            
+            if (productId && productName) {
+              debouncedToggleWishlist(productId, productName);
+            }
+          }
+        });
+      });
+      
+      // Function to initialize wishlist button
+      function initializeWishlistButton() {
+        const wishlistBtn = document.getElementById('wishlist-btn');
+        if (!wishlistBtn) {
+          // Button might not be loaded yet, try again in a moment
+          setTimeout(initializeWishlistButton, 500);
+          return;
+        }
+        
+        // Initialize wishlist status as false by default
+        wishlistBtn.setAttribute('data-in-wishlist', 'false');
+        
+        // Ensure onclick is properly set - this is critical for new products
+        const productId = '<%= product._id %>';
+        const productName = '<%= product.productName %>';
+        
+        // Check if the onclick attribute is set properly
+        const onclickAttr = wishlistBtn.getAttribute('onclick');
+        if (!onclickAttr || !onclickAttr.includes('toggleWishlist')) {
+          wishlistBtn.setAttribute('onclick', `toggleWishlist('${productId}', '${productName}')`);
+        }
+        
+        // If button is disabled but product is available, enable it
+        const productIsListed = '<%= product.isListed %>' === 'true';
+        const brandIsActive = '<%= product.brand.isActive %>' === 'true';
+        const categoryIsListed = '<%= product.category.isListed %>' === 'true';
+        const hasStock = parseInt('<%= product.stock %>') > 0;
+        const isAvailable = '<%= product.status %>' === 'Available';
+        
+        const isUnavailable = !productIsListed || !brandIsActive || !categoryIsListed || !hasStock || !isAvailable;
+        
+        if (wishlistBtn.disabled && !isUnavailable) {
+          wishlistBtn.disabled = false;
+        }
+        
+        checkInitialWishlistStatus();
+      }
+      
+      // Function to check initial wishlist status
+      async function checkInitialWishlistStatus() {
+        try {
+          const productId = '<%= product._id %>';
+          
+          if (!productId || productId === 'undefined') {
+            return;
+          }
+          
+          const response = await fetch(`/check-wishlist-status/${productId}`);
+          
+          if (!response.ok) {
+            throw new Error(`Failed to check wishlist status: ${response.status}`);
+          }
+          
+          const responseText = await response.text();
+          
+          let data;
+          try {
+            data = JSON.parse(responseText);
+          } catch (error) {
+            return;
+          }
+          
+          const wishlistBtn = document.getElementById('wishlist-btn');
+          if (!wishlistBtn) {
+            return;
+          }
+          
+          if (data.inWishlist) {
+            const wishlistIcon = document.querySelector('.wishlist-icon');
+            
+            if (wishlistIcon) {
+              wishlistIcon.classList.add('active');
+              wishlistBtn.classList.add('active');
+              wishlistBtn.setAttribute('data-in-wishlist', 'true');
+            }
+          } else {
+            wishlistBtn.setAttribute('data-in-wishlist', 'false');
+          }
+        } catch (error) {
+          console.error('Error checking initial wishlist status:', error);
+        }
+      }
+      
+      // AJAX function to add or remove from wishlist
+      async function toggleWishlist(productId, productName) {
+        // If an operation is already in progress, don't start another one
+        if (window.wishlistOperationInProgress) {
+          return;
+        }
+        
+        // Set the flag to indicate an operation is in progress
+        window.wishlistOperationInProgress = true;
+        
+        if (!productId) {
+          showToast('Missing product ID', 'error');
+          window.wishlistOperationInProgress = false;
+          return;
+        }
+        
+        // Format check for productId
+        if (!/^[0-9a-fA-F]{24}$/.test(productId)) {
+          showToast('Invalid product ID format', 'error');
+          window.wishlistOperationInProgress = false;
+          return;
+        }
+        
+        const wishlistBtn = document.getElementById('wishlist-btn');
+        if (!wishlistBtn) {
+          showToast('Error: UI element not found', 'error');
+          window.wishlistOperationInProgress = false;
+          return;
+        }
+        
+        const isInWishlist = wishlistBtn.getAttribute('data-in-wishlist') === 'true';
+        const action = isInWishlist ? 'remove from' : 'add to';
+        
+        // Disable button while action is in progress
+        wishlistBtn.disabled = true;
+        
+        try {
+          // Show loading state
+          const wishlistIcon = document.querySelector('.wishlist-icon');
+          if (wishlistIcon) {
+            wishlistIcon.innerHTML = `<div class="spinner-border w-4 h-4"></div>`;
+          }
+          
+          const endpoint = isInWishlist ? '/remove-from-wishlist' : '/add-to-wishlist';
+          
+          let response;
+          try {
+            const requestBody = JSON.stringify({ productId });
+            
+            response = await fetch(endpoint, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: requestBody,
+              credentials: 'include'
+            });
+          } catch (networkError) {
+            throw new Error(`Network error: ${networkError.message}`);
+          }
+          
+          if (response.status === 401) {
+            // User is not logged in
+            showToast('Please login to add items to your wishlist', 'warning');
+            // Redirect to login page after a short delay
+            setTimeout(() => {
+              window.location.href = '/login';
+            }, 2000);
+            return;
+          }
+          
+          let data;
+          try {
+            const responseText = await response.text();
+            
+            try {
+              data = JSON.parse(responseText);
+            } catch (jsonError) {
+              throw new Error('Server response was not valid JSON: ' + responseText.substring(0, 100));
+            }
+          } catch (textError) {
+            throw new Error('Failed to read server response');
+          }
+          
+          if (response.status === 400) {
+            // Product validation error
+            showToast(data.message || 'Product is unavailable', 'warning');
+            return;
+          }
+          
+          if (response.status === 404) {
+            // Product not found
+            showToast(data.message || 'Product not found', 'error');
+            return;
+          }
+          
+          if (data.success) {
+            // Update UI based on action
+            if (isInWishlist) {
+              // Item was removed from wishlist
+              wishlistIcon.classList.remove('active');
+              wishlistBtn.classList.remove('active');
+              wishlistBtn.setAttribute('data-in-wishlist', 'false');
+              showToast(`Removed ${productName} from wishlist`, 'success');
+            } else {
+              // Item was added to wishlist
+              wishlistIcon.classList.add('active');
+              wishlistBtn.classList.add('active');
+              wishlistBtn.setAttribute('data-in-wishlist', 'true');
+              showToast(`Added ${productName} to wishlist`, 'success');
+            }
+            
+            // Update wishlist count in header
+            if (data.wishlistCount !== undefined) {
+              document.querySelectorAll('#wishlist-count').forEach(el => {
+                el.textContent = data.wishlistCount;
+              });
+            }
+          } else {
+            // Non-successful response but not caught by status code checks
+            throw new Error(data.message || `Failed to ${action} wishlist`);
+          }
+        } catch (error) {
+          console.error(`Error updating wishlist:`, error);
+          showToast(error.message || `Error updating wishlist`, 'error');
+        } finally {
+          // Ensure icon is reset if still showing spinner
+          const wishlistIcon = document.querySelector('.wishlist-icon');
+          if (wishlistIcon && wishlistIcon.innerHTML.includes('spinner-border')) {
+            wishlistIcon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>`;
+          }
+          
+          // Re-enable button
+          wishlistBtn.disabled = false;
+          
+          // Reset the operation in progress flag
+          window.wishlistOperationInProgress = false;
+        }
       }
     </script>
   </body>

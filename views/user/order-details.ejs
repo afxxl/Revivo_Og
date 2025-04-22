@@ -3,290 +3,546 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>My Profile - REVIVO</title>
+    <title>Order Details - REVIVO</title>
     <link href="/css/styles.css" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Henny+Penny&family=Playfair+Display:wght@400;500;600&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css">
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Henny+Penny&family=Playfair+Display:wght@400;500;600;700&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
-      .profile-bg {
+      :root {
+        --primary-color: #2C2C2C;
+        --secondary-color: #f8c78d;
+        --accent-color: #d4af7a;
+        --light-bg: #fcf9f2;
+        --pending-color: #f6ad55;
+        --confirmed-color: #4299e1;
+        --shipped-color: #9f7aea;
+        --out-for-delivery-color: #38b2ac;
+        --delivered-color: #48bb78;
+        --return-color: #ed8936;
+        --cancelled-color: #e53e3e;
+      }
+      
+      body {
+        font-family: 'Montserrat', sans-serif;
+        color: var(--primary-color);
+        background-color: var(--light-bg);
         background-image: url('/Images/images/OLD_PAPER_TEXTURE.jpg');
         background-size: cover;
         background-position: center;
-        background-repeat: no-repeat;
-        min-height: 100vh;
+        background-attachment: fixed;
+      }
+      
+      .order-container {
+        max-width: 1000px;
+        margin: 0 auto;
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 16px;
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        padding: 2.5rem;
+      }
+
+      .order-header {
+        border-bottom: 2px solid rgba(44, 44, 44, 0.1);
+        padding-bottom: 1.5rem;
+        margin-bottom: 2rem;
+      }
+      
+      .btn-primary {
+        background-color: var(--primary-color);
+        color: white;
+        padding: 0.5rem 1.25rem;
+        border-radius: 8px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+      
+      .btn-primary:hover {
+        background-color: #1a1a1a;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      }
+      
+      .btn-danger {
+        background-color: #e53e3e;
+        color: white;
+        padding: 0.5rem 1.25rem;
+        border-radius: 8px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+      }
+      
+      .btn-danger:hover {
+        background-color: #c53030;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      }
+      
+      .btn-outline {
+        border: 1px solid #e2e8f0;
+        color: var(--primary-color);
+        padding: 0.5rem 1.25rem;
+        border-radius: 8px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+      }
+      
+      .btn-outline:hover {
+        background-color: #f8f9fa;
+      }
+      
+      .section-title {
+        font-family: 'Playfair Display', serif;
+        font-weight: 600;
         position: relative;
+        padding-bottom: 0.5rem;
+        margin-bottom: 1.5rem;
       }
-      .profile-tab {
+      
+      .section-title::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        height: 3px;
+        width: 40px;
+        background-color: var(--secondary-color);
+        border-radius: 2px;
+      }
+      
+      .info-card {
+        background-color: white;
+        border-radius: 12px;
+        padding: 1.5rem;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+        height: 100%;
+      }
+      
+      .status-step {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        flex: 1;
+      }
+      
+      .status-step::before {
+        content: '';
+        position: absolute;
+        top: 22px;
+        width: 100%;
+        height: 2px;
+        background-color: #e2e8f0;
+        right: 50%;
+        z-index: 0;
+      }
+      
+      .status-step:first-child::before {
+        display: none;
+      }
+      
+      .status-step.active::before {
+        background-color: var(--primary-color);
+      }
+      
+      .status-icon {
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 0.75rem;
+        z-index: 1;
+        background-color: #e2e8f0;
+        color: #a0aec0;
+        border: 2px solid white;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
         transition: all 0.3s ease;
       }
-      .profile-tab:hover {
-        background-color: rgba(44, 44, 44, 0.05);
+      
+      .status-step.active .status-icon {
+        background-color: var(--primary-color);
+        color: white;
+        box-shadow: 0 4px 10px rgba(44, 44, 44, 0.2);
       }
-      .profile-tab.active {
-        background-color: rgba(44, 44, 44, 0.1);
-        border-left: 3px solid #2C2C2C;
+      
+      /* Status-specific colors */
+      .status-icon.pending {
+        background-color: var(--pending-color);
       }
-      .edit-icon {
-        background-color: #2C2C2C;
-        padding: 6px;
-        border-radius: 50%;
+      
+      .status-icon.confirmed {
+        background-color: var(--confirmed-color);
+      }
+      
+      .status-icon.shipped {
+        background-color: var(--shipped-color);
+      }
+      
+      .status-icon.out-for-delivery {
+        background-color: var(--out-for-delivery-color);
+      }
+      
+      .status-icon.delivered {
+        background-color: var(--delivered-color);
+      }
+      
+      .status-icon.return-requested {
+        background-color: var(--return-color);
+      }
+      
+      .status-icon.cancelled {
+        background-color: var(--cancelled-color);
+      }
+      
+      .status-step.active::before {
+        background-color: var(--primary-color);
+      }
+      
+      .status-step.pending.active::before {
+        background-color: var(--pending-color);
+      }
+      
+      .status-step.confirmed.active::before {
+        background-color: var(--confirmed-color);
+      }
+      
+      .status-step.shipped.active::before {
+        background-color: var(--shipped-color);
+      }
+      
+      .status-step.out-for-delivery.active::before {
+        background-color: var(--out-for-delivery-color);
+      }
+      
+      .status-step.delivered.active::before {
+        background-color: var(--delivered-color);
+      }
+      
+      .order-item {
         transition: all 0.3s ease;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        border-radius: 10px;
+        overflow: hidden;
       }
-      .edit-icon:hover {
-        background-color: #f8c78d;
-        transform: scale(1.1);
+      
+      .order-item:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
       }
-      .cropper-view-box,
-      .cropper-face {
-        border-radius: 50%;
+      
+      .item-image {
+        width: 80px;
+        height: 80px;
+        object-fit: cover;
+        border-radius: 8px;
+        border: 1px solid #e2e8f0;
+        transition: all 0.3s ease;
       }
-      .cropper-view-box {
-        outline: 1px solid #2C2C2C;
-        box-shadow: 0 0 0 1px #39f;
+      
+      .order-item:hover .item-image {
+        transform: scale(1.05);
       }
-      .cropper-dashed,
-      .cropper-line,
-      .cropper-point {
-        display: none !important;
+      
+      .alert {
+        border-radius: 10px;
+        padding: 1rem;
+        margin: 1rem 0;
       }
-      .cropper-container {
-        max-width: 100%;
-        height: auto;
+      
+      .alert-warning {
+        background-color: #fffaeb;
+        border-left: 4px solid #f6ad55;
+        color: #744210;
       }
-
-.status-tracker {
-  @apply relative pt-4;
-}
-
-.status-step {
-  @apply relative flex flex-col items-center flex-1;
-}
-
-.status-step::before {
-  @apply content-[''] absolute top-3 w-full h-1 bg-gray-200;
-  right: 50%;
-}
-
-.status-step:first-child::before {
-  @apply hidden;
-}
-
-.status-step.active::before {
-  @apply bg-[#2C2C2C];
-}
-
-.status-icon {
-  @apply w-8 h-8 rounded-full flex items-center justify-center mb-2 z-10;
-}
-
-.timeline-item {
-  @apply border-l-2 border-[#2C2C2C] pl-4 mb-4;
-}
+      
+      .alert-success {
+        background-color: #f0fff4;
+        border-left: 4px solid #68d391;
+        color: #22543d;
+      }
+      
+      .modal {
+        backdrop-filter: blur(5px);
+      }
+      
+      .modal-content {
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        max-width: 500px;
+        width: 100%;
+        padding: 2rem;
+      }
+      
+      textarea.form-input {
+        width: 100%;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        padding: 0.75rem;
+        transition: all 0.3s ease;
+      }
+      
+      textarea.form-input:focus {
+        outline: none;
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 3px rgba(44, 44, 44, 0.1);
+      }
+      
+      .toast {
+        border-radius: 10px;
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+      }
     </style>
-  
 </head>
-<body class="profile-bg">
+<body>
   <%- include('../partials/user/header.ejs') %>
 
   <div class="container mx-auto px-4 py-12">
-    <div class="max-w-4xl mx-auto bg-white/70 rounded-lg shadow-md p-6">
-      <a href="/profile#orders" class="inline-block mb-6 text-[#2C2C2C] hover:text-[#2C2C2C]/70">
-        <i class="fas fa-arrow-left mr-2"></i> Back to Orders
-      </a>
-
-<div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
-  <div>
-    <h1 class="text-2xl font-henny text-[#2C2C2C]">Order #<%= order.orderId %></h1>
-    <p class="text-sm text-[#2C2C2C]/70">
-      Placed on <%= order.createdOn.toLocaleDateString('en-US', { 
-        year: 'numeric', 
-        month: 'long', 
-        day: 'numeric' 
-      }) %>
-    </p>
-  </div>
-<div class="flex gap-4 mt-4 md:mt-0">
-  <% if (order.status === 'Pending' || order.status === 'Confirmed') { %>
-    <button 
-      onclick="showCancelModal()"
-      class="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors"
-    >
-      Cancel Order
-    </button>
-  <% } %>
-  <% if (order.status === 'Delivered' && (!order.return || order.return.status !== 'approved')) { %>
-    <button 
-      onclick="showReturnModal()"
-      class="px-4 py-2 bg-[#2C2C2C] text-white rounded-md hover:bg-[#1a1a1a] transition-colors"
-    >
-      Request Return
-    </button>
-  <% } %>
-</div>
-  </div>
-   
-
-<div class="mb-8">
-  <h2 class="text-lg font-medium mb-4">Order Status</h2>
-  <div class="flex items-center justify-between">
-    <% 
-    const statuses = ['Pending', 'Confirmed', 'Shipped', 'Out for Delivery', 'Delivered', 'Return Requested'];
-    const currentStatusIndex = statuses.indexOf(order.status);
-    const cancelled = order.status === 'Cancelled';
-    const returned = order.status === 'Returned';
-    %>
-    
-    <% statuses.forEach((status, index) => { %>
-      <div class="flex-1 flex flex-col items-center">
-        <div class="w-8 h-8 rounded-full mb-2 flex items-center justify-center
-          <%= index <= currentStatusIndex ? 'bg-[#2C2C2C] text-white' : 'bg-gray-200' %>
-          <%= cancelled && index === 0 ? 'bg-red-500' : '' %>
-          <%= returned && index === statuses.length-1 ? 'bg-green-500' : '' %>">
-          <% if (index <= currentStatusIndex) { %>
-            <i class="fas fa-check text-xs"></i>
-          <% } else if (cancelled && index === 0) { %>
-            <i class="fas fa-times"></i>
+    <div class="order-container">
+      <div class="order-header flex flex-col md:flex-row justify-between items-start md:items-center">
+        <div>
+          <a href="/profile#orders" class="inline-flex items-center mb-4 text-[#2C2C2C] hover:text-[#2C2C2C]/70 transition-colors">
+            <i class="fas fa-arrow-left mr-2"></i> Back to Orders
+          </a>
+          <h1 class="text-3xl font-henny text-[#2C2C2C]">Order #<%= order.orderId %></h1>
+          <p class="text-sm text-[#2C2C2C]/70 mt-1">
+            Placed on <%= order.createdOn.toLocaleDateString('en-US', { 
+              year: 'numeric', 
+              month: 'long', 
+              day: 'numeric' 
+            }) %>
+          </p>
+        </div>
+        <div class="flex gap-4 mt-4 md:mt-0">
+          <% if (order.status === 'Pending' || order.status === 'Confirmed') { %>
+            <button 
+              onclick="showCancelModal()"
+              class="btn-danger"
+            >
+              <i class="fas fa-times-circle mr-1"></i> Cancel Order
+            </button>
+          <% } %>
+          <% if (order.status === 'Delivered' && (!order.return || order.return.status !== 'approved')) { %>
+            <button 
+              onclick="showReturnModal()"
+              class="btn-primary"
+            >
+              <i class="fas fa-exchange-alt mr-1"></i> Request Return
+            </button>
           <% } %>
         </div>
-        <span class="text-sm text-center <%= index <= currentStatusIndex ? 'text-[#2C2C2C]' : 'text-gray-400' %>">
-          <%= status %>
-        </span>
       </div>
-    <% }) %>
-  </div>
-  
-  <% if (order.status === 'Return Requested') { %>
-    <div class="mt-4 p-3 bg-yellow-50 text-yellow-800 rounded-lg border-l-4 border-yellow-400">
-      <p>Your return request is pending admin approval.</p>
-      <p class="mt-1 text-sm">Reason: <%= order.return.reason %></p>
-    </div>
-  <% } %>
-  
-  <% if (order.status === 'Returned') { %>
-  <div class="mt-4 p-3 bg-green-50 text-green-800 rounded-lg border-l-4 border-green-400">
-    <% if (order.return?.processedAt) { %>
-      <p>Your return was approved on <%= new Date(order.return.processedAt).toLocaleDateString() %>.</p>
-    <% } else { %>
-      <p>Your return was approved.</p>
-    <% } %>
-  </div>
-<% } %>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+
+      <div class="mb-10">
+        <h2 class="section-title text-lg">Order Status</h2>
+        <div class="flex items-center justify-between py-4">
+          <% 
+          const statuses = ['Pending', 'Confirmed', 'Shipped', 'Out for Delivery', 'Delivered', 'Return Requested'];
+          const currentStatusIndex = statuses.indexOf(order.status);
+          const cancelled = order.status === 'Cancelled';
+          const returned = order.status === 'Returned';
+          %>
+          
+          <% statuses.forEach((status, index) => { %>
+            <div class="status-step <%= index <= currentStatusIndex ? 'active' : '' %> <%= status.toLowerCase().replace(/ /g, '-') %>">
+              <div class="status-icon <%= index <= currentStatusIndex ? status.toLowerCase().replace(/ /g, '-') : '' %>
+                <%= cancelled && status === 'Pending' ? 'cancelled' : '' %>
+                <%= returned && status === 'Return Requested' ? 'delivered' : '' %>">
+                <% if (index <= currentStatusIndex) { %>
+                  <i class="fas fa-check"></i>
+                <% } else if (cancelled && status === 'Pending') { %>
+                  <i class="fas fa-times"></i>
+                <% } else { %>
+                  <i class="fas fa-circle text-xs"></i>
+                <% } %>
+              </div>
+              <span class="text-sm font-medium text-center <%= index <= currentStatusIndex ? 'text-[#2C2C2C]' : 'text-gray-400' %>">
+                <%= status %>
+              </span>
+            </div>
+          <% }) %>
+        </div>
+        
+        <% if (order.status === 'Return Requested') { %>
+          <div class="alert alert-warning">
+            <div class="flex items-start">
+              <i class="fas fa-exclamation-circle mt-1 mr-3"></i>
+              <div>
+                <p class="font-medium">Your return request is pending admin approval.</p>
+                <p class="mt-1 text-sm">Reason: <%= order.return.reason %></p>
+              </div>
+            </div>
+          </div>
+        <% } %>
+        
+        <% if (order.status === 'Returned') { %>
+          <div class="alert alert-success">
+            <div class="flex items-start">
+              <i class="fas fa-check-circle mt-1 mr-3"></i>
+              <div>
+                <p class="font-medium">
+                <% if (order.return?.processedAt) { %>
+                  Your return was approved on <%= new Date(order.return.processedAt).toLocaleDateString() %>.
+                <% } else { %>
+                  Your return was approved.
+                <% } %>
+                </p>
+              </div>
+            </div>
+          </div>
+        <% } %>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-10">
         <div>
-          <h3 class="text-lg font-medium mb-4">Shipping Information</h3>
-          <div class="space-y-2 text-sm">
-            <p><%= order.address.name %></p>
-            <p><%= order.address.address %></p>
-            <p><%= order.address.city %>, <%= order.address.state %> <%= order.address.pincode %></p>
-            <p>Phone: <%= order.address.phone %></p>
-            <% if (order.address.altPhone) { %>
-              <p>Alt. Phone: <%= order.address.altPhone %></p>
-            <% } %>
+          <h3 class="section-title">Shipping Information</h3>
+          <div class="info-card">
+            <div class="space-y-2">
+              <p class="font-medium"><%= order.address.name %></p>
+              <p><%= order.address.address %></p>
+              <p><%= order.address.city %>, <%= order.address.state %> <%= order.address.pincode %></p>
+              <div class="flex items-center mt-4 text-[#2C2C2C]/80">
+                <i class="fas fa-phone-alt mr-2"></i>
+                <p><%= order.address.phone %></p>
+              </div>
+              <% if (order.address.altPhone) { %>
+                <div class="flex items-center text-[#2C2C2C]/80">
+                  <i class="fas fa-phone-alt mr-2"></i>
+                  <p>Alt: <%= order.address.altPhone %></p>
+                </div>
+              <% } %>
+            </div>
           </div>
         </div>
 
         <div>
-          <h3 class="text-lg font-medium mb-4">Payment Details</h3>
-          <div class="space-y-2 text-sm">
-            <p>Payment Method: <%= order.paymentMethod %></p>
-            <p>Total Amount: $<%= order.finalAmount.toFixed(2) %></p>
-            <p>Delivery Status: <%= order.status %></p>
+          <h3 class="section-title">Payment Details</h3>
+          <div class="info-card">
+            <div class="space-y-4">
+              <div class="flex items-center">
+                <i class="fas fa-credit-card mr-3 text-[#2C2C2C]/70"></i>
+                <div>
+                  <p class="text-sm text-[#2C2C2C]/70">Payment Method</p>
+                  <p class="font-medium"><%= order.paymentMethod %></p>
+                </div>
+              </div>
+              <div class="flex items-center">
+                <i class="fas fa-money-bill-wave mr-3 text-[#2C2C2C]/70"></i>
+                <div>
+                  <p class="text-sm text-[#2C2C2C]/70">Total Amount</p>
+                  <p class="font-medium">$<%= order.finalAmount.toFixed(2) %></p>
+                </div>
+              </div>
+              <div class="flex items-center">
+                <i class="fas fa-truck mr-3 text-[#2C2C2C]/70"></i>
+                <div>
+                  <p class="text-sm text-[#2C2C2C]/70">Delivery Status</p>
+                  <p class="font-medium"><%= order.status %></p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
 
-      <div class="mt-8">
-        <h3 class="text-lg font-medium mb-4">Order Items</h3>
+      <div class="mb-10">
+        <h3 class="section-title">Order Items</h3>
         <div class="space-y-4">
           <% order.orderItems.forEach(item => { %>
-            <div class="flex items-center border-b border-[#2C2C2C]/10 pb-4">
+            <div class="order-item flex items-center bg-white p-4 border border-gray-100">
               <img 
                 src="<%= item.product.productImage[0] %>" 
                 alt="<%= item.product.productName %>"
-                class="w-20 h-20 object-cover rounded border mr-4"
+                class="item-image mr-4"
                 onerror="this.src='/Images/placeholder.jpg'"
               >
               <div class="flex-1">
-                <h4 class="font-medium"><%= item.product.productName %></h4>
-                <p class="text-sm text-[#2C2C2C]/70">
+                <h4 class="font-medium text-lg"><%= item.product.productName %></h4>
+                <p class="text-sm text-[#2C2C2C]/70 mt-1">
                   Quantity: <%= item.quantity %> × $<%= item.price.toFixed(2) %>
                 </p>
               </div>
               <div class="ml-4">
-                <p class="text-right">$<%= (item.quantity * item.price).toFixed(2) %></p>
+                <p class="text-right font-medium">$<%= (item.quantity * item.price).toFixed(2) %></p>
               </div>
             </div>
           <% }) %>
         </div>
       </div>
 
-      <div class="mt-8 pt-4 border-t border-[#2C2C2C]/10">
+      <div class="pt-6 border-t border-gray-200">
         <div class="max-w-xs ml-auto">
-          <div class="flex justify-between mb-2">
-            <span>Subtotal:</span>
+          <div class="flex justify-between items-center mb-2 text-[#2C2C2C]/70">
+            <span>Subtotal</span>
             <span>$<%= order.totalPrice.toFixed(2) %></span>
           </div>
-          <div class="flex justify-between mb-2">
-            <span>Shipping:</span>
+          <div class="flex justify-between items-center mb-2 text-[#2C2C2C]/70">
+            <span>Shipping</span>
             <span>\$5.00</span>
           </div>
-          <div class="flex justify-between font-medium">
-            <span>Total:</span>
+          <div class="flex justify-between items-center font-medium text-lg pt-2 border-t border-dashed border-gray-200">
+            <span>Total</span>
             <span>$<%= order.finalAmount.toFixed(2) %></span>
           </div>
         </div>
+
+        <% if (order.status === 'Delivered' || order.status === 'Returned') { %>
+          <div class="mt-8 text-center">
+            <a href="/orders/<%= order.orderId %>/invoice" 
+              class="btn-primary">
+              <i class="fas fa-file-pdf mr-2"></i> Download Invoice
+            </a>
+          </div>
+        <% } %>
       </div>
-<% if (order.status === 'Delivered' || order.status === 'Returned') { %>
-  <div class="mt-6">
-    <a href="/orders/<%= order.orderId %>/invoice" 
-       class="inline-block px-4 py-2 bg-[#2C2C2C] text-white rounded hover:bg-[#1a1a1a] transition-colors">
-      <i class="fas fa-file-pdf mr-2"></i> Download Invoice
-    </a>
-  </div>
-<% } %>
     </div>
   </div>
 
-
-
-<div id="cancelModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
-  <div class="bg-white p-6 rounded-lg max-w-md w-full">
-    <h3 class="text-xl font-bold mb-4">Cancel Order</h3>
-    <p class="mb-4">Please tell us why you're cancelling this order:</p>
-    <textarea id="cancelReason" class="w-full border rounded p-2 mb-4" rows="4"></textarea>
-    <div class="flex justify-end gap-2">
-      <button onclick="hideModal('cancelModal')" class="px-4 py-2 border rounded">Cancel</button>
-      <button onclick="submitCancel('<%= order.orderId %>')" class="px-4 py-2 bg-red-500 text-white rounded">Submit</button>
+  <div id="cancelModal" class="modal fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+    <div class="modal-content">
+      <h3 class="text-xl font-bold mb-4 font-playfair">Cancel Order</h3>
+      <p class="mb-4">Please tell us why you're cancelling this order:</p>
+      <textarea id="cancelReason" class="form-input mb-6" rows="4" placeholder="Your reason for cancellation..."></textarea>
+      <div class="flex justify-end gap-3">
+        <button onclick="hideModal('cancelModal')" class="btn-outline">Cancel</button>
+        <button onclick="submitCancel('<%= order.orderId %>')" class="btn-danger">
+          <i class="fas fa-check mr-1"></i> Submit
+        </button>
+      </div>
     </div>
   </div>
-</div>
 
-<div id="returnModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
-  <div class="bg-white p-6 rounded-lg max-w-md w-full">
-    <h3 class="text-xl font-bold mb-4">Request Return</h3>
-    <p class="mb-4">Please tell us why you're returning this order:</p>
-    <textarea id="returnReason" class="w-full border rounded p-2 mb-4" rows="4"></textarea>
-    <div class="flex justify-end gap-2">
-      <button onclick="hideModal('returnModal')" class="px-4 py-2 border rounded">Cancel</button>
-      <button onclick="submitReturn('<%= order.orderId %>')" class="px-4 py-2 bg-[#2C2C2C] text-white rounded">Submit</button>
+  <div id="returnModal" class="modal fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+    <div class="modal-content">
+      <h3 class="text-xl font-bold mb-4 font-playfair">Request Return</h3>
+      <p class="mb-4">Please tell us why you're returning this order:</p>
+      <textarea id="returnReason" class="form-input mb-6" rows="4" placeholder="Your reason for return..."></textarea>
+      <div class="flex justify-end gap-3">
+        <button onclick="hideModal('returnModal')" class="btn-outline">Cancel</button>
+        <button onclick="submitReturn('<%= order.orderId %>')" class="btn-primary">
+          <i class="fas fa-check mr-1"></i> Submit
+        </button>
+      </div>
     </div>
   </div>
-</div>
-</body>
 
   <script> 
     function showToast(message, type = 'success') {
       const toast = document.createElement('div');
-      toast.className = `fixed bottom-4 right-4 ${type === 'success' ? 'bg-green-500' : 'bg-red-500'} text-white px-6 py-3 rounded-lg shadow-lg flex items-center gap-2 z-50 transition-all duration-300 transform translate-y-0 opacity-100`;
+      toast.className = `toast fixed bottom-4 right-4 ${type === 'success' ? 'bg-green-500' : 'bg-red-500'} text-white px-6 py-4 rounded-lg shadow-lg flex items-center gap-3 z-50 transition-all duration-300 ease-in-out transform translate-y-0 opacity-100`;
       
       const icon = document.createElement('span');
+      icon.className = 'text-lg';
       icon.innerHTML = type === 'success' ? 
-        '<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" /></svg>' :
-        '<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" /></svg>';
+        '<i class="fas fa-check-circle"></i>' :
+        '<i class="fas fa-exclamation-circle"></i>';
       
       const text = document.createElement('span');
       text.textContent = message;
@@ -304,12 +560,12 @@
 
     function showConfirmToast(message, confirmText, cancelText, onConfirm) {
       const toast = document.createElement('div');
-      toast.className = 'fixed bottom-4 right-4 bg-white text-gray-800 px-6 py-4 rounded-lg shadow-lg z-50 w-80';
+      toast.className = 'toast fixed bottom-4 right-4 bg-white text-gray-800 px-6 py-4 rounded-lg shadow-lg z-50 w-96';
       toast.innerHTML = `
-        <p class="mb-4">${message}</p>
-        <div class="flex justify-end gap-2">
-          <button class="cancel-btn px-3 py-1 border border-gray-300 rounded hover:bg-gray-100">${cancelText}</button>
-          <button class="confirm-btn px-3 py-1 bg-[#2C2C2C] text-white rounded hover:bg-[#1a1a1a]">${confirmText}</button>
+        <p class="mb-4 font-medium">${message}</p>
+        <div class="flex justify-end gap-3">
+          <button class="cancel-btn btn-outline">${cancelText}</button>
+          <button class="confirm-btn ${confirmText.includes('Cancel') ? 'btn-danger' : 'btn-primary'}">${confirmText}</button>
         </div>
       `;
       
@@ -411,4 +667,5 @@
       );
     }
   </script>
+</body>
 </html>
