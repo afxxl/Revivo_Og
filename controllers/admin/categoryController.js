@@ -301,6 +301,17 @@ const deleteCategory = async (req, res) => {
   }
 };
 
+// Add a new function to return categories as JSON
+const getCategories = async (req, res) => {
+  try {
+    const categories = await Category.find({ isListed: true }).select('name');
+    return res.json(categories);
+  } catch (error) {
+    console.error("Error fetching categories for API:", error);
+    return res.status(500).json({ error: "Failed to fetch categories" });
+  }
+};
+
 module.exports = {
   categoryInfo,
   addCategory,
@@ -309,4 +320,5 @@ module.exports = {
   toggleCategoryStatus,
   updateCategoryOffer,
   deleteCategory,
+  getCategories,
 };

@@ -12,6 +12,7 @@ const validationController = require("../controllers/user/validationController.j
 const User = require("../models/userSchema.js");
 const wishlistController = require("../controllers/user/wishlistController.js");
 const getWishlistCount = require("../middlewares/wishlistCount.js");
+const walletController = require("../controllers/user/walletController");
 
 router.use(getCartCount);
 router.use(getWishlistCount);
@@ -167,6 +168,8 @@ router.get("/addresses/:id", userAuth, userController.getAddress);
 router.get("/cart", userAuth, shopController.loadCartPage);
 router.post("/update-cart", userAuth, shopController.updateCart);
 router.post("/remove-from-cart", userAuth, shopController.removeFromCart);
+router.post("/apply-coupon", userAuth, shopController.applyCoupon);
+router.post("/apply-coupon/remove", userAuth, shopController.removeCoupon);
 
 //checkout
 
@@ -176,9 +179,9 @@ router.get("/checkout", userAuth, shopController.loadCheckoutPage);
 router.post("/create-order", userAuth, shopController.createOrder);
 
 router.get(
-  "/order-confirmation/:orderId",
+  "/order-confirmation",
   userAuth,
-  shopController.loadOrderConfirmation,
+  shopController.loadOrderConfirmation
 );
 
 //order
@@ -241,5 +244,8 @@ router.get(
   wishlistController.checkWishlistStatus,
 );
 router.get("/get-wishlist-count", wishlistController.getWishlistCount);
+
+//wallet
+router.get("/wallet", userAuth, walletController.getWalletPage);
 
 module.exports = router;

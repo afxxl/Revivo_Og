@@ -216,7 +216,7 @@
                 </div>
                 <div>
                   <p class="text-sm font-montserrat font-medium">Free Shipping</p>
-                  <p class="text-xs text-[#2C2C2C]/70">On orders over $50</p>
+                  <p class="text-xs text-[#2C2C2C]/70">On orders over ₹3500</p>
                 </div>
               </div>
               <div class="trust-badge flex items-center gap-3">
@@ -302,15 +302,15 @@
                   </div>
                   <div>
                     <p class="text-2xl font-montserrat font-medium text-[#2C2C2C]">
-                      $<%= finalPrice.toFixed(2) %>
-                      <span class="ml-2 text-xs font-semibold text-green-700 bg-green-50 px-2 py-0.5 rounded">Save $<%= (originalPrice - finalPrice).toFixed(2) %></span>
+                      ₹<%= finalPrice.toFixed(2) %>
+                      <span class="ml-2 text-xs font-semibold text-green-700 bg-green-50 px-2 py-0.5 rounded">Save ₹<%= (originalPrice - finalPrice).toFixed(2) %></span>
                     </p>
                     <p class="text-[#2C2C2C]/60 text-sm font-montserrat line-through">
-                      $<%= originalPrice.toFixed(2) %>
+                      ₹<%= originalPrice.toFixed(2) %>
                     </p>
                   </div>
                 <% } else { %>
-                  <p class="text-2xl font-montserrat font-medium text-[#2C2C2C]">$<%= originalPrice.toFixed(2) %></p>
+                  <p class="text-2xl font-montserrat font-medium text-[#2C2C2C]">₹<%= originalPrice.toFixed(2) %></p>
                 <% } %>
               </div>
 

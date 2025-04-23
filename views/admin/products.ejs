@@ -887,9 +887,9 @@ include('../partials/admin/admin-sidebar', {currentPage: 'products' }) %>
             <td class="px-4 sm:px-6 py-4 text-sm text-gray-900">
               <% if (product.bestOffer && product.bestOffer > 0) { %>
                 <div class="flex flex-col">
-                  <span class="line-through text-gray-500">$<%= product.salesPrice.toFixed(2) %></span>
+                  <span class="line-through text-gray-500">₹<%= product.salesPrice.toFixed(2) %></span>
                   <span class="font-medium text-green-600">
-                    $<%= (product.salesPrice - (product.salesPrice * product.bestOffer / 100)).toFixed(2) %>
+                    ₹<%= (product.salesPrice - (product.salesPrice * product.bestOffer / 100)).toFixed(2) %>
                     <span class="ml-1 text-xs bg-green-100 text-green-800 px-1.5 py-0.5 rounded">
                       -<%= product.bestOffer %>% 
                       <% if (product.offerSource === 'category') { %>
@@ -901,11 +901,11 @@ include('../partials/admin/admin-sidebar', {currentPage: 'products' }) %>
               <% } else { %>
                 <% if (product.regularPrice !== product.salesPrice) { %>
                   <div class="flex flex-col">
-                    <span class="line-through text-gray-500">$<%= product.regularPrice.toFixed(2) %></span>
-                    <span class="font-medium text-green-600">$<%= product.salesPrice.toFixed(2) %></span>
+                    <span class="line-through text-gray-500">₹<%= product.regularPrice.toFixed(2) %></span>
+                    <span class="font-medium text-green-600">₹<%= product.salesPrice.toFixed(2) %></span>
                   </div>
                 <% } else { %>
-                  $<%= product.salesPrice.toFixed(2) %>
+                  ₹<%= product.salesPrice.toFixed(2) %>
                 <% } %>
               <% } %>
             </td>
@@ -1092,9 +1092,9 @@ include('../partials/admin/admin-sidebar', {currentPage: 'products' }) %>
               <span class="mobile-product-meta-label">Sale Price</span>
               <% if (product.bestOffer && product.bestOffer > 0) { %>
                 <div class="flex flex-col">
-                  <span class="line-through text-gray-500">$<%= product.salesPrice.toFixed(2) %></span>
+                  <span class="line-through text-gray-500">₹<%= product.salesPrice.toFixed(2) %></span>
                   <span class="font-medium text-green-600">
-                    $<%= (product.salesPrice - (product.salesPrice * product.bestOffer / 100)).toFixed(2) %>
+                    ₹<%= (product.salesPrice - (product.salesPrice * product.bestOffer / 100)).toFixed(2) %>
                     <span class="ml-1 text-xs bg-green-100 text-green-800 px-1.5 py-0.5 rounded">
                       -<%= product.bestOffer %>% 
                       <% if (product.offerSource === 'category') { %>
@@ -1106,11 +1106,11 @@ include('../partials/admin/admin-sidebar', {currentPage: 'products' }) %>
               <% } else { %>
                 <% if (product.regularPrice !== product.salesPrice) { %>
                   <div class="flex flex-col">
-                    <span class="line-through text-gray-500">$<%= product.regularPrice.toFixed(2) %></span>
-                    <span class="font-medium text-green-600">$<%= product.salesPrice.toFixed(2) %></span>
+                    <span class="line-through text-gray-500">₹<%= product.regularPrice.toFixed(2) %></span>
+                    <span class="font-medium text-green-600">₹<%= product.salesPrice.toFixed(2) %></span>
                   </div>
                 <% } else { %>
-                  $<%= product.salesPrice.toFixed(2) %>
+                  ₹<%= product.salesPrice.toFixed(2) %>
                 <% } %>
               <% } %>
             </div>
@@ -1118,7 +1118,7 @@ include('../partials/admin/admin-sidebar', {currentPage: 'products' }) %>
             <div class="mobile-product-meta-item">
               <span class="mobile-product-meta-label">Final Price</span>
               <span class="mobile-product-meta-value font-bold text-green-600">
-                $<%= (product.salesPrice - (product.salesPrice * product.bestOffer / 100)).toFixed(2) %>
+                ₹<%= (product.salesPrice - (product.salesPrice * product.bestOffer / 100)).toFixed(2) %>
                 <% if (product.offerSource === 'category') { %>
                   <span class="text-xs bg-amber-100 text-amber-800 px-1 py-0.5 rounded ml-1">Category</span>
                 <% } %>

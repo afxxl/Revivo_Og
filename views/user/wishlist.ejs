@@ -172,11 +172,11 @@
                   <% if (item.offerPercentage > 0) { %>
                     <div class="flex items-center">
                       <span class="bg-green-100 text-green-700 text-xs font-semibold px-1.5 py-0.5 rounded-sm mr-2">-<%= item.offerPercentage %>%</span>
-                      <span class="font-medium text-[#2C2C2C]">$<%= item.finalPrice.toFixed(2) %></span>
-                      <span class="ml-2 text-xs text-[#2C2C2C]/60 line-through">$<%= item.originalPrice.toFixed(2) %></span>
+                      <span class="font-medium text-[#2C2C2C]">₹<%= item.finalPrice.toFixed(2) %></span>
+                      <span class="ml-2 text-xs text-[#2C2C2C]/60 line-through">₹<%= item.originalPrice.toFixed(2) %></span>
                     </div>
                   <% } else { %>
-                    <p class="font-medium text-[#2C2C2C]">$<%= item.originalPrice.toFixed(2) %></p>
+                    <p class="font-medium text-[#2C2C2C]">₹<%= item.originalPrice.toFixed(2) %></p>
                   <% } %>
                 </div>
 

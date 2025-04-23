@@ -484,6 +484,17 @@ const updateProductOffer = async (req, res) => {
   }
 };
 
+// Add a function to return products as JSON for the API
+const getProducts = async (req, res) => {
+  try {
+    const products = await Product.find({ isListed: true }).select('productName');
+    return res.json(products);
+  } catch (error) {
+    console.error("Error fetching products for API:", error);
+    return res.status(500).json({ error: "Failed to fetch products" });
+  }
+};
+
 module.exports = {
   productInfo,
   addProduct,
@@ -492,4 +503,5 @@ module.exports = {
   updateProduct,
   toggleProductStatus,
   updateProductOffer,
+  getProducts,
 };

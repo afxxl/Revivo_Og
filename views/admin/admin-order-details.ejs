@@ -302,7 +302,7 @@
                         <div class="pt-4 border-t border-[#e0dcd4]">
                             <div class="flex justify-between text-lg font-semibold text-[#2C2C2C]">
                                 <span>Total Amount</span>
-                                <span>$<%= order.finalAmount.toFixed(2) %></span>
+                                <span>₹<%= order.finalAmount.toFixed(2) %></span>
                             </div>
                         </div>
                     </div>
@@ -324,9 +324,9 @@
                         <p class="text-[#2C2C2C] opacity-75">Condition: <%= item.condition %></p>
                     </div>
                     <div class="text-right">
-                        <p class="text-lg font-semibold text-[#2C2C2C]">$<%= (item.price * item.quantity).toFixed(2) %></p>
+                        <p class="text-lg font-semibold text-[#2C2C2C]">₹<%= (item.price * item.quantity).toFixed(2) %></p>
                         <p class="text-sm text-[#2C2C2C] opacity-75">Quantity: <%= item.quantity %></p>
-                        <p class="text-sm text-[#2C2C2C] opacity-75">$<%= item.price.toFixed(2) %> each</p>
+                        <p class="text-sm text-[#2C2C2C] opacity-75">₹<%= item.price.toFixed(2) %> each</p>
                     </div>
                 </div>
                 <% }) %>

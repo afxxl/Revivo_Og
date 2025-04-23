@@ -1,0 +1,425 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Your Wallet - REVIVO</title>
+    <link href="/css/styles.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Henny+Penny&family=Playfair+Display:wght@400;500;600;700&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #2C2C2C;
+            --secondary-color: #f8c78d;
+            --accent-color: #d4af7a;
+            --light-bg: #fcf9f2;
+        }
+        
+        body {
+            font-family: 'Montserrat', sans-serif;
+            color: var(--primary-color);
+            background-color: var(--light-bg);
+            background-image: url('/Images/images/OLD_PAPER_TEXTURE.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+        
+        .wallet-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 0.5rem;
+            margin-bottom: 2rem;
+            text-align: center;
+            letter-spacing: 1px;
+        }
+        
+        .section-title::after {
+            content: '';
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            bottom: 0;
+            height: 3px;
+            width: 60px;
+            background-color: var(--secondary-color);
+            border-radius: 2px;
+        }
+        
+        .wallet-card {
+            position: relative;
+            background: linear-gradient(135deg, #2C2C2C, #1a1a1a);
+            border-radius: 16px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            padding: 2.5rem;
+            color: white;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            height: 220px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        
+        .wallet-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
+        }
+        
+        .card-pattern {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            opacity: 0.05;
+            background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7.00001 3.134-7.00001 7 3.13401 7 7.00001 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23ffffff' fill-opacity='1' fill-rule='evenodd'/%3E%3C/svg%3E");
+        }
+        
+        .chip {
+            position: absolute;
+            top: 25px;
+            right: 25px;
+            width: 50px;
+            height: 40px;
+            background: linear-gradient(135deg, #f8c78d, #d4af7a);
+            border-radius: 8px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .chip::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 10px;
+            right: 10px;
+            height: 1px;
+            background-color: rgba(0, 0, 0, 0.2);
+        }
+        
+        .card-brand {
+            font-family: 'Henny Penny', cursive;
+            font-size: 1.5rem;
+            letter-spacing: 2px;
+        }
+        
+        .card-label {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.8;
+            margin-bottom: 0.25rem;
+        }
+        
+        .balance-amount {
+            font-size: 2.5rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+        
+        .card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+        }
+        
+        .card-name {
+            font-size: 1rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+        
+        .transaction-tabs {
+            display: flex;
+            border-bottom: 1px solid rgba(44, 44, 44, 0.1);
+            margin-bottom: 1.5rem;
+        }
+        
+        .transaction-tab {
+            padding: 1rem 1.5rem;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #6b7280;
+            border-bottom: 2px solid transparent;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .transaction-tab.active {
+            color: var(--primary-color);
+            border-bottom-color: var(--secondary-color);
+        }
+        
+        .transaction-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 16px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            overflow: hidden;
+        }
+        
+        .transaction-list {
+            max-height: 500px;
+            overflow-y: auto;
+        }
+        
+        .transaction-header {
+            background: rgba(44, 44, 44, 0.05);
+            padding: 1rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 1px solid rgba(44, 44, 44, 0.1);
+        }
+        
+        .transaction-item {
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid rgba(44, 44, 44, 0.05);
+            transition: all 0.3s ease;
+        }
+        
+        .transaction-item:hover {
+            background: rgba(244, 244, 244, 0.7);
+        }
+        
+        .transaction-amount {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+        
+        .credit {
+            color: #16a34a;
+        }
+        
+        .debit {
+            color: #dc2626;
+        }
+        
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 2rem;
+            font-size: 0.7rem;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+        
+        .status-credit {
+            background: rgba(22, 163, 74, 0.1);
+            color: #16a34a;
+        }
+        
+        .status-debit {
+            background: rgba(220, 38, 38, 0.1);
+            color: #dc2626;
+        }
+        
+        .empty-transactions {
+            padding: 3rem;
+            text-align: center;
+            color: #6b7280;
+        }
+        
+        .empty-icon {
+            margin-bottom: 1rem;
+            opacity: 0.3;
+        }
+        
+        /* Custom scrollbar */
+        .transaction-list::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .transaction-list::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.05);
+            border-radius: 10px;
+        }
+        
+        .transaction-list::-webkit-scrollbar-thumb {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+        }
+        
+        .transaction-list::-webkit-scrollbar-thumb:hover {
+            background: rgba(0, 0, 0, 0.3);
+        }
+        
+        @media (max-width: 768px) {
+            .wallet-container {
+                padding: 1rem;
+            }
+            
+            .wallet-card {
+                padding: 1.5rem;
+                height: 180px;
+            }
+            
+            .balance-amount {
+                font-size: 2rem;
+            }
+            
+            .transaction-item {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <%- include('../partials/user/header.ejs') %>
+
+    <div class="wallet-container py-12">
+        <h1 class="section-title text-3xl mb-8">Your Revivo Wallet</h1>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-10">
+            <div class="md:col-span-2">
+                <div class="wallet-card">
+                    <div class="card-pattern"></div>
+                    <div class="chip"></div>
+                    
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <div class="card-brand">REVIVO</div>
+                            <div class="card-label mt-1">E-wallet</div>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <div class="card-label">Available Balance</div>
+                        <div class="balance-amount">₹<%= wallet.balance.toFixed(2) %></div>
+                    </div>
+                    
+                    <div class="card-footer">
+                        <div class="card-name"><%= user.name %></div>
+                        <div class="text-xs opacity-50">Secured by Revivo</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-white/90 rounded-2xl p-6 shadow-lg border border-gray-100">
+                <h3 class="font-medium text-lg mb-4">Wallet Overview</h3>
+                
+                <div class="space-y-4">
+                    <div>
+                        <div class="text-sm text-gray-500 mb-1">Total Credits</div>
+                        <div class="font-medium text-xl text-green-600">
+                            +₹<%= wallet.transactions
+                                .filter(t => t.transactionType === 'credit')
+                                .reduce((sum, t) => sum + t.transactionAmount, 0)
+                                .toFixed(2) %>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <div class="text-sm text-gray-500 mb-1">Total Debits</div>
+                        <div class="font-medium text-xl text-red-600">
+                            -₹<%= wallet.transactions
+                                .filter(t => t.transactionType === 'debit')
+                                .reduce((sum, t) => sum + t.transactionAmount, 0)
+                                .toFixed(2) %>
+                        </div>
+                    </div>
+                    
+                    <div class="pt-3 border-t">
+                        <div class="text-sm text-gray-500 mb-1">Transactions</div>
+                        <div class="font-medium text-lg">
+                            <%= wallet.transactions.length %> total
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="transaction-card">
+            <div class="transaction-header">
+                <h3 class="font-medium">Transaction History</h3>
+                <div class="transaction-tabs">
+                    <div class="transaction-tab active" data-filter="all">All</div>
+                    <div class="transaction-tab" data-filter="credit">Credits</div>
+                    <div class="transaction-tab" data-filter="debit">Debits</div>
+                </div>
+            </div>
+            
+            <div class="transaction-list">
+                <% if (wallet.transactions && wallet.transactions.length > 0) { %>
+                    <% wallet.transactions.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)).forEach(transaction => { %>
+                        <div class="transaction-item" data-type="<%= transaction.transactionType %>">
+                            <div class="flex items-start justify-between">
+                                <div>
+                                    <div class="flex items-center gap-2 mb-1">
+                                        <span class="status-badge status-<%= transaction.transactionType %>">
+                                            <%= transaction.transactionType %>
+                                        </span>
+                                        <span class="font-medium">
+                                            <%= transaction.description || (transaction.transactionType === 'credit' ? 'Wallet Credit' : 'Purchase') %>
+                                        </span>
+                                    </div>
+                                    <div class="text-sm text-gray-500">
+                                        <%= new Date(transaction.createdAt).toLocaleString('en-US', {
+                                            year: 'numeric',
+                                            month: 'short',
+                                            day: 'numeric',
+                                            hour: '2-digit',
+                                            minute: '2-digit'
+                                        }) %>
+                                    </div>
+                                </div>
+                                <div class="transaction-amount <%= transaction.transactionType === 'credit' ? 'credit' : 'debit' %>">
+                                    <%= transaction.transactionType === 'credit' ? '+' : '-' %>₹<%= transaction.transactionAmount.toFixed(2) %>
+                                </div>
+                            </div>
+                        </div>
+                    <% }) %>
+                <% } else { %>
+                    <div class="empty-transactions">
+                        <div class="empty-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                            </svg>
+                        </div>
+                        <h3 class="text-lg font-medium mb-2">No transactions yet</h3>
+                        <p class="text-gray-500">Your transaction history will appear here</p>
+                    </div>
+                <% } %>
+            </div>
+        </div>
+    </div>
+
+    <%- include('../partials/user/footer.ejs') %>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Transaction filter tabs
+            const tabs = document.querySelectorAll('.transaction-tab');
+            const transactionItems = document.querySelectorAll('.transaction-item');
+            
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    // Update active tab
+                    tabs.forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    const filter = this.dataset.filter;
+                    
+                    // Filter transactions
+                    transactionItems.forEach(item => {
+                        if (filter === 'all' || item.dataset.type === filter) {
+                            item.style.display = 'block';
+                        } else {
+                            item.style.display = 'none';
+                        }
+                    });
+                });
+            });
+        });
+    </script>
+</body>
+</html>

@@ -209,6 +209,22 @@ const toggleBrandStatus = async (req, res) => {
   }
 };
 
+// Add a function to return brands as JSON for the API
+const getBrands = async (req, res) => {
+  try {
+    const brands = await Brand.find({ isActive: true }).select('brandName');
+    // Map the results to match the expected format in the frontend
+    const formattedBrands = brands.map(brand => ({
+      _id: brand._id,
+      name: brand.brandName
+    }));
+    return res.json(formattedBrands);
+  } catch (error) {
+    console.error("Error fetching brands for API:", error);
+    return res.status(500).json({ error: "Failed to fetch brands" });
+  }
+};
+
 module.exports = {
   getBrandPage,
   addBrand,
@@ -217,4 +233,5 @@ module.exports = {
   updateBrand,
   toggleBrandStatus,
   brandInfo,
+  getBrands,
 };

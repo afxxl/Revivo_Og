@@ -106,6 +106,24 @@
         <p class="text-xs text-gray-500 mt-1">Pay when you receive</p>
     </div>
 
+    <% if (walletBalance >= total) { %>
+    <div class="payment-method p-4 rounded-lg border bg-white text-center cursor-pointer"
+        data-method="WALLET"
+        onclick="selectPaymentMethod(this)">
+        <i class="fas fa-wallet text-2xl mb-2 text-purple-500"></i>
+        <p class="font-medium">Wallet</p>
+        <p class="text-xs text-gray-500 mt-1">Balance: ₹<%= walletBalance.toFixed(2) %></p>
+    </div>
+    <% } else { %>
+    <div class="payment-method p-4 rounded-lg border bg-gray-100 text-center cursor-not-allowed opacity-75"
+        title="Insufficient wallet balance">
+        <i class="fas fa-wallet text-2xl mb-2 text-purple-300"></i>
+        <p class="font-medium text-gray-400">Wallet</p>
+        <p class="text-xs text-gray-400">Balance: ₹<%= walletBalance.toFixed(2) %></p>
+        <p class="text-xs text-gray-400 mt-1">Insufficient balance</p>
+    </div>
+    <% } %>
+
     <div class="payment-method p-4 rounded-lg border bg-gray-100 text-center cursor-not-allowed opacity-75"
         data-method="CARD"
         title="Coming soon">
@@ -121,15 +139,6 @@
         <i class="fab fa-paypal text-2xl mb-2 text-blue-200"></i>
         <p class="font-medium text-gray-400">PayPal</p>
         <p class="text-xs text-gray-400 mt-1">Secure online payments</p>
-        <span class="text-xs text-white bg-gray-500 px-2 py-1 rounded-full mt-2">Coming Soon</span>
-    </div>
-
-    <div class="payment-method p-4 rounded-lg border bg-gray-100 text-center cursor-not-allowed opacity-75"
-        data-method="WALLET"
-        title="Coming soon">
-        <i class="fas fa-wallet text-2xl mb-2 text-purple-300"></i>
-        <p class="font-medium text-gray-400">Digital Wallet</p>
-        <p class="text-xs text-gray-400 mt-1">Apple Pay, Google Pay</p>
         <span class="text-xs text-white bg-gray-500 px-2 py-1 rounded-full mt-2">Coming Soon</span>
     </div>
 </div>
@@ -164,12 +173,12 @@
                             </div>
                             <div>
                               <% if (bestOfferPercentage > 0) { %>
-                                <p class="font-medium">$<%= item.totalPrice.toFixed(2) %></p>
+                                <p class="font-medium">₹<%= item.totalPrice.toFixed(2) %></p>
                                 <p class="text-xs text-gray-500 line-through">
-                                  $<%= (item.productId.salesPrice * item.quantity).toFixed(2) %>
+                                  ₹<%= (item.productId.salesPrice * item.quantity).toFixed(2) %>
                                 </p>
                               <% } else { %>
-                                <p class="font-medium">$<%= item.totalPrice.toFixed(2) %></p>
+                                <p class="font-medium">₹<%= item.totalPrice.toFixed(2) %></p>
                               <% } %>
                             </div>
                         </div>
@@ -187,21 +196,29 @@
                     %>
                     <div class="flex justify-between">
                         <span>Subtotal:</span>
-                        <span>$<%= subtotal.toFixed(2) %></span>
+                        <span>₹<%= subtotal.toFixed(2) %></span>
                     </div>
                     <% if (totalSavings > 0) { %>
                     <div class="flex justify-between text-green-600">
                         <span>Total Savings:</span>
-                        <span>-$<%= totalSavings.toFixed(2) %></span>
+                        <span>-₹<%= totalSavings.toFixed(2) %></span>
                     </div>
                     <% } %>
                     <div class="flex justify-between">
                         <span>Shipping:</span>
-                        <span>$<%= shipping.toFixed(2) %></span>
+                        <span>₹<%= shipping.toFixed(2) %></span>
                     </div>
+                    
+                    <% if (appliedCoupon) { %>
+                    <div class="flex justify-between text-green-600">
+                        <span>Coupon (<%= appliedCoupon.code %>):</span>
+                        <span>-₹<%= appliedCoupon.discount.toFixed(2) %></span>
+                    </div>
+                    <% } %>
+                    
                     <div class="flex justify-between font-bold border-t pt-3">
                         <span>Total:</span>
-                        <span>$<%= total.toFixed(2) %></span>
+                        <span>₹<%= total.toFixed(2) %></span>
                     </div>
                 </div>
 
@@ -232,8 +249,7 @@
     }
 
     function selectPaymentMethod(element) {
-        if (element.dataset.method !== 'COD') {
-            showToast('Currently only Cash on Delivery is available', 'info');
+        if (element.classList.contains('cursor-not-allowed')) {
             return;
         }
         
@@ -283,7 +299,7 @@
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     addressId: selectedAddressId,
-                    paymentMethod: 'COD' 
+                    paymentMethod: selectedPaymentMethod
                 })
             });
 
@@ -373,14 +389,36 @@
 
     document.getElementById('addressForm')?.addEventListener('submit', handleAddressFormSubmit);
     document.addEventListener('DOMContentLoaded', () => {
-        const codMethod = document.querySelector('[data-method="COD"]');
-        if (codMethod) {
-            codMethod.classList.add('selected');
-        }
+        // Select a default payment method
+        <% if (walletBalance >= total) { %>
+            const walletMethod = document.querySelector('[data-method="WALLET"]');
+            if (walletMethod) {
+                walletMethod.classList.add('selected');
+                selectedPaymentMethod = 'WALLET';
+            } else {
+                const codMethod = document.querySelector('[data-method="COD"]');
+                if (codMethod) {
+                    codMethod.classList.add('selected');
+                    selectedPaymentMethod = 'COD';
+                }
+            }
+        <% } else { %>
+            const codMethod = document.querySelector('[data-method="COD"]');
+            if (codMethod) {
+                codMethod.classList.add('selected');
+                selectedPaymentMethod = 'COD';
+            }
+        <% } %>
         
+        // Select a default address
         const defaultAddress = document.querySelector('.address-card [data-is-default="true"]');
         if (defaultAddress) {
             selectAddress(defaultAddress.closest('.address-card'));
+        } else {
+            const firstAddress = document.querySelector('.address-card');
+            if (firstAddress) {
+                selectAddress(firstAddress);
+            }
         }
     });
 </script>

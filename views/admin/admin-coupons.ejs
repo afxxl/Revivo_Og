@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Coupons</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.18/dist/sweetalert2.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.18/dist/sweetalert2.all.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/luxon@2.3.1/build/global/luxon.min.js"></script>
+    <style>
+        .coupon-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .coupon-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        .status-badge {
+            transition: all 0.3s ease;
+            padding: 0.25rem 0.5rem;
+            font-size: 0.75rem;
+            border-radius: 0.25rem;
+            font-weight: 600;
+        }
+        .btn-action {
+            transition: all 0.2s ease;
+        }
+        .btn-action:hover {
+            transform: translateY(-2px);
+        }
+        .add-button {
+            transition: all 0.3s ease;
+        }
+        .add-button:hover {
+            transform: scale(1.05);
+        }
+        .active-status {
+            background-color: #d1fae5;
+            color: #065f46;
+        }
+        .inactive-status {
+            background-color: #fee2e2;
+            color: #b91c1c;
+        }
+        #sidebar {
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 40;
+        }
+        
+        @media (min-width: 768px) {
+            .main-content {
+                margin-left: 16rem; /* 64px or 16rem */
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+
+<%- include('../partials/admin/admin-header.ejs') %>
+<%- include('../partials/admin/admin-sidebar', {currentPage: 'coupons' }) %>
+
+<div class="main-content flex-1 p-2 sm:p-4 md:p-6 pt-24">
+    <div class="p-3 sm:p-4 md:p-6 bg-white shadow-sm rounded-lg">
+        <div class="flex justify-between items-center mb-6">
+            <h1 class="text-2xl md:text-3xl font-semibold text-gray-800">Coupons Management</h1>
+            <button
+                id="addCouponBtn"
+                class="add-button bg-[#2C2C2C] hover:bg-gray-800 text-white px-4 py-2 rounded-lg shadow-md flex items-center"
+            >
+                <i class="fas fa-plus mr-2"></i> Add New Coupon
+            </button>
+        </div>
+
+        <!-- Coupons Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+            <% if (coupons && coupons.length > 0) { %>
+                <% coupons.forEach(coupon => { %>
+                    <div class="coupon-card bg-white rounded-lg shadow-md overflow-hidden">
+                        <div class="p-5">
+                            <div class="flex justify-between items-start mb-3">
+                                <h3 class="font-bold text-lg text-gray-800"><%= coupon.code %></h3>
+                                <span class="status-badge px-3 py-1 rounded-full text-xs font-semibold <%= coupon.isActive ? 'active-status' : 'inactive-status' %>">
+                                    <%= coupon.isActive ? 'Active' : 'Inactive' %>
+                                </span>
+                            </div>
+                            <p class="text-gray-600 text-sm mb-3"><%= coupon.description %></p>
+                            <div class="bg-gray-50 rounded-md p-3 mb-4">
+                                <div class="grid grid-cols-2 gap-2 text-sm">
+                                    <div>
+                                        <p class="text-gray-500">Discount:</p>
+                                        <p class="font-medium">
+                                            <%= coupon.discountType === 'percentage' ? coupon.discountAmount + '%' : '$' + coupon.discountAmount %>
+                                        </p>
+                                    </div>
+                                    <div>
+                                        <p class="text-gray-500">Min Purchase:</p>
+                                        <p class="font-medium">$<%= coupon.minPurchase %></p>
+                                    </div>
+                                    <div>
+                                        <p class="text-gray-500">Max Discount:</p>
+                                        <p class="font-medium"><%= coupon.maxDiscount ? '$' + coupon.maxDiscount : 'No limit' %></p>
+                                    </div>
+                                    <div>
+                                        <p class="text-gray-500">Usage Limit:</p>
+                                        <p class="font-medium"><%= coupon.usageLimit %> time(s)</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex justify-between text-xs text-gray-500 mb-4">
+                                <div>
+                                    <p>Valid from</p>
+                                    <p class="font-medium date-format"><%= coupon.startDate %></p>
+                                </div>
+                                <div class="text-right">
+                                    <p>Valid until</p>
+                                    <p class="font-medium date-format"><%= coupon.endDate %></p>
+                                </div>
+                            </div>
+                            
+                            <!-- Usage Statistics -->
+                            <div class="bg-blue-50 rounded-md p-3 mb-4">
+                                <div class="flex justify-between items-center">
+                                    <div>
+                                        <p class="text-gray-700 text-xs font-medium">Usage</p>
+                                        <p class="text-sm font-semibold text-blue-600"><%= coupon.usedCount %> of <%= coupon.usageLimit %></p>
+                                    </div>
+                                    <button 
+                                        class="view-usage-btn text-blue-600 hover:text-blue-800 text-xs font-medium flex items-center"
+                                        data-id="<%= coupon._id %>"
+                                    >
+                                        <i class="fas fa-users mr-1"></i> View Usage
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="flex justify-between border-t pt-4">
+                                <button 
+                                    class="btn-action toggle-status px-3 py-1.5 rounded text-sm font-medium <%= coupon.isActive ? 'bg-red-50 text-red-600 hover:bg-red-100' : 'bg-green-50 text-green-600 hover:bg-green-100' %>"
+                                    data-id="<%= coupon._id %>"
+                                    data-status="<%= coupon.isActive %>"
+                                >
+                                    <i class="fas <%= coupon.isActive ? 'fa-ban' : 'fa-check' %> mr-1"></i>
+                                    <%= coupon.isActive ? 'Deactivate' : 'Activate' %>
+                                </button>
+                                <div class="flex space-x-2">
+                                    <button 
+                                        class="btn-action edit-coupon bg-blue-50 text-blue-600 hover:bg-blue-100 px-3 py-1.5 rounded text-sm font-medium"
+                                        data-id="<%= coupon._id %>"
+                                    >
+                                        <i class="fas fa-edit mr-1"></i> Edit
+                                    </button>
+                                    <button 
+                                        class="btn-action delete-coupon bg-red-50 text-red-600 hover:bg-red-100 px-3 py-1.5 rounded text-sm font-medium"
+                                        data-id="<%= coupon._id %>"
+                                    >
+                                        <i class="fas fa-trash-alt mr-1"></i> Delete
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                <% }) %>
+            <% } else { %>
+                <div class="col-span-3 text-center py-10">
+                    <div class="bg-white rounded-lg shadow-md p-8">
+                        <i class="fas fa-ticket-alt text-gray-300 text-5xl mb-4"></i>
+                        <h3 class="text-xl font-semibold text-gray-600 mb-2">No Coupons Found</h3>
+                        <p class="text-gray-500 mb-4">Start creating coupons to offer discounts to your customers</p>
+                        <button id="noDataAddBtn" class="bg-[#2C2C2C] hover:bg-gray-800 text-white px-4 py-2 rounded-lg">
+                            <i class="fas fa-plus mr-2"></i> Create First Coupon
+                        </button>
+                    </div>
+                </div>
+            <% } %>
+        </div>
+    </div>
+</div>
+
+<!-- Add/Edit Coupon Modal -->
+<div id="couponModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-center items-center">
+    <div class="bg-white rounded-lg shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+        <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
+            <h3 id="modalTitle" class="text-xl font-semibold text-gray-800">Add New Coupon</h3>
+            <button id="closeModal" class="text-gray-500 hover:text-gray-700">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="p-6">
+            <form id="couponForm">
+                <input type="hidden" id="couponId" value="">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1" for="code">Coupon Code</label>
+                        <input
+                            type="text"
+                            id="code"
+                            name="code"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            placeholder="e.g. SUMMER2023"
+                            required
+                        >
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1" for="discountType">Discount Type</label>
+                        <select
+                            id="discountType"
+                            name="discountType"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            required
+                        >
+                            <option value="percentage">Percentage</option>
+                            <option value="fixed">Fixed Amount</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="mb-6">
+                    <label class="block text-sm font-medium text-gray-700 mb-1" for="description">Description</label>
+                    <textarea
+                        id="description"
+                        name="description"
+                        rows="2"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        placeholder="Brief description of the coupon"
+                        required
+                    ></textarea>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1" for="discountAmount">Discount Amount</label>
+                        <input
+                            type="number"
+                            id="discountAmount"
+                            name="discountAmount"
+                            min="0"
+                            step="0.01"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            required
+                        >
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1" for="minPurchase">Minimum Purchase</label>
+                        <input
+                            type="number"
+                            id="minPurchase"
+                            name="minPurchase"
+                            min="0"
+                            step="0.01"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        >
+                        <p class="text-xs text-gray-500 mt-1">Amount to be spent to apply this coupon</p>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1" for="maxDiscount">Maximum Discount</label>
+                        <input
+                            type="number"
+                            id="maxDiscount"
+                            name="maxDiscount"
+                            min="0"
+                            step="0.01"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            placeholder="Optional"
+                        >
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1" for="startDate">Start Date</label>
+                        <input
+                            type="datetime-local"
+                            id="startDate"
+                            name="startDate"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            required
+                        >
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1" for="endDate">End Date</label>
+                        <input
+                            type="datetime-local"
+                            id="endDate"
+                            name="endDate"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            required
+                        >
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1" for="usageLimit">Usage Limit</label>
+                        <input
+                            type="number"
+                            id="usageLimit"
+                            name="usageLimit"
+                            min="1"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            value="1"
+                            required
+                        >
+                    </div>
+                </div>
+
+                <div class="flex justify-end space-x-3 pt-4 border-t">
+                    <button
+                        type="button"
+                        id="cancelBtn"
+                        class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-50"
+                    >
+                        Cancel
+                    </button>
+                    <button
+                        type="submit"
+                        class="px-4 py-2 bg-[#2C2C2C] text-white rounded-md hover:bg-gray-800"
+                    >
+                        <span id="submitBtnText">Save Coupon</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Coupon Usage History Modal -->
+<div id="usageHistoryModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-center items-center">
+    <div class="bg-white rounded-lg shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+        <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
+            <h3 class="text-xl font-semibold text-gray-800">Coupon Usage History <span id="couponCodeDisplay" class="text-blue-600"></span></h3>
+            <button id="closeUsageModal" class="text-gray-500 hover:text-gray-700">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="p-6">
+            <div id="usageHistoryContent" class="min-h-[200px]">
+                <div class="flex justify-center items-center h-[200px]">
+                    <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Format dates using Luxon
+        document.querySelectorAll('.date-format').forEach(el => {
+            const date = luxon.DateTime.fromISO(el.innerText.trim());
+            if (date.isValid) {
+                el.innerText = date.toFormat('dd MMM yyyy, hh:mm a');
+            }
+        });
+
+        // Modal elements
+        const couponModal = document.getElementById('couponModal');
+        const closeModal = document.getElementById('closeModal');
+        const cancelBtn = document.getElementById('cancelBtn');
+        const addCouponBtn = document.getElementById('addCouponBtn');
+        const noDataAddBtn = document.getElementById('noDataAddBtn');
+        const couponForm = document.getElementById('couponForm');
+        const modalTitle = document.getElementById('modalTitle');
+        const submitBtnText = document.getElementById('submitBtnText');
+        const couponIdInput = document.getElementById('couponId');
+        const codeInput = document.getElementById('code');
+
+        // Open modal for new coupon
+        function openAddModal() {
+            resetForm();
+            modalTitle.innerText = 'Add New Coupon';
+            submitBtnText.innerText = 'Save Coupon';
+            couponIdInput.value = '';
+            codeInput.disabled = false;
+            
+            // Set default dates
+            const now = new Date();
+            const tomorrow = new Date(now);
+            tomorrow.setDate(now.getDate() + 7);
+            
+            document.getElementById('startDate').value = formatDateTimeLocal(now);
+            document.getElementById('endDate').value = formatDateTimeLocal(tomorrow);
+            
+            couponModal.classList.remove('hidden');
+        }
+
+        // Format date for datetime-local input
+        function formatDateTimeLocal(date) {
+            return new Date(date.getTime() - (date.getTimezoneOffset() * 60000))
+                .toISOString()
+                .slice(0, 16);
+        }
+
+        // Reset form values
+        function resetForm() {
+            couponForm.reset();
+        }
+
+        // Close modal
+        function closeModalFn() {
+            couponModal.classList.add('hidden');
+            resetForm();
+        }
+
+        // Add event listeners for modal controls
+        if (addCouponBtn) addCouponBtn.addEventListener('click', openAddModal);
+        if (noDataAddBtn) noDataAddBtn.addEventListener('click', openAddModal);
+        closeModal.addEventListener('click', closeModalFn);
+        cancelBtn.addEventListener('click', closeModalFn);
+
+        // Submit form
+        couponForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(couponForm);
+            const couponData = {};
+            
+            formData.forEach((value, key) => {
+                couponData[key] = value;
+            });
+            
+            const couponId = couponIdInput.value;
+            
+            try {
+                let response;
+                let url = couponId ? `/admin/updateCoupon/${couponId}` : '/admin/addCoupon';
+                
+                response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(couponData)
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success',
+                        text: data.message,
+                        showConfirmButton: false,
+                        timer: 1500
+                    }).then(() => {
+                        window.location.reload();
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: data.message
+                    });
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Something went wrong. Please try again.'
+                });
+            }
+        });
+
+        // Edit coupon
+        document.querySelectorAll('.edit-coupon').forEach(btn => {
+            btn.addEventListener('click', async function() {
+                const couponId = this.getAttribute('data-id');
+                
+                try {
+                    const response = await fetch(`/admin/editCoupon/${couponId}`);
+                    
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch coupon data');
+                    }
+                    
+                    window.location.href = `/admin/editCoupon/${couponId}`;
+                } catch (error) {
+                    console.error('Error:', error);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Failed to load coupon data for editing.'
+                    });
+                }
+            });
+        });
+
+        // Toggle coupon status
+        document.querySelectorAll('.toggle-status').forEach(btn => {
+            btn.addEventListener('click', async function() {
+                const couponId = this.getAttribute('data-id');
+                const isActive = this.getAttribute('data-status') === 'true';
+                
+                const confirmText = isActive ? 'Are you sure you want to deactivate this coupon?' : 'Are you sure you want to activate this coupon?';
+                
+                Swal.fire({
+                    title: 'Confirm Status Change',
+                    text: confirmText,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#2C2C2C',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, change it!'
+                }).then(async (result) => {
+                    if (result.isConfirmed) {
+                        try {
+                            const response = await fetch(`/admin/toggleCoupon/${couponId}`);
+                            
+                            if (!response.ok) {
+                                throw new Error('Failed to update coupon status');
+                            }
+                            
+                            const data = await response.json();
+                            
+                            if (data.success) {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Success',
+                                    text: data.message,
+                                    showConfirmButton: false,
+                                    timer: 1500
+                                }).then(() => {
+                                    window.location.reload();
+                                });
+                            } else {
+                                throw new Error(data.message);
+                            }
+                        } catch (error) {
+                            console.error('Error:', error);
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: error.message || 'Failed to update coupon status.'
+                            });
+                        }
+                    }
+                });
+            });
+        });
+
+        // Delete coupon
+        document.querySelectorAll('.delete-coupon').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const couponId = this.getAttribute('data-id');
+                
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You won't be able to revert this!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Yes, delete it!'
+                }).then(async (result) => {
+                    if (result.isConfirmed) {
+                        try {
+                            const response = await fetch(`/admin/deleteCoupon/${couponId}`, {
+                                method: 'DELETE'
+                            });
+                            
+                            if (!response.ok) {
+                                throw new Error('Failed to delete coupon');
+                            }
+                            
+                            const data = await response.json();
+                            
+                            if (data.success) {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Deleted!',
+                                    text: data.message,
+                                    showConfirmButton: false,
+                                    timer: 1500
+                                }).then(() => {
+                                    window.location.reload();
+                                });
+                            } else {
+                                throw new Error(data.message);
+                            }
+                        } catch (error) {
+                            console.error('Error:', error);
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: error.message || 'Failed to delete coupon.'
+                            });
+                        }
+                    }
+                });
+            });
+        });
+
+        // Usage History Modal
+        const usageHistoryModal = document.getElementById('usageHistoryModal');
+        const closeUsageModal = document.getElementById('closeUsageModal');
+        const usageHistoryContent = document.getElementById('usageHistoryContent');
+        const couponCodeDisplay = document.getElementById('couponCodeDisplay');
+        
+        // Close usage history modal
+        if (closeUsageModal) {
+            closeUsageModal.addEventListener('click', function() {
+                usageHistoryModal.classList.add('hidden');
+            });
+        }
+        
+        // View usage button click
+        document.querySelectorAll('.view-usage-btn').forEach(btn => {
+            btn.addEventListener('click', async function() {
+                const couponId = this.getAttribute('data-id');
+                const couponCode = this.closest('.coupon-card').querySelector('h3').textContent.trim();
+                
+                // Show modal with loading state
+                usageHistoryModal.classList.remove('hidden');
+                couponCodeDisplay.textContent = ` - ${couponCode}`;
+                usageHistoryContent.innerHTML = `
+                    <div class="flex justify-center items-center h-[200px]">
+                        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
+                    </div>
+                `;
+                
+                try {
+                    const response = await fetch(`/admin/coupon-usage/${couponId}`);
+                    
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch coupon usage data');
+                    }
+                    
+                    const data = await response.json();
+                    
+                    if (data.usedBy && data.usedBy.length > 0) {
+                        let tableHtml = `
+                            <table class="min-w-full bg-white">
+                                <thead class="bg-gray-100">
+                                    <tr>
+                                        <th class="py-2 px-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">User</th>
+                                        <th class="py-2 px-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
+                                        <th class="py-2 px-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Used On</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-gray-200">
+                        `;
+                        
+                        data.usedBy.forEach(usage => {
+                            const usedDate = luxon.DateTime.fromISO(usage.usedAt);
+                            const formattedDate = usedDate.isValid ? usedDate.toFormat('dd MMM yyyy, hh:mm a') : 'Unknown';
+                            
+                            tableHtml += `
+                                <tr class="hover:bg-gray-50">
+                                    <td class="py-2 px-4 text-sm">
+                                        ${usage.user ? usage.user.name : 'Unknown User'}
+                                    </td>
+                                    <td class="py-2 px-4 text-sm text-gray-500">
+                                        ${usage.user ? usage.user.email : 'N/A'}
+                                    </td>
+                                    <td class="py-2 px-4 text-sm text-gray-500">
+                                        ${formattedDate}
+                                    </td>
+                                </tr>
+                            `;
+                        });
+                        
+                        tableHtml += `
+                                </tbody>
+                            </table>
+                        `;
+                        
+                        usageHistoryContent.innerHTML = tableHtml;
+                    } else {
+                        usageHistoryContent.innerHTML = `
+                            <div class="bg-white p-6 rounded-md shadow-sm text-center">
+                                <p class="text-gray-500">No usage history yet</p>
+                            </div>
+                        `;
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    usageHistoryContent.innerHTML = `
+                        <div class="bg-white p-6 rounded-md shadow-sm text-center">
+                            <p class="text-red-500">Failed to load usage history. Please try again.</p>
+                        </div>
+                    `;
+                }
+            });
+        });
+        
+        // Close usage modal when clicking overlay
+        usageHistoryModal.addEventListener('click', function(e) {
+            if (e.target === usageHistoryModal) {
+                usageHistoryModal.classList.add('hidden');
+            }
+        });
+    });
+</script>
+</body>
+</html> 

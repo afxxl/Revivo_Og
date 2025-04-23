@@ -219,7 +219,7 @@
                             </div>
                         </td>
                         <td class="px-6 py-4 text-sm text-[#2C2C2C] font-mono"><%= order.orderId %></td>
-                        <td class="px-6 py-4 text-sm text-[#2C2C2C]">$<%= order.finalAmount.toFixed(2) %></td>
+                        <td class="px-6 py-4 text-sm text-[#2C2C2C]">₹<%= order.finalAmount.toFixed(2) %></td>
                         <td class="px-6 py-4 text-sm text-[#2C2C2C]"><%= order.createdOn.toLocaleDateString() %></td>
                         <td class="px-6 py-4">
                             <span class="status-badge <%= order.status.toLowerCase().replace(' ', '-') %>">
@@ -276,7 +276,7 @@
                 
                 <div>
                     <p class="text-xs text-[#2C2C2C] opacity-75">Amount</p>
-                    <p class="text-sm font-medium text-[#2C2C2C]">$<%= order.finalAmount.toFixed(2) %></p>
+                    <p class="text-sm font-medium text-[#2C2C2C]">₹<%= order.finalAmount.toFixed(2) %></p>
                 </div>
 
                 <div class="col-span-2 text-right">

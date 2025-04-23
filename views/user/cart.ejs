@@ -204,11 +204,11 @@
                       <% if (bestOfferPercentage > 0) { %>
                         <div class="flex flex-col items-center">
                           <span class="bg-green-100 text-green-700 text-xs font-semibold px-1.5 py-0.5 rounded-sm mb-1">-<%= bestOfferPercentage %>%</span>
-                          <span class="font-medium">$<%= item.price.toFixed(2) %></span>
-                          <span class="line-through text-xs text-[#2C2C2C]/60">$<%= item.productId.salesPrice.toFixed(2) %></span>
+                          <span class="font-medium">₹<%= item.price.toFixed(2) %></span>
+                          <span class="line-through text-xs text-[#2C2C2C]/60">₹<%= item.productId.salesPrice.toFixed(2) %></span>
                         </div>
                       <% } else { %>
-                        $<%= item.price.toFixed(2) %>
+                        <span class="font-medium">₹<%= item.price.toFixed(2) %></span>
                       <% } %>
                     </div>
 
@@ -246,7 +246,7 @@
 
                     <div class="col-span-4 md:col-span-2 flex items-center justify-end">
                       <div class="font-montserrat text-[#2C2C2C]">
-                        $<%= item.totalPrice.toFixed(2) %>
+                        <span class="font-montserrat font-medium">₹<%= item.totalPrice.toFixed(2) %></span>
                       </div>
                       <button 
                         class="remove-btn ml-4 text-[#2C2C2C]/40 hover:text-[#d32f2f]"
@@ -287,25 +287,105 @@
               <div class="space-y-4">
                 <div class="flex justify-between">
                   <span class="font-montserrat text-sm text-[#2C2C2C]/80">Subtotal</span>
-                  <span class="font-montserrat font-medium subtotal-display">$<%= subtotal.toFixed(2) %></span>
+                  <span class="font-montserrat font-medium subtotal-display">₹<%= subtotal.toFixed(2) %></span>
                 </div>
                 
                 <% if (totalSavings > 0) { %>
                 <div class="flex justify-between text-green-600">
                   <span class="font-montserrat text-sm font-medium">Total Savings</span>
-                  <span class="font-montserrat font-medium total-savings-display">-$<%= totalSavings.toFixed(2) %></span>
+                  <span class="font-montserrat font-medium total-savings-display">-₹<%= totalSavings.toFixed(2) %></span>
                 </div>
                 <% } %>
                 
                 <div class="flex justify-between">
                   <span class="font-montserrat text-sm text-[#2C2C2C]/80">Shipping</span>
-                  <span class="font-montserrat font-medium shipping-display">$<%= shipping.toFixed(2) %></span>
+                  <span class="font-montserrat font-medium shipping-display">₹<%= shipping.toFixed(2) %></span>
                 </div>
+                
+                <% if (appliedCoupon) { %>
+                <div class="flex justify-between text-green-600">
+                  <span class="font-montserrat text-sm font-medium flex items-center">
+                    Coupon: <%= appliedCoupon.code %>
+                    <button type="button" id="remove-coupon" class="ml-2 text-red-500 hover:text-red-700">
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                      </svg>
+                    </button>
+                  </span>
+                  <span class="font-montserrat font-medium coupon-discount-display">-₹<%= appliedCoupon.discount.toFixed(2) %></span>
+                </div>
+                <% } %>
                 
                 <div class="border-t border-[#e0dcd4] pt-3 flex justify-between">
                   <span class="font-montserrat font-medium">Total</span>
-                  <span class="font-montserrat font-medium text-lg total-display">$<%= total.toFixed(2) %></span>
+                  <span class="font-montserrat font-medium text-lg total-display">₹<%= total.toFixed(2) %></span>
                 </div>
+              </div>
+
+              <!-- Coupon Section -->
+              <div class="mt-6 border-t border-[#e0dcd4] pt-4">
+                <div class="mb-4">
+                  <label for="coupon-code" class="block text-sm font-medium text-[#2C2C2C] mb-2">
+                    Have a coupon?
+                  </label>
+                  <div class="flex">
+                    <input 
+                      type="text" 
+                      id="coupon-code" 
+                      placeholder="Enter coupon code" 
+                      class="flex-grow p-2 border border-[#e0dcd4] focus:outline-none focus:ring-1 focus:ring-[#f8c78d] rounded-l-sm font-montserrat text-sm"
+                      <%= appliedCoupon ? 'disabled' : '' %>
+                      value="<%= appliedCoupon ? appliedCoupon.code : '' %>"
+                    >
+                    <button 
+                      id="apply-coupon-btn" 
+                      class="px-4 py-2 bg-[#2C2C2C] text-white rounded-r-sm font-montserrat text-sm hover:bg-[#1a1a1a] transition-colors"
+                      <%= appliedCoupon ? 'disabled' : '' %>
+                    >
+                      Apply
+                    </button>
+                  </div>
+                  <div id="coupon-message" class="mt-1 text-sm font-montserrat hidden"></div>
+                </div>
+                
+                <% if (coupons && coupons.length > 0) { %>
+                <div class="mt-4">
+                  <p class="text-sm font-medium text-[#2C2C2C] mb-2 font-montserrat">Available Coupons</p>
+                  <div class="space-y-3 max-h-48 overflow-y-auto pr-1">
+                    <% coupons.forEach(coupon => { %>
+                      <div class="border border-dashed border-[#e0dcd4] rounded-sm p-3 bg-[#f8f7f5]/50 hover:bg-[#f8f7f5] transition-colors">
+                        <div class="flex justify-between items-start">
+                          <div>
+                            <p class="font-medium text-[#2C2C2C] font-montserrat"><%= coupon.code %></p>
+                            <p class="text-xs text-[#2C2C2C]/70 font-montserrat mt-1"><%= coupon.description %></p>
+                          </div>
+                          <button 
+                            class="use-coupon-btn px-2 py-1 bg-[#2C2C2C] text-white rounded-sm text-xs font-montserrat hover:bg-[#1a1a1a] transition-colors"
+                            data-coupon-code="<%= coupon.code %>"
+                            <%= appliedCoupon ? 'disabled' : '' %>
+                          >
+                            Use
+                          </button>
+                        </div>
+                        <div class="flex flex-wrap text-xs text-[#2C2C2C]/60 mt-2 gap-x-4 gap-y-1 font-montserrat">
+                          <span>
+                            <% if (coupon.discountType === 'percentage') { %>
+                              <%= coupon.discountAmount %>% off
+                              <% if (coupon.maxDiscount) { %>
+                                (up to ₹<%= coupon.maxDiscount %>)
+                              <% } %>
+                            <% } else { %>
+                              ₹<%= coupon.discountAmount %> off
+                            <% } %>
+                          </span>
+                          <span>Min. purchase: ₹<%= coupon.minPurchase %></span>
+                          <span>Valid till: <%= new Date(coupon.endDate).toLocaleDateString() %></span>
+                        </div>
+                      </div>
+                    <% }); %>
+                  </div>
+                </div>
+                <% } %>
               </div>
 
               <a 
@@ -402,9 +482,9 @@ document.addEventListener('DOMContentLoaded', function() {
         const totalSavingsEl = document.querySelector('.total-savings-display');
 
         // Update order summary
-        if (subtotalEl) subtotalEl.textContent = `$${data.cart.subtotal.toFixed(2)}`;
-        if (shippingEl) shippingEl.textContent = `$${data.cart.shipping.toFixed(2)}`;
-        if (totalEl) totalEl.textContent = `$${data.cart.total.toFixed(2)}`;
+        if (subtotalEl) subtotalEl.textContent = `₹${data.cart.subtotal.toFixed(2)}`;
+        if (shippingEl) shippingEl.textContent = `₹${data.cart.shipping.toFixed(2)}`;
+        if (totalEl) totalEl.textContent = `₹${data.cart.total.toFixed(2)}`;
         
         // Recalculate total savings
         if (totalSavingsEl) {
@@ -420,7 +500,7 @@ document.addEventListener('DOMContentLoaded', function() {
           
           // Update the total savings display if it exists
           if (newTotalSavings > 0) {
-            totalSavingsEl.textContent = `-$${newTotalSavings.toFixed(2)}`;
+            totalSavingsEl.textContent = `-₹${newTotalSavings.toFixed(2)}`;
             totalSavingsEl.closest('.flex').style.display = 'flex';
           } else {
             totalSavingsEl.closest('.flex').style.display = 'none';
@@ -437,7 +517,7 @@ document.addEventListener('DOMContentLoaded', function() {
           ).parentElement.querySelector(`.font-montserrat.${escapedColorClass}`);
           
           if (itemTotalEl) {
-            itemTotalEl.textContent = `$${updatedItem.totalPrice.toFixed(2)}`;
+            itemTotalEl.textContent = `₹${updatedItem.totalPrice.toFixed(2)}`;
           } else {
             console.error('Total element not found for productId:', productId);
             // Fallback selector: select the first div inside the parent of remove-btn
@@ -445,7 +525,7 @@ document.addEventListener('DOMContentLoaded', function() {
               `.cart-item .remove-btn[data-product-id="${productId}"]`
             ).parentElement.querySelector('div');
             if (fallbackTotalEl) {
-              fallbackTotalEl.textContent = `$${updatedItem.totalPrice.toFixed(2)}`;
+              fallbackTotalEl.textContent = `₹${updatedItem.totalPrice.toFixed(2)}`;
               console.log('Used fallback selector for total price');
             }
           }
@@ -582,9 +662,9 @@ document.addEventListener('DOMContentLoaded', function() {
         const totalEl = document.querySelector('.total-display');
         const totalSavingsEl = document.querySelector('.total-savings-display');
 
-        if (subtotalEl) subtotalEl.textContent = `$${data.cart.subtotal.toFixed(2)}`;
-        if (shippingEl) shippingEl.textContent = `$${data.cart.shipping.toFixed(2)}`;
-        if (totalEl) totalEl.textContent = `$${data.cart.total.toFixed(2)}`;
+        if (subtotalEl) subtotalEl.textContent = `₹${data.cart.subtotal.toFixed(2)}`;
+        if (shippingEl) shippingEl.textContent = `₹${data.cart.shipping.toFixed(2)}`;
+        if (totalEl) totalEl.textContent = `₹${data.cart.total.toFixed(2)}`;
         
         // If there are no more items with savings, hide the savings row
         if (totalSavingsEl) {
@@ -599,7 +679,7 @@ document.addEventListener('DOMContentLoaded', function() {
           });
           
           if (newTotalSavings > 0) {
-            totalSavingsEl.textContent = `-$${newTotalSavings.toFixed(2)}`;
+            totalSavingsEl.textContent = `-₹${newTotalSavings.toFixed(2)}`;
             totalSavingsEl.closest('.flex').style.display = 'flex';
           } else {
             totalSavingsEl.closest('.flex').style.display = 'none';
@@ -754,6 +834,205 @@ document.addEventListener('DOMContentLoaded', function() {
         }
       }, 2000);
     });
+  }
+
+  // Coupon functionality
+  const applyCouponBtn = document.getElementById('apply-coupon-btn');
+  const couponInput = document.getElementById('coupon-code');
+  const couponMessage = document.getElementById('coupon-message');
+  const removeCouponBtn = document.getElementById('remove-coupon');
+  
+  if (applyCouponBtn && couponInput) {
+    applyCouponBtn.addEventListener('click', applyCoupon);
+    
+    // Allow Enter key to apply coupon
+    couponInput.addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        applyCoupon();
+      }
+    });
+  }
+  
+  if (removeCouponBtn) {
+    removeCouponBtn.addEventListener('click', removeCoupon);
+  }
+  
+  // Add click event listeners to "Use" buttons for coupons
+  document.querySelectorAll('.use-coupon-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+      const couponCode = this.getAttribute('data-coupon-code');
+      if (couponInput) {
+        couponInput.value = couponCode;
+        applyCoupon();
+      }
+    });
+  });
+  
+  async function applyCoupon() {
+    const couponCode = couponInput.value.trim();
+    
+    if (!couponCode) {
+      displayCouponMessage('Please enter a coupon code', 'error');
+      return;
+    }
+    
+    try {
+      // Disable button and show loading state
+      applyCouponBtn.disabled = true;
+      applyCouponBtn.innerHTML = '<div class="spinner-border spinner-border-sm"></div>';
+      
+      const response = await fetch('/apply-coupon', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ couponCode }),
+        credentials: 'include'
+      });
+      
+      const data = await response.json();
+      
+      if (response.ok && data.success) {
+        // Update order summary with discount
+        updateOrderSummaryWithCoupon(data.cart);
+        
+        // Disable coupon input and button
+        couponInput.disabled = true;
+        applyCouponBtn.disabled = true;
+        
+        // Disable all "Use" buttons
+        document.querySelectorAll('.use-coupon-btn').forEach(btn => {
+          btn.disabled = true;
+        });
+        
+        displayCouponMessage(`Coupon ${data.cart.couponCode} applied successfully!`, 'success');
+        showToast(`Coupon ${data.cart.couponCode} applied successfully!`, 'success');
+        
+        // Reload the page to show the updated state
+        setTimeout(() => {
+          window.location.reload();
+        }, 1000);
+      } else {
+        displayCouponMessage(data.message || 'Failed to apply coupon', 'error');
+      }
+    } catch (error) {
+      console.error('Error applying coupon:', error);
+      displayCouponMessage('An error occurred while applying the coupon', 'error');
+    } finally {
+      // Reset button state
+      applyCouponBtn.disabled = false;
+      applyCouponBtn.innerHTML = 'Apply';
+    }
+  }
+  
+  async function removeCoupon() {
+    try {
+      // Show loading state on the remove button
+      removeCouponBtn.innerHTML = '<div class="spinner-border spinner-border-sm"></div>';
+      
+      const response = await fetch('/apply-coupon/remove', {
+        method: 'POST',
+        credentials: 'include'
+      });
+      
+      const data = await response.json();
+      
+      if (response.ok && data.success) {
+        showToast('Coupon removed successfully', 'success');
+        
+        // Reload the page to show the updated state
+        setTimeout(() => {
+          window.location.reload();
+        }, 800);
+      } else {
+        showToast(data.message || 'Failed to remove coupon', 'error');
+      }
+    } catch (error) {
+      console.error('Error removing coupon:', error);
+      showToast('An error occurred while removing the coupon', 'error');
+    }
+  }
+  
+  function updateOrderSummaryWithCoupon(cartData) {
+    const subtotalEl = document.querySelector('.subtotal-display');
+    const shippingEl = document.querySelector('.shipping-display');
+    const totalEl = document.querySelector('.total-display');
+    
+    if (subtotalEl) subtotalEl.textContent = `₹${cartData.subtotal.toFixed(2)}`;
+    if (shippingEl) shippingEl.textContent = `₹${cartData.shipping.toFixed(2)}`;
+    if (totalEl) totalEl.textContent = `₹${cartData.total.toFixed(2)}`;
+    
+    // Create or update coupon discount row
+    const orderSummary = totalEl.closest('.space-y-4');
+    
+    // Check if coupon discount row already exists
+    let couponRow = document.querySelector('.coupon-discount-row');
+    
+    if (!couponRow) {
+      // Create new row for coupon discount
+      couponRow = document.createElement('div');
+      couponRow.className = 'flex justify-between text-green-600 coupon-discount-row';
+      
+      const couponLabel = document.createElement('span');
+      couponLabel.className = 'font-montserrat text-sm font-medium flex items-center';
+      couponLabel.innerHTML = `
+        Coupon: ${cartData.couponCode}
+        <button type="button" id="remove-coupon" class="ml-2 text-red-500 hover:text-red-700">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+        </button>
+      `;
+      
+      const couponValue = document.createElement('span');
+      couponValue.className = 'font-montserrat font-medium coupon-discount-display';
+      couponValue.textContent = `-₹${cartData.discount.toFixed(2)}`;
+      
+      couponRow.appendChild(couponLabel);
+      couponRow.appendChild(couponValue);
+      
+      // Insert before the total row (which should be the last child)
+      const totalRow = totalEl.closest('.border-t');
+      orderSummary.insertBefore(couponRow, totalRow);
+      
+      // Add event listener to the new remove button
+      const newRemoveBtn = couponRow.querySelector('#remove-coupon');
+      if (newRemoveBtn) {
+        newRemoveBtn.addEventListener('click', removeCoupon);
+      }
+    } else {
+      // Update existing coupon row
+      const couponLabel = couponRow.querySelector('.font-montserrat.text-sm');
+      const couponValue = couponRow.querySelector('.coupon-discount-display');
+      
+      if (couponLabel) {
+        couponLabel.innerHTML = `
+          Coupon: ${cartData.couponCode}
+          <button type="button" id="remove-coupon" class="ml-2 text-red-500 hover:text-red-700">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+          </button>
+        `;
+      }
+      
+      if (couponValue) {
+        couponValue.textContent = `-₹${cartData.discount.toFixed(2)}`;
+      }
+    }
+  }
+  
+  function displayCouponMessage(message, type = 'success') {
+    if (!couponMessage) return;
+    
+    couponMessage.textContent = message;
+    couponMessage.className = `mt-1 text-sm font-montserrat ${type === 'success' ? 'text-green-600' : 'text-red-600'}`;
+    couponMessage.classList.remove('hidden');
+    
+    setTimeout(() => {
+      couponMessage.classList.add('hidden');
+    }, 5000);
   }
 });
 </script>

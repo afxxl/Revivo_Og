@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Edit Coupon</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.18/dist/sweetalert2.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.18/dist/sweetalert2.all.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/luxon@2.3.1/build/global/luxon.min.js"></script>
+    <style>
+        #sidebar {
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 40;
+        }
+        
+        @media (min-width: 768px) {
+            .main-content {
+                margin-left: 16rem; /* 64px or 16rem */
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+
+    <%- include('../partials/admin/admin-header.ejs') %>
+    <%- include('../partials/admin/admin-sidebar', {currentPage: 'coupons' }) %>
+
+    <!-- Main Content -->
+    <div class="main-content flex-1 min-h-screen bg-gray-100 p-4 md:p-6 pt-24">
+        <div class="container mx-auto">
+            <div class="flex justify-between items-center mb-6">
+                <h1 class="text-2xl md:text-3xl font-semibold text-gray-800">Edit Coupon</h1>
+                <a href="/admin/coupons" class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded-lg shadow-md flex items-center">
+                    <i class="fas fa-arrow-left mr-2"></i> Back to Coupons
+                </a>
+            </div>
+
+            <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+                <form id="editCouponForm">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1" for="code">Coupon Code</label>
+                            <input
+                                type="text"
+                                id="code"
+                                name="code"
+                                class="w-full px-3 py-2 border border-gray-300 bg-gray-100 rounded-md focus:outline-none"
+                                value="<%= coupon.code %>"
+                                disabled
+                            >
+                            <p class="text-xs text-gray-500 mt-1">Coupon code cannot be changed</p>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1" for="discountType">Discount Type</label>
+                            <select
+                                id="discountType"
+                                name="discountType"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                required
+                            >
+                                <option value="percentage" <%= coupon.discountType === 'percentage' ? 'selected' : '' %>>Percentage</option>
+                                <option value="fixed" <%= coupon.discountType === 'fixed' ? 'selected' : '' %>>Fixed Amount</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="mb-6">
+                        <label class="block text-sm font-medium text-gray-700 mb-1" for="description">Description</label>
+                        <textarea
+                            id="description"
+                            name="description"
+                            rows="2"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            required
+                        ><%= coupon.description %></textarea>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1" for="discountAmount">Discount Amount</label>
+                            <input
+                                type="number"
+                                id="discountAmount"
+                                name="discountAmount"
+                                min="0"
+                                step="0.01"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                value="<%= coupon.discountAmount %>"
+                                required
+                            >
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1" for="minPurchase">Minimum Purchase</label>
+                            <input
+                                type="number"
+                                id="minPurchase"
+                                name="minPurchase"
+                                min="0"
+                                step="0.01"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                value="<%= coupon.minPurchase %>"
+                            >
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1" for="maxDiscount">Maximum Discount</label>
+                            <input
+                                type="number"
+                                id="maxDiscount"
+                                name="maxDiscount"
+                                min="0"
+                                step="0.01"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                value="<%= coupon.maxDiscount || '' %>"
+                                placeholder="Optional"
+                            >
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1" for="startDate">Start Date</label>
+                            <input
+                                type="datetime-local"
+                                id="startDate"
+                                name="startDate"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                required
+                            >
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1" for="endDate">End Date</label>
+                            <input
+                                type="datetime-local"
+                                id="endDate"
+                                name="endDate"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                required
+                            >
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1" for="usageLimit">Usage Limit</label>
+                            <input
+                                type="number"
+                                id="usageLimit"
+                                name="usageLimit"
+                                min="1"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                value="<%= coupon.usageLimit %>"
+                                required
+                            >
+                        </div>
+                    </div>
+
+                    <div class="bg-gray-50 p-4 rounded-md mb-6">
+                        <h3 class="text-md font-medium text-gray-700 mb-2">Coupon Statistics</h3>
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                            <div class="bg-white p-3 rounded-md shadow-sm">
+                                <p class="text-xs text-gray-500">Created</p>
+                                <p class="text-sm font-medium date-format"><%= coupon.createdAt %></p>
+                            </div>
+                            <div class="bg-white p-3 rounded-md shadow-sm">
+                                <p class="text-xs text-gray-500">Last Updated</p>
+                                <p class="text-sm font-medium date-format"><%= coupon.updatedAt %></p>
+                            </div>
+                            <div class="bg-white p-3 rounded-md shadow-sm">
+                                <p class="text-xs text-gray-500">Usage</p>
+                                <p class="text-sm font-medium"><%= coupon.usedCount %> / <%= coupon.usageLimit %></p>
+                            </div>
+                            <div class="bg-white p-3 rounded-md shadow-sm">
+                                <p class="text-xs text-gray-500">Status</p>
+                                <p class="text-sm font-medium flex items-center">
+                                    <span class="inline-block w-2 h-2 rounded-full mr-1 <%= coupon.isActive ? 'bg-green-500' : 'bg-red-500' %>"></span>
+                                    <%= coupon.isActive ? 'Active' : 'Inactive' %>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="flex justify-end space-x-3 pt-4 border-t">
+                        <a href="/admin/coupons" class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                            Cancel
+                        </a>
+                        <button
+                            type="submit"
+                            class="px-4 py-2 bg-[#2C2C2C] text-white rounded-md hover:bg-gray-800"
+                        >
+                            Update Coupon
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Format dates
+            document.querySelectorAll('.date-format').forEach(el => {
+                const date = luxon.DateTime.fromISO(el.innerText.trim());
+                if (date.isValid) {
+                    el.innerText = date.toFormat('dd MMM yyyy, hh:mm a');
+                }
+            });
+
+            // Set date values
+            const startDate = new Date('<%= coupon.startDate %>');
+            const endDate = new Date('<%= coupon.endDate %>');
+            
+            document.getElementById('startDate').value = formatDateTimeLocal(startDate);
+            document.getElementById('endDate').value = formatDateTimeLocal(endDate);
+
+            // Format date for datetime-local input
+            function formatDateTimeLocal(date) {
+                return new Date(date.getTime() - (date.getTimezoneOffset() * 60000))
+                    .toISOString()
+                    .slice(0, 16);
+            }
+
+            // Handle form submission
+            const editCouponForm = document.getElementById('editCouponForm');
+            
+            editCouponForm.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                const formData = new FormData(editCouponForm);
+                const couponData = {};
+                
+                // Convert form data to JSON
+                formData.forEach((value, key) => {
+                    couponData[key] = value;
+                });
+                
+                try {
+                    const response = await fetch('/admin/updateCoupon/<%= coupon._id %>', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(couponData)
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (data.success) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Success',
+                            text: data.message,
+                            showConfirmButton: false,
+                            timer: 1500
+                        }).then(() => {
+                            window.location.href = '/admin/coupons';
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: data.message
+                        });
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Something went wrong. Please try again.'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html> 

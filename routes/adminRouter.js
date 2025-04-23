@@ -6,6 +6,7 @@ const categoryController = require("../controllers/admin/categoryController");
 const brandController = require("../controllers/admin/brandController");
 const productController = require("../controllers/admin/productController");
 const orderController = require("../controllers/admin/orderController.js");
+const couponController = require("../controllers/admin/couponController.js");
 const multer = require("../helpers/multer");
 
 //error
@@ -106,5 +107,14 @@ router.post(
   adminAuth,
   orderController.updateStatus,
 );
+
+//Coupons
+router.get("/coupons", adminAuth, couponController.getCoupons);
+router.post("/addCoupon", adminAuth, couponController.addCoupon);
+router.get("/editCoupon/:id", adminAuth, couponController.getEditCoupon);
+router.post("/updateCoupon/:id", adminAuth, couponController.updateCoupon);
+router.get("/toggleCoupon/:id", adminAuth, couponController.toggleCouponStatus);
+router.delete("/deleteCoupon/:id", adminAuth, couponController.deleteCoupon);
+router.get("/coupon-usage/:id", adminAuth, couponController.getCouponUsage);
 
 module.exports = router;

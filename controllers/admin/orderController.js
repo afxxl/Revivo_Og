@@ -1,6 +1,7 @@
 const Order = require("../../models/orderSchema.js");
 const mongoose = require("mongoose");
 const Product = require("../../models/productSchema.js");
+const { processWalletRefund } = require("../user/walletController.js");
 
 const loadOrderDetails = async (req, res) => {
   try {
@@ -104,6 +105,19 @@ const handleReturn = async (req, res) => {
         await Product.findByIdAndUpdate(item.product._id, {
           $inc: { stock: item.quantity },
         });
+      }
+
+      // Process refund if payment was made via wallet or other payment methods
+      if (
+        order.paymentMethod === "WALLET" ||
+        order.paymentMethod === "CARD" ||
+        order.paymentMethod === "PAYPAL"
+      ) {
+        await processWalletRefund(
+          order.user,
+          order.finalAmount,
+          `Refund for order #${order.orderId} (Return)`,
+        );
       }
 
       order.status = "Returned";
