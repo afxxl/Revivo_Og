@@ -220,6 +220,13 @@
                                     </svg>
                                     Wallet
                                 </a>
+                                <a href="#" id="referralMenuLink" class="relative">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 11.5V14m0-2.5v-6a1.5 1.5 0 113 0m-3 6a1.5 1.5 0 00-3 0v2a7.5 7.5 0 0015 0v-5a1.5 1.5 0 00-3 0m-6-3V11m0-5.5v-1a1.5 1.5 0 013 0v1m0 0V11m0-5.5a1.5 1.5 0 013 0v3m0 0V11"/>
+                                    </svg>
+                                    Referrals
+                                    <span class="absolute top-0 right-0 h-2 w-2 rounded-full bg-green-500 animate-pulse"></span>
+                                </a>
                                 <a href="/logout" class="logout-link">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
@@ -415,6 +422,13 @@
                                             </svg>
                                             Wallet
                                         </a>
+                                        <a href="#" id="referralMenuLink" class="relative">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 11.5V14m0-2.5v-6a1.5 1.5 0 113 0m-3 6a1.5 1.5 0 00-3 0v2a7.5 7.5 0 0015 0v-5a1.5 1.5 0 00-3 0m-6-3V11m0-5.5v-1a1.5 1.5 0 013 0v1m0 0V11m0-5.5a1.5 1.5 0 013 0v3m0 0V11"/>
+                                            </svg>
+                                            Referrals
+                                            <span class="absolute top-0 right-0 h-2 w-2 rounded-full bg-green-500 animate-pulse"></span>
+                                        </a>
                                         <a href="/logout" class="logout-link">
                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
@@ -461,6 +475,234 @@
         checkSession();
         
         setInterval(checkSession, 30000);
+
+        // Referral System Modal and Functionality
+        const referralModal = document.createElement('div');
+        referralModal.id = 'referralModal';
+        referralModal.className = 'fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center hidden';
+        referralModal.innerHTML = `
+            <div class="bg-white rounded-lg shadow-xl w-full max-w-md mx-4 overflow-hidden">
+                <div class="p-6 border-b border-gray-200">
+                    <div class="flex justify-between items-center">
+                        <h3 class="text-xl font-medium text-[#2C2C2C]">Your Referral Program</h3>
+                        <button id="closeReferralModal" class="text-gray-400 hover:text-gray-500">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="p-6 max-h-[70vh] overflow-y-auto">
+                    <div id="referralLoading" class="text-center py-8">
+                        <svg class="animate-spin h-8 w-8 text-[#2C2C2C] mx-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        <p class="mt-2 text-[#2C2C2C]/70">Loading your referral details...</p>
+                    </div>
+                    
+                    <div id="referralContent" class="hidden">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="text-sm text-[#2C2C2C]/70">Your Referral Code</div>
+                            <div class="flex items-center gap-2">
+                                <button id="shareReferralBtn" class="text-xs bg-[#2C2C2C] text-white px-2 py-1 rounded">
+                                    <i class="fas fa-share-alt mr-1"></i> Share
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-gray-50 p-3 rounded-lg mb-6 flex items-center justify-between">
+                            <span id="referralCodeDisplay" class="font-mono text-lg font-semibold tracking-wide"></span>
+                            <button id="copyReferralBtn" class="text-xs bg-[#2C2C2C] text-white px-2 py-1 rounded">
+                                <i class="fas fa-copy mr-1"></i> Copy
+                            </button>
+                        </div>
+                        
+                        <div class="grid grid-cols-2 gap-4 mb-6">
+                            <div class="bg-green-50 p-4 rounded-lg text-center">
+                                <div class="text-xl font-semibold text-green-600" id="referralEarnings">₹0</div>
+                                <div class="text-xs text-[#2C2C2C]/70 mt-1">Total Earnings</div>
+                            </div>
+                            <div class="bg-blue-50 p-4 rounded-lg text-center">
+                                <div class="text-xl font-semibold text-blue-600" id="referralCount">0</div>
+                                <div class="text-xs text-[#2C2C2C]/70 mt-1">People Referred</div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <div class="text-sm font-medium text-[#2C2C2C] mb-3">How It Works</div>
+                            <div class="space-y-2 text-sm">
+                                <p class="flex items-start gap-2">
+                                    <span class="text-green-500 mt-0.5"><i class="fas fa-check-circle"></i></span>
+                                    <span>Share your referral code with friends</span>
+                                </p>
+                                <p class="flex items-start gap-2">
+                                    <span class="text-green-500 mt-0.5"><i class="fas fa-check-circle"></i></span>
+                                    <span>When they sign up using your code, you get ₹100</span>
+                                </p>
+                                <p class="flex items-start gap-2">
+                                    <span class="text-green-500 mt-0.5"><i class="fas fa-check-circle"></i></span>
+                                    <span>They also get ₹50 in their wallet</span>
+                                </p>
+                            </div>
+                        </div>
+                        
+                        <div id="referredUsersSection" class="hidden">
+                            <div class="text-sm font-medium text-[#2C2C2C] mb-3 mt-6">People You've Referred</div>
+                            <div class="space-y-3 max-h-60 overflow-y-auto" id="referredUsersList">
+                                <!-- Referred users will be populated here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(referralModal);
+        
+        // Referral Modal Handling
+        document.addEventListener('click', function(e) {
+            const referralMenuLink = e.target.closest('#referralMenuLink');
+            if (referralMenuLink) {
+                e.preventDefault();
+                
+                // Close dropdown
+                document.querySelectorAll('.dropdown-content').forEach(content => {
+                    content.style.display = 'none';
+                });
+                
+                // Show modal and fetch data
+                referralModal.classList.remove('hidden');
+                document.getElementById('referralLoading').classList.remove('hidden');
+                document.getElementById('referralContent').classList.add('hidden');
+                
+                fetchReferralStats();
+            }
+        });
+        
+        document.getElementById('closeReferralModal')?.addEventListener('click', function() {
+            referralModal.classList.add('hidden');
+        });
+        
+        // Close modal when clicking outside
+        referralModal.addEventListener('click', function(e) {
+            if (e.target === referralModal) {
+                referralModal.classList.add('hidden');
+            }
+        });
+        
+        async function fetchReferralStats() {
+            try {
+                const response = await fetch('/api/referral-stats');
+                if (!response.ok) throw new Error('Network response was not ok');
+                
+                const { success, data } = await response.json();
+                
+                if (success && data) {
+                    // Update UI with referral data
+                    document.getElementById('referralCodeDisplay').textContent = data.referralCode || 'No referral code available';
+                    document.getElementById('referralEarnings').textContent = `₹${data.totalEarnings}`;
+                    document.getElementById('referralCount').textContent = data.referralCount;
+                    
+                    // Show referred users if any
+                    const referredUsersSection = document.getElementById('referredUsersSection');
+                    const referredUsersList = document.getElementById('referredUsersList');
+                    
+                    if (data.referredUsers && data.referredUsers.length > 0) {
+                        referredUsersSection.classList.remove('hidden');
+                        referredUsersList.innerHTML = '';
+                        
+                        data.referredUsers.forEach(user => {
+                            const date = new Date(user.createdAt).toLocaleDateString();
+                            const item = document.createElement('div');
+                            item.className = 'flex items-center justify-between bg-gray-50 p-3 rounded';
+                            item.innerHTML = `
+                                <div>
+                                    <div class="font-medium text-sm">${user.name}</div>
+                                    <div class="text-xs text-[#2C2C2C]/70">${user.email}</div>
+                                </div>
+                                <div class="text-xs text-[#2C2C2C]/70">${date}</div>
+                            `;
+                            referredUsersList.appendChild(item);
+                        });
+                    } else {
+                        referredUsersSection.classList.add('hidden');
+                    }
+                    
+                    // Show content and hide loading
+                    document.getElementById('referralLoading').classList.add('hidden');
+                    document.getElementById('referralContent').classList.remove('hidden');
+                    
+                    // Set up copy button
+                    const copyBtn = document.getElementById('copyReferralBtn');
+                    copyBtn.addEventListener('click', function() {
+                        const code = document.getElementById('referralCodeDisplay').textContent;
+                        navigator.clipboard.writeText(code)
+                            .then(() => {
+                                showToast('Referral code copied to clipboard!', 'success');
+                            })
+                            .catch(err => {
+                                console.error('Failed to copy: ', err);
+                                showToast('Failed to copy code', 'error');
+                            });
+                    });
+                    
+                    // Set up share button
+                    const shareBtn = document.getElementById('shareReferralBtn');
+                    shareBtn.addEventListener('click', function() {
+                        const code = document.getElementById('referralCodeDisplay').textContent;
+                        const shareText = `Sign up on REVIVO using my referral code "${code}" and get ₹50 in your wallet! I'll get ₹100 too! 🎁 Join here: ${window.location.origin}/signup`;
+                        
+                        if (navigator.share) {
+                            navigator.share({
+                                title: 'Join REVIVO with my referral code!',
+                                text: shareText,
+                                url: `${window.location.origin}/signup`
+                            })
+                            .then(() => showToast('Thanks for sharing!', 'success'))
+                            .catch(error => console.log('Error sharing:', error));
+                        } else {
+                            navigator.clipboard.writeText(shareText)
+                                .then(() => {
+                                    showToast('Share text copied to clipboard!', 'success');
+                                })
+                                .catch(err => {
+                                    console.error('Failed to copy: ', err);
+                                    showToast('Failed to copy share text', 'error');
+                                });
+                        }
+                    });
+                }
+            } catch (error) {
+                console.error('Error fetching referral stats:', error);
+                document.getElementById('referralLoading').innerHTML = `
+                    <div class="text-center">
+                        <svg class="w-12 h-12 text-gray-400 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                        </svg>
+                        <p class="mt-2 text-[#2C2C2C]">Failed to load referral data</p>
+                        <button id="retryReferralBtn" class="mt-3 text-sm bg-[#2C2C2C] text-white px-3 py-1 rounded">Retry</button>
+                    </div>
+                `;
+                
+                document.getElementById('retryReferralBtn')?.addEventListener('click', fetchReferralStats);
+            }
+        }
+        
+        // Toast notification function
+        function showToast(message, type = 'success') {
+            const toast = document.createElement('div');
+            toast.className = `fixed bottom-4 right-4 px-4 py-2 rounded-lg shadow-lg text-white ${
+                type === 'success' ? 'bg-green-600' : 'bg-red-600'
+            } transition-opacity duration-300 z-50`;
+            toast.innerHTML = message;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
     });
 
     // Utility function to calculate best offer price

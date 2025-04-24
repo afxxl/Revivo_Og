@@ -389,7 +389,15 @@ function updateStatus() {
 function handleReturn(action, orderId) {
     Swal.fire({
         title: `Confirm ${action === 'approve' ? 'Approval' : 'Rejection'}`,
-        text: `Are you sure you want to ${action} this return request?`,
+        html: `
+            <p>Are you sure you want to ${action} this return request?</p>
+            <% if (order.paymentMethod === 'COD') { %>
+            <div class="mt-4 p-3 bg-blue-50 rounded-lg text-sm text-blue-800 text-left">
+                <p class="font-medium">Note:</p>
+                <p class="mt-1">Approving this return will add the refund amount to the customer's wallet.</p>
+            </div>
+            <% } %>
+        `,
         icon: 'question',
         showCancelButton: true,
         confirmButtonColor: '#2C2C2C',

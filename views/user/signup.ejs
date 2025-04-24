@@ -164,6 +164,19 @@
                 <p class="requirement" data-requirement="special">• At least one special character</p>
             </div>
 
+            <div class="input-group mt-4">
+              <input
+                type="text"
+                id="referralCode"
+                name="referralCode"
+                placeholder="Referral Code (Optional)"
+                class="w-full p-3 border-b-2 border-[#2C2C2C]/50 bg-transparent focus:outline-none focus:border-[#2C2C2C] transition-colors"
+              />
+              <div class="text-xs text-[#2C2C2C]/70 mt-1">
+                Enter a referral code to get ₹50 in your wallet!
+              </div>
+            </div>
+
             <div class="relative">
               <input
                 type="checkbox"
@@ -196,7 +209,7 @@
           </div>
         </div>
 
-        <a href="/auth/google"
+        <a href="/auth/google" id="googleAuthBtn"
           class="w-full flex items-center justify-center gap-3 border-2 border-[#2C2C2C] p-3 rounded-md hover:bg-[#2C2C2C]/10 transition-colors"
         >
           <img
@@ -220,6 +233,38 @@
         button.addEventListener("click", () => {
           input.type = input.type === "password" ? "text" : "password";
         });
+      });
+
+      // Handle referral code for Google auth
+      const googleAuthBtn = document.getElementById('googleAuthBtn');
+      const referralCodeInput = document.getElementById('referralCode');
+      
+      googleAuthBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        
+        const referralCode = referralCodeInput.value.trim();
+        if (referralCode) {
+          // Send referral code to server before Google auth
+          fetch('/store-referral-code', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ referralCode }),
+          })
+          .then(response => response.json())
+          .then(data => {
+            // Navigate to Google auth URL
+            window.location.href = '/auth/google';
+          })
+          .catch(error => {
+            console.error('Error:', error);
+            window.location.href = '/auth/google';
+          });
+        } else {
+          // No referral code, just go to Google auth
+          window.location.href = '/auth/google';
+        }
       });
 
       const nameid = document.getElementById("name");

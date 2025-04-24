@@ -1,6 +1,5 @@
 const Coupon = require("../../models/couponSchema");
 
-// Load coupon management page
 const getCoupons = async (req, res) => {
   try {
     const coupons = await Coupon.find().sort({ createdAt: -1 });
@@ -15,7 +14,6 @@ const getCoupons = async (req, res) => {
   }
 };
 
-// Add new coupon
 const addCoupon = async (req, res) => {
   try {
     const {
@@ -30,7 +28,6 @@ const addCoupon = async (req, res) => {
       usageLimit,
     } = req.body;
 
-    // Check if coupon code already exists
     const existingCoupon = await Coupon.findOne({
       code: code.trim().toUpperCase(),
     });
@@ -41,7 +38,6 @@ const addCoupon = async (req, res) => {
       });
     }
 
-    // Create new coupon
     const newCoupon = new Coupon({
       code: code.trim().toUpperCase(),
       description,
@@ -69,7 +65,6 @@ const addCoupon = async (req, res) => {
   }
 };
 
-// Edit coupon page
 const getEditCoupon = async (req, res) => {
   try {
     const couponId = req.params.id;
@@ -92,7 +87,6 @@ const getEditCoupon = async (req, res) => {
   }
 };
 
-// Update coupon
 const updateCoupon = async (req, res) => {
   try {
     const couponId = req.params.id;
@@ -142,7 +136,6 @@ const updateCoupon = async (req, res) => {
   }
 };
 
-// Toggle coupon active status
 const toggleCouponStatus = async (req, res) => {
   try {
     const couponId = req.params.id;
@@ -171,7 +164,6 @@ const toggleCouponStatus = async (req, res) => {
   }
 };
 
-// Delete coupon
 const deleteCoupon = async (req, res) => {
   try {
     const couponId = req.params.id;
@@ -197,7 +189,6 @@ const deleteCoupon = async (req, res) => {
   }
 };
 
-// Get coupon usage data
 const getCouponUsage = async (req, res) => {
   try {
     const couponId = req.params.id;

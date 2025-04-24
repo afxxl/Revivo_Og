@@ -684,6 +684,36 @@
                 <div class="info-value profile-phone-display"><%= user.phone || 'Not provided' %></div>
               </div>
               
+              <% if (user.referralCode) { %>
+                <div class="mt-8 border-t pt-6 border-[#2C2C2C]/10">
+                  <h3 class="text-xl font-medium mb-4">Your Referral Program</h3>
+                  <div class="bg-[#f8f8f8] p-4 rounded-lg border border-[#2C2C2C]/10">
+                    <div class="mb-3">
+                      <p class="text-sm text-[#2C2C2C]/70 mb-1">Your referral code:</p>
+                      <div class="flex items-center">
+                        <span id="referralCode" class="font-mono text-lg font-semibold tracking-wide mr-2"><%= user.referralCode %></span>
+                        <button onclick="copyReferralCode()" class="text-sm bg-[#2C2C2C] text-white px-3 py-1 rounded hover:bg-[#222] transition-colors">
+                          <i class="fas fa-copy mr-1"></i> Copy
+                        </button>
+                      </div>
+                    </div>
+                    <p class="text-sm text-[#2C2C2C]/70 mb-3">Share this code with your friends and both of you will get rewards when they sign up!</p>
+                    <div class="mt-4">
+                      <h4 class="text-sm font-semibold mb-2">Benefits:</h4>
+                      <ul class="text-sm space-y-1">
+                        <li><i class="fas fa-gift text-green-600 mr-1"></i> ₹100 for you when someone uses your code</li>
+                        <li><i class="fas fa-gift text-green-600 mr-1"></i> ₹50 for your friend who signs up</li>
+                      </ul>
+                    </div>
+                    <div class="mt-4">
+                      <button onclick="shareReferralCode()" class="w-full bg-[#2C2C2C] text-white py-2 rounded flex items-center justify-center hover:bg-[#222] transition-colors">
+                        <i class="fas fa-share-alt mr-2"></i> Share Your Code
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              <% } %>
+              
               <div class="mt-8">
                 <button 
                   onclick="switchTab('edit-profile')"
@@ -2346,6 +2376,44 @@
       // Clear orders search
       function clearSearch() {
         window.location = "?ordersPage=1#orders";
+      }
+
+      // Add these functions for referral code handling
+      function copyReferralCode() {
+        const referralCode = document.getElementById('referralCode').textContent;
+        navigator.clipboard.writeText(referralCode)
+          .then(() => {
+            showToast('Referral code copied to clipboard!', 'success');
+          })
+          .catch(err => {
+            console.error('Failed to copy: ', err);
+            showToast('Failed to copy code', 'error');
+          });
+      }
+      
+      function shareReferralCode() {
+        const referralCode = document.getElementById('referralCode').textContent;
+        const shareText = `Sign up on REVIVO using my referral code "${referralCode}" and get ₹50 in your wallet! I'll get ₹100 too! 🎁 Join here: ${window.location.origin}/signup`;
+        
+        if (navigator.share) {
+          navigator.share({
+            title: 'Join REVIVO with my referral code!',
+            text: shareText,
+            url: `${window.location.origin}/signup`
+          })
+          .then(() => showToast('Thanks for sharing!', 'success'))
+          .catch(error => console.log('Error sharing:', error));
+        } else {
+          // Fallback for browsers that don't support navigator.share
+          navigator.clipboard.writeText(shareText)
+            .then(() => {
+              showToast('Share text copied to clipboard!', 'success');
+            })
+            .catch(err => {
+              console.error('Failed to copy: ', err);
+              showToast('Failed to copy share text', 'error');
+            });
+        }
       }
     </script>
   </body>

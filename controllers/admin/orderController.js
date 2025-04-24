@@ -108,10 +108,12 @@ const handleReturn = async (req, res) => {
       }
 
       // Process refund if payment was made via wallet or other payment methods
+      // Also add amount to wallet for COD payments when return is approved
       if (
         order.paymentMethod === "WALLET" ||
         order.paymentMethod === "CARD" ||
-        order.paymentMethod === "PAYPAL"
+        order.paymentMethod === "PAYPAL" ||
+        order.paymentMethod === "COD"
       ) {
         await processWalletRefund(
           order.user,

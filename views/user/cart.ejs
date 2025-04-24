@@ -439,7 +439,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const input = document.querySelector(`.quantity-input[data-product-id="${productId}"]`);
     if (!input) return;
 
-    // Enforce maximum of 10 items per product
     if (newQuantity > 10) {
       newQuantity = 10;
       input.value = 10;
@@ -481,14 +480,11 @@ document.addEventListener('DOMContentLoaded', function() {
         const totalEl = document.querySelector('.total-display');
         const totalSavingsEl = document.querySelector('.total-savings-display');
 
-        // Update order summary
         if (subtotalEl) subtotalEl.textContent = `₹${data.cart.subtotal.toFixed(2)}`;
         if (shippingEl) shippingEl.textContent = `₹${data.cart.shipping.toFixed(2)}`;
         if (totalEl) totalEl.textContent = `₹${data.cart.total.toFixed(2)}`;
         
-        // Recalculate total savings
         if (totalSavingsEl) {
-          // Calculate total savings based on updated cart items
           let newTotalSavings = 0;
           data.cart.items.forEach(item => {
             if (item.productId && item.price) {
@@ -498,7 +494,6 @@ document.addEventListener('DOMContentLoaded', function() {
             }
           });
           
-          // Update the total savings display if it exists
           if (newTotalSavings > 0) {
             totalSavingsEl.textContent = `-₹${newTotalSavings.toFixed(2)}`;
             totalSavingsEl.closest('.flex').style.display = 'flex';
@@ -507,10 +502,8 @@ document.addEventListener('DOMContentLoaded', function() {
           }
         }
 
-        // Update the individual item's total price in the DOM
         const updatedItem = data.cart.items.find(item => item.productId._id.toString() === productId);
         if (updatedItem) {
-          // Escape the Tailwind class text-[#2C2C2C]
           const escapedColorClass = 'text-\\[\\#2C2C2C\\]';
           const itemTotalEl = document.querySelector(
             `.cart-item .remove-btn[data-product-id="${productId}"]`
@@ -520,7 +513,6 @@ document.addEventListener('DOMContentLoaded', function() {
             itemTotalEl.textContent = `₹${updatedItem.totalPrice.toFixed(2)}`;
           } else {
             console.error('Total element not found for productId:', productId);
-            // Fallback selector: select the first div inside the parent of remove-btn
             const fallbackTotalEl = document.querySelector(
               `.cart-item .remove-btn[data-product-id="${productId}"]`
             ).parentElement.querySelector('div');

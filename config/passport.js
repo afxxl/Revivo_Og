@@ -1,7 +1,9 @@
 const passport = require("passport");
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const User = require("../models/userSchema.js");
+const referralHelper = require("../helpers/referralHelper");
 require("dotenv").config();
+
 passport.use(
   new GoogleStrategy(
     {
@@ -26,13 +28,31 @@ passport.use(
             await user.save();
             return done(null, user);
           } else {
+            // Generate a referral code for the new user
+            const referralCode = await referralHelper.generateReferralCode();
+            
+            // Check if a referral code was provided in the session
+            const referredBy = req.session.referralCode 
+              ? await User.findOne({ referralCode: req.session.referralCode }) 
+              : null;
+            
             user = new User({
               name: profile.displayName,
               email: profile.emails[0].value,
               googleId: profile.id,
               isBlocked: false,
+              referralCode: referralCode,
+              referredBy: referredBy ? referredBy._id : null
             });
+            
             await user.save();
+            
+            // Process referral reward if applicable
+            if (referredBy) {
+              await referralHelper.processReferralReward(user, req.session.referralCode);
+              // Clear the referral code from session after use
+              delete req.session.referralCode;
+            }
           }
         } else {
           if (user.isBlocked) {
@@ -47,6 +67,7 @@ passport.use(
     },
   ),
 );
+
 passport.serializeUser((user, done) => {
   done(null, user.id);
 });

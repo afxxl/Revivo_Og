@@ -34,6 +34,29 @@ router.get(
   passport.authenticate("google", { scope: ["profile", "email"] }),
 );
 
+// Route to store referral code in session before Google auth
+router.post("/store-referral-code", (req, res) => {
+  try {
+    const { referralCode } = req.body;
+    
+    if (referralCode) {
+      req.session.referralCode = referralCode;
+      req.session.save((err) => {
+        if (err) {
+          console.error("Error saving referral code to session:", err);
+          return res.status(500).json({ success: false });
+        }
+        return res.json({ success: true });
+      });
+    } else {
+      res.json({ success: true });
+    }
+  } catch (error) {
+    console.error("Error storing referral code:", error);
+    res.status(500).json({ success: false });
+  }
+});
+
 router.get(
   "/auth/google/callback",
   passport.authenticate("google", {
@@ -247,5 +270,8 @@ router.get("/get-wishlist-count", wishlistController.getWishlistCount);
 
 //wallet
 router.get("/wallet", userAuth, walletController.getWalletPage);
+
+// Referral routes
+router.get("/api/referral-stats", userAuth, userController.getReferralStats);
 
 module.exports = router;

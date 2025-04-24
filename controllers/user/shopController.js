@@ -576,7 +576,7 @@ const loadCartPage = async (req, res) => {
         total: 0,
         canCheckout: true,
         coupons: [],
-        appliedCoupon: null
+        appliedCoupon: null,
       });
     }
 
@@ -593,13 +593,10 @@ const loadCartPage = async (req, res) => {
         product.status !== "Available" ||
         !product.isListed
       ) {
-        // Remove invalid item from cart
         continue;
       } else {
-        // Enforce max quantity of 10 per product
         item.quantity = Math.min(item.quantity, product.stock, 10);
 
-        // Recalculate price with current offers
         const productOffer = product.productOffer || 0;
         const categoryOffer = product.category?.categoryOffer || 0;
         const bestOfferPercentage = Math.max(productOffer, categoryOffer);
@@ -617,7 +614,6 @@ const loadCartPage = async (req, res) => {
       }
     }
 
-    // Update cart in database if items were removed or prices changed
     if (updatedItems.length !== cart.items.length) {
       cart.items = updatedItems;
       await cart.save();
@@ -628,53 +624,58 @@ const loadCartPage = async (req, res) => {
       0,
     );
     const shipping = subtotal > 0 ? 5 : 0;
-    
-    // Get available coupons for the user based on cart total
+
     const availableCoupons = await getAvailableCoupons(userId, subtotal);
-    
-    // Check for a coupon in the session (if one was applied)
+
     let appliedCoupon = null;
     let discount = 0;
-    
+
     if (req.session.appliedCoupon) {
-      // Verify the coupon is still valid
-      const sessionCoupon = await Coupon.findById(req.session.appliedCoupon.couponId);
-      
-      if (sessionCoupon && 
-          sessionCoupon.isActive && 
-          subtotal >= sessionCoupon.minPurchase &&
-          new Date() >= sessionCoupon.startDate &&
-          new Date() <= sessionCoupon.endDate) {
-        
+      const sessionCoupon = await Coupon.findById(
+        req.session.appliedCoupon.couponId,
+      );
+
+      if (
+        sessionCoupon &&
+        sessionCoupon.isActive &&
+        subtotal >= sessionCoupon.minPurchase &&
+        new Date() >= sessionCoupon.startDate &&
+        new Date() <= sessionCoupon.endDate
+      ) {
         // Calculate discount
-        if (sessionCoupon.discountType === 'percentage') {
+        if (sessionCoupon.discountType === "percentage") {
           discount = subtotal * (sessionCoupon.discountAmount / 100);
-          
+
           // Apply max discount limit if set
-          if (sessionCoupon.maxDiscount && discount > sessionCoupon.maxDiscount) {
+          if (
+            sessionCoupon.maxDiscount &&
+            discount > sessionCoupon.maxDiscount
+          ) {
             discount = sessionCoupon.maxDiscount;
           }
-        } else {  // fixed amount
+        } else {
+          // fixed amount
           discount = sessionCoupon.discountAmount;
         }
-        
+
         // Ensure discount doesn't exceed subtotal
         discount = Math.min(discount, subtotal);
-        
+
         appliedCoupon = {
           code: sessionCoupon.code,
           id: sessionCoupon._id,
           discount: discount,
           discountType: sessionCoupon.discountType,
-          discountAmount: sessionCoupon.discountAmount
+          discountAmount: sessionCoupon.discountAmount,
         };
       } else {
         // Clear invalid coupon from session
         delete req.session.appliedCoupon;
       }
     }
-    
-    const total = subtotal + shipping - (appliedCoupon ? appliedCoupon.discount : 0);
+
+    const total =
+      subtotal + shipping - (appliedCoupon ? appliedCoupon.discount : 0);
 
     res.render("cart", {
       cart: {
@@ -686,7 +687,7 @@ const loadCartPage = async (req, res) => {
       total,
       canCheckout,
       coupons: availableCoupons,
-      appliedCoupon
+      appliedCoupon,
     });
   } catch (err) {
     console.log("Error loading cart:", err);
@@ -782,46 +783,54 @@ const loadCheckoutPage = async (req, res) => {
 
     const subtotal = cart.items.reduce((sum, item) => sum + item.totalPrice, 0);
     const shipping = subtotal > 0 ? 5 : 0;
-    
+
     // Check for an applied coupon in the session
     let appliedCoupon = null;
     let discount = 0;
-    
+
     if (req.session.appliedCoupon) {
-      const sessionCoupon = await Coupon.findById(req.session.appliedCoupon.couponId);
-      
-      if (sessionCoupon && 
-          sessionCoupon.isActive && 
-          subtotal >= sessionCoupon.minPurchase &&
-          new Date() >= sessionCoupon.startDate &&
-          new Date() <= sessionCoupon.endDate) {
-        
+      const sessionCoupon = await Coupon.findById(
+        req.session.appliedCoupon.couponId,
+      );
+
+      if (
+        sessionCoupon &&
+        sessionCoupon.isActive &&
+        subtotal >= sessionCoupon.minPurchase &&
+        new Date() >= sessionCoupon.startDate &&
+        new Date() <= sessionCoupon.endDate
+      ) {
         // Calculate discount
-        if (sessionCoupon.discountType === 'percentage') {
+        if (sessionCoupon.discountType === "percentage") {
           discount = subtotal * (sessionCoupon.discountAmount / 100);
-          
+
           // Apply max discount limit if set
-          if (sessionCoupon.maxDiscount && discount > sessionCoupon.maxDiscount) {
+          if (
+            sessionCoupon.maxDiscount &&
+            discount > sessionCoupon.maxDiscount
+          ) {
             discount = sessionCoupon.maxDiscount;
           }
-        } else {  // fixed amount
+        } else {
+          // fixed amount
           discount = sessionCoupon.discountAmount;
         }
-        
+
         // Ensure discount doesn't exceed subtotal
         discount = Math.min(discount, subtotal);
-        
+
         appliedCoupon = {
           code: sessionCoupon.code,
           id: sessionCoupon._id,
           discount: discount,
           discountType: sessionCoupon.discountType,
-          discountAmount: sessionCoupon.discountAmount
+          discountAmount: sessionCoupon.discountAmount,
         };
       }
     }
-    
-    const total = subtotal + shipping - (appliedCoupon ? appliedCoupon.discount : 0);
+
+    const total =
+      subtotal + shipping - (appliedCoupon ? appliedCoupon.discount : 0);
 
     // Get wallet balance
     const wallet = await Wallet.findOne({ userId });
@@ -917,46 +926,53 @@ const createOrder = async (req, res) => {
     let discount = 0;
     let couponCode = null;
     let couponId = null;
-    
+
     // Check if there's an applied coupon
     if (req.session.appliedCoupon) {
-      const sessionCoupon = await Coupon.findById(req.session.appliedCoupon.couponId).session(session);
-      
-      if (sessionCoupon && 
-          sessionCoupon.isActive && 
-          subtotal >= sessionCoupon.minPurchase &&
-          new Date() >= sessionCoupon.startDate &&
-          new Date() <= sessionCoupon.endDate) {
-        
+      const sessionCoupon = await Coupon.findById(
+        req.session.appliedCoupon.couponId,
+      ).session(session);
+
+      if (
+        sessionCoupon &&
+        sessionCoupon.isActive &&
+        subtotal >= sessionCoupon.minPurchase &&
+        new Date() >= sessionCoupon.startDate &&
+        new Date() <= sessionCoupon.endDate
+      ) {
         // Calculate discount
-        if (sessionCoupon.discountType === 'percentage') {
+        if (sessionCoupon.discountType === "percentage") {
           discount = subtotal * (sessionCoupon.discountAmount / 100);
-          
+
           // Apply max discount limit if set
-          if (sessionCoupon.maxDiscount && discount > sessionCoupon.maxDiscount) {
+          if (
+            sessionCoupon.maxDiscount &&
+            discount > sessionCoupon.maxDiscount
+          ) {
             discount = sessionCoupon.maxDiscount;
           }
-        } else {  // fixed amount
+        } else {
+          // fixed amount
           discount = sessionCoupon.discountAmount;
         }
-        
+
         // Ensure discount doesn't exceed subtotal
         discount = Math.min(discount, subtotal);
-        
+
         couponCode = sessionCoupon.code;
         couponId = sessionCoupon._id;
-        
+
         // Update coupon usage
         sessionCoupon.usedCount += 1;
         sessionCoupon.usedBy.push({
           user: userId,
-          usedAt: new Date()
+          usedAt: new Date(),
         });
-        
+
         await sessionCoupon.save({ session });
       }
     }
-    
+
     const finalAmount = subtotal + shipping - discount;
 
     // Handle wallet payment
@@ -1025,7 +1041,7 @@ const createOrder = async (req, res) => {
     );
 
     await Cart.deleteOne({ userId }, { session });
-    
+
     // Clear the applied coupon from the session
     if (req.session.appliedCoupon) {
       delete req.session.appliedCoupon;
@@ -1345,33 +1361,32 @@ const generateInvoice = async (req, res) => {
 const getAvailableCoupons = async (userId, cartTotal) => {
   try {
     const currentDate = new Date();
-    
-    // Find all active coupons that are valid for the current date and meet minimum purchase requirement
+
     const availableCoupons = await Coupon.find({
       isActive: true,
       startDate: { $lte: currentDate },
       endDate: { $gte: currentDate },
-      minPurchase: { $lte: cartTotal }
+      minPurchase: { $lte: cartTotal },
     });
-    
-    // Filter out coupons that the user has already used
+
     const filteredCoupons = await Promise.all(
       availableCoupons.map(async (coupon) => {
-        const userUsed = coupon.usedBy.some(usage => usage.user.toString() === userId.toString());
+        const userUsed = coupon.usedBy.some(
+          (usage) => usage.user.toString() === userId.toString(),
+        );
         if (userUsed) {
           return null;
         }
-        
-        // Check if the coupon has reached its usage limit
+
         if (coupon.usedCount >= coupon.usageLimit) {
           return null;
         }
-        
+
         return coupon;
-      })
+      }),
     );
-    
-    return filteredCoupons.filter(coupon => coupon !== null);
+
+    return filteredCoupons.filter((coupon) => coupon !== null);
   } catch (error) {
     console.error("Error fetching available coupons:", error);
     return [];
@@ -1382,94 +1397,95 @@ const applyCoupon = async (req, res) => {
   try {
     const { couponCode } = req.body;
     const userId = req.session.user;
-    
-    // Find the coupon
-    const coupon = await Coupon.findOne({ 
+
+    const coupon = await Coupon.findOne({
       code: couponCode.trim().toUpperCase(),
-      isActive: true
+      isActive: true,
     });
-    
+
     if (!coupon) {
       return res.status(404).json({
         success: false,
-        message: "Coupon not found or inactive"
+        message: "Coupon not found or inactive",
       });
     }
-    
-    // Check if coupon is valid (date)
+
     const currentDate = new Date();
     if (currentDate < coupon.startDate || currentDate > coupon.endDate) {
       return res.status(400).json({
         success: false,
-        message: "Coupon has expired or not yet active"
+        message: "Coupon has expired or not yet active",
       });
     }
-    
+
     // Check if user has already used this coupon
-    const userUsed = coupon.usedBy.some(usage => usage.user.toString() === userId.toString());
+    const userUsed = coupon.usedBy.some(
+      (usage) => usage.user.toString() === userId.toString(),
+    );
     if (userUsed) {
       return res.status(400).json({
         success: false,
-        message: "You have already used this coupon"
+        message: "You have already used this coupon",
       });
     }
-    
+
     // Check if coupon has reached its usage limit
     if (coupon.usedCount >= coupon.usageLimit) {
       return res.status(400).json({
         success: false,
-        message: "This coupon has reached its usage limit"
+        message: "This coupon has reached its usage limit",
       });
     }
-    
+
     // Get cart and check minimum purchase requirement
     const cart = await Cart.findOne({ userId }).populate({
       path: "items.productId",
       populate: [{ path: "brand" }, { path: "category" }],
     });
-    
+
     if (!cart || cart.items.length === 0) {
       return res.status(400).json({
         success: false,
-        message: "Your cart is empty"
+        message: "Your cart is empty",
       });
     }
-    
+
     const subtotal = cart.items.reduce((sum, item) => sum + item.totalPrice, 0);
-    
+
     if (subtotal < coupon.minPurchase) {
       return res.status(400).json({
         success: false,
-        message: `Minimum purchase of ₹${coupon.minPurchase} required for this coupon`
+        message: `Minimum purchase of ₹${coupon.minPurchase} required for this coupon`,
       });
     }
-    
+
     // Calculate discount
     let discountAmount = 0;
-    if (coupon.discountType === 'percentage') {
+    if (coupon.discountType === "percentage") {
       discountAmount = subtotal * (coupon.discountAmount / 100);
-      
+
       // Apply max discount limit if set
       if (coupon.maxDiscount && discountAmount > coupon.maxDiscount) {
         discountAmount = coupon.maxDiscount;
       }
-    } else {  // fixed amount
+    } else {
+      // fixed amount
       discountAmount = coupon.discountAmount;
     }
-    
+
     // Ensure discount doesn't exceed subtotal
     discountAmount = Math.min(discountAmount, subtotal);
-    
-    const shipping = 5;  // Standard shipping cost
+
+    const shipping = 5; // Standard shipping cost
     const total = subtotal + shipping - discountAmount;
-    
+
     // Store the applied coupon in the session
     req.session.appliedCoupon = {
       couponId: coupon._id,
       code: coupon.code,
-      discount: discountAmount
+      discount: discountAmount,
     };
-    
+
     return res.status(200).json({
       success: true,
       message: "Coupon applied successfully",
@@ -1479,15 +1495,14 @@ const applyCoupon = async (req, res) => {
         shipping,
         total,
         couponCode: coupon.code,
-        couponId: coupon._id
-      }
+        couponId: coupon._id,
+      },
     });
-    
   } catch (error) {
     console.error("Error applying coupon:", error);
     return res.status(500).json({
       success: false,
-      message: "An error occurred while applying the coupon"
+      message: "An error occurred while applying the coupon",
     });
   }
 };
@@ -1498,22 +1513,22 @@ const removeCoupon = async (req, res) => {
     if (!req.session.appliedCoupon) {
       return res.status(400).json({
         success: false,
-        message: "No coupon applied to remove"
+        message: "No coupon applied to remove",
       });
     }
-    
+
     // Remove the coupon from the session
     delete req.session.appliedCoupon;
-    
+
     return res.status(200).json({
       success: true,
-      message: "Coupon removed successfully"
+      message: "Coupon removed successfully",
     });
   } catch (error) {
     console.error("Error removing coupon:", error);
     return res.status(500).json({
       success: false,
-      message: "An error occurred while removing the coupon"
+      message: "An error occurred while removing the coupon",
     });
   }
 };

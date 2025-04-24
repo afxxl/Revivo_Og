@@ -11,6 +11,7 @@ const Cart = require("../../models/cartSchema.js");
 const fs = require("fs");
 const path = require("path");
 const Wishlist = require("../../models/wishlistSchema");
+const Wallet = require("../../models/walletSchema.js");
 
 const loadHomepage = async (req, res) => {
   try {
@@ -142,7 +143,8 @@ async function sendVerificationEmail(email, otp) {
 
 const signup = async (req, res) => {
   try {
-    const { name, phone, email, password, confirmPassword } = req.body;
+    const { name, phone, email, password, confirmPassword, referralCode } =
+      req.body;
 
     if (password !== confirmPassword) {
       return res.render("signup", { message: "Password do not match" });
@@ -155,6 +157,16 @@ const signup = async (req, res) => {
       });
     }
 
+    // Validate referral code if provided
+    if (referralCode) {
+      const referrer = await User.findOne({ referralCode });
+      if (!referrer) {
+        return res.render("signup", {
+          message: "Invalid referral code",
+        });
+      }
+    }
+
     const otp = generateOtp();
     const emailSent = await sendVerificationEmail(email, otp);
 
@@ -163,7 +175,7 @@ const signup = async (req, res) => {
     }
 
     req.session.userOtp = otp;
-    req.session.userData = { name, phone, email, password };
+    req.session.userData = { name, phone, email, password, referralCode };
 
     req.session.save((err) => {
       if (err) {
@@ -214,25 +226,39 @@ const verifyOtp = async (req, res) => {
     }
 
     if (otp === req.session.userOtp) {
-      const user = req.session.userData;
-      if (!user) {
+      const userData = req.session.userData;
+      if (!userData) {
         return res.status(400).json({
           success: false,
           message: "User  data is missing. Please sign up again.",
         });
       }
-      const passwordHash = await securePassword(user.password);
+
+      // Generate a referral code for this new user
+      const referralHelper = require("../../helpers/referralHelper");
+      const referralCode = await referralHelper.generateReferralCode();
+
+      const passwordHash = await securePassword(userData.password);
       const saveUserData = new User({
-        name: user.name,
-        email: user.email,
-        phone: user.phone,
+        name: userData.name,
+        email: userData.email,
+        phone: userData.phone,
         password: passwordHash,
+        referralCode: referralCode,
       });
 
       const savedUser = await saveUserData.save();
       req.session.user = savedUser._id;
 
       delete req.session.userOtp;
+
+      // Process referral rewards if a referral code was provided
+      if (userData.referralCode) {
+        await referralHelper.processReferralReward(
+          savedUser,
+          userData.referralCode,
+        );
+      }
 
       req.session.save((err) => {
         if (err) {
@@ -1409,6 +1435,58 @@ const verifyCurrentPassword = async (req, res) => {
   }
 };
 
+const getReferralStats = async (req, res) => {
+  try {
+    if (!req.session.user) {
+      return res.status(401).json({
+        success: false,
+        message: "Please login to view referral stats",
+      });
+    }
+
+    const userId = req.session.user;
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    const referredUsers = await User.find({ referredBy: userId })
+      .select("name email createdAt")
+      .sort({ createdAt: -1 });
+
+    const wallet = await Wallet.findOne({ userId });
+    let totalReferralEarnings = 0;
+
+    if (wallet) {
+      totalReferralEarnings = wallet.transactions
+        .filter(
+          (t) => t.description && t.description.includes("Referral bonus"),
+        )
+        .reduce((sum, t) => sum + t.transactionAmount, 0);
+    }
+
+    res.json({
+      success: true,
+      data: {
+        referralCode: user.referralCode || null,
+        referralCount: referredUsers.length,
+        totalEarnings: totalReferralEarnings,
+        referredUsers: referredUsers,
+      },
+    });
+  } catch (err) {
+    console.error("Error getting referral stats:", err);
+    res.status(500).json({
+      success: false,
+      message: "Failed to get referral statistics",
+    });
+  }
+};
+
 module.exports = {
   loadHomepage,
   pageNotFound,
@@ -1440,4 +1518,5 @@ module.exports = {
   resendPasswordChangeOtp,
   verifyPasswordChangeOtp,
   sendPasswordChangeOtp,
+  getReferralStats,
 };
