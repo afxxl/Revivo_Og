@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
     <style>
         .checkout-section {
             background-image: url('/Images/images/OLD_PAPER_TEXTURE.jpg');
@@ -124,22 +125,12 @@
     </div>
     <% } %>
 
-    <div class="payment-method p-4 rounded-lg border bg-gray-100 text-center cursor-not-allowed opacity-75"
-        data-method="CARD"
-        title="Coming soon">
-        <i class="fas fa-credit-card text-2xl mb-2 text-blue-300"></i>
-        <p class="font-medium text-gray-400">Credit/Debit Card</p>
-        <p class="text-xs text-gray-400 mt-1">Visa, Mastercard, Amex</p>
-        <span class="text-xs text-white bg-gray-500 px-2 py-1 rounded-full mt-2">Coming Soon</span>
-    </div>
-
-    <div class="payment-method p-4 rounded-lg border bg-gray-100 text-center cursor-not-allowed opacity-75"
-        data-method="PAYPAL"
-        title="Coming soon">
-        <i class="fab fa-paypal text-2xl mb-2 text-blue-200"></i>
-        <p class="font-medium text-gray-400">PayPal</p>
-        <p class="text-xs text-gray-400 mt-1">Secure online payments</p>
-        <span class="text-xs text-white bg-gray-500 px-2 py-1 rounded-full mt-2">Coming Soon</span>
+    <div class="payment-method p-4 rounded-lg border bg-white text-center cursor-pointer"
+        data-method="RAZORPAY"
+        onclick="selectPaymentMethod(this)">
+        <i class="fas fa-credit-card text-2xl mb-2 text-blue-500"></i>
+        <p class="font-medium">Razorpay</p>
+        <p class="text-xs text-gray-500 mt-1">Credit/Debit Cards, UPI, Wallets</p>
     </div>
 </div>
                                             </div>
@@ -294,26 +285,86 @@
         btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Processing...';
 
         try {
-            const response = await fetch('/create-order', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    addressId: selectedAddressId,
-                    paymentMethod: selectedPaymentMethod
-                })
-            });
-
-            const data = await response.json();
-            
-            if (data.success) {
-                window.location.href = data.redirectUrl;
+            if (selectedPaymentMethod === 'RAZORPAY') {
+                // 1. Create Razorpay order (no DB order yet)
+                const razorpayResponse = await fetch('/create-razorpay-order', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        addressId: selectedAddressId,
+                        paymentMethod: selectedPaymentMethod
+                    })
+                });
+                const razorpayData = await razorpayResponse.json();
+                if (!razorpayData.success) {
+                    showToast(razorpayData.message || 'Failed to create Razorpay order', 'error');
+                    btn.disabled = false;
+                    btn.innerHTML = 'Place Order';
+                    return;
+                }
+                const options = {
+                    key: razorpayData.key_id,
+                    amount: razorpayData.order.amount,
+                    currency: razorpayData.order.currency,
+                    name: 'REVIVO',
+                    description: 'Purchase from REVIVO',
+                    order_id: razorpayData.order.id,
+                    handler: async function (response) {
+                        // On payment success, create order in DB
+                        const orderResponse = await fetch('/create-order', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                addressId: selectedAddressId,
+                                paymentMethod: selectedPaymentMethod,
+                                razorpay_order_id: response.razorpay_order_id,
+                                razorpay_payment_id: response.razorpay_payment_id,
+                                razorpay_signature: response.razorpay_signature
+                            })
+                        });
+                        const orderData = await orderResponse.json();
+                        if (orderData.success) {
+                            window.location.href = orderData.redirectUrl;
+                        } else {
+                            showToast(orderData.message || 'Order creation failed after payment', 'error');
+                        }
+                    },
+                    prefill: {
+                        name: razorpayData.user.name,
+                        email: razorpayData.user.email,
+                        contact: razorpayData.user.phone
+                    },
+                    theme: {
+                        color: '#2C2C2C'
+                    }
+                };
+                const razorpayInstance = new Razorpay(options);
+                razorpayInstance.open();
+                btn.disabled = false;
+                btn.innerHTML = 'Place Order';
+                razorpayInstance.on('payment.failed', function (response) {
+                    showToast('Payment failed: ' + response.error.description, 'error');
+                });
             } else {
-                showToast(data.message || 'Failed to place order', 'error');
+                // COD/WALLET: existing flow
+                const response = await fetch('/create-order', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        addressId: selectedAddressId,
+                        paymentMethod: selectedPaymentMethod
+                    })
+                });
+                const data = await response.json();
+                if (data.success) {
+                    window.location.href = data.redirectUrl;
+                } else {
+                    showToast(data.message || 'Failed to place order', 'error');
+                }
             }
         } catch (error) {
             console.error('Error:', error);
             showToast('An error occurred while placing the order', 'error');
-        } finally {
             btn.disabled = false;
             btn.innerHTML = 'Place Order';
         }

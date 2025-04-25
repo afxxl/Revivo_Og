@@ -866,9 +866,6 @@ const loadProfilePage = async (req, res) => {
 
 const updateProfile = async (req, res) => {
   try {
-    console.log("Session user:", req.session.user);
-    console.log("Request body:", req.body);
-
     if (!req.session.user) {
       return res.status(401).json({
         success: false,
@@ -891,7 +888,6 @@ const updateProfile = async (req, res) => {
       const emailSent = await sendVerificationEmail(email, otp);
 
       if (!emailSent) {
-        console.error("Email sending failed for:", email);
         return res.status(500).json({
           success: false,
           message: "Failed to send verification email",
@@ -905,11 +901,10 @@ const updateProfile = async (req, res) => {
       };
       req.session.emailOtp = otp;
 
-      console.log("OTP generated and sent:", otp);
       return res.json({
         success: true,
         requiresOtp: true,
-        message: "OTP sent to new email for verification",
+        message: "OTP sent successfully to your new email",
       });
     }
 
@@ -1075,16 +1070,15 @@ const resendProfileOtp = async (req, res) => {
 
     if (!emailSent) {
       return res.status(500).json({
-        success: fasle,
+        success: false, // Fixed typo: was 'fasle'
         message: "Failed to resend OTP",
       });
     }
 
     req.session.emailOtp = otp;
-    console.log("Resent profile OTP:", otp);
     res.json({
       success: true,
-      message: "OTP resent successfully",
+      message: "OTP resent successfully to your new email",
     });
   } catch (err) {
     console.error("Error resending profile OTP:", err);
@@ -1283,7 +1277,14 @@ const sendPasswordChangeOtp = async (req, res) => {
       });
     }
 
+    // Store the new password temporarily in the session
+    const { currentPassword, newPassword } = req.body;
+    req.session.tempNewPassword = newPassword;
+
+    // Generate OTP and send email
     const otp = generateOtp();
+    
+    // Send the OTP via email
     const emailSent = await sendVerificationEmail(user.email, otp);
 
     if (!emailSent) {
@@ -1293,12 +1294,13 @@ const sendPasswordChangeOtp = async (req, res) => {
       });
     }
 
+    // Store OTP in session with expiration
     req.session.passwordChangeOtp = otp;
-    req.session.passwordChangeOtpExpires = Date.now() + 60000;
+    req.session.passwordChangeOtpExpires = Date.now() + 60000; // 1 minute expiration
 
     res.json({
       success: true,
-      message: "OTP sent successfully",
+      message: "OTP sent successfully to your email",
     });
   } catch (err) {
     console.error("Error sending password change OTP:", err);
@@ -1375,6 +1377,7 @@ const resendPasswordChangeOtp = async (req, res) => {
       });
     }
 
+    // Generate new OTP
     const otp = generateOtp();
     const emailSent = await sendVerificationEmail(user.email, otp);
 
@@ -1385,6 +1388,7 @@ const resendPasswordChangeOtp = async (req, res) => {
       });
     }
 
+    // Update OTP in session with new expiration
     req.session.passwordChangeOtp = otp;
     req.session.passwordChangeOtpExpires = Date.now() + 60000;
 

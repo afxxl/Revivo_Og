@@ -78,7 +78,7 @@ const orderSchema = new Schema(
     },
     paymentMethod: {
       type: String,
-      enum: ["COD", "CARD", "PAYPAL", "WALLET"],
+      enum: ["COD", "CARD", "PAYPAL", "WALLET", "RAZORPAY"],
       required: true,
     },
     createdOn: {

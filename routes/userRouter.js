@@ -38,7 +38,7 @@ router.get(
 router.post("/store-referral-code", (req, res) => {
   try {
     const { referralCode } = req.body;
-    
+
     if (referralCode) {
       req.session.referralCode = referralCode;
       req.session.save((err) => {
@@ -204,7 +204,19 @@ router.post("/create-order", userAuth, shopController.createOrder);
 router.get(
   "/order-confirmation",
   userAuth,
-  shopController.loadOrderConfirmation
+  shopController.loadOrderConfirmation,
+);
+
+// Razorpay routes
+router.post(
+  "/create-razorpay-order",
+  userAuth,
+  shopController.createRazorpayOrder,
+);
+router.post(
+  "/verify-razorpay-payment",
+  userAuth,
+  shopController.verifyRazorpayPayment,
 );
 
 //order

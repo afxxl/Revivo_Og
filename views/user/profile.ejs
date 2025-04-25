@@ -684,35 +684,7 @@
                 <div class="info-value profile-phone-display"><%= user.phone || 'Not provided' %></div>
               </div>
               
-              <% if (user.referralCode) { %>
-                <div class="mt-8 border-t pt-6 border-[#2C2C2C]/10">
-                  <h3 class="text-xl font-medium mb-4">Your Referral Program</h3>
-                  <div class="bg-[#f8f8f8] p-4 rounded-lg border border-[#2C2C2C]/10">
-                    <div class="mb-3">
-                      <p class="text-sm text-[#2C2C2C]/70 mb-1">Your referral code:</p>
-                      <div class="flex items-center">
-                        <span id="referralCode" class="font-mono text-lg font-semibold tracking-wide mr-2"><%= user.referralCode %></span>
-                        <button onclick="copyReferralCode()" class="text-sm bg-[#2C2C2C] text-white px-3 py-1 rounded hover:bg-[#222] transition-colors">
-                          <i class="fas fa-copy mr-1"></i> Copy
-                        </button>
-                      </div>
-                    </div>
-                    <p class="text-sm text-[#2C2C2C]/70 mb-3">Share this code with your friends and both of you will get rewards when they sign up!</p>
-                    <div class="mt-4">
-                      <h4 class="text-sm font-semibold mb-2">Benefits:</h4>
-                      <ul class="text-sm space-y-1">
-                        <li><i class="fas fa-gift text-green-600 mr-1"></i> ₹100 for you when someone uses your code</li>
-                        <li><i class="fas fa-gift text-green-600 mr-1"></i> ₹50 for your friend who signs up</li>
-                      </ul>
-                    </div>
-                    <div class="mt-4">
-                      <button onclick="shareReferralCode()" class="w-full bg-[#2C2C2C] text-white py-2 rounded flex items-center justify-center hover:bg-[#222] transition-colors">
-                        <i class="fas fa-share-alt mr-2"></i> Share Your Code
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              <% } %>
+              <!-- Referral section removed as it's already available in the header -->
               
               <div class="mt-8">
                 <button 
@@ -1909,7 +1881,14 @@
         
         if (isValid) {
           const formData = new FormData(this);
+          const submitButton = this.querySelector('button[type="submit"]');
+          const originalButtonText = submitButton.innerHTML;
+          
           try {
+            // Show loading state
+            submitButton.disabled = true;
+            submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending OTP...';
+            
             const response = await fetch('/update-profile', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
@@ -1918,9 +1897,15 @@
             
             const data = await response.json();
             
+            // Restore button state
+            submitButton.disabled = false;
+            submitButton.innerHTML = originalButtonText;
+            
             if (data.success) {
               if (data.requiresOtp) {
                 showOtpModal();
+                // Show toast notification with the message from the backend
+                showToast(data.message || 'OTP sent successfully to your new email', 'success');
               } else {
                 showToast('Profile updated successfully!', 'success');
                 updateProfileDisplay(data.user);
@@ -1963,23 +1948,34 @@
       
       // Resend OTP
       document.getElementById('resendOtpBtn').addEventListener('click', async function() {
+        const originalText = this.innerHTML;
+        
         try {
+          // Show loading state
+          this.disabled = true;
+          this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+          
           const response = await fetch('/resend-profile-otp', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' }
           });
           
           const data = await response.json();
+          
           if (data.success) {
-            showToast('New OTP has been sent!', 'success');
+            showToast(data.message || 'New OTP has been sent to your email!', 'success');
             startOtpTimer();
-            this.disabled = true;
+            // Keep disabled due to timer
           } else {
+            this.innerHTML = originalText;
             showToast(data.message || 'Failed to resend OTP', 'error');
+            this.disabled = false;
           }
         } catch (error) {
           console.error('Error resending OTP:', error);
+          this.innerHTML = originalText;
           showToast('Failed to resend OTP', 'error');
+          this.disabled = false;
         }
       });
       
@@ -2191,6 +2187,9 @@
           confirmPassword: this.confirmPassword.value
         };
         
+        const submitButton = this.querySelector('button[type="submit"]');
+        const originalButtonText = submitButton.innerHTML;
+        
         try {
           const verifyResponse = await fetch('/verify-current-password', {
             method: 'POST',
@@ -2227,6 +2226,10 @@
             return;
           }
           
+          // Show loading state
+          submitButton.disabled = true;
+          submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending OTP...';
+          
           const otpResponse = await fetch('/send-password-change-otp', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -2236,11 +2239,17 @@
             })
           });
           
+          // Restore button state
+          submitButton.disabled = false;
+          submitButton.innerHTML = originalButtonText;
+          
           const otpData = await otpResponse.json();
           
           if (otpData.success) {
             sessionStorage.setItem('tempPasswordData', JSON.stringify(formData));
             showPasswordOtpModal();
+            // Show toast notification with the message from the backend
+            showToast(otpData.message || 'OTP sent successfully to your email', 'success');
           } else {
             showToast(otpData.message || 'Failed to send OTP', 'error');
           }
@@ -2292,6 +2301,7 @@
       // Resend password OTP
       document.getElementById('resendPasswordOtpBtn').addEventListener('click', async function() {
         const passwordData = JSON.parse(sessionStorage.getItem('tempPasswordData'));
+        const originalText = this.innerHTML;
         
         if (!passwordData) {
           showToast('Session expired. Please try again.', 'error');
@@ -2299,6 +2309,10 @@
         }
         
         try {
+          // Show loading state
+          this.disabled = true;
+          this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+          
           const response = await fetch('/resend-password-change-otp', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -2311,15 +2325,19 @@
           const data = await response.json();
           
           if (data.success) {
-            showToast('New OTP has been sent!', 'success');
+            showToast(data.message || 'New OTP has been sent to your email!', 'success');
             startPasswordOtpTimer();
-            this.disabled = true;
+            // Keep button disabled due to timer
           } else {
+            this.innerHTML = originalText;
             showToast(data.message || 'Failed to resend OTP', 'error');
+            this.disabled = false;
           }
         } catch (error) {
           console.error('Error resending OTP:', error);
+          this.innerHTML = originalText;
           showToast('Failed to resend OTP', 'error');
+          this.disabled = false;
         }
       });
       

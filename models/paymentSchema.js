@@ -1,7 +1,11 @@
 const mongoose = require('mongoose');
 
 const paymentSchema = new mongoose.Schema({
-    status: String,
+    status: {
+        type: String,
+        enum: ['Pending', 'Completed', 'Failed', 'Refunded'],
+        default: 'Pending'
+    },
     userId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'
@@ -12,7 +16,7 @@ const paymentSchema = new mongoose.Schema({
     },
     method: {
         type: String,
-        enum: ['COD', 'ONLINE', 'WALLET']
+        enum: ['COD', 'ONLINE', 'WALLET', 'RAZORPAY']
     },
     orderId: {
         type: mongoose.Schema.Types.ObjectId,
@@ -20,7 +24,25 @@ const paymentSchema = new mongoose.Schema({
     },
     amount: Number,
     transactionId: String,
-    paymentGateway: String
+    paymentGateway: String,
+    // Razorpay specific fields
+    razorpay: {
+        orderId: String,
+        paymentId: String,
+        signature: String
+    },
+    // Refund information
+    refund: {
+        refundId: String,
+        amount: Number,
+        createdAt: Date,
+        status: {
+            type: String,
+            enum: ['pending', 'processed', 'failed'],
+            default: 'processed'
+        },
+        reason: String
+    }
 }, { timestamps: true });
 
 const Payment = mongoose.model('Payment', paymentSchema);

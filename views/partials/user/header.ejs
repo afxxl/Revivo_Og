@@ -689,7 +689,6 @@
             }
         }
         
-        // Toast notification function
         function showToast(message, type = 'success') {
             const toast = document.createElement('div');
             toast.className = `fixed bottom-4 right-4 px-4 py-2 rounded-lg shadow-lg text-white ${
@@ -705,23 +704,19 @@
         }
     });
 
-    // Utility function to calculate best offer price
     function calculateBestOfferPrice(salesPrice, productOffer, categoryOffer) {
         const productOfferAmount = salesPrice * (productOffer / 100);
         const categoryOfferAmount = salesPrice * (categoryOffer / 100);
         
-        // Use the larger discount (smaller final price)
         const bestOfferAmount = Math.max(productOfferAmount, categoryOfferAmount);
         
         if (bestOfferAmount > 0) {
-            // Round to 2 decimal places
             return (salesPrice - bestOfferAmount).toFixed(2);
         }
         
         return salesPrice.toFixed(2);
     }
 
-    // Utility function to get the best offer percentage
     function getBestOfferPercentage(productOffer, categoryOffer) {
         return Math.max(productOffer || 0, categoryOffer || 0);
     }
