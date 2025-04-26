@@ -107,8 +107,6 @@ const handleReturn = async (req, res) => {
         });
       }
 
-      // Process refund if payment was made via wallet or other payment methods
-      // Also add amount to wallet for COD payments when return is approved
       if (
         order.paymentMethod === "WALLET" ||
         order.paymentMethod === "CARD" ||
@@ -116,64 +114,70 @@ const handleReturn = async (req, res) => {
         order.paymentMethod === "COD" ||
         order.paymentMethod === "RAZORPAY"
       ) {
-        console.log(`Processing return refund for order: ${order.orderId}, userId: ${order.user}, amount: ${order.finalAmount}`);
-        
-        // For Razorpay payments, try to process a refund through the API
+        console.log(
+          `Processing return refund for order: ${order.orderId}, userId: ${order.user}, amount: ${order.finalAmount}`,
+        );
+
         if (order.paymentMethod === "RAZORPAY") {
           const Payment = require("../../models/paymentSchema.js");
           const payment = await Payment.findOne({ orderId: order._id });
-          
+
           if (payment && payment.razorpay && payment.razorpay.paymentId) {
             try {
-              // Only attempt Razorpay refund if we have the payment ID
               const Razorpay = require("razorpay");
               const razorpay = new Razorpay({
                 key_id: process.env.RAZORPAY_KEY_ID,
                 key_secret: process.env.RAZORPAY_KEY_SECRET,
               });
-              
-              console.log(`Return: Initiating Razorpay refund for payment: ${payment.razorpay.paymentId}`);
-              
+
+              console.log(
+                `Return: Initiating Razorpay refund for payment: ${payment.razorpay.paymentId}`,
+              );
+
               try {
-                // Create refund in Razorpay
-                const razorpayRefund = await razorpay.payments.refund(payment.razorpay.paymentId, {
-                  amount: Math.round(order.finalAmount * 100), // Amount in paise
-                  notes: {
-                    orderId: order.orderId,
-                    reason: "Return approved"
-                  }
-                });
-                
-                console.log("Return: Razorpay refund created:", razorpayRefund);
-                
-                // Update payment record
+                const razorpayRefund = await razorpay.payments.refund(
+                  payment.razorpay.paymentId,
+                  {
+                    amount: Math.round(order.finalAmount * 100),
+                    notes: {
+                      orderId: order.orderId,
+                      reason: "Return approved",
+                    },
+                  },
+                );
+
                 payment.status = "Refunded";
                 payment.refund = {
                   refundId: razorpayRefund.id,
                   amount: order.finalAmount,
                   createdAt: new Date(),
-                  reason: "Return approved"
+                  reason: "Return approved",
                 };
                 await payment.save();
               } catch (razorpayError) {
-                console.error("Error with Razorpay API during return:", razorpayError);
+                console.error(
+                  "Error with Razorpay API during return:",
+                  razorpayError,
+                );
               }
             } catch (refundError) {
-              console.error("Error processing Razorpay refund for return:", refundError);
+              console.error(
+                "Error processing Razorpay refund for return:",
+                refundError,
+              );
             }
           }
         }
-        
-        // Always add to wallet regardless of payment method
+
         const userIdStr = order.user.toString();
         console.log(`Adding return refund to wallet for user: ${userIdStr}`);
-        
+
         const refundResult = await processWalletRefund(
           userIdStr,
           order.finalAmount,
           `Refund for order #${order.orderId} (Return)`,
         );
-        
+
         console.log("Return wallet refund result:", refundResult);
       }
 
@@ -250,83 +254,69 @@ const updateStatus = async (req, res) => {
       });
     }
 
-    // Handle refunds for cancelled orders
     if (status === "Cancelled") {
-      // Process refund for online payments, wallet, and Razorpay
-      if (["WALLET", "CARD", "PAYPAL", "RAZORPAY"].includes(order.paymentMethod)) {
-        // For Razorpay payments, find the payment record and process refund
+      if (
+        ["WALLET", "CARD", "PAYPAL", "RAZORPAY"].includes(order.paymentMethod)
+      ) {
         if (order.paymentMethod === "RAZORPAY") {
           const Payment = require("../../models/paymentSchema.js");
           const payment = await Payment.findOne({ orderId: order._id });
-          
+
           if (payment && payment.razorpay && payment.razorpay.paymentId) {
             try {
-              // Only attempt Razorpay refund if we have the payment ID
               const Razorpay = require("razorpay");
               const razorpay = new Razorpay({
                 key_id: process.env.RAZORPAY_KEY_ID,
                 key_secret: process.env.RAZORPAY_KEY_SECRET,
               });
-              
-              console.log(`Admin initiating Razorpay refund for payment: ${payment.razorpay.paymentId}`);
-              
-              // Create refund in Razorpay
-              const razorpayRefund = await razorpay.payments.refund(payment.razorpay.paymentId, {
-                amount: Math.round(order.finalAmount * 100), // Amount in paise
-                notes: {
-                  orderId: order.orderId,
-                  reason: "Order cancelled by admin"
-                }
-              });
-              
-              console.log("Razorpay refund created by admin:", razorpayRefund);
-              
-              // Also add to wallet for convenience and tracking
-              // Make sure to convert ObjectId to string
+
+              const razorpayRefund = await razorpay.payments.refund(
+                payment.razorpay.paymentId,
+                {
+                  amount: Math.round(order.finalAmount * 100),
+                  notes: {
+                    orderId: order.orderId,
+                    reason: "Order cancelled by admin",
+                  },
+                },
+              );
+
               const userIdStr = order.user.toString();
-              console.log(`Admin adding refund to wallet for user: ${userIdStr}, amount: ${order.finalAmount}`);
-              
+
               const refundResult = await processWalletRefund(
                 userIdStr,
                 order.finalAmount,
                 `Refund for cancelled Razorpay order #${order.orderId} (by admin)`,
               );
-              
+
               console.log("Admin wallet refund result:", refundResult);
-              
-              // Update payment record
+
               payment.status = "Refunded";
               payment.refund = {
                 refundId: razorpayRefund.id,
                 amount: order.finalAmount,
                 createdAt: new Date(),
-                reason: "Order cancelled by admin"
+                reason: "Order cancelled by admin",
               };
               await payment.save();
             } catch (refundError) {
-              console.error("Error processing Razorpay refund by admin:", refundError);
-              // Still add to wallet even if Razorpay refund fails
-              console.log(`Admin adding refund to wallet after Razorpay failure for user: ${order.user.toString()}`);
               const refundResult = await processWalletRefund(
                 order.user.toString(),
                 order.finalAmount,
                 `Refund for cancelled order #${order.orderId} (Razorpay refund failed)`,
               );
-              console.log("Admin wallet refund result after Razorpay failure:", refundResult);
             }
           } else {
-            // No payment record found or no payment ID, just add to wallet
-            console.log(`Admin adding refund to wallet (no payment record) for user: ${order.user.toString()}`);
             const refundResult = await processWalletRefund(
               order.user.toString(),
               order.finalAmount,
               `Refund for cancelled order #${order.orderId} (by admin)`,
             );
-            console.log("Admin wallet refund result (no payment record):", refundResult);
           }
         } else {
-          // For non-Razorpay payments, use the existing wallet refund process
-          console.log(`Admin processing non-Razorpay refund for user: ${order.user.toString()}, amount: ${order.finalAmount}`);
+          console.log(
+            `Admin processing non-Razorpay refund for user: ${order.user.toString()}, amount: ${order.finalAmount}`,
+          );
           const refundResult = await processWalletRefund(
             order.user.toString(),
             order.finalAmount,
@@ -336,7 +326,6 @@ const updateStatus = async (req, res) => {
         }
       }
 
-      // Update product stock
       for (const item of order.orderItems) {
         await Product.findByIdAndUpdate(item.product, {
           $inc: { stock: item.quantity },

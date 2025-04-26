@@ -300,6 +300,12 @@
                     showToast(razorpayData.message || 'Failed to create Razorpay order', 'error');
                     btn.disabled = false;
                     btn.innerHTML = 'Place Order';
+                    
+                    // If there's a redirect URL, navigate to it (likely order-failure page)
+                    if (razorpayData.redirectUrl) {
+                        window.location.href = razorpayData.redirectUrl;
+                        return;
+                    }
                     return;
                 }
                 const options = {
@@ -327,6 +333,10 @@
                             window.location.href = orderData.redirectUrl;
                         } else {
                             showToast(orderData.message || 'Order creation failed after payment', 'error');
+                            // If there's a redirect URL, navigate to it (likely order-failure page)
+                            if (orderData.redirectUrl) {
+                                window.location.href = orderData.redirectUrl;
+                            }
                         }
                     },
                     prefill: {
@@ -360,6 +370,10 @@
                     window.location.href = data.redirectUrl;
                 } else {
                     showToast(data.message || 'Failed to place order', 'error');
+                    // If there's a redirect URL, navigate to it (likely order-failure page)
+                    if (data.redirectUrl) {
+                        window.location.href = data.redirectUrl;
+                    }
                 }
             }
         } catch (error) {
@@ -367,6 +381,9 @@
             showToast('An error occurred while placing the order', 'error');
             btn.disabled = false;
             btn.innerHTML = 'Place Order';
+            
+            // Redirect to order failure page for unexpected errors
+            window.location.href = '/order-failure?errorMessage=An%20unexpected%20error%20occurred%20while%20processing%20your%20order.%20Please%20try%20again.';
         }
     }
 

@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Order Failed - REVIVO</title>
+    <link href="/css/styles.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Henny+Penny&family=Playfair+Display:wght@400;500;600;700&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+      :root {
+        --primary-color: #2C2C2C;
+        --secondary-color: #f8c78d;
+        --accent-color: #d4af7a;
+        --light-bg: #fcf9f2;
+        --error-color: #e53e3e;
+      }
+      
+      body {
+        font-family: 'Montserrat', sans-serif;
+        color: var(--primary-color);
+        background-color: var(--light-bg);
+        background-image: url('/Images/images/OLD_PAPER_TEXTURE.jpg');
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+      }
+      
+      .failure-container {
+        max-width: 800px;
+        margin: 0 auto;
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 16px;
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        padding: 2.5rem;
+      }
+      
+      .error-icon {
+        background-color: var(--error-color);
+        color: white;
+        width: 90px;
+        height: 90px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1.5rem;
+        box-shadow: 0 10px 15px -3px rgba(229, 62, 62, 0.2);
+        animation: shake 1s ease-in-out;
+      }
+      
+      @keyframes shake {
+        0%, 100% { transform: translateX(0); }
+        10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+        20%, 40%, 60%, 80% { transform: translateX(5px); }
+      }
+      
+      .section-title {
+        font-family: 'Playfair Display', serif;
+        font-weight: 600;
+        position: relative;
+        padding-bottom: 0.5rem;
+        margin-bottom: 1.5rem;
+      }
+      
+      .section-title::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        height: 3px;
+        width: 40px;
+        background-color: var(--secondary-color);
+        border-radius: 2px;
+      }
+      
+      .info-card {
+        background-color: white;
+        border-radius: 12px;
+        padding: 1.5rem;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+        height: 100%;
+      }
+      
+      .btn-primary {
+        background-color: var(--primary-color);
+        color: white;
+        padding: 0.75rem 1.5rem;
+        border-radius: 8px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        display: inline-block;
+      }
+      
+      .btn-primary:hover {
+        background-color: #444;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      }
+      
+      .btn-outline {
+        border: 2px solid var(--primary-color);
+        color: var(--primary-color);
+        padding: 0.75rem 1.5rem;
+        border-radius: 8px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        display: inline-block;
+        margin-left: 1rem;
+      }
+      
+      .btn-outline:hover {
+        background-color: var(--primary-color);
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      }
+    </style>
+</head>
+<body class="py-12">
+    <div class="failure-container">
+        <div class="text-center mb-8">
+            <div class="error-icon text-4xl">
+                <i class="fas fa-times"></i>
+            </div>
+            <h1 class="text-3xl font-bold mb-2 font-serif">Payment Failed</h1>
+            <p class="text-gray-600 mb-6">We're sorry, but there was an issue processing your payment.</p>
+            <% if (errorMessage) { %>
+                <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-6 inline-block">
+                    <p><%= errorMessage %></p>
+                </div>
+            <% } %>
+        </div>
+
+        <div class="mb-8">
+            <h2 class="section-title text-xl">What Happened?</h2>
+            <div class="info-card">
+                <p class="mb-4">Your payment could not be processed due to one of the following reasons:</p>
+                <ul class="list-disc pl-5 space-y-2 text-gray-700">
+                    <li>Insufficient funds in your account</li>
+                    <li>Payment was declined by your bank</li>
+                    <li>Network or connectivity issues</li>
+                    <li>Payment gateway technical problems</li>
+                    <li>Incorrect payment details</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="mb-8">
+            <h2 class="section-title text-xl">What's Next?</h2>
+            <div class="info-card">
+                <p class="mb-4">Don't worry! Your items are still saved in your cart. You can:</p>
+                <ul class="list-disc pl-5 space-y-2 text-gray-700">
+                    <li>Try the payment again with the same or a different payment method</li>
+                    <li>Check your account balance or contact your bank</li>
+                    <li>Try again later if it's a temporary issue</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="text-center mt-10">
+            <a href="/checkout" class="btn-primary">
+                Try Again
+            </a>
+            <a href="/cart" class="btn-outline">
+                Return to Cart
+            </a>
+        </div>
+
+        <div class="mt-8 text-center text-sm text-gray-500">
+            <p>If you continue to experience issues, please contact our customer support at <a href="mailto:support@revivo.com" class="text-accent-color underline">support@revivo.com</a></p>
+        </div>
+    </div>
+</body>
+</html>
