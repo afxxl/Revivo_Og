@@ -1283,7 +1283,6 @@ const sendPasswordChangeOtp = async (req, res) => {
 
     // Generate OTP and send email
     const otp = generateOtp();
-    
     // Send the OTP via email
     const emailSent = await sendVerificationEmail(user.email, otp);
 

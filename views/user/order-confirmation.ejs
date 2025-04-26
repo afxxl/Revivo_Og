@@ -188,7 +188,7 @@
                 <h1 class="text-4xl font-playfair font-bold mb-3">Thank You!</h1>
                 <p class="text-xl text-[#2C2C2C]/80 mb-2">Your order has been confirmed</p>
                 <div class="inline-block bg-[#2C2C2C]/5 px-4 py-2 rounded-full text-[#2C2C2C]/80">
-                    Order ID: <span class="font-medium text-[#2C2C2C]"><%= orderId %></span>
+                    Order ID: <span class="font-medium text-[#2C2C2C]"><%= order.orderId %></span>
                 </div>
                 
                 <!-- Generate confetti particles -->
@@ -217,9 +217,9 @@
                         <div class="flex items-start">
                             <i class="fas fa-map-marker-alt mt-1 mr-3 text-[#2C2C2C]/70"></i>
                             <div>
-                                <p class="font-medium mb-2"><%= deliveryAddress.name %></p>
-                                <p class="text-[#2C2C2C]/70"><%= deliveryAddress.address %></p>
-                                <p class="text-[#2C2C2C]/70"><%= deliveryAddress.city %>, <%= deliveryAddress.state %> - <%= deliveryAddress.pincode %></p>
+                                <p class="font-medium mb-2"><%= order.address.name %></p>
+                                <p class="text-[#2C2C2C]/70"><%= order.address.address %></p>
+                                <p class="text-[#2C2C2C]/70"><%= order.address.city %>, <%= order.address.state %> - <%= order.address.pincode %></p>
                             </div>
                         </div>
                     </div>
@@ -233,7 +233,7 @@
                                 <i class="fas fa-calendar-alt mt-1 mr-3 text-[#2C2C2C]/70"></i>
                                 <div>
                                     <p class="text-sm text-[#2C2C2C]/70">Order Date</p>
-                                    <p class="font-medium"><%= new Date(orderDate).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) %></p>
+                                    <p class="font-medium"><%= new Date(order.createdOn).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) %></p>
                                 </div>
                             </div>
                             
@@ -242,7 +242,7 @@
                                 <div>
                                     <p class="text-sm text-[#2C2C2C]/70">Estimated Delivery</p>
                                     <p class="font-medium">
-                                        <% const deliveryDate = new Date(orderDate) %>
+                                        <% const deliveryDate = new Date(order.createdOn) %>
                                         <% deliveryDate.setDate(deliveryDate.getDate() + 3) %>
                                         <%= deliveryDate.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) %>
                                     </p>
@@ -256,7 +256,7 @@
             <div class="mb-10">
                 <h3 class="section-title">Order Items</h3>
                 <div class="space-y-4">
-                    <% items.forEach(item => { %>
+                    <% order.orderItems.forEach(item => { %>
                         <div class="order-item flex items-center bg-white p-4 border border-gray-100">
                             <img 
                                 src="<%= item.product.productImage[0] %>" 
@@ -285,7 +285,7 @@
                         <tbody>
                             <tr class="border-b border-gray-100">
                                 <td class="py-3 text-[#2C2C2C]/70">Subtotal:</td>
-                                <td class="py-3 text-right">₹<%= subtotal.toFixed(2) %></td>
+                                <td class="py-3 text-right">₹<%= (order.finalAmount + order.discount - shipping).toFixed(2) %></td>
                             </tr>
                             <tr class="border-b border-gray-100">
                                 <td class="py-3 text-[#2C2C2C]/70">Shipping:</td>

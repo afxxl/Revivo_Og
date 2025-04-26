@@ -207,11 +207,7 @@ router.get(
   shopController.loadOrderConfirmation,
 );
 
-router.get(
-  "/order-failure",
-  userAuth,
-  shopController.loadOrderFailure,
-);
+router.get("/order-failure", userAuth, shopController.loadOrderFailure);
 
 // Razorpay routes
 router.post(

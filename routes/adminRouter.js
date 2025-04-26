@@ -16,6 +16,7 @@ router.get("/login", adminController.loadLogin);
 router.post("/login", adminController.login);
 router.get("/dashboard", adminAuth, adminController.loadDashboard);
 router.get("/", adminAuth, adminController.loadDashboard);
+router.get("/export-dashboard", adminAuth, adminController.exportDashboardData);
 router.get("/logout", adminController.logout);
 //User
 router.get("/users", adminAuth, usercontroller.userInfo);
@@ -47,7 +48,11 @@ router.post(
   adminAuth,
   categoryController.updateCategoryOffer,
 );
-router.delete("/deleteCategory/:id", adminAuth, categoryController.deleteCategory);
+router.delete(
+  "/deleteCategory/:id",
+  adminAuth,
+  categoryController.deleteCategory,
+);
 
 //Brands
 router.get("/brands", adminAuth, brandController.getBrandPage);

@@ -1056,6 +1056,7 @@ const createOrder = async (req, res) => {
       discount,
       couponCode,
       couponId,
+      couponApplied: !!couponCode, // Set couponApplied to true if couponCode exists
       finalAmount,
       paymentMethod: paymentMethod,
       status: paymentMethod === "RAZORPAY" ? "Confirmed" : "Pending",
@@ -1097,7 +1098,12 @@ const loadOrderConfirmation = async (req, res) => {
       return res.redirect("/orders");
     }
 
-    const order = await Order.findOne({ orderId }).populate("address");
+    const order = await Order.findOne({ orderId })
+      .populate("address")
+      .populate({
+        path: "orderItems.product",
+        model: "Product",
+      });
 
     if (!order) {
       return res.status(404).render("page-404", {
@@ -1107,7 +1113,7 @@ const loadOrderConfirmation = async (req, res) => {
 
     res.render("order-confirmation", {
       order,
-      total: total || order.finalAmount,
+      total: parseFloat(total) || order.finalAmount,
       discount: order.discount,
       couponCode: order.couponCode,
       couponApplied: !!order.couponCode,
