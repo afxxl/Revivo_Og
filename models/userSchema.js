@@ -23,7 +23,7 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: function () {
       return !this.googleId;
-    }, // Required only for local auth
+    },
   },
   isBlocked: {
     type: Boolean,
@@ -72,7 +72,6 @@ const userSchema = new mongoose.Schema({
 });
 
 const User = mongoose.model("User", userSchema);
-// Index for Google ID
 User.collection.createIndex(
   { googleId: 1 },
   { unique: true, partialFilterExpression: { googleId: { $type: "string" } } },

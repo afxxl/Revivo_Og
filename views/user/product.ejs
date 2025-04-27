@@ -438,7 +438,6 @@
     <%- include('../partials/user/footer.ejs') %>
 
     <script>
-      // Image zoom functionality
       document.addEventListener('DOMContentLoaded', function() {
         const container = document.getElementById('imageZoomContainer');
         const img = document.getElementById('mainProductImage');
@@ -508,7 +507,6 @@
           if (data.success) {
             showToast('Added to cart successfully!', 'success');
             
-            // Update cart count
             if (data.cartCount) {
               const cartCountElements = document.querySelectorAll('#cart-count');
               cartCountElements.forEach(el => {
@@ -517,15 +515,12 @@
               });
             }
             
-            // If item was in wishlist and got removed, update wishlist UI
             if (data.wishlistCount !== undefined) {
-              // Update wishlist count
               const wishlistCountElements = document.querySelectorAll('#wishlist-count');
               wishlistCountElements.forEach(el => {
                 el.textContent = data.wishlistCount;
               });
               
-              // Update wishlist button to show item is not in wishlist
               const wishlistBtn = document.getElementById('wishlist-btn');
               const wishlistIcon = document.querySelector('.wishlist-icon');
               
@@ -574,9 +569,7 @@
         }, 3000);
       }
 
-      // Check if item is in wishlist when page loads
       document.addEventListener('DOMContentLoaded', function() {
-        // Debounce function to prevent multiple rapid clicks
         function debounce(func, wait) {
           let timeout;
           return function(...args) {
@@ -587,24 +580,18 @@
           };
         }
         
-        // Initialize the wishlist button
         initializeWishlistButton();
         
-        // Create debounced version of toggleWishlist
         const debouncedToggleWishlist = debounce((productId, productName) => {
           toggleWishlist(productId, productName);
         }, 300);
         
-        // Track if a wishlist operation is in progress
         window.wishlistOperationInProgress = false;
         
-        // Add click event listener to wishlist button
         document.body.addEventListener('click', function(event) {
-          // Check if click target is the wishlist button or any of its children
           const wishlistBtn = document.getElementById('wishlist-btn');
           if (!wishlistBtn) return;
           
-          // Find if the clicked element is wishlist button or its child
           let targetElement = event.target;
           let isWishlistClick = false;
           
@@ -619,7 +606,6 @@
           if (isWishlistClick) {
             event.preventDefault();
             
-            // Prevent multiple clicks while operation is in progress
             if (window.wishlistOperationInProgress) {
               return;
             }
@@ -634,29 +620,23 @@
         });
       });
       
-      // Function to initialize wishlist button
       function initializeWishlistButton() {
         const wishlistBtn = document.getElementById('wishlist-btn');
         if (!wishlistBtn) {
-          // Button might not be loaded yet, try again in a moment
           setTimeout(initializeWishlistButton, 500);
           return;
         }
         
-        // Initialize wishlist status as false by default
         wishlistBtn.setAttribute('data-in-wishlist', 'false');
         
-        // Ensure onclick is properly set - this is critical for new products
         const productId = '<%= product._id %>';
         const productName = '<%= product.productName %>';
         
-        // Check if the onclick attribute is set properly
         const onclickAttr = wishlistBtn.getAttribute('onclick');
         if (!onclickAttr || !onclickAttr.includes('toggleWishlist')) {
           wishlistBtn.setAttribute('onclick', `toggleWishlist('${productId}', '${productName}')`);
         }
         
-        // If button is disabled but product is available, enable it
         const productIsListed = '<%= product.isListed %>' === 'true';
         const brandIsActive = '<%= product.brand.isActive %>' === 'true';
         const categoryIsListed = '<%= product.category.isListed %>' === 'true';
@@ -672,7 +652,6 @@
         checkInitialWishlistStatus();
       }
       
-      // Function to check initial wishlist status
       async function checkInitialWishlistStatus() {
         try {
           const productId = '<%= product._id %>';
@@ -717,14 +696,11 @@
         }
       }
       
-      // AJAX function to add or remove from wishlist
       async function toggleWishlist(productId, productName) {
-        // If an operation is already in progress, don't start another one
         if (window.wishlistOperationInProgress) {
           return;
         }
         
-        // Set the flag to indicate an operation is in progress
         window.wishlistOperationInProgress = true;
         
         if (!productId) {
@@ -733,7 +709,6 @@
           return;
         }
         
-        // Format check for productId
         if (!/^[0-9a-fA-F]{24}$/.test(productId)) {
           showToast('Invalid product ID format', 'error');
           window.wishlistOperationInProgress = false;
@@ -750,11 +725,9 @@
         const isInWishlist = wishlistBtn.getAttribute('data-in-wishlist') === 'true';
         const action = isInWishlist ? 'remove from' : 'add to';
         
-        // Disable button while action is in progress
         wishlistBtn.disabled = true;
         
         try {
-          // Show loading state
           const wishlistIcon = document.querySelector('.wishlist-icon');
           if (wishlistIcon) {
             wishlistIcon.innerHTML = `<div class="spinner-border w-4 h-4"></div>`;
@@ -779,9 +752,7 @@
           }
           
           if (response.status === 401) {
-            // User is not logged in
             showToast('Please login to add items to your wishlist', 'warning');
-            // Redirect to login page after a short delay
             setTimeout(() => {
               window.location.href = '/login';
             }, 2000);
@@ -802,57 +773,47 @@
           }
           
           if (response.status === 400) {
-            // Product validation error
             showToast(data.message || 'Product is unavailable', 'warning');
             return;
           }
           
           if (response.status === 404) {
-            // Product not found
             showToast(data.message || 'Product not found', 'error');
             return;
           }
           
           if (data.success) {
-            // Update UI based on action
             if (isInWishlist) {
-              // Item was removed from wishlist
               wishlistIcon.classList.remove('active');
               wishlistBtn.classList.remove('active');
               wishlistBtn.setAttribute('data-in-wishlist', 'false');
               showToast(`Removed ${productName} from wishlist`, 'success');
             } else {
-              // Item was added to wishlist
               wishlistIcon.classList.add('active');
               wishlistBtn.classList.add('active');
               wishlistBtn.setAttribute('data-in-wishlist', 'true');
               showToast(`Added ${productName} to wishlist`, 'success');
             }
             
-            // Update wishlist count in header
             if (data.wishlistCount !== undefined) {
               document.querySelectorAll('#wishlist-count').forEach(el => {
                 el.textContent = data.wishlistCount;
               });
             }
           } else {
-            // Non-successful response but not caught by status code checks
             throw new Error(data.message || `Failed to ${action} wishlist`);
           }
         } catch (error) {
           console.error(`Error updating wishlist:`, error);
           showToast(error.message || `Error updating wishlist`, 'error');
         } finally {
-          // Ensure icon is reset if still showing spinner
           const wishlistIcon = document.querySelector('.wishlist-icon');
           if (wishlistIcon && wishlistIcon.innerHTML.includes('spinner-border')) {
             wishlistIcon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>`;
           }
           
-          // Re-enable button
           wishlistBtn.disabled = false;
           
-          // Reset the operation in progress flag
           window.wishlistOperationInProgress = false;
         }
       }

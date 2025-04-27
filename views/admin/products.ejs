@@ -2206,7 +2206,6 @@ include('../partials/admin/admin-sidebar', {currentPage: 'products' }) %>
       if (result.isConfirmed) {
         const offerPercentage = result.value;
         
-        // Submit the offer to the server
         fetch(`/admin/updateProductOffer/${productId}`, {
           method: 'POST',
           headers: {
@@ -2241,7 +2240,6 @@ include('../partials/admin/admin-sidebar', {currentPage: 'products' }) %>
     });
   }
 
-  // Remove offer function
   function removeOffer(productId, productName) {
     Swal.fire({
       title: 'Remove Offer',
@@ -2253,7 +2251,6 @@ include('../partials/admin/admin-sidebar', {currentPage: 'products' }) %>
       confirmButtonText: 'Yes, remove it!'
     }).then((result) => {
       if (result.isConfirmed) {
-        // Submit the offer removal to the server
         fetch(`/admin/updateProductOffer/${productId}`, {
           method: 'POST',
           headers: {
@@ -2288,9 +2285,7 @@ include('../partials/admin/admin-sidebar', {currentPage: 'products' }) %>
     });
   }
 
-  // Add event listeners for add and remove offer buttons
   document.addEventListener('DOMContentLoaded', function() {
-    // Add offer button event listeners
     document.querySelectorAll('.add-offer').forEach(button => {
       button.addEventListener('click', function(e) {
         e.preventDefault();
@@ -2300,7 +2295,6 @@ include('../partials/admin/admin-sidebar', {currentPage: 'products' }) %>
       });
     });
 
-    // Remove offer button event listeners
     document.querySelectorAll('.remove-offer').forEach(button => {
       button.addEventListener('click', function(e) {
         e.preventDefault();

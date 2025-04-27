@@ -149,7 +149,6 @@
         </div>
     </div>
     
-    <!-- Summary Cards -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
         <div class="dashboard-card p-6">
             <div class="flex items-center justify-between">
@@ -194,7 +193,6 @@
         </div>
     </div>
     
-    <!-- Charts -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
         <div class="dashboard-card p-6">
             <h2 class="text-lg font-medium text-[#2C2C2C] mb-4">Sales Overview</h2>
@@ -252,19 +250,16 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>
-    // Toggle custom date range selector
     document.getElementById('customRangeBtn').addEventListener('click', function() {
         const dateRangeSelector = document.getElementById('dateRangeSelector');
         dateRangeSelector.classList.toggle('hidden');
         dateRangeSelector.classList.toggle('flex');
     });
     
-    // Chart.js Configuration
     const orderData = <%- JSON.stringify(orderStats) %>;
     const paymentMethodData = <%- JSON.stringify(paymentMethodStats) %>;
     const orderStatusData = <%- JSON.stringify(orderStatusStats) %>;
     
-    // Format dates for display
     const labels = orderData.map(item => {
         const date = item._id;
         return date;
@@ -274,7 +269,6 @@
     const discounts = orderData.map(item => item.discount);
     const orderCounts = orderData.map(item => item.count);
     
-    // Sales Chart
     const salesChartCtx = document.getElementById('salesChart').getContext('2d');
     new Chart(salesChartCtx, {
         type: 'line',
@@ -364,7 +358,6 @@
         }
     });
     
-    // Payment Method Chart
     const paymentLabels = paymentMethodData.map(item => item._id);
     const paymentCounts = paymentMethodData.map(item => item.count);
     const paymentAmounts = paymentMethodData.map(item => item.amount);
@@ -441,7 +434,6 @@
         }
     });
     
-    // Order Status Chart
     const statusLabels = orderStatusData.map(item => item._id);
     const statusCounts = orderStatusData.map(item => item.count);
     

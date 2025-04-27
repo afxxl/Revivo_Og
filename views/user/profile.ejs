@@ -1449,7 +1449,6 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
     <script>
-      // Sidebar toggle for mobile
       document.addEventListener('DOMContentLoaded', function() {
         const burgerMenu = document.getElementById('burgerMenu');
         const profileSidebar = document.getElementById('profileSidebar');
@@ -1462,8 +1461,6 @@
           sidebarOverlay.classList.add('active');
           burgerMenu.classList.add('active');
           document.body.style.overflow = 'hidden';
-          // Uncomment below line if you want the content to shift when sidebar opens
-          // contentContainer.classList.add('sidebar-active');
         }
         
         function closeSidebarFunc() {
@@ -1471,8 +1468,6 @@
           sidebarOverlay.classList.remove('active');
           burgerMenu.classList.remove('active');
           document.body.style.overflow = '';
-          // Uncomment below line if you want the content to shift when sidebar closes
-          // contentContainer.classList.remove('sidebar-active');
         }
         
         burgerMenu.addEventListener('click', function() {
@@ -1486,12 +1481,10 @@
         closeSidebar.addEventListener('click', closeSidebarFunc);
         sidebarOverlay.addEventListener('click', closeSidebarFunc);
         
-        // Using event delegation to close sidebar when any tab is clicked
         profileSidebar.addEventListener('click', function(e) {
           const clickedElement = e.target.closest('.profile-tab');
           if (clickedElement && window.innerWidth < 768) {
             if (!clickedElement.classList.contains('logout-button')) {
-              // Small delay to allow the click to register before closing sidebar
               setTimeout(closeSidebarFunc, 150);
             }
           }
@@ -1507,7 +1500,6 @@
         });
       });
 
-      // Tab switching functionality
       document.addEventListener('DOMContentLoaded', () => {
         const hash = window.location.hash.substring(1);
         const validTabs = ['profile', 'edit-profile', 'addresses', 'orders', 'change-password'];
@@ -1537,21 +1529,16 @@
       });
       
       function switchTab(tabName) {
-        // Update URL hash
         history.replaceState(null, null, `#${tabName}`);
         
-        // Hide all tab contents
         document.querySelectorAll('.tab-content').forEach(content => content.classList.add('hidden'));
         
-        // Show selected tab content
         const selectedTab = document.getElementById(`${tabName}-section`);
         selectedTab.classList.remove('hidden');
         
-        // Update tab styles
         document.querySelectorAll('.profile-tab').forEach(tab => tab.classList.remove('active'));
         document.querySelector(`.profile-tab[href="#${tabName}"]`).classList.add('active');
         
-        // Update mobile page title
         const mobilePageTitle = document.getElementById('mobilePageTitle');
         if (mobilePageTitle) {
           switch(tabName) {
@@ -1576,7 +1563,6 @@
         }
       }
       
-      // Password visibility toggle
       function togglePasswordVisibility(button) {
         const input = button.parentElement.querySelector('input');
         const icon = button.querySelector('i');
@@ -1592,7 +1578,6 @@
         }
       }
       
-      // OTP Modal functions
       let otpCountdown;
       let remainingTime = 60;
       
@@ -1631,7 +1616,6 @@
         }, 1000);
       }
       
-      // Address Modal functions
       function openAddressModal(addressId = null) {
         const modal = document.getElementById('addressModal');
         const form = document.getElementById('addressForm');
@@ -1653,7 +1637,6 @@
         document.getElementById('addressModal').classList.add('hidden');
       }
       
-      // Image Upload Modal functions
       let cropper;
       
       function openImageUploadModal() {
@@ -1670,7 +1653,6 @@
         }
       }
       
-      // Toast notification function
       function showToast(message, type = 'success') {
         const toast = document.createElement('div');
         toast.className = `toast ${type} transform translate-y-0 opacity-100`;
@@ -1692,9 +1674,7 @@
         }, 3000);
       }
       
-      // --- Event Listeners and API Calls ---
       
-      // Handle image upload
       document.getElementById('imageUploadInput').addEventListener('change', function(e) {
         const file = e.target.files[0];
         if (!file) return;
@@ -1751,7 +1731,6 @@
         reader.readAsDataURL(file);
       });
       
-      // Upload cropped image
       async function uploadCroppedImage() {
         if (!cropper) {
           showToast('Please select and crop an image first', 'error');
@@ -1810,7 +1789,6 @@
         }
       }
       
-      // Form validation helpers
       function showError(input, message) {
         const existingError = input.parentNode.querySelector('.password-error');
         if (existingError) existingError.remove();
@@ -1843,7 +1821,6 @@
         }, { once: true });
       }
       
-      // Profile form submission
       document.getElementById('profileForm').addEventListener('submit', async function(e) {
         e.preventDefault();
         
@@ -1885,7 +1862,6 @@
           const originalButtonText = submitButton.innerHTML;
           
           try {
-            // Show loading state
             submitButton.disabled = true;
             submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending OTP...';
             
@@ -1897,14 +1873,12 @@
             
             const data = await response.json();
             
-            // Restore button state
             submitButton.disabled = false;
             submitButton.innerHTML = originalButtonText;
             
             if (data.success) {
               if (data.requiresOtp) {
                 showOtpModal();
-                // Show toast notification with the message from the backend
                 showToast(data.message || 'OTP sent successfully to your new email', 'success');
               } else {
                 showToast('Profile updated successfully!', 'success');
@@ -1920,7 +1894,6 @@
         }
       });
       
-      // OTP form submission
       document.getElementById('otpForm').addEventListener('submit', async function(e) {
         e.preventDefault();
         const formData = new FormData(this);
@@ -1946,12 +1919,10 @@
         }
       });
       
-      // Resend OTP
       document.getElementById('resendOtpBtn').addEventListener('click', async function() {
         const originalText = this.innerHTML;
         
         try {
-          // Show loading state
           this.disabled = true;
           this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
           
@@ -1965,7 +1936,6 @@
           if (data.success) {
             showToast(data.message || 'New OTP has been sent to your email!', 'success');
             startOtpTimer();
-            // Keep disabled due to timer
           } else {
             this.innerHTML = originalText;
             showToast(data.message || 'Failed to resend OTP', 'error');
@@ -1979,7 +1949,6 @@
         }
       });
       
-      // Update profile display
       function updateProfileDisplay(user) {
         document.querySelector('.profile-name').textContent = user.name;
         document.querySelector('.profile-email').textContent = user.email;
@@ -1988,7 +1957,6 @@
         document.querySelector('.profile-phone-display').textContent = user.phone || 'Not provided';
       }
 
-      // Address form submission
       document.getElementById('addressForm').addEventListener('submit', async function(e) {
         e.preventDefault();
         
@@ -2081,7 +2049,6 @@
         }
       });
       
-      // Set default address
       async function setDefaultAddress(addressId) {
         try {
           const response = await fetch(`/addresses/${addressId}`, {
@@ -2109,7 +2076,6 @@
         }
       }
       
-      // Delete address
       async function deleteAddress(addressId) {
         const { value: isConfirmed } = await Swal.fire({
           title: 'Are you sure?',
@@ -2143,7 +2109,6 @@
         }
       }
       
-      // Edit address
       async function editAddress(addressId) {
         try {
           const response = await fetch(`/addresses/${addressId}`, {
@@ -2175,7 +2140,6 @@
         }
       }
       
-      // Password change
       document.getElementById('changePasswordForm').addEventListener('submit', async function(e) {
         e.preventDefault();
         
@@ -2226,7 +2190,6 @@
             return;
           }
           
-          // Show loading state
           submitButton.disabled = true;
           submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending OTP...';
           
@@ -2239,7 +2202,6 @@
             })
           });
           
-          // Restore button state
           submitButton.disabled = false;
           submitButton.innerHTML = originalButtonText;
           
@@ -2248,7 +2210,6 @@
           if (otpData.success) {
             sessionStorage.setItem('tempPasswordData', JSON.stringify(formData));
             showPasswordOtpModal();
-            // Show toast notification with the message from the backend
             showToast(otpData.message || 'OTP sent successfully to your email', 'success');
           } else {
             showToast(otpData.message || 'Failed to send OTP', 'error');
@@ -2259,7 +2220,6 @@
         }
       });
       
-      // Password OTP Modal functions
       let passwordOtpCountdown;
       let passwordRemainingTime = 60;
       
@@ -2298,7 +2258,6 @@
         document.getElementById('resendPasswordOtpBtn').disabled = true;
       }
       
-      // Resend password OTP
       document.getElementById('resendPasswordOtpBtn').addEventListener('click', async function() {
         const passwordData = JSON.parse(sessionStorage.getItem('tempPasswordData'));
         const originalText = this.innerHTML;
@@ -2309,7 +2268,6 @@
         }
         
         try {
-          // Show loading state
           this.disabled = true;
           this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
           
@@ -2327,7 +2285,6 @@
           if (data.success) {
             showToast(data.message || 'New OTP has been sent to your email!', 'success');
             startPasswordOtpTimer();
-            // Keep button disabled due to timer
           } else {
             this.innerHTML = originalText;
             showToast(data.message || 'Failed to resend OTP', 'error');
@@ -2341,7 +2298,6 @@
         }
       });
       
-      // Verify password change OTP
       document.getElementById('passwordOtpForm').addEventListener('submit', async function(e) {
         e.preventDefault();
         
@@ -2381,7 +2337,6 @@
         }
       });
       
-      // Orders search
       document.getElementById('ordersSearchForm').addEventListener('submit', function(e) {
         e.preventDefault();
         const search = this.search.value;
@@ -2391,12 +2346,10 @@
         window.location = url.toString();
       });
       
-      // Clear orders search
       function clearSearch() {
         window.location = "?ordersPage=1#orders";
       }
 
-      // Add these functions for referral code handling
       function copyReferralCode() {
         const referralCode = document.getElementById('referralCode').textContent;
         navigator.clipboard.writeText(referralCode)
@@ -2422,7 +2375,6 @@
           .then(() => showToast('Thanks for sharing!', 'success'))
           .catch(error => console.log('Error sharing:', error));
         } else {
-          // Fallback for browsers that don't support navigator.share
           navigator.clipboard.writeText(shareText)
             .then(() => {
               showToast('Share text copied to clipboard!', 'success');

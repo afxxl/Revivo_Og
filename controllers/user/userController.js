@@ -157,7 +157,6 @@ const signup = async (req, res) => {
       });
     }
 
-    // Validate referral code if provided
     if (referralCode) {
       const referrer = await User.findOne({ referralCode });
       if (!referrer) {
@@ -234,7 +233,6 @@ const verifyOtp = async (req, res) => {
         });
       }
 
-      // Generate a referral code for this new user
       const referralHelper = require("../../helpers/referralHelper");
       const referralCode = await referralHelper.generateReferralCode();
 
@@ -252,7 +250,6 @@ const verifyOtp = async (req, res) => {
 
       delete req.session.userOtp;
 
-      // Process referral rewards if a referral code was provided
       if (userData.referralCode) {
         await referralHelper.processReferralReward(
           savedUser,
@@ -529,7 +526,6 @@ const addToCart = async (req, res) => {
       });
     }
 
-    // Validate productId format
     if (
       !productId ||
       typeof productId !== "string" ||
@@ -542,7 +538,6 @@ const addToCart = async (req, res) => {
       });
     }
 
-    // Fetch the product and populate brand and category
     const product = await Product.findById(productId)
       .populate("brand")
       .populate("category");
@@ -559,7 +554,6 @@ const addToCart = async (req, res) => {
       `Found product: ${product.productName}, isListed: ${product.isListed}, stock: ${product.stock}, status: ${product.status}`,
     );
 
-    // Check if product is listed, brand is active, and category is listed
     if (!product.isListed) {
       return res.status(400).json({
         success: false,
@@ -581,7 +575,6 @@ const addToCart = async (req, res) => {
       });
     }
 
-    // Check stock and status
     if (product.status !== "Available" || product.stock === 0) {
       return res.status(400).json({
         success: false,
@@ -596,7 +589,6 @@ const addToCart = async (req, res) => {
       });
     }
 
-    // Enforce maximum purchase limit of 10 per product
     if (quantity > 10) {
       return res.status(400).json({
         success: false,
@@ -604,7 +596,6 @@ const addToCart = async (req, res) => {
       });
     }
 
-    // Calculate the best offer price
     const productOffer = product.productOffer || 0;
     const categoryOffer = product.category?.categoryOffer || 0;
     const bestOfferPercentage = Math.max(productOffer, categoryOffer);
@@ -615,10 +606,8 @@ const addToCart = async (req, res) => {
       finalPrice = product.salesPrice - offerAmount;
     }
 
-    // Find or create cart - make sure we have a Cart schema
     let cart = await Cart.findOne({ userId });
 
-    // If cart doesn't exist, create a new one
     if (!cart) {
       console.log(`Creating new cart for user ${userId}`);
       cart = new Cart({
@@ -629,16 +618,13 @@ const addToCart = async (req, res) => {
       });
     }
 
-    // Check if items array exists, create if not
     if (!cart.items) {
       console.log(`Items array doesn't exist, creating it`);
       cart.items = [];
     }
 
-    // Log current cart items
     console.log(`Current cart has ${cart.items.length} items before update`);
 
-    // Safely find existing item to avoid errors
     let existingItemIndex = -1;
     if (cart.items && cart.items.length > 0) {
       existingItemIndex = cart.items.findIndex(
@@ -650,9 +636,7 @@ const addToCart = async (req, res) => {
     console.log(`Existing item found: ${existingItemIndex !== -1}`);
 
     if (existingItemIndex !== -1) {
-      // Item exists, update quantity
       const existingItem = cart.items[existingItemIndex];
-      // Check that adding the new quantity won't exceed the limit of 10
       const newQuantity = existingItem.quantity + parseInt(quantity);
 
       if (newQuantity > 10) {
@@ -666,17 +650,14 @@ const addToCart = async (req, res) => {
         `Updating existing item in cart. New quantity: ${newQuantity}`,
       );
 
-      // Update the existing item
       existingItem.quantity = newQuantity;
-      existingItem.price = finalPrice; // Update price with current offer price
+      existingItem.price = finalPrice;
       existingItem.totalPrice = existingItem.quantity * finalPrice;
 
-      // Update in the array
       cart.items[existingItemIndex] = existingItem;
     } else {
       console.log(`Adding new item to cart. Quantity: ${quantity}`);
 
-      // Prepare the new item
       const newItem = {
         productId,
         quantity: parseInt(quantity),
@@ -686,26 +667,21 @@ const addToCart = async (req, res) => {
         cancelationReason: "none",
       };
 
-      // Add to cart items array
       cart.items.push(newItem);
     }
 
-    // Save the cart with updated items
     await cart.save();
     console.log("Cart saved successfully");
 
-    // Remove product from wishlist if it exists there
     try {
       const wishlist = await Wishlist.findOne({ userId });
       if (wishlist) {
-        // Check if product is in wishlist
         const inWishlist = wishlist.items.some(
           (item) => item.productId.toString() === productId,
         );
 
         if (inWishlist) {
           console.log(`Removing product ${productId} from wishlist`);
-          // Remove from wishlist using findOneAndUpdate with $pull for atomic operation
           await Wishlist.findOneAndUpdate(
             { userId },
             { $pull: { items: { productId: productId } } },
@@ -715,13 +691,10 @@ const addToCart = async (req, res) => {
       }
     } catch (wishlistErr) {
       console.error("Error handling wishlist during add to cart:", wishlistErr);
-      // Continue with cart process even if wishlist operation fails
     }
 
-    // Update cart count
     const cartCount = cart.items.reduce((sum, item) => sum + item.quantity, 0);
 
-    // Get wishlist count after potential removal
     let wishlistCount = 0;
     try {
       const updatedWishlist = await Wishlist.findOne({ userId });
@@ -753,7 +726,6 @@ const loadProductPage = async (req, res) => {
   try {
     const productId = req.params.id;
 
-    // Validate productId format before querying database
     if (!productId || !productId.match(/^[0-9a-fA-F]{24}$/)) {
       console.log(`Invalid product ID format requested: ${productId}`);
       return res.status(404).render("user/page-404", {
@@ -781,7 +753,6 @@ const loadProductPage = async (req, res) => {
         .render("user/page-404", { message: "Product not found" });
     }
 
-    // Ensure product ID is a string
     if (product._id) {
       product._id = product._id.toString();
     }
@@ -790,14 +761,12 @@ const loadProductPage = async (req, res) => {
   } catch (error) {
     console.error("Error loading product page:", error);
 
-    // Handle CastError specifically (invalid ObjectId)
     if (error.name === "CastError" && error.kind === "ObjectId") {
       return res.status(404).render("user/page-404", {
         message: "Product not found - Invalid ID format",
       });
     }
 
-    // For other errors, render a generic error page
     return res.status(500).render("user/page-404", {
       message:
         "An error occurred while loading the product. Please try again later.",
@@ -818,7 +787,6 @@ const loadProfilePage = async (req, res) => {
 
     let ordersQuery = { user: userId };
     if (search) {
-      // First try to find matching products
       const matchingProducts = await Product.find({
         productName: { $regex: search, $options: "i" },
       }).select("_id");
@@ -1070,7 +1038,7 @@ const resendProfileOtp = async (req, res) => {
 
     if (!emailSent) {
       return res.status(500).json({
-        success: false, // Fixed typo: was 'fasle'
+        success: false,
         message: "Failed to resend OTP",
       });
     }
@@ -1277,13 +1245,10 @@ const sendPasswordChangeOtp = async (req, res) => {
       });
     }
 
-    // Store the new password temporarily in the session
     const { currentPassword, newPassword } = req.body;
     req.session.tempNewPassword = newPassword;
 
-    // Generate OTP and send email
     const otp = generateOtp();
-    // Send the OTP via email
     const emailSent = await sendVerificationEmail(user.email, otp);
 
     if (!emailSent) {
@@ -1293,7 +1258,6 @@ const sendPasswordChangeOtp = async (req, res) => {
       });
     }
 
-    // Store OTP in session with expiration
     req.session.passwordChangeOtp = otp;
     req.session.passwordChangeOtpExpires = Date.now() + 60000; // 1 minute expiration
 
@@ -1376,7 +1340,6 @@ const resendPasswordChangeOtp = async (req, res) => {
       });
     }
 
-    // Generate new OTP
     const otp = generateOtp();
     const emailSent = await sendVerificationEmail(user.email, otp);
 
@@ -1387,7 +1350,6 @@ const resendPasswordChangeOtp = async (req, res) => {
       });
     }
 
-    // Update OTP in session with new expiration
     req.session.passwordChangeOtp = otp;
     req.session.passwordChangeOtpExpires = Date.now() + 60000;
 

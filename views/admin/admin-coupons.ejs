@@ -345,7 +345,6 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Format dates using Luxon
         document.querySelectorAll('.date-format').forEach(el => {
             const date = luxon.DateTime.fromISO(el.innerText.trim());
             if (date.isValid) {
@@ -353,7 +352,6 @@
             }
         });
 
-        // Modal elements
         const couponModal = document.getElementById('couponModal');
         const closeModal = document.getElementById('closeModal');
         const cancelBtn = document.getElementById('cancelBtn');
@@ -365,7 +363,6 @@
         const couponIdInput = document.getElementById('couponId');
         const codeInput = document.getElementById('code');
 
-        // Open modal for new coupon
         function openAddModal() {
             resetForm();
             modalTitle.innerText = 'Add New Coupon';
@@ -373,7 +370,6 @@
             couponIdInput.value = '';
             codeInput.disabled = false;
             
-            // Set default dates
             const now = new Date();
             const tomorrow = new Date(now);
             tomorrow.setDate(now.getDate() + 7);
@@ -384,31 +380,26 @@
             couponModal.classList.remove('hidden');
         }
 
-        // Format date for datetime-local input
         function formatDateTimeLocal(date) {
             return new Date(date.getTime() - (date.getTimezoneOffset() * 60000))
                 .toISOString()
                 .slice(0, 16);
         }
 
-        // Reset form values
         function resetForm() {
             couponForm.reset();
         }
 
-        // Close modal
         function closeModalFn() {
             couponModal.classList.add('hidden');
             resetForm();
         }
 
-        // Add event listeners for modal controls
         if (addCouponBtn) addCouponBtn.addEventListener('click', openAddModal);
         if (noDataAddBtn) noDataAddBtn.addEventListener('click', openAddModal);
         closeModal.addEventListener('click', closeModalFn);
         cancelBtn.addEventListener('click', closeModalFn);
 
-        // Submit form
         couponForm.addEventListener('submit', async function(e) {
             e.preventDefault();
             
@@ -462,7 +453,6 @@
             }
         });
 
-        // Edit coupon
         document.querySelectorAll('.edit-coupon').forEach(btn => {
             btn.addEventListener('click', async function() {
                 const couponId = this.getAttribute('data-id');
@@ -486,7 +476,6 @@
             });
         });
 
-        // Toggle coupon status
         document.querySelectorAll('.toggle-status').forEach(btn => {
             btn.addEventListener('click', async function() {
                 const couponId = this.getAttribute('data-id');
@@ -539,7 +528,6 @@
             });
         });
 
-        // Delete coupon
         document.querySelectorAll('.delete-coupon').forEach(btn => {
             btn.addEventListener('click', function() {
                 const couponId = this.getAttribute('data-id');
@@ -591,26 +579,22 @@
             });
         });
 
-        // Usage History Modal
         const usageHistoryModal = document.getElementById('usageHistoryModal');
         const closeUsageModal = document.getElementById('closeUsageModal');
         const usageHistoryContent = document.getElementById('usageHistoryContent');
         const couponCodeDisplay = document.getElementById('couponCodeDisplay');
         
-        // Close usage history modal
         if (closeUsageModal) {
             closeUsageModal.addEventListener('click', function() {
                 usageHistoryModal.classList.add('hidden');
             });
         }
         
-        // View usage button click
         document.querySelectorAll('.view-usage-btn').forEach(btn => {
             btn.addEventListener('click', async function() {
                 const couponId = this.getAttribute('data-id');
                 const couponCode = this.closest('.coupon-card').querySelector('h3').textContent.trim();
                 
-                // Show modal with loading state
                 usageHistoryModal.classList.remove('hidden');
                 couponCodeDisplay.textContent = ` - ${couponCode}`;
                 usageHistoryContent.innerHTML = `
@@ -684,7 +668,6 @@
             });
         });
         
-        // Close usage modal when clicking overlay
         usageHistoryModal.addEventListener('click', function(e) {
             if (e.target === usageHistoryModal) {
                 usageHistoryModal.classList.add('hidden');

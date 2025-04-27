@@ -28,18 +28,16 @@ const newArrivalsPage = async (req, res) => {
     let query = {
       createdAt: { $gte: thirtyDaysAgo },
       isNew: true,
-      isListed: true, // Ensure only listed products are fetched
+      isListed: true,
       brand: { $in: activeBrandIds },
     };
 
-    // Only apply category filter if user specifically selected a category
     if (filters.category) {
       query.category = filters.category;
     } else {
-      // Otherwise include products with any valid category (or null category)
       query.$or = [
         { category: { $in: listedCategoryIds } },
-        { category: { $exists: true } }
+        { category: { $exists: true } },
       ];
     }
 
@@ -54,7 +52,7 @@ const newArrivalsPage = async (req, res) => {
 
     const totalProducts = await Product.countDocuments({
       ...query,
-      isListed: true, // Ensure pagination counts only listed products
+      isListed: true,
     });
     const totalPages = Math.ceil(totalProducts / perPage);
 

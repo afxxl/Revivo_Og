@@ -25,7 +25,7 @@ const categoryInfo = async (req, res) => {
       currentPage: page,
       totalCategories: count,
       perPage: limit,
-      searchQuery: search, // Add this line
+      searchQuery: search,
     });
   } catch (err) {
     console.error(err);
@@ -45,7 +45,6 @@ const addCategory = async (req, res) => {
         .json({ error: "Name and description are required" });
     }
 
-    // Validate categoryOffer if provided
     const offerValue =
       categoryOffer !== undefined ? parseFloat(categoryOffer) : 0;
     if (isNaN(offerValue) || offerValue < 0 || offerValue > 100) {
@@ -123,7 +122,6 @@ const updateCategory = async (req, res) => {
         .json({ error: "Name and description are required" });
     }
 
-    // Validate categoryOffer if provided
     const offerValue =
       categoryOffer !== undefined ? parseFloat(categoryOffer) : undefined;
     if (
@@ -163,7 +161,6 @@ const updateCategory = async (req, res) => {
       slug: newSlug,
     };
 
-    // Add categoryOffer to updateData if provided
     if (offerValue !== undefined) {
       updateData.categoryOffer = offerValue;
     }
@@ -240,10 +237,8 @@ const updateCategoryOffer = async (req, res) => {
       });
     }
 
-    // If categoryOffer is 0, we're removing the offer
     const offerValue = categoryOffer || 0;
 
-    // Update category offer
     category.categoryOffer = offerValue;
     await category.save();
 
@@ -276,16 +271,6 @@ const deleteCategory = async (req, res) => {
       });
     }
 
-    // Check if products are associated with this category
-    // This check would require the Product model, so you might need to import it
-    // const productsWithCategory = await Product.countDocuments({ category: categoryId });
-    // if (productsWithCategory > 0) {
-    //   return res.status(400).json({
-    //     success: false,
-    //     error: "Cannot delete category because it has associated products"
-    //   });
-    // }
-
     await Category.findByIdAndDelete(categoryId);
 
     return res.status(200).json({
@@ -301,10 +286,9 @@ const deleteCategory = async (req, res) => {
   }
 };
 
-// Add a new function to return categories as JSON
 const getCategories = async (req, res) => {
   try {
-    const categories = await Category.find({ isListed: true }).select('name');
+    const categories = await Category.find({ isListed: true }).select("name");
     return res.json(categories);
   } catch (error) {
     console.error("Error fetching categories for API:", error);

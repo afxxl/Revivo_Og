@@ -28,29 +28,28 @@ passport.use(
             await user.save();
             return done(null, user);
           } else {
-            // Generate a referral code for the new user
             const referralCode = await referralHelper.generateReferralCode();
-            
-            // Check if a referral code was provided in the session
-            const referredBy = req.session.referralCode 
-              ? await User.findOne({ referralCode: req.session.referralCode }) 
+
+            const referredBy = req.session.referralCode
+              ? await User.findOne({ referralCode: req.session.referralCode })
               : null;
-            
+
             user = new User({
               name: profile.displayName,
               email: profile.emails[0].value,
               googleId: profile.id,
               isBlocked: false,
               referralCode: referralCode,
-              referredBy: referredBy ? referredBy._id : null
+              referredBy: referredBy ? referredBy._id : null,
             });
-            
+
             await user.save();
-            
-            // Process referral reward if applicable
+
             if (referredBy) {
-              await referralHelper.processReferralReward(user, req.session.referralCode);
-              // Clear the referral code from session after use
+              await referralHelper.processReferralReward(
+                user,
+                req.session.referralCode,
+              );
               delete req.session.referralCode;
             }
           }

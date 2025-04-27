@@ -732,7 +732,6 @@
         }
     }
 
-    // Add category offer function
     function addCategoryOffer(categoryId, categoryName) {
         Swal.fire({
             title: 'Add Category Offer',
@@ -795,7 +794,6 @@
         });
     }
 
-    // Remove category offer function
     function removeCategoryOffer(categoryId, categoryName) {
         Swal.fire({
             title: 'Remove Category Offer',
@@ -807,7 +805,6 @@
             confirmButtonText: 'Yes, remove it!'
         }).then((result) => {
             if (result.isConfirmed) {
-                // Submit the offer removal to the server
                 fetch(`/admin/updateCategoryOffer/${categoryId}`, {
                     method: 'POST',
                     headers: {
@@ -842,9 +839,7 @@
         });
     }
 
-    // Add event listeners for add and remove offer buttons
     document.addEventListener('DOMContentLoaded', function() {
-        // Add category offer button event listeners
         document.querySelectorAll('.add-category-offer').forEach(button => {
             button.addEventListener('click', function(e) {
                 e.preventDefault();
@@ -854,7 +849,6 @@
             });
         });
 
-        // Remove category offer button event listeners
         document.querySelectorAll('.remove-category-offer').forEach(button => {
             button.addEventListener('click', function(e) {
                 e.preventDefault();
@@ -864,7 +858,6 @@
             });
         });
 
-        // Delete category button event listeners
         document.querySelectorAll('.delete-category').forEach(button => {
             button.addEventListener('click', function(e) {
                 e.preventDefault();
@@ -875,7 +868,6 @@
         });
     });
 
-    // Function to handle category deletion
     function deleteCategory(categoryId, categoryName) {
         Swal.fire({
             title: 'Delete Category',

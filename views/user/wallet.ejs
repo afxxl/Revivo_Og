@@ -427,19 +427,16 @@
     
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Transaction filter tabs
             const tabs = document.querySelectorAll('.transaction-tab');
             const transactionItems = document.querySelectorAll('.transaction-item');
             
             tabs.forEach(tab => {
                 tab.addEventListener('click', function() {
-                    // Update active tab
                     tabs.forEach(t => t.classList.remove('active'));
                     this.classList.add('active');
                     
                     const filter = this.dataset.filter;
                     
-                    // Filter transactions
                     transactionItems.forEach(item => {
                         if (filter === 'all' || item.dataset.type === filter) {
                             item.style.display = 'block';

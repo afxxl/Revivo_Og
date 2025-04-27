@@ -23,13 +23,16 @@ const productInfo = async (req, res) => {
       .skip((page - 1) * limit)
       .exec();
 
-    // Calculate best offer (max of product offer and category offer) for each product
     for (let product of productData) {
       const productOffer = product.productOffer || 0;
       const categoryOffer = product.category?.categoryOffer || 0;
       product.bestOffer = Math.max(productOffer, categoryOffer);
-      product.offerSource = product.bestOffer > 0 ? 
-                           (product.bestOffer === productOffer ? 'product' : 'category') : null;
+      product.offerSource =
+        product.bestOffer > 0
+          ? product.bestOffer === productOffer
+            ? "product"
+            : "category"
+          : null;
     }
 
     const count = await Product.countDocuments({
@@ -52,7 +55,7 @@ const productInfo = async (req, res) => {
       perPage: limit,
       brands: brands,
       categories: categories,
-      searchQuery: search, // Add this line to pass the search query to the view
+      searchQuery: search,
     });
   } catch (err) {
     console.error(err);
@@ -442,7 +445,6 @@ const updateProductOffer = async (req, res) => {
     const productId = req.params.id;
     const { productOffer } = req.body;
 
-    // Validate offer percentage
     if (productOffer !== undefined) {
       if (isNaN(productOffer) || productOffer < 0 || productOffer > 100) {
         return res.status(400).json({
@@ -460,10 +462,8 @@ const updateProductOffer = async (req, res) => {
       });
     }
 
-    // If productOffer is 0, we're removing the offer
     const offerValue = productOffer || 0;
 
-    // Update product offer
     product.productOffer = offerValue;
     await product.save();
 
@@ -484,10 +484,11 @@ const updateProductOffer = async (req, res) => {
   }
 };
 
-// Add a function to return products as JSON for the API
 const getProducts = async (req, res) => {
   try {
-    const products = await Product.find({ isListed: true }).select('productName');
+    const products = await Product.find({ isListed: true }).select(
+      "productName",
+    );
     return res.json(products);
   } catch (error) {
     console.error("Error fetching products for API:", error);

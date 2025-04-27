@@ -945,34 +945,29 @@
     <%- include('../partials/user/footer.ejs') %>
 
     <script>
-      // Load random images when page loads
       document.addEventListener('DOMContentLoaded', loadRandomShopImages);
       
-      // Filter sidebar functionality
       document.addEventListener('DOMContentLoaded', function() {
         const openFilterBtn = document.getElementById('open-filter');
         const closeFilterBtn = document.getElementById('close-filter');
         const filterSidebar = document.querySelector('.filter-sidebar');
         const filterOverlay = document.querySelector('.filter-overlay');
         
-        // Open filter sidebar
         openFilterBtn.addEventListener('click', function() {
           filterSidebar.classList.add('active');
           filterOverlay.classList.add('active');
-          document.body.style.overflow = 'hidden'; // Prevent scrolling
+          document.body.style.overflow = 'hidden';
         });
         
-        // Close filter sidebar
         function closeFilterSidebar() {
           filterSidebar.classList.remove('active');
           filterOverlay.classList.remove('active');
-          document.body.style.overflow = ''; // Allow scrolling
+          document.body.style.overflow = ''; 
         }
         
         closeFilterBtn.addEventListener('click', closeFilterSidebar);
         filterOverlay.addEventListener('click', closeFilterSidebar);
         
-        // Handle form submission
       document.getElementById('filterForm').addEventListener('submit', function(e) {
         e.preventDefault();
         const formData = new FormData(this);
@@ -986,7 +981,6 @@
         });
       });
       
-      // Original event listeners (keeping for compatibility)
       const toggleButton = document.getElementById('toggleFilters');
       const filterContainer = document.querySelector('.filter-container');
 
@@ -1004,11 +998,10 @@
         } else {
           params.set('category', categoryId);
         }
-        params.delete('page'); // Reset to page 1 on category change
+        params.delete('page'); 
         window.location.href = `/shop?${params.toString()}`;
       });
 
-      // Category slider functionality
       document.addEventListener('DOMContentLoaded', function() {
         const slider = document.querySelector('.category-slider');
         const prevBtn = document.getElementById('prev-category');
@@ -1018,7 +1011,7 @@
         if (!slider || !prevBtn || !nextBtn || !sliderContainer) return;
         
         let position = 0;
-        const scrollAmount = 300; // Amount to scroll on each click
+        const scrollAmount = 300;
         const totalWidth = slider.scrollWidth;
         const visibleWidth = sliderContainer.offsetWidth;
         const maxPosition = Math.max(0, totalWidth - visibleWidth);
@@ -1026,7 +1019,6 @@
         function updateSliderPosition() {
           slider.style.transform = `translateX(-${position}px)`;
           
-          // Disable buttons when at the start or end
           prevBtn.disabled = position === 0;
           nextBtn.disabled = position >= maxPosition;
           
@@ -1034,7 +1026,6 @@
           nextBtn.style.opacity = position >= maxPosition ? '0.5' : '1';
         }
         
-        // Check if scrolling is needed
         function checkScrollNeeded() {
           if (totalWidth <= visibleWidth) {
             prevBtn.style.display = 'none';
@@ -1055,11 +1046,9 @@
           updateSliderPosition();
         });
         
-        // Initialize button states
         updateSliderPosition();
         checkScrollNeeded();
         
-        // Update on window resize
         window.addEventListener('resize', () => {
           const newVisibleWidth = sliderContainer.offsetWidth;
           const newMaxPosition = Math.max(0, slider.scrollWidth - newVisibleWidth);
@@ -1068,7 +1057,6 @@
           checkScrollNeeded();
         });
         
-        // Touch events for mobile swipe
         let touchStartX = 0;
         let touchEndX = 0;
         
@@ -1083,14 +1071,12 @@
         
         function handleSwipe() {
           const swipeDistance = touchStartX - touchEndX;
-          const swipeThreshold = 50; // Minimum distance to trigger swipe
+          const swipeThreshold = 50;
           
           if (swipeDistance > swipeThreshold) {
-            // Swipe left - go right
             position = Math.min(maxPosition, position + scrollAmount);
             updateSliderPosition();
           } else if (swipeDistance < -swipeThreshold) {
-            // Swipe right - go left
             position = Math.max(0, position - scrollAmount);
             updateSliderPosition();
           }
@@ -1144,7 +1130,6 @@
         }
       }
 
-      // Helper function to set polaroid images
       function setPolaroidImage(imageId, imageUrl, altText = '') {
         const imageElement = document.getElementById(imageId);
         if (imageElement) {
@@ -1152,60 +1137,47 @@
           if (altText) {
             imageElement.alt = altText;
           }
-          // Add error handler in case image doesn't load
           imageElement.onerror = function() {
             this.src = '/Images/placeholder.jpg';
           };
         }
       }
       
-      // Function to load random images for the polaroids
       function loadRandomShopImages() {
-        // Get all the product images from the page
         const productImages = Array.from(document.querySelectorAll('.product-image'))
           .map(img => img.src)
           .filter(src => !src.includes('placeholder.jpg'));
         
         if (productImages.length === 0) {
-          // If no product images found, use placeholders
           setPolaroidImage('polaroid-main', '/Images/placeholder.jpg', 'Vintage Collection');
           setPolaroidImage('polaroid-left', '/Images/placeholder.jpg', 'Retro Finds');
           setPolaroidImage('polaroid-right', '/Images/placeholder.jpg', 'Unique Pieces');
           return;
         }
         
-        // Shuffle the array to get random order
         const shuffledImages = [...productImages].sort(() => 0.5 - Math.random());
         
-        // Get the first 3 images or repeat if not enough
         setPolaroidImage('polaroid-main', shuffledImages[0] || productImages[0], 'Vintage Collection');
         setPolaroidImage('polaroid-left', shuffledImages[1] || productImages[0], 'Retro Finds');
         setPolaroidImage('polaroid-right', shuffledImages[2] || productImages[0], 'Unique Pieces');
         
-        // Add vintage date stamps to polaroids
         addVintageDateStamp();
       }
       
-      // Function to add vintage date stamps to the polaroids
       function addVintageDateStamp() {
-        // Generate random years between 1970 and 1999 for true vintage feel
         const vintageYears = ['1979', '1983', '1985', '1991', '1995', '1997'];
         const months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
         const days = Array.from({length: 28}, (_, i) => i + 1);
         
-        // For each polaroid, add a date stamp
         const polaroids = document.querySelectorAll('.polaroid-container');
         
         polaroids.forEach(polaroid => {
-          // Create a date stamp element
           const dateStamp = document.createElement('div');
           
-          // Get random date components
           const month = months[Math.floor(Math.random() * months.length)];
           const day = days[Math.floor(Math.random() * days.length)];
           const year = vintageYears[Math.floor(Math.random() * vintageYears.length)];
           
-          // Style the date stamp
           dateStamp.innerHTML = `${day} ${month} ${year}`;
           dateStamp.style.position = 'absolute';
           dateStamp.style.bottom = '0.5rem';
@@ -1215,7 +1187,6 @@
           dateStamp.style.color = 'rgba(0,0,0,0.5)';
           dateStamp.style.transform = 'rotate(-2deg)';
           
-          // Add the date stamp to the polaroid
           polaroid.appendChild(dateStamp);
         });
       }

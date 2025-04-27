@@ -29,7 +29,7 @@ const getBrandPage = async (req, res) => {
       currentPage: page,
       totalPages: totalPages,
       totalBrands: totalBrands,
-      searchQuery: search, // Make sure to pass this to the view
+      searchQuery: search,
     });
   } catch (err) {
     console.error("Get Brand Error:", err);
@@ -209,14 +209,12 @@ const toggleBrandStatus = async (req, res) => {
   }
 };
 
-// Add a function to return brands as JSON for the API
 const getBrands = async (req, res) => {
   try {
-    const brands = await Brand.find({ isActive: true }).select('brandName');
-    // Map the results to match the expected format in the frontend
-    const formattedBrands = brands.map(brand => ({
+    const brands = await Brand.find({ isActive: true }).select("brandName");
+    const formattedBrands = brands.map((brand) => ({
       _id: brand._id,
-      name: brand.brandName
+      name: brand.brandName,
     }));
     return res.json(formattedBrands);
   } catch (error) {

@@ -575,7 +575,6 @@ document.addEventListener('DOMContentLoaded', function() {
   document.querySelectorAll('.quantity-input').forEach(input => {
     input.defaultValue = input.value;
     
-    // Set max attribute to 10 or stock, whichever is lower
     const currentMax = parseInt(input.max);
     input.max = Math.min(currentMax, 10);
 
@@ -636,19 +635,16 @@ document.addEventListener('DOMContentLoaded', function() {
       if (data.success) {
         showToast(`Removed ${productName} from cart`, 'success');
 
-        // Update cart count
         const cartCountEl = document.getElementById('cart-count');
         if (cartCountEl) {
           cartCountEl.textContent = data.cartCount || 0;
         }
 
-        // Remove the cart item from the DOM
         const cartItem = document.querySelector(`.cart-item .remove-btn[data-product-id="${productId}"]`).closest('.cart-item');
         if (cartItem) {
           cartItem.remove();
         }
 
-        // Update order summary
         const subtotalEl = document.querySelector('.subtotal-display');
         const shippingEl = document.querySelector('.shipping-display');
         const totalEl = document.querySelector('.total-display');
@@ -658,7 +654,6 @@ document.addEventListener('DOMContentLoaded', function() {
         if (shippingEl) shippingEl.textContent = `₹${data.cart.shipping.toFixed(2)}`;
         if (totalEl) totalEl.textContent = `₹${data.cart.total.toFixed(2)}`;
         
-        // If there are no more items with savings, hide the savings row
         if (totalSavingsEl) {
           let newTotalSavings = 0;
           data.cart.items.forEach(item => {
@@ -678,7 +673,6 @@ document.addEventListener('DOMContentLoaded', function() {
           }
         }
 
-        // Update checkout button *before* replacing the container
         const checkoutBtn = document.querySelector('.checkout-btn');
         if (data.cart.items.length === 0 && checkoutBtn) {
           checkoutBtn.classList.add('opacity-60', 'cursor-not-allowed');
@@ -686,7 +680,6 @@ document.addEventListener('DOMContentLoaded', function() {
           checkoutBtn.setAttribute('title', 'Cart is empty');
         }
 
-        // Check if cart is empty
         const cartItems = document.querySelectorAll('.cart-item');
         if (cartItems.length === 0) {
           const cartContainer = document.querySelector('.flex.flex-col.lg\\:flex-row.gap-8');
@@ -702,10 +695,9 @@ document.addEventListener('DOMContentLoaded', function() {
               </a>
             </div>
           `;
-          // Reload the page after a delay to show the toast
           setTimeout(() => {
             window.location.reload();
-          }, 600); // Reduced to 600ms for faster transition
+          }, 600);
         }
       } else {
         showToast(data.message || 'Failed to remove item', 'error');
@@ -749,7 +741,7 @@ document.addEventListener('DOMContentLoaded', function() {
   function showConfirmToast(message, onConfirm, onCancel) {
     const toast = document.createElement('div');
     toast.className = 'toast-confirm fixed bottom-4 right-4 bg-[#2C2C2C] text-white px-6 py-4 rounded-lg shadow-xl z-50';
-    let isDismissing = false; // Flag to prevent further timeouts
+    let isDismissing = false;
 
     toast.innerHTML = `
       <div class="flex flex-col">
@@ -772,7 +764,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     let timeout = setTimeout(() => {
       if (!isDismissing) {
-        console.log('Auto-cancel timeout triggered'); // Debug
+        console.log('Auto-cancel timeout triggered');
         isDismissing = true;
         toast.classList.add('hidden');
         setTimeout(() => {
@@ -784,7 +776,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     confirmBtn.addEventListener('click', () => {
       if (isDismissing) return;
-      console.log('Confirm button clicked'); // Debug
+      console.log('Confirm button clicked');
       isDismissing = true;
       clearTimeout(timeout);
       toast.classList.add('hidden');
@@ -796,7 +788,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     cancelBtn.addEventListener('click', () => {
       if (isDismissing) return;
-      console.log('Cancel button clicked'); // Debug
+      console.log('Cancel button clicked');
       isDismissing = true;
       clearTimeout(timeout);
       toast.classList.add('hidden');
@@ -807,16 +799,16 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     toast.addEventListener('mouseenter', () => {
-      console.log('Mouse entered toast'); // Debug
+      console.log('Mouse entered toast');
       clearTimeout(timeout);
     });
 
     toast.addEventListener('mouseleave', () => {
       if (isDismissing) return;
-      console.log('Mouse left toast'); // Debug
+      console.log('Mouse left toast');
       timeout = setTimeout(() => {
         if (!isDismissing) {
-          console.log('Mouseleave timeout triggered'); // Debug
+          console.log('Mouseleave timeout triggered');
           isDismissing = true;
           toast.classList.add('hidden');
           setTimeout(() => {
@@ -828,7 +820,6 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 
-  // Coupon functionality
   const applyCouponBtn = document.getElementById('apply-coupon-btn');
   const couponInput = document.getElementById('coupon-code');
   const couponMessage = document.getElementById('coupon-message');
@@ -837,7 +828,6 @@ document.addEventListener('DOMContentLoaded', function() {
   if (applyCouponBtn && couponInput) {
     applyCouponBtn.addEventListener('click', applyCoupon);
     
-    // Allow Enter key to apply coupon
     couponInput.addEventListener('keypress', function(e) {
       if (e.key === 'Enter') {
         e.preventDefault();
@@ -850,7 +840,6 @@ document.addEventListener('DOMContentLoaded', function() {
     removeCouponBtn.addEventListener('click', removeCoupon);
   }
   
-  // Add click event listeners to "Use" buttons for coupons
   document.querySelectorAll('.use-coupon-btn').forEach(btn => {
     btn.addEventListener('click', function() {
       const couponCode = this.getAttribute('data-coupon-code');
@@ -870,7 +859,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     try {
-      // Disable button and show loading state
       applyCouponBtn.disabled = true;
       applyCouponBtn.innerHTML = '<div class="spinner-border spinner-border-sm"></div>';
       
@@ -886,14 +874,11 @@ document.addEventListener('DOMContentLoaded', function() {
       const data = await response.json();
       
       if (response.ok && data.success) {
-        // Update order summary with discount
         updateOrderSummaryWithCoupon(data.cart);
         
-        // Disable coupon input and button
         couponInput.disabled = true;
         applyCouponBtn.disabled = true;
         
-        // Disable all "Use" buttons
         document.querySelectorAll('.use-coupon-btn').forEach(btn => {
           btn.disabled = true;
         });
@@ -901,7 +886,6 @@ document.addEventListener('DOMContentLoaded', function() {
         displayCouponMessage(`Coupon ${data.cart.couponCode} applied successfully!`, 'success');
         showToast(`Coupon ${data.cart.couponCode} applied successfully!`, 'success');
         
-        // Reload the page to show the updated state
         setTimeout(() => {
           window.location.reload();
         }, 1000);
@@ -912,7 +896,6 @@ document.addEventListener('DOMContentLoaded', function() {
       console.error('Error applying coupon:', error);
       displayCouponMessage('An error occurred while applying the coupon', 'error');
     } finally {
-      // Reset button state
       applyCouponBtn.disabled = false;
       applyCouponBtn.innerHTML = 'Apply';
     }
@@ -920,7 +903,6 @@ document.addEventListener('DOMContentLoaded', function() {
   
   async function removeCoupon() {
     try {
-      // Show loading state on the remove button
       removeCouponBtn.innerHTML = '<div class="spinner-border spinner-border-sm"></div>';
       
       const response = await fetch('/apply-coupon/remove', {
@@ -933,7 +915,6 @@ document.addEventListener('DOMContentLoaded', function() {
       if (response.ok && data.success) {
         showToast('Coupon removed successfully', 'success');
         
-        // Reload the page to show the updated state
         setTimeout(() => {
           window.location.reload();
         }, 800);
@@ -955,14 +936,11 @@ document.addEventListener('DOMContentLoaded', function() {
     if (shippingEl) shippingEl.textContent = `₹${cartData.shipping.toFixed(2)}`;
     if (totalEl) totalEl.textContent = `₹${cartData.total.toFixed(2)}`;
     
-    // Create or update coupon discount row
     const orderSummary = totalEl.closest('.space-y-4');
     
-    // Check if coupon discount row already exists
     let couponRow = document.querySelector('.coupon-discount-row');
     
     if (!couponRow) {
-      // Create new row for coupon discount
       couponRow = document.createElement('div');
       couponRow.className = 'flex justify-between text-green-600 coupon-discount-row';
       
@@ -984,17 +962,14 @@ document.addEventListener('DOMContentLoaded', function() {
       couponRow.appendChild(couponLabel);
       couponRow.appendChild(couponValue);
       
-      // Insert before the total row (which should be the last child)
       const totalRow = totalEl.closest('.border-t');
       orderSummary.insertBefore(couponRow, totalRow);
       
-      // Add event listener to the new remove button
       const newRemoveBtn = couponRow.querySelector('#remove-coupon');
       if (newRemoveBtn) {
         newRemoveBtn.addEventListener('click', removeCoupon);
       }
     } else {
-      // Update existing coupon row
       const couponLabel = couponRow.querySelector('.font-montserrat.text-sm');
       const couponValue = couponRow.querySelector('.coupon-discount-display');
       

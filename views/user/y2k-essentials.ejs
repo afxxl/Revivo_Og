@@ -816,31 +816,27 @@
     <%- include('../partials/user/footer.ejs') %>
 
     <script>
-      // Filter sidebar functionality
       document.addEventListener('DOMContentLoaded', function() {
         const openFilterBtn = document.getElementById('open-filter');
         const closeFilterBtn = document.getElementById('close-filter');
         const filterSidebar = document.querySelector('.filter-sidebar');
         const filterOverlay = document.querySelector('.filter-overlay');
         
-        // Open filter sidebar
         openFilterBtn.addEventListener('click', function() {
           filterSidebar.classList.add('active');
           filterOverlay.classList.add('active');
-          document.body.style.overflow = 'hidden'; // Prevent scrolling
+          document.body.style.overflow = 'hidden';
         });
         
-        // Close filter sidebar
         function closeFilterSidebar() {
           filterSidebar.classList.remove('active');
           filterOverlay.classList.remove('active');
-          document.body.style.overflow = ''; // Allow scrolling
+          document.body.style.overflow = '';
         }
         
         closeFilterBtn.addEventListener('click', closeFilterSidebar);
         filterOverlay.addEventListener('click', closeFilterSidebar);
         
-        // Handle form submission
         document.getElementById('filterForm').addEventListener('submit', function(e) {
           e.preventDefault();
           const formData = new FormData(this);
@@ -853,11 +849,9 @@
           window.location.href = `/shop/collection/y2k-essentials?${params.toString()}`;
         });
         
-        // Load random images for the polaroids
         loadRandomCollectionImages();
       });
       
-      // Original event listeners (keeping for compatibility)
       const toggleButton = document.getElementById('toggleFilters');
       const filterContainer = document.querySelector('.filter-container');
 
@@ -914,7 +908,6 @@
         }
       }
       
-      // Helper function to set polaroid images
       function setPolaroidImage(imageId, imageUrl, altText = '') {
         const imageElement = document.getElementById(imageId);
         if (imageElement) {
@@ -922,60 +915,47 @@
           if (altText) {
             imageElement.alt = altText;
           }
-          // Add error handler in case image doesn't load
           imageElement.onerror = function() {
             this.src = '/Images/placeholder.jpg';
           };
         }
       }
       
-      // Function to load random images for the polaroids
       function loadRandomCollectionImages() {
-        // Get all the product images from the page
         const productImages = Array.from(document.querySelectorAll('.product-image'))
           .map(img => img.src)
           .filter(src => !src.includes('placeholder.jpg'));
         
         if (productImages.length === 0) {
-          // If no product images found, use placeholders
           setPolaroidImage('polaroid-main', '/Images/placeholder.jpg', 'Y2K Essentials Collection');
           setPolaroidImage('polaroid-left', '/Images/placeholder.jpg', 'Y2K Essentials Item');
           setPolaroidImage('polaroid-right', '/Images/placeholder.jpg', 'Y2K Essentials Accessories');
           return;
         }
         
-        // Shuffle the array to get random order
         const shuffledImages = [...productImages].sort(() => 0.5 - Math.random());
         
-        // Get the first 3 images or repeat if not enough
         setPolaroidImage('polaroid-main', shuffledImages[0] || productImages[0], 'Y2K Essentials Collection');
         setPolaroidImage('polaroid-left', shuffledImages[1] || productImages[0], 'Y2K Essentials Item');
         setPolaroidImage('polaroid-right', shuffledImages[2] || productImages[0], 'Y2K Essentials Accessories');
         
-        // Add vintage date stamps to polaroids
         addVintageDateStamp();
       }
       
-      // Function to add vintage date stamps to the polaroids
       function addVintageDateStamp() {
-        // Generate random years between 1998 and 2005 for Y2K feel
         const vintageYears = ['1998', '2000', '2001', '2002', '2003', '2005'];
         const months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
         const days = Array.from({length: 28}, (_, i) => i + 1);
         
-        // For each polaroid, add a date stamp
         const polaroids = document.querySelectorAll('.polaroid-container');
         
         polaroids.forEach(polaroid => {
-          // Create a date stamp element
           const dateStamp = document.createElement('div');
           
-          // Get random date components
           const month = months[Math.floor(Math.random() * months.length)];
           const day = days[Math.floor(Math.random() * days.length)];
           const year = vintageYears[Math.floor(Math.random() * vintageYears.length)];
           
-          // Style the date stamp
           dateStamp.innerHTML = `${day} ${month} ${year}`;
           dateStamp.style.position = 'absolute';
           dateStamp.style.bottom = '0.5rem';
@@ -985,7 +965,6 @@
           dateStamp.style.color = 'rgba(0,0,0,0.5)';
           dateStamp.style.transform = 'rotate(-2deg)';
           
-          // Add the date stamp to the polaroid
           polaroid.appendChild(dateStamp);
         });
       }

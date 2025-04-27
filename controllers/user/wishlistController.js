@@ -2,12 +2,8 @@ const Wishlist = require("../../models/wishlistSchema");
 const Product = require("../../models/productSchema");
 const Cart = require("../../models/cartSchema");
 
-// Load wishlist page
 const loadWishlistPage = async (req, res) => {
   try {
-    console.log("Loading wishlist page for user:", req.session.user);
-
-    // Find user's wishlist
     let wishlist = await Wishlist.findOne({
       userId: req.session.user,
     }).populate({
@@ -18,15 +14,9 @@ const loadWishlistPage = async (req, res) => {
       ],
     });
 
-    console.log("Wishlist found:", wishlist ? "Yes" : "No");
-
-    // If wishlist doesn't exist, create empty one
     if (!wishlist) {
       wishlist = { items: [] };
     } else {
-      console.log(`Wishlist contains ${wishlist.items.length} items`);
-
-      // Log each item in wishlist for debugging
       wishlist.items.forEach((item, index) => {
         const productExists = !!item.productId;
         console.log(`Item ${index + 1}:`);
@@ -47,7 +37,6 @@ const loadWishlistPage = async (req, res) => {
       });
     }
 
-    // Filter out unavailable products
     const availableItems = wishlist.items.filter((item) => {
       const product = item.productId;
       return (
@@ -62,13 +51,9 @@ const loadWishlistPage = async (req, res) => {
       );
     });
 
-    console.log(`Found ${availableItems.length} available items`);
-
-    // Process items to include price information
     const wishlistItems = availableItems.map((item, index) => {
       const product = item.productId;
 
-      // Calculate final price with offers
       const productOffer = product.productOffer || 0;
       const categoryOffer =
         product.category && product.category.categoryOffer
@@ -82,7 +67,6 @@ const loadWishlistPage = async (req, res) => {
         finalPrice = product.salesPrice - offerAmount;
       }
 
-      // Make sure to convert product ID to string for consistent handling
       const processedItem = {
         ...item._doc,
         finalPrice,
@@ -90,16 +74,8 @@ const loadWishlistPage = async (req, res) => {
         offerPercentage: bestOfferPercentage,
       };
 
-      // Ensure the product ID is a string
       if (processedItem.productId && processedItem.productId._id) {
-        console.log(
-          `Original productId type for item ${index}: ${typeof processedItem.productId._id}`,
-        );
-        // Ensure it's available as a string
         processedItem.productId._id = processedItem.productId._id.toString();
-        console.log(
-          `Converted productId for item ${index}: ${processedItem.productId._id}`,
-        );
       }
 
       return processedItem;
@@ -119,8 +95,6 @@ const loadWishlistPage = async (req, res) => {
       );
     });
 
-    console.log(`Found ${unavailableItems.length} unavailable items`);
-
     res.render("wishlist", {
       wishlistItems,
       unavailableItems,
@@ -136,16 +110,11 @@ const loadWishlistPage = async (req, res) => {
   }
 };
 
-// Add item to wishlist
 const addToWishlist = async (req, res) => {
   try {
     const { productId } = req.body;
-    console.log(
-      `Adding product ${productId} to wishlist for user ${req.session.user || "guest"}`,
-    );
 
     if (!req.session.user) {
-      console.log("User not logged in, returning 401");
       return res.status(401).json({
         success: false,
         message: "Please login to add items to your wishlist",
@@ -160,25 +129,19 @@ const addToWishlist = async (req, res) => {
       });
     }
 
-    // Validate product ID format
     if (!productId.match(/^[0-9a-fA-F]{24}$/)) {
-      console.error(`Invalid product ID format: ${productId}`);
       return res.status(400).json({
         success: false,
         message: `Invalid product ID format: ${productId}`,
       });
     }
 
-    // Validate product exists and is available
-    console.log(`Finding product with ID: ${productId}`);
     let product;
     try {
       product = await Product.findById(productId)
         .populate("brand")
         .populate("category");
-      console.log(`Product found? ${!!product}`);
     } catch (err) {
-      console.error(`Error finding product ${productId}:`, err);
       return res.status(400).json({
         success: false,
         message: `Invalid product ID format: ${productId}`,
@@ -186,26 +149,14 @@ const addToWishlist = async (req, res) => {
     }
 
     if (!product) {
-      console.log(`Product not found with ID: ${productId}`);
       return res.status(404).json({
         success: false,
         message: `Product not found with ID: ${productId}`,
       });
     }
 
-    console.log(
-      `Found product: ${product.productName}, isListed: ${product.isListed}, stock: ${product.stock}, status: ${product.status}`,
-    );
-    console.log(
-      `Brand: ${product.brand ? product.brand.brandName + " isActive: " + product.brand.isActive : "No brand"}`,
-    );
-    console.log(
-      `Category: ${product.category ? product.category.name + " isListed: " + product.category.isListed : "No category"}`,
-    );
-
     // Check product availability
     if (!product.isListed) {
-      console.log(`Product ${productId} is not listed`);
       return res.status(400).json({
         success: false,
         message: "This product is no longer available",
@@ -213,7 +164,6 @@ const addToWishlist = async (req, res) => {
     }
 
     if (!product.brand || !product.brand.isActive) {
-      console.log(`Product ${productId}'s brand is not available`);
       return res.status(400).json({
         success: false,
         message: "This product's brand is not available",
@@ -221,7 +171,6 @@ const addToWishlist = async (req, res) => {
     }
 
     if (!product.category || !product.category.isListed) {
-      console.log(`Product ${productId}'s category is not available`);
       return res.status(400).json({
         success: false,
         message: "This product's category is not available",
@@ -229,17 +178,11 @@ const addToWishlist = async (req, res) => {
     }
 
     if (product.stock <= 0 || product.status !== "Available") {
-      console.log(`Product ${productId} is out of stock or not available`);
       return res.status(400).json({
         success: false,
         message: "This product is out of stock",
       });
     }
-
-    // Use findOneAndUpdate with $addToSet to atomically add the product to the wishlist if it doesn't exist
-    console.log(
-      `Adding product ${productId} to wishlist using atomic operation`,
-    );
 
     const newItem = {
       productId: productId,
@@ -252,22 +195,15 @@ const addToWishlist = async (req, res) => {
         $addToSet: { items: newItem },
       },
       {
-        new: true, // Return the updated document
-        upsert: true, // Create the document if it doesn't exist
+        new: true,
+        upsert: true,
       },
     );
 
-    console.log(
-      `Wishlist operation complete. New count: ${result.items.length}`,
-    );
-
-    // Check if the item was added (by comparing length before and after)
     const productExists = result.items.some(
       (item) =>
         item.productId && item.productId.toString() === productId.toString(),
     );
-
-    console.log(`Product ${productId} is in wishlist? ${productExists}`);
 
     if (productExists) {
       return res.json({
@@ -294,16 +230,11 @@ const addToWishlist = async (req, res) => {
   }
 };
 
-// Remove item from wishlist
 const removeFromWishlist = async (req, res) => {
   try {
     const { productId } = req.body;
-    console.log(
-      `Attempting to remove product ${productId} from wishlist for user ${req.session.user || "guest"}`,
-    );
 
     if (!productId) {
-      console.log("No product ID provided for removal");
       return res.status(400).json({
         success: false,
         message: "Product ID is required",
@@ -311,41 +242,32 @@ const removeFromWishlist = async (req, res) => {
     }
 
     if (!req.session.user) {
-      console.log("User not logged in for wishlist removal");
       return res.status(401).json({
         success: false,
         message: "Please login to manage your wishlist",
       });
     }
 
-    // Validate that productId is a valid ObjectId
     if (!productId.match(/^[0-9a-fA-F]{24}$/)) {
-      console.error(`Invalid product ID format for removal: ${productId}`);
       return res.status(400).json({
         success: false,
         message: "Invalid product ID format",
       });
     }
 
-    console.log(`Removing product ${productId} using atomic operation`);
-
-    // Use findOneAndUpdate with $pull operator to remove items matching productId
-    // This is atomic and prevents version errors from concurrent operations
     const result = await Wishlist.findOneAndUpdate(
       { userId: req.session.user },
       { $pull: { items: { productId: productId } } },
-      { new: true }, // Return updated document
+      { new: true },
     );
 
     if (!result) {
-      console.log(`No wishlist found for user ${req.session.user}`);
       return res.status(404).json({
         success: false,
         message: "Wishlist not found",
       });
     }
 
-    console.log(`Product removed. New wishlist count: ${result.items.length}`);
     return res.json({
       success: true,
       message: "Product removed from wishlist",
@@ -362,7 +284,6 @@ const removeFromWishlist = async (req, res) => {
   }
 };
 
-// Check if an item is in wishlist
 const checkWishlistStatus = async (req, res) => {
   try {
     const { productId } = req.params;
@@ -375,7 +296,6 @@ const checkWishlistStatus = async (req, res) => {
       });
     }
 
-    // If user is not logged in, return false immediately
     if (!req.session.user) {
       return res.json({
         inWishlist: false,
@@ -383,7 +303,6 @@ const checkWishlistStatus = async (req, res) => {
       });
     }
 
-    // Validate that productId is a valid ObjectId
     if (!productId.match(/^[0-9a-fA-F]{24}$/)) {
       return res.status(400).json({
         success: false,
@@ -401,7 +320,6 @@ const checkWishlistStatus = async (req, res) => {
       });
     }
 
-    // Check if product is in wishlist
     const inWishlist = wishlist.items.some((item) => {
       if (!item.productId) return false;
       return item.productId.toString() === productId.toString();
@@ -421,7 +339,6 @@ const checkWishlistStatus = async (req, res) => {
   }
 };
 
-// Count wishlist items
 const getWishlistCount = async (req, res) => {
   try {
     if (!req.session.user) {

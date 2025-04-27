@@ -15,7 +15,6 @@ const mongoose = require("mongoose");
 const Coupon = require("../../models/couponSchema.js");
 const Razorpay = require("razorpay");
 
-// Initialize Razorpay only if credentials are available
 let razorpay;
 if (process.env.RAZORPAY_KEY_ID && process.env.RAZORPAY_KEY_SECRET) {
   razorpay = new Razorpay({
@@ -48,7 +47,7 @@ const shopPage = async (req, res) => {
 
     let query = {
       status: "Available",
-      isListed: true, // Ensure only listed products are fetched
+      isListed: true,
       category: { $in: listedCategoryIds },
       brand: { $in: activeBrandIds },
     };
@@ -68,7 +67,7 @@ const shopPage = async (req, res) => {
 
     const totalProducts = await Product.countDocuments({
       ...query,
-      isListed: true, // Ensure pagination counts only listed products
+      isListed: true,
     });
     const totalPages = Math.ceil(totalProducts / perPage);
 
@@ -130,7 +129,7 @@ const loadBrandPage = async (req, res) => {
     let query = {
       brand: brandId,
       status: "Available",
-      isListed: true, // Ensure only listed products are fetched
+      isListed: true,
       category: { $in: listedCategoryIds },
     };
     if (filters.size) query.size = filters.size;
@@ -143,7 +142,7 @@ const loadBrandPage = async (req, res) => {
 
     const totalProducts = await Product.countDocuments({
       ...query,
-      isListed: true, // Ensure pagination counts only listed products
+      isListed: true,
     });
     const totalPages = Math.ceil(totalProducts / perPage);
 
@@ -198,7 +197,7 @@ const loadPrimeLayers = async (req, res) => {
     let query = {
       heritage: "Prime Layers",
       status: "Available",
-      isListed: true, // Ensure only listed products are fetched
+      isListed: true,
       category: { $in: listedCategoryIds },
       brand: { $in: activeBrandIds },
     };
@@ -212,7 +211,7 @@ const loadPrimeLayers = async (req, res) => {
 
     const totalProducts = await Product.countDocuments({
       ...query,
-      isListed: true, // Ensure pagination counts only listed products
+      isListed: true,
     });
     const totalPages = Math.ceil(totalProducts / perPage);
 
@@ -268,7 +267,7 @@ const loadVintageAthletics = async (req, res) => {
     let query = {
       heritage: "Vintage Athletics",
       status: "Available",
-      isListed: true, // Ensure only listed products are fetched
+      isListed: true,
       category: { $in: listedCategoryIds },
       brand: { $in: activeBrandIds },
     };
@@ -282,7 +281,7 @@ const loadVintageAthletics = async (req, res) => {
 
     const totalProducts = await Product.countDocuments({
       ...query,
-      isListed: true, // Ensure pagination counts only listed products
+      isListed: true,
     });
     const totalPages = Math.ceil(totalProducts / perPage);
 
@@ -338,7 +337,7 @@ const loadY2kEssentials = async (req, res) => {
     let query = {
       heritage: "Y2K Essentials",
       status: "Available",
-      isListed: true, // Ensure only listed products are fetched
+      isListed: true,
       category: { $in: listedCategoryIds },
       brand: { $in: activeBrandIds },
     };
@@ -353,7 +352,7 @@ const loadY2kEssentials = async (req, res) => {
 
     const totalProducts = await Product.countDocuments({
       ...query,
-      isListed: true, // Ensure pagination counts only listed products
+      isListed: true,
     });
     const totalPages = Math.ceil(totalProducts / perPage);
 
@@ -417,10 +416,6 @@ const updateCart = async (req, res) => {
       cart = new Cart({ userId, items: [] });
     }
 
-    // Log incoming items for debugging
-    console.log("Incoming items:", items);
-
-    // Validate all items before updating
     for (const item of items) {
       if (!item.productId || !item.quantity) {
         return res.status(400).json({
@@ -452,7 +447,6 @@ const updateCart = async (req, res) => {
         });
       }
 
-      // Enforce maximum purchase limit of 10 per product
       if (item.quantity > 10) {
         return res.status(400).json({
           success: false,
@@ -462,7 +456,6 @@ const updateCart = async (req, res) => {
       }
     }
 
-    // Update only the specified items, preserving others
     const updatedItems = [...cart.items];
 
     for (const item of items) {
@@ -471,11 +464,8 @@ const updateCart = async (req, res) => {
       );
 
       if (existingItemIndex !== -1) {
-        // Update existing item
-        console.log(`Updating existing item: ${item.productId}`);
         const existingItem = updatedItems[existingItemIndex];
 
-        // Get product and calculate best offer price
         const product = await Product.findById(item.productId).populate(
           "category",
         );
@@ -496,8 +486,6 @@ const updateCart = async (req, res) => {
           totalPrice: item.quantity * finalPrice,
         };
       } else {
-        // Add new item
-        console.log(`Adding new item: ${item.productId}`);
         const product = await Product.findById(item.productId).populate(
           "category",
         );
@@ -505,7 +493,6 @@ const updateCart = async (req, res) => {
           throw new Error(`Product not found: ${item.productId}`);
         }
 
-        // Calculate best offer price
         const productOffer = product.productOffer || 0;
         const categoryOffer = product.category?.categoryOffer || 0;
         const bestOfferPercentage = Math.max(productOffer, categoryOffer);
@@ -525,11 +512,7 @@ const updateCart = async (req, res) => {
       }
     }
 
-    // Set updated items to cart
     cart.items = updatedItems;
-
-    // Log updated cart items
-    console.log("Updated cart items:", cart.items);
 
     await cart.save();
 
@@ -652,11 +635,9 @@ const loadCartPage = async (req, res) => {
         new Date() >= sessionCoupon.startDate &&
         new Date() <= sessionCoupon.endDate
       ) {
-        // Calculate discount
         if (sessionCoupon.discountType === "percentage") {
           discount = subtotal * (sessionCoupon.discountAmount / 100);
 
-          // Apply max discount limit if set
           if (
             sessionCoupon.maxDiscount &&
             discount > sessionCoupon.maxDiscount
@@ -664,11 +645,9 @@ const loadCartPage = async (req, res) => {
             discount = sessionCoupon.maxDiscount;
           }
         } else {
-          // fixed amount
           discount = sessionCoupon.discountAmount;
         }
 
-        // Ensure discount doesn't exceed subtotal
         discount = Math.min(discount, subtotal);
 
         appliedCoupon = {
@@ -679,7 +658,6 @@ const loadCartPage = async (req, res) => {
           discountAmount: sessionCoupon.discountAmount,
         };
       } else {
-        // Clear invalid coupon from session
         delete req.session.appliedCoupon;
       }
     }
@@ -770,7 +748,6 @@ const loadCheckoutPage = async (req, res) => {
       return res.redirect("/cart");
     }
 
-    // Validate cart items
     for (const item of cart.items) {
       const product = item.productId;
       if (
@@ -794,7 +771,6 @@ const loadCheckoutPage = async (req, res) => {
     const subtotal = cart.items.reduce((sum, item) => sum + item.totalPrice, 0);
     const shipping = subtotal > 0 ? 5 : 0;
 
-    // Check for an applied coupon in the session
     let appliedCoupon = null;
     let discount = 0;
 
@@ -810,11 +786,9 @@ const loadCheckoutPage = async (req, res) => {
         new Date() >= sessionCoupon.startDate &&
         new Date() <= sessionCoupon.endDate
       ) {
-        // Calculate discount
         if (sessionCoupon.discountType === "percentage") {
           discount = subtotal * (sessionCoupon.discountAmount / 100);
 
-          // Apply max discount limit if set
           if (
             sessionCoupon.maxDiscount &&
             discount > sessionCoupon.maxDiscount
@@ -822,11 +796,9 @@ const loadCheckoutPage = async (req, res) => {
             discount = sessionCoupon.maxDiscount;
           }
         } else {
-          // fixed amount
           discount = sessionCoupon.discountAmount;
         }
 
-        // Ensure discount doesn't exceed subtotal
         discount = Math.min(discount, subtotal);
 
         appliedCoupon = {
@@ -842,7 +814,6 @@ const loadCheckoutPage = async (req, res) => {
     const total =
       subtotal + shipping - (appliedCoupon ? appliedCoupon.discount : 0);
 
-    // Get wallet balance
     const wallet = await Wallet.findOne({ userId });
     const walletBalance = wallet ? wallet.balance : 0;
 
@@ -898,9 +869,7 @@ const createOrder = async (req, res) => {
       });
     }
 
-    // Razorpay: verify payment before creating order
     if (paymentMethod === "RAZORPAY") {
-      // Verify payment
       if (!razorpay_order_id || !razorpay_payment_id || !razorpay_signature) {
         await session.abortTransaction();
         session.endSession();
@@ -929,7 +898,6 @@ const createOrder = async (req, res) => {
       }
     }
 
-    // Find cart
     const cart = await Cart.findOne({ userId }).populate({
       path: "items.productId",
       populate: [{ path: "brand" }, { path: "category" }],
@@ -945,7 +913,6 @@ const createOrder = async (req, res) => {
       });
     }
 
-    // Calculate prices (same as before)
     let subtotal = 0;
     for (const item of cart.items) {
       const product = item.productId;
@@ -1014,7 +981,6 @@ const createOrder = async (req, res) => {
     }
     const finalAmount = subtotal + shipping - discount;
 
-    // Handle wallet payment
     if (paymentMethod === "WALLET") {
       const wallet = await Wallet.findOne({ userId });
       if (!wallet || wallet.balance < finalAmount) {
@@ -1043,7 +1009,6 @@ const createOrder = async (req, res) => {
       }
     }
 
-    // Create order
     const order = new Order({
       user: userId,
       address: addressId,
@@ -1056,7 +1021,7 @@ const createOrder = async (req, res) => {
       discount,
       couponCode,
       couponId,
-      couponApplied: !!couponCode, // Set couponApplied to true if couponCode exists
+      couponApplied: !!couponCode,
       finalAmount,
       paymentMethod: paymentMethod,
       status: paymentMethod === "RAZORPAY" ? "Confirmed" : "Pending",
@@ -1126,8 +1091,6 @@ const loadOrderConfirmation = async (req, res) => {
   }
 };
 
-// This function has been moved to line 1827
-
 const orderDetails = async (req, res) => {
   try {
     const order = await Order.findOne({ orderId: req.params.orderId })
@@ -1185,11 +1148,9 @@ const cancelOrder = async (req, res) => {
       });
     }
 
-    // Process refund for online payments and wallet
     if (
       ["WALLET", "CARD", "PAYPAL", "RAZORPAY"].includes(order.paymentMethod)
     ) {
-      // For Razorpay payments, find the payment record first
       if (order.paymentMethod === "RAZORPAY") {
         const payment = await Payment.findOne({ orderId: order._id });
         console.log(
@@ -1198,18 +1159,16 @@ const cancelOrder = async (req, res) => {
 
         if (payment && payment.razorpay && payment.razorpay.paymentId) {
           try {
-            // Only attempt Razorpay refund if we have the payment ID and Razorpay is initialized
             if (razorpay) {
               console.log(
                 `Initiating Razorpay refund for payment: ${payment.razorpay.paymentId}`,
               );
 
               try {
-                // Create refund in Razorpay
                 const razorpayRefund = await razorpay.payments.refund(
                   payment.razorpay.paymentId,
                   {
-                    amount: Math.round(order.finalAmount * 100), // Amount in paise
+                    amount: Math.round(order.finalAmount * 100),
                     notes: {
                       orderId: order.orderId,
                       reason: reason || "Order cancelled by customer",
@@ -1222,7 +1181,6 @@ const cancelOrder = async (req, res) => {
                 console.error("Error with Razorpay API:", razorpayError);
               }
 
-              // Also add to wallet for convenience and tracking - convert userId to string if it's an ObjectId
               const userIdStr = userId.toString();
               console.log(`Adding refund to wallet for user: ${userIdStr}`);
 
@@ -1234,16 +1192,14 @@ const cancelOrder = async (req, res) => {
 
               console.log("Wallet refund result:", refundResult);
 
-              // Update payment record
               payment.status = "Refunded";
               payment.refund = {
-                refundId: payment.razorpay.paymentId, // Use payment ID if refund ID not available
+                refundId: payment.razorpay.paymentId,
                 amount: order.finalAmount,
                 createdAt: new Date(),
               };
               await payment.save();
             } else {
-              // If Razorpay is not initialized, just add to wallet
               console.log(
                 "Razorpay not initialized, adding to wallet directly",
               );
@@ -1256,7 +1212,6 @@ const cancelOrder = async (req, res) => {
             }
           } catch (refundError) {
             console.error("Error processing Razorpay refund:", refundError);
-            // Still add to wallet even if Razorpay refund fails
             const refundResult = await processWalletRefund(
               userId.toString(),
               order.finalAmount,
@@ -1268,7 +1223,6 @@ const cancelOrder = async (req, res) => {
             );
           }
         } else {
-          // No payment record found or no payment ID, just add to wallet
           console.log("No payment record found, adding to wallet directly");
           const refundResult = await processWalletRefund(
             userId.toString(),
@@ -1281,7 +1235,6 @@ const cancelOrder = async (req, res) => {
           );
         }
       } else {
-        // For non-Razorpay payments, use the existing wallet refund process
         console.log(
           `Processing refund for ${order.paymentMethod} payment, userId: ${userId}, amount: ${order.finalAmount}`,
         );
@@ -1301,14 +1254,12 @@ const cancelOrder = async (req, res) => {
       }
     }
 
-    // Update product stock
     for (const item of order.orderItems) {
       await Product.findByIdAndUpdate(item.product, {
         $inc: { stock: item.quantity },
       });
     }
 
-    // Update order status
     order.status = "Cancelled";
     order.cancelReason = reason;
     await order.save();
@@ -1540,7 +1491,6 @@ const applyCoupon = async (req, res) => {
       });
     }
 
-    // Check if user has already used this coupon
     const userUsed = coupon.usedBy.some(
       (usage) => usage.user.toString() === userId.toString(),
     );
@@ -1551,7 +1501,6 @@ const applyCoupon = async (req, res) => {
       });
     }
 
-    // Check if coupon has reached its usage limit
     if (coupon.usedCount >= coupon.usageLimit) {
       return res.status(400).json({
         success: false,
@@ -1559,7 +1508,6 @@ const applyCoupon = async (req, res) => {
       });
     }
 
-    // Get cart and check minimum purchase requirement
     const cart = await Cart.findOne({ userId }).populate({
       path: "items.productId",
       populate: [{ path: "brand" }, { path: "category" }],
@@ -1581,27 +1529,22 @@ const applyCoupon = async (req, res) => {
       });
     }
 
-    // Calculate discount
     let discountAmount = 0;
     if (coupon.discountType === "percentage") {
       discountAmount = subtotal * (coupon.discountAmount / 100);
 
-      // Apply max discount limit if set
       if (coupon.maxDiscount && discountAmount > coupon.maxDiscount) {
         discountAmount = coupon.maxDiscount;
       }
     } else {
-      // fixed amount
       discountAmount = coupon.discountAmount;
     }
 
-    // Ensure discount doesn't exceed subtotal
     discountAmount = Math.min(discountAmount, subtotal);
 
-    const shipping = 5; // Standard shipping cost
+    const shipping = 5;
     const total = subtotal + shipping - discountAmount;
 
-    // Store the applied coupon in the session
     req.session.appliedCoupon = {
       couponId: coupon._id,
       code: coupon.code,
@@ -1631,7 +1574,6 @@ const applyCoupon = async (req, res) => {
 
 const removeCoupon = async (req, res) => {
   try {
-    // Check if there's an applied coupon in the session
     if (!req.session.appliedCoupon) {
       return res.status(400).json({
         success: false,
@@ -1639,7 +1581,6 @@ const removeCoupon = async (req, res) => {
       });
     }
 
-    // Remove the coupon from the session
     delete req.session.appliedCoupon;
 
     return res.status(200).json({
@@ -1655,10 +1596,8 @@ const removeCoupon = async (req, res) => {
   }
 };
 
-// Razorpay controller functions
 const createRazorpayOrder = async (req, res) => {
   try {
-    // Check if Razorpay is initialized
     if (!razorpay) {
       return res.status(500).json({
         success: false,
@@ -1670,7 +1609,6 @@ const createRazorpayOrder = async (req, res) => {
     const userId = req.session.user;
     const { addressId } = req.body;
 
-    // Find cart and user
     const cart = await Cart.findOne({ userId }).populate({
       path: "items.productId",
       populate: [{ path: "brand" }, { path: "category" }],
@@ -1686,7 +1624,6 @@ const createRazorpayOrder = async (req, res) => {
         .json({ success: false, message: "User not found" });
     }
 
-    // Calculate total
     let subtotal = 0;
     for (const item of cart.items) {
       const product = item.productId;
@@ -1707,9 +1644,8 @@ const createRazorpayOrder = async (req, res) => {
     }
     const finalAmount = subtotal + shipping - discount;
 
-    // Create Razorpay order (not DB order)
     const razorpayOrder = await razorpay.orders.create({
-      amount: Math.round(finalAmount * 100), // paise
+      amount: Math.round(finalAmount * 100),
       currency: "INR",
       receipt: `cart_${cart._id}`,
       notes: {
@@ -1739,7 +1675,6 @@ const createRazorpayOrder = async (req, res) => {
 
 const verifyRazorpayPayment = async (req, res) => {
   try {
-    // Check if Razorpay is initialized
     if (!process.env.RAZORPAY_KEY_SECRET) {
       return res.status(500).json({
         success: false,
@@ -1756,7 +1691,6 @@ const verifyRazorpayPayment = async (req, res) => {
       orderId,
     } = req.body;
 
-    // Verify signature
     const body = razorpay_order_id + "|" + razorpay_payment_id;
     const crypto = require("crypto");
     const expectedSignature = crypto
@@ -1774,7 +1708,6 @@ const verifyRazorpayPayment = async (req, res) => {
       });
     }
 
-    // Update payment record
     const payment = await Payment.findOneAndUpdate(
       { "razorpay.orderId": razorpay_order_id },
       {
@@ -1794,7 +1727,6 @@ const verifyRazorpayPayment = async (req, res) => {
       });
     }
 
-    // Update order status
     const order = await Order.findOne({ orderId });
     if (order) {
       order.status = "Confirmed";

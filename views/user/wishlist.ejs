@@ -59,7 +59,6 @@
     font-size: 12px;
     font-weight: bold;
   }
-  /* Spinner */
   .spinner-border {
     display: inline-block;
     width: 1rem;
@@ -73,7 +72,6 @@
   @keyframes spinner-border {
     to { transform: rotate(360deg); }
   }
-  /* Toast Confirmation Dialog */
   .toast-confirm {
     transform: translateY(0);
     opacity: 1;
@@ -83,7 +81,6 @@
     transform: translateY(100%);
     opacity: 0;
   }
-  /* Enhanced styles for empty wishlist message */
   .empty-wishlist-message {
     display: flex !important;
     flex-direction: column !important;
@@ -251,31 +248,23 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-  console.log("DOM fully loaded");
   
-  // Replace all onclick attributes with direct event listeners
   document.querySelectorAll('.add-to-cart-btn').forEach((btn, index) => {
-    // Remove the inline onclick attribute to prevent double execution
     const productId = btn.getAttribute('data-product-id');
     const productName = btn.getAttribute('data-product-name');
     const productIndex = btn.getAttribute('data-product-index');
     
-    console.log(`Setting up button ${index} for product ${productId} (${productName})`);
     
-    // Remove the inline onclick attribute
     btn.removeAttribute('onclick');
     
-    // Add our own event listener
     btn.addEventListener('click', function(event) {
       event.preventDefault();
       event.stopPropagation();
-      console.log(`Button clicked for product: ${productId}, index: ${productIndex}`);
       addToCart(productId, productName);
       return false;
     });
   });
   
-  // Add event listeners to all remove buttons
   document.querySelectorAll('.remove-btn').forEach(btn => {
     btn.addEventListener('click', function() {
       const productId = this.getAttribute('data-product-id');
@@ -290,80 +279,50 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 });
 
-// Expose debug function to global scope for manual testing
 function debugWishlistButtons() {
-  console.log("==== WISHLIST DEBUG ====");
   
-  // Find all Add to Cart buttons
   const allButtons = document.querySelectorAll('.add-to-cart-btn');
-  console.log(`Found ${allButtons.length} Add to Cart buttons`);
   
   allButtons.forEach((btn, index) => {
     const productId = btn.getAttribute('data-product-id');
     const productName = btn.getAttribute('data-product-name');
     const onclickAttr = btn.getAttribute('onclick');
     
-    console.log(`Button ${index + 1}:`);
-    console.log(`- Product ID: ${productId}`);
-    console.log(`- Product Name: ${productName}`);
-    console.log(`- onclick attribute: ${onclickAttr}`);
-    
-    // Check if this is a valid ObjectId format
+        
     const isValidObjectId = /^[0-9a-fA-F]{24}$/.test(productId);
-    console.log(`- Valid ObjectId format: ${isValidObjectId}`);
     
-    // Check if the button has proper event listeners
     btn.addEventListener('click', function(event) {
       console.log(`Button ${index + 1} clicked directly via event listener`);
     });
   });
   
-  console.log("==== END WISHLIST DEBUG ====");
 }
 
-// Add this debug function to window load to auto-execute
 window.addEventListener('DOMContentLoaded', function() {
   debugWishlistButtons();
   
-  // Also add a manual way to test specific product IDs
   window.testAddToCart = function(productId, productName) {
-    console.log(`Manually testing addToCart with ID: ${productId}, Name: ${productName}`);
     addToCart(productId, productName);
   };
 });
 
 async function addToCart(productId, productName) {
-  console.log("==== ADD TO CART CALLED ====");
-  console.log("Product ID:", productId);
-  console.log("Product Name:", productName);
-  console.log("Type of productId:", typeof productId);
-  console.log("Length of productId:", productId ? productId.length : 'N/A');
-  
-  // Validate productId format
-  if (!productId || productId === "undefined" || productId === "null") {
-    console.error("Invalid product ID:", productId);
+    if (!productId || productId === "undefined" || productId === "null") {
     showToast('Error: Invalid product ID', 'error');
     return false;
   }
 
-  // Log the exact ID we're testing for debugging
-  console.log("Testing ObjectId format for:", productId);
-  console.log("Regex test result:", /^[0-9a-fA-F]{24}$/.test(productId));
-  
-  // Ensure productId is a valid MongoDB ObjectId
+    
   if (!/^[0-9a-fA-F]{24}$/.test(productId)) {
-    console.error("Invalid MongoDB ObjectId format:", productId);
     showToast('Error: Invalid product ID format', 'error');
     return false;
   }
 
   try {
-    console.log(`Sending fetch request to add product ${productId} to cart`);
     const requestBody = JSON.stringify({ 
-      productId: productId.toString(), // Ensure ID is a string
-      quantity: 1 // Default to adding 1 item
+      productId: productId.toString(),
+      quantity: 1 
     });
-    console.log("Request payload:", requestBody);
     
     const response = await fetch('/add-to-cart', {
       method: 'POST',
@@ -374,9 +333,7 @@ async function addToCart(productId, productName) {
       credentials: 'include'
     });
 
-    console.log(`Response status:`, response.status);
 
-    // Handle unauthorized response
     if (response.status === 401) {
       showToast('Please login to add items to cart', 'warning');
       setTimeout(() => {
@@ -391,7 +348,6 @@ async function addToCart(productId, productName) {
     let data;
     try {
       data = JSON.parse(text);
-      console.log("Parsed response data:", data);
     } catch (e) {
       console.error("Error parsing JSON response:", e);
       showToast('Error parsing server response', 'error');
@@ -401,40 +357,31 @@ async function addToCart(productId, productName) {
     if (data.success) {
       showToast(`Added ${productName} to cart!`, 'success');
       
-      // Update cart count in header
       const cartCountEl = document.getElementById('cart-count');
       if (cartCountEl) {
         cartCountEl.textContent = data.cartCount || 0;
       }
       
-      // Update wishlist count and UI if the item was in wishlist and got removed
       if (data.wishlistCount !== undefined) {
-        // Update all wishlist count elements
         document.querySelectorAll('#wishlist-count').forEach(el => {
           el.textContent = data.wishlistCount;
         });
         
-        // Find and remove the wishlist item from UI - look for any element with matching productId
         const productCards = document.querySelectorAll(`[data-product-id="${productId}"]`);
         let itemRemoved = false;
 
-        console.log(`Found ${productCards.length} elements with product ID ${productId}`);
         
         productCards.forEach(el => {
           const card = el.closest('.wishlist-item');
           if (card) {
             itemRemoved = true;
-            console.log("Removing item from UI");
             card.classList.add('opacity-0', 'transform', 'scale-95');
             setTimeout(() => {
               card.remove();
               
-              // After removing, check if there are any wishlist items left
               const remainingItems = document.querySelectorAll('.wishlist-item');
-              console.log(`${remainingItems.length} wishlist items remaining`);
               
               if (remainingItems.length === 0) {
-                // Replace with empty wishlist message
                 showEmptyWishlistUI();
               }
             }, 300);
@@ -442,7 +389,6 @@ async function addToCart(productId, productName) {
         });
 
         if (!itemRemoved) {
-          console.warn('Could not find product card to remove, will reload page');
           setTimeout(() => window.location.reload(), 500);
         }
       }
@@ -450,12 +396,10 @@ async function addToCart(productId, productName) {
       throw new Error(data.message || 'Failed to add to cart');
     }
   } catch (error) {
-    console.error('Error adding to cart:', error);
     showToast(error.message || 'Error adding to cart', 'error');
   }
   
-  console.log("==== END ADD TO CART ====");
-  return false; // Prevent default action
+  return false;
 }
 
 async function removeFromWishlist(productId, productName) {
@@ -469,7 +413,6 @@ async function removeFromWishlist(productId, productName) {
       credentials: 'include',
     });
 
-    // Handle unauthorized response
     if (response.status === 401) {
       showToast('Please login to manage your wishlist', 'warning');
       setTimeout(() => {
@@ -483,12 +426,10 @@ async function removeFromWishlist(productId, productName) {
     if (data.success) {
       showToast(`Removed ${productName} from wishlist`, 'success');
       
-      // Update all wishlist count elements
       document.querySelectorAll('#wishlist-count').forEach(el => {
         el.textContent = data.wishlistCount;
       });
       
-      // Find and remove the wishlist item from UI
       const productCards = document.querySelectorAll(`[data-product-id="${productId}"]`);
       let itemRemoved = false;
 
@@ -500,7 +441,6 @@ async function removeFromWishlist(productId, productName) {
           setTimeout(() => {
             card.remove();
             
-            // Check if there are any items left
             const remainingItems = document.querySelectorAll('.wishlist-item');
             if (remainingItems.length === 0) {
               showEmptyWishlistUI();
@@ -522,7 +462,6 @@ async function removeFromWishlist(productId, productName) {
   }
 }
 
-// Helper function to show empty wishlist UI
 function showEmptyWishlistUI() {
   const container = document.querySelector('.container');
   if (container) {
@@ -580,7 +519,7 @@ function showToast(message, type = 'success') {
 function showConfirmToast(message, onConfirm, onCancel) {
   const toast = document.createElement('div');
   toast.className = 'toast-confirm fixed bottom-4 right-4 bg-[#2C2C2C] text-white px-6 py-4 rounded-lg shadow-xl z-50';
-  let isDismissing = false; // Flag to prevent further timeouts
+  let isDismissing = false;
 
   toast.innerHTML = `
     <div class="flex flex-col">

@@ -39,23 +39,17 @@ const getWalletPage = async (req, res) => {
 
 const processWalletRefund = async (userId, amount, description) => {
   try {
-    console.log(`Starting wallet refund process for user: ${userId}, amount: ${amount}`);
-    
     if (!userId) {
-      console.error('No userId provided for wallet refund');
-      return { success: false, error: 'No userId provided' };
+      return { success: false, error: "No userId provided" };
     }
 
     if (!amount || amount <= 0) {
-      console.error(`Invalid refund amount: ${amount}`);
-      return { success: false, error: 'Invalid refund amount' };
+      return { success: false, error: "Invalid refund amount" };
     }
 
     let wallet = await Wallet.findOne({ userId });
-    console.log('Found wallet:', wallet ? `Balance: ${wallet.balance}` : 'No wallet found');
 
     if (!wallet) {
-      console.log(`Creating new wallet for user ${userId}`);
       wallet = await Wallet.create({
         userId,
         balance: 0,
@@ -64,21 +58,18 @@ const processWalletRefund = async (userId, amount, description) => {
     }
 
     const oldBalance = wallet.balance;
-    
+
     wallet.transactions.push({
       transactionType: "credit",
       transactionAmount: amount,
       description: description || "Refund",
-      createdAt: new Date()
+      createdAt: new Date(),
     });
 
     wallet.balance += amount;
-    
-    console.log(`Wallet update - Old balance: ${oldBalance}, New balance: ${wallet.balance}, Added: ${amount}`);
 
     await wallet.save();
-    console.log(`Wallet refund completed successfully. New balance: ${wallet.balance}`);
-    
+
     return { success: true, wallet };
   } catch (error) {
     console.error("Error processing wallet refund:", error);

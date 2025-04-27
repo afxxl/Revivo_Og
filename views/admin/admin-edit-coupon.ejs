@@ -19,7 +19,7 @@
         
         @media (min-width: 768px) {
             .main-content {
-                margin-left: 16rem; /* 64px or 16rem */
+                margin-left: 16rem; 
             }
         }
     </style>
@@ -198,7 +198,6 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Format dates
             document.querySelectorAll('.date-format').forEach(el => {
                 const date = luxon.DateTime.fromISO(el.innerText.trim());
                 if (date.isValid) {
@@ -206,21 +205,18 @@
                 }
             });
 
-            // Set date values
             const startDate = new Date('<%= coupon.startDate %>');
             const endDate = new Date('<%= coupon.endDate %>');
             
             document.getElementById('startDate').value = formatDateTimeLocal(startDate);
             document.getElementById('endDate').value = formatDateTimeLocal(endDate);
 
-            // Format date for datetime-local input
             function formatDateTimeLocal(date) {
                 return new Date(date.getTime() - (date.getTimezoneOffset() * 60000))
                     .toISOString()
                     .slice(0, 16);
             }
 
-            // Handle form submission
             const editCouponForm = document.getElementById('editCouponForm');
             
             editCouponForm.addEventListener('submit', async function(e) {
@@ -229,7 +225,6 @@
                 const formData = new FormData(editCouponForm);
                 const couponData = {};
                 
-                // Convert form data to JSON
                 formData.forEach((value, key) => {
                     couponData[key] = value;
                 });

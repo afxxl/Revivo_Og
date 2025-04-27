@@ -57,7 +57,6 @@ const loadDashboard = async (req, res) => {
     try {
       const { filter = "daily", startDate, endDate } = req.query;
 
-      // Calculate date ranges based on filter
       let dateFilter = {};
       let timeFormat = "%Y-%m-%d";
       let groupByFormat = {
@@ -94,7 +93,6 @@ const loadDashboard = async (req, res) => {
           createdOn: { $gte: startOfWeek },
         };
       } else {
-        // daily (default)
         const startOfDay = new Date(today);
         const endOfDay = new Date(today);
         endOfDay.setHours(23, 59, 59, 999);
@@ -107,7 +105,6 @@ const loadDashboard = async (req, res) => {
         };
       }
 
-      // Get order statistics
       const matchFilter = {
         ...dateFilter,
         status: { $nin: ["Cancelled", "Returned"] },
@@ -125,7 +122,6 @@ const loadDashboard = async (req, res) => {
         { $sort: { _id: 1 } },
       ]);
 
-      // Get payment method distribution
       const paymentMethodStats = await Order.aggregate([
         { $match: dateFilter },
         {
@@ -137,7 +133,6 @@ const loadDashboard = async (req, res) => {
         },
       ]);
 
-      // Get order status distribution
       const orderStatusStats = await Order.aggregate([
         { $match: dateFilter },
         {
@@ -148,7 +143,6 @@ const loadDashboard = async (req, res) => {
         },
       ]);
 
-      // Get coupon usage statistics
       const couponStats = await Order.aggregate([
         { $match: { ...dateFilter, couponApplied: true } },
         {
@@ -162,15 +156,14 @@ const loadDashboard = async (req, res) => {
         { $limit: 5 },
       ]);
 
-      // Get total statistics
       const totalStats = await Promise.all([
-        Order.countDocuments(matchFilter), // Changed from dateFilter to matchFilter
+        Order.countDocuments(matchFilter),
         Order.aggregate([
-          { $match: matchFilter }, // Filter out cancelled orders for revenue
+          { $match: matchFilter },
           { $group: { _id: null, total: { $sum: "$finalAmount" } } },
         ]),
         Order.aggregate([
-          { $match: matchFilter }, // Filter out cancelled orders for discount
+          { $match: matchFilter },
           { $group: { _id: null, total: { $sum: "$discount" } } },
         ]),
       ]);
@@ -214,12 +207,10 @@ const logout = async (req, res) => {
   }
 };
 
-// Function to generate dashboard data for export
 const exportDashboardData = async (req, res) => {
   try {
     const { filter = "daily", startDate, endDate, format = "pdf" } = req.query;
 
-    // Calculate date ranges based on filter (same logic as loadDashboard)
     let dateFilter = {};
     const now = new Date();
     const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
@@ -247,7 +238,6 @@ const exportDashboardData = async (req, res) => {
         createdOn: { $gte: startOfWeek },
       };
     } else {
-      // daily (default)
       const startOfDay = new Date(today);
       const endOfDay = new Date(today);
       endOfDay.setHours(23, 59, 59, 999);
@@ -260,20 +250,17 @@ const exportDashboardData = async (req, res) => {
       };
     }
 
-    // Get detailed order data for export
     const orders = await Order.find(dateFilter)
       .populate("user", "name email")
       .populate("couponId", "code discountType discountValue")
       .sort({ createdOn: -1 })
       .lean();
 
-    // Format data based on requested export format
     if (format === "excel") {
       const excel = require("exceljs");
       const workbook = new excel.Workbook();
       const worksheet = workbook.addWorksheet("Dashboard Report");
 
-      // Add headers
       worksheet.columns = [
         { header: "Order ID", key: "orderId", width: 15 },
         { header: "Customer", key: "customer", width: 20 },
@@ -285,7 +272,6 @@ const exportDashboardData = async (req, res) => {
         { header: "Coupon", key: "coupon", width: 15 },
       ];
 
-      // Add rows
       orders.forEach((order) => {
         worksheet.addRow({
           orderId: order.orderId,
@@ -301,7 +287,6 @@ const exportDashboardData = async (req, res) => {
         });
       });
 
-      // Set response headers
       res.setHeader(
         "Content-Type",
         "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
@@ -311,29 +296,23 @@ const exportDashboardData = async (req, res) => {
         `attachment; filename=dashboard-report-${moment().format("YYYY-MM-DD")}.xlsx`,
       );
 
-      // Write to response
       await workbook.xlsx.write(res);
       res.end();
     } else {
-      // PDF
       const PDFDocument = require("pdfkit");
       const doc = new PDFDocument();
 
-      // Set response headers
       res.setHeader("Content-Type", "application/pdf");
       res.setHeader(
         "Content-Disposition",
         `attachment; filename=dashboard-report-${moment().format("YYYY-MM-DD")}.pdf`,
       );
 
-      // Pipe to response
       doc.pipe(res);
 
-      // Add title
       doc.fontSize(16).text("Dashboard Report", { align: "center" });
       doc.moveDown();
 
-      // Add date range
       let dateRangeText = "";
       if (filter === "custom") {
         dateRangeText = `${moment(startDate).format("YYYY-MM-DD")} to ${moment(endDate).format("YYYY-MM-DD")}`;
@@ -344,7 +323,6 @@ const exportDashboardData = async (req, res) => {
       doc.fontSize(12).text(dateRangeText, { align: "center" });
       doc.moveDown();
 
-      // Add summary
       const totalRevenue = orders.reduce(
         (sum, order) => sum + order.finalAmount,
         0,
@@ -359,13 +337,11 @@ const exportDashboardData = async (req, res) => {
       doc.fontSize(12).text(`Total Discount: ₹${totalDiscount.toFixed(2)}`);
       doc.moveDown();
 
-      // Add orders table
       const tableTop = 200;
       const itemsPerPage = 20;
       let currentPage = 1;
       let yPosition = tableTop;
 
-      // Table headers
       doc.fontSize(10);
       doc.text("Order ID", 50, yPosition);
       doc.text("Date", 150, yPosition);
@@ -376,14 +352,11 @@ const exportDashboardData = async (req, res) => {
 
       yPosition += 20;
 
-      // Table rows
       orders.forEach((order, index) => {
         if (index > 0 && index % itemsPerPage === 0) {
-          // Add new page
           doc.addPage();
           yPosition = 50;
 
-          // Add headers on new page
           doc.text("Order ID", 50, yPosition);
           doc.text("Date", 150, yPosition);
           doc.text("Status", 220, yPosition);
@@ -404,7 +377,6 @@ const exportDashboardData = async (req, res) => {
         yPosition += 20;
       });
 
-      // Finalize PDF
       doc.end();
     }
   } catch (err) {
