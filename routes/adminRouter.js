@@ -16,6 +16,7 @@ router.get("/login", adminController.loadLogin);
 router.post("/login", adminController.login);
 router.get("/dashboard", adminAuth, adminController.loadDashboard);
 router.get("/", adminAuth, adminController.loadDashboard);
+router.get("/sales-report", adminAuth, adminController.loadSalesReport);
 router.get("/export-dashboard", adminAuth, adminController.exportDashboardData);
 router.get("/logout", adminController.logout);
 //User

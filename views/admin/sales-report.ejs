@@ -1,0 +1,484 @@
+<%- include('../partials/admin/admin-header.ejs') %>
+<%- include('../partials/admin/admin-sidebar', {currentPage: 'sales-report'}) %>
+
+<style>
+    .dashboard-card {
+        background: linear-gradient(145deg, #ffffff, #f8f7f5);
+        border: 1px solid #e0dcd4;
+        border-radius: 0.5rem;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    .dashboard-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        border-color: #2C2C2C;
+    }
+    
+    .stat-value {
+        font-size: 1.75rem;
+        font-weight: 600;
+        color: #2C2C2C;
+    }
+    
+    .stat-label {
+        font-size: 0.875rem;
+        color: #6b7280;
+    }
+    
+    .filter-btn {
+        padding: 0.5rem 1rem;
+        border-radius: 0.375rem;
+        font-size: 0.875rem;
+        transition: all 0.3s ease;
+        background: linear-gradient(145deg, #ffffff, #f8f7f5);
+        border: 1px solid #e0dcd4;
+        color: #2C2C2C;
+    }
+    
+    .filter-btn:hover {
+        border-color: #2C2C2C;
+    }
+    
+    .filter-btn.active {
+        background: linear-gradient(135deg, #2C2C2C, #1a1a1a);
+        color: #f8f7f5;
+        border: none;
+    }
+    
+    .date-input {
+        background: linear-gradient(145deg, #ffffff, #f8f7f5);
+        border: 1px solid #e0dcd4;
+        border-radius: 0.375rem;
+        padding: 0.5rem;
+        font-size: 0.875rem;
+    }
+    
+    .date-input:focus {
+        border-color: #2C2C2C;
+        outline: none;
+    }
+    
+    .export-btn {
+        padding: 0.5rem 1rem;
+        border-radius: 0.375rem;
+        font-size: 0.875rem;
+        transition: all 0.3s ease;
+        background: linear-gradient(145deg, #f8c78d, #f8b870);
+        border: none;
+        color: #2C2C2C;
+    }
+    
+    .export-btn:hover {
+        background: linear-gradient(145deg, #f8b870, #f8c78d);
+        transform: translateY(-2px);
+    }
+    
+    .table-container {
+        background: linear-gradient(145deg, #ffffff, #f8f7f5);
+        border-radius: 0.5rem;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        border: 1px solid #e0dcd4;
+    }
+    
+    .table-header {
+        background: linear-gradient(145deg, #f8f7f5, #ffffff);
+        color: #2C2C2C;
+        font-weight: 500;
+        border-bottom: 1px solid #e0dcd4;
+    }
+    
+    .chart-container {
+        height: 300px;
+        width: 100%;
+    }
+</style>
+
+<div class="flex-1 overflow-auto p-3 md:p-6 pt-20">
+    <div class="p-4 md:p-6 bg-white shadow-sm rounded-lg mb-6">
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
+             <h1 class="text-2xl font-semibold text-[#2C2C2C]">
+                Sales Report <span class="text-sm text-gray-500">(Showing delivered orders only)</span>
+            </h1>           
+            <div class="flex flex-wrap gap-2">
+                <a href="/admin/sales-report?filter=daily" class="filter-btn <%= filter === 'daily' ? 'active' : '' %>">
+                    Daily
+                </a>
+                <a href="/admin/sales-report?filter=weekly" class="filter-btn <%= filter === 'weekly' ? 'active' : '' %>">
+                    Weekly
+                </a>
+                <a href="/admin/sales-report?filter=yearly" class="filter-btn <%= filter === 'yearly' ? 'active' : '' %>">
+                    Yearly
+                </a>
+                <button id="customRangeBtn" class="filter-btn <%= filter === 'custom' ? 'active' : '' %>">
+                    Custom Range
+                </button>
+            </div>
+        </div>
+        
+        <div id="dateRangeSelector" class="<%= filter === 'custom' ? 'flex' : 'hidden' %> flex-wrap gap-2 mb-6 justify-end">
+            <form action="/admin/sales-report" method="get" class="flex flex-wrap gap-2">
+                <input type="hidden" name="filter" value="custom">
+                <div class="flex items-center gap-2">
+                    <label for="startDate" class="text-sm">From:</label>
+                    <input type="date" id="startDate" name="startDate" class="date-input" value="<%= startDate %>" required>
+                </div>
+                <div class="flex items-center gap-2">
+                    <label for="endDate" class="text-sm">To:</label>
+                    <input type="date" id="endDate" name="endDate" class="date-input" value="<%= endDate %>" required>
+                </div>
+                <button type="submit" class="filter-btn active">Apply</button>
+            </form>
+        </div>
+        
+        <div class="flex justify-end mb-6">
+            <div class="flex gap-2">
+                <a href="/admin/export-dashboard?format=pdf<%= filter ? '&filter=' + filter : '' %><%= startDate ? '&startDate=' + startDate : '' %><%= endDate ? '&endDate=' + endDate : '' %>" class="export-btn flex items-center gap-1" target="_blank">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                    </svg>
+                    PDF
+                </a>
+                <a href="/admin/export-dashboard?format=excel<%= filter ? '&filter=' + filter : '' %><%= startDate ? '&startDate=' + startDate : '' %><%= endDate ? '&endDate=' + endDate : '' %>" class="export-btn flex items-center gap-1" target="_blank">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                    Excel
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+        <div class="dashboard-card p-6">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="stat-value">₹<%= totalRevenue.toFixed(2) %></p>
+                    <p class="stat-label">Total Revenue</p>
+                </div>
+                <div class="p-3 bg-green-100 rounded-full">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                </div>
+            </div>
+        </div>
+        
+        <div class="dashboard-card p-6">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="stat-value"><%= totalOrders %></p>
+                    <p class="stat-label">Delivered Orders</p>
+                </div>
+                <div class="p-3 bg-blue-100 rounded-full">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                    </svg>
+                </div>
+            </div>
+        </div>
+        
+        <div class="dashboard-card p-6">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="stat-value">₹<%= totalDiscount.toFixed(2) %></p>
+                    <p class="stat-label">Total Discount</p>
+                </div>
+                <div class="p-3 bg-purple-100 rounded-full">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7" />
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+        <div class="dashboard-card p-6">
+            <h2 class="text-lg font-medium text-[#2C2C2C] mb-4">Sales Overview</h2>
+            <div class="chart-container">
+                <canvas id="salesChart"></canvas>
+            </div>
+        </div>
+        
+        <div class="dashboard-card p-6">
+            <h2 class="text-lg font-medium text-[#2C2C2C] mb-4">Payment Methods</h2>
+            <div class="chart-container">
+                <canvas id="paymentMethodChart"></canvas>
+            </div>
+        </div>
+    </div>
+    
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+        <div class="dashboard-card p-6">
+            <h2 class="text-lg font-medium text-[#2C2C2C] mb-4">Order Status</h2>
+            <div class="chart-container">
+                <canvas id="orderStatusChart"></canvas>
+            </div>
+        </div>
+        
+        <div class="dashboard-card p-6">
+            <h2 class="text-lg font-medium text-[#2C2C2C] mb-4">Top Coupons</h2>
+            <% if (couponStats && couponStats.length > 0) { %>
+                <div class="table-container overflow-hidden">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead>
+                            <tr class="table-header">
+                                <th class="px-4 py-3 text-left">Coupon</th>
+                                <th class="px-4 py-3 text-center">Uses</th>
+                                <th class="px-4 py-3 text-right">Total Discount</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-200">
+                            <% couponStats.forEach(coupon => { %>
+                                <tr class="hover:bg-gray-50">
+                                    <td class="px-4 py-3"><%= coupon._id %></td>
+                                    <td class="px-4 py-3 text-center"><%= coupon.count %></td>
+                                    <td class="px-4 py-3 text-right">₹<%= coupon.totalDiscount.toFixed(2) %></td>
+                                </tr>
+                            <% }); %>
+                        </tbody>
+                    </table>
+                </div>
+            <% } else { %>
+                <p class="text-gray-500 text-center py-4">No coupons used in this period</p>
+            <% } %>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+
+document.getElementById('customRangeBtn').addEventListener('click', function() {
+        const dateRangeSelector = document.getElementById('dateRangeSelector');
+        dateRangeSelector.classList.toggle('hidden');
+        dateRangeSelector.classList.toggle('flex');
+    });
+    
+    const salesData = <%- JSON.stringify(orderStats) %>;
+    const paymentMethodData = <%- JSON.stringify(paymentMethodStats) %>;
+    const orderStatusData = <%- JSON.stringify(orderStatusStats) %>;
+    
+    const labels = salesData.map(item => {
+        const date = item._id;
+        // For yearly filter, show month name instead of "YYYY-MM"
+        if (<%- JSON.stringify(filter) %> === "yearly") {
+            const [year, month] = date.split('-');
+            const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+            return `${monthNames[parseInt(month) - 1]} ${year}`;
+        }
+        return date;
+    });
+    const revenues = salesData.map(item => item.revenue || 0);
+    const discounts = salesData.map(item => item.discount || 0);
+    const orderCounts = salesData.map(item => item.count || 0);
+    
+    const salesChartCtx = document.getElementById('salesChart').getContext('2d');
+    new Chart(salesChartCtx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [
+                {
+                    label: 'Revenue',
+                    data: revenues,
+                    borderColor: '#10b981',
+                    backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                    borderWidth: 2,
+                    tension: 0.3,
+                    fill: true
+                },
+                {
+                    label: 'Discount',
+                    data: discounts,
+                    borderColor: '#f59e0b',
+                    backgroundColor: 'rgba(245, 158, 11, 0.1)',
+                    borderWidth: 2,
+                    tension: 0.3,
+                    fill: true
+                },
+                {
+                    label: 'Orders',
+                    data: orderCounts,
+                    borderColor: '#3b82f6',
+                    backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                    borderWidth: 2,
+                    tension: 0.3,
+                    yAxisID: 'y1',
+                    fill: true
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    title: { display: true, text: 'Amount (₹)' }
+                },
+                y1: {
+                    beginAtZero: true,
+                    position: 'right',
+                    title: { display: true, text: 'Order Count' },
+                    grid: { drawOnChartArea: false }
+                },
+                x: {
+                    title: { display: true, text: 'Date' },
+                    ticks: {
+                        maxRotation: 45,
+                        minRotation: 45
+                    }
+                }
+            },
+            plugins: {
+                legend: { position: 'top' },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            let label = context.dataset.label || '';
+                            if (label) label += ': ';
+                            if (context.dataset.yAxisID === 'y1') {
+                                return label + context.parsed.y;
+                            } else {
+                                return label + '₹' + context.parsed.y.toFixed(2);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    });
+        
+    const paymentLabels = paymentMethodData.map(item => item._id);
+    const paymentCounts = paymentMethodData.map(item => item.count);
+    const paymentAmounts = paymentMethodData.map(item => item.amount);
+    
+    const paymentChartCtx = document.getElementById('paymentMethodChart').getContext('2d');
+    new Chart(paymentChartCtx, {
+        type: 'bar',
+        data: {
+            labels: paymentLabels,
+            datasets: [
+                {
+                    label: 'Order Count',
+                    data: paymentCounts,
+                    backgroundColor: 'rgba(59, 130, 246, 0.7)',
+                    borderColor: 'rgba(59, 130, 246, 1)',
+                    borderWidth: 1,
+                    yAxisID: 'y'
+                },
+                {
+                    label: 'Amount',
+                    data: paymentAmounts,
+                    backgroundColor: 'rgba(16, 185, 129, 0.7)',
+                    borderColor: 'rgba(16, 185, 129, 1)',
+                    borderWidth: 1,
+                    type: 'bar',
+                    yAxisID: 'y1'
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Order Count'
+                    }
+                },
+                y1: {
+                    beginAtZero: true,
+                    position: 'right',
+                    title: {
+                        display: true,
+                        text: 'Amount (₹)'
+                    },
+                    grid: {
+                        drawOnChartArea: false
+                    }
+                }
+            },
+            plugins: {
+                legend: {
+                    position: 'top'
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            let label = context.dataset.label || '';
+                            if (label) {
+                                label += ': ';
+                            }
+                            if (context.dataset.yAxisID === 'y') {
+                                label += context.parsed.y;
+                            } else {
+                                label += '₹' + context.parsed.y.toFixed(2);
+                            }
+                            return label;
+                        }
+                    }
+                }
+            }
+        }
+    });
+    
+    const statusLabels = orderStatusData.map(item => item._id);
+    const statusCounts = orderStatusData.map(item => item.count);
+    
+    const statusColors = {
+        'Pending': 'rgba(245, 158, 11, 0.7)',
+        'Confirmed': 'rgba(59, 130, 246, 0.7)',
+        'Shipped': 'rgba(139, 92, 246, 0.7)',
+        'Delivered': 'rgba(16, 185, 129, 0.7)',
+        'Cancelled': 'rgba(239, 68, 68, 0.7)',
+        'Return Requested': 'rgba(249, 115, 22, 0.7)',
+        'Returned': 'rgba(107, 114, 128, 0.7)',
+        'Return Rejected': 'rgba(156, 163, 175, 0.7)'
+    };
+    
+    const statusBgColors = statusLabels.map(label => statusColors[label] || 'rgba(107, 114, 128, 0.7)');
+    
+    const statusChartCtx = document.getElementById('orderStatusChart').getContext('2d');
+    new Chart(statusChartCtx, {
+        type: 'doughnut',
+        data: {
+            labels: statusLabels,
+            datasets: [
+                {
+                    data: statusCounts,
+                    backgroundColor: statusBgColors,
+                    borderWidth: 1
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'right'
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            const label = context.label || '';
+                            const value = context.raw;
+                            const total = context.dataset.data.reduce((acc, data) => acc + data, 0);
+                            const percentage = Math.round((value / total) * 100);
+                            return `${label}: ${value} (${percentage}%)`;
+                        }
+                    }
+                }
+            }
+        }
+    });
+</script>
+
+<%- include('../partials/admin/admin-footer') %>

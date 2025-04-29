@@ -488,60 +488,70 @@
       <div class="filter-overlay fixed inset-0 bg-black/50 z-40 opacity-0 invisible transition-opacity"></div>
       
       <!-- Sliding Filter Panel -->
-      <div class="filter-sidebar fixed top-0 right-[-100%] w-80 h-full bg-white z-50 p-6 overflow-y-auto shadow-lg transition-all duration-300">
-        <div class="flex justify-between items-center mb-6">
-          <h3 class="text-xl font-playfair text-[#2C2C2C]">Filter Products</h3>
-          <button id="close-filter" class="text-[#2C2C2C] hover:text-[#f8c78d] focus:outline-none">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-            </svg>
-          </button>
-        </div>
-        
-        <form id="filterSidebarForm" class="space-y-6">
-          <div>
-            <label class="block text-sm font-montserrat text-[#2C2C2C]/70 mb-2">Size</label>
-            <select name="size" class="w-full border border-[#e0dcd4] p-2 rounded-md focus:ring-2 focus:ring-[#f8c78d]/30 focus:outline-none">
-              <option value="">All Sizes</option>
-              <option value="S" <%= filters.size === 'S' ? 'selected' : '' %>>S</option>
-              <option value="M" <%= filters.size === 'M' ? 'selected' : '' %>>M</option>
-              <option value="L" <%= filters.size === 'L' ? 'selected' : '' %>>L</option>
-              <option value="XL" <%= filters.size === 'XL' ? 'selected' : '' %>>XL</option>
-            </select>
-          </div>
+<div class="filter-sidebar fixed top-0 right-[-100%] w-80 h-full bg-white z-50 p-6 overflow-y-auto shadow-lg transition-all duration-300">
+  <div class="flex justify-between items-center mb-6">
+    <h3 class="text-xl font-playfair text-[#2C2C2C]">Filter Products</h3>
+    <button id="close-filter" class="text-[#2C2C2C] hover:text-[#f8c78d] focus:outline-none">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+      </svg>
+    </button>
+  </div>
+  
+  <form id="filterSidebarForm" class="space-y-6">
+    <div>
+      <label class="block text-sm font-montserrat text-[#2C2C2C]/70 mb-2">Size</label>
+      <select name="size" class="w-full border border-[#e0dcd4] p-2 rounded-md focus:ring-2 focus:ring-[#f8c78d]/30 focus:outline-none">
+        <option value="">All Sizes</option>
+        <option value="S" <%= filters.size === 'S' ? 'selected' : '' %>>S</option>
+        <option value="M" <%= filters.size === 'M' ? 'selected' : '' %>>M</option>
+        <option value="L" <%= filters.size === 'L' ? 'selected' : '' %>>L</option>
+        <option value="XL" <%= filters.size === 'XL' ? 'selected' : '' %>>XL</option>
+      </select>
+    </div>
 
-          <div>
-            <label class="block text-sm font-montserrat text-[#2C2C2C]/70 mb-2">Condition</label>
-            <select name="condition" class="w-full border border-[#e0dcd4] p-2 rounded-md focus:ring-2 focus:ring-[#f8c78d]/30 focus:outline-none">
-              <option value="">All Conditions</option>
-              <option value="Like New" <%= filters.condition === 'Like New' ? 'selected' : '' %>>Like New</option>
-              <option value="Gently Used" <%= filters.condition === 'Gently Used' ? 'selected' : '' %>>Gently Used</option>
-              <option value="Fair Condition" <%= filters.condition === 'Fair Condition' ? 'selected' : '' %>>Fair Condition</option>
-            </select>
-          </div>
+    <div>
+      <label class="block text-sm font-montserrat text-[#2C2C2C]/70 mb-2">Condition</label>
+      <select name="condition" class="w-full border border-[#e0dcd4] p-2 rounded-md focus:ring-2 focus:ring-[#f8c78d]/30 focus:outline-none">
+        <option value="">All Conditions</option>
+        <option value="Like New" <%= filters.condition === 'Like New' ? 'selected' : '' %>>Like New</option>
+        <option value="Gently Used" <%= filters.condition === 'Gently Used' ? 'selected' : '' %>>Gently Used</option>
+        <option value="Fair Condition" <%= filters.condition === 'Fair Condition' ? 'selected' : '' %>>Fair Condition</option>
+      </select>
+    </div>
 
-          <div>
-            <label class="block text-sm font-montserrat text-[#2C2C2C]/70 mb-2">Price Range</label>
-            <div class="flex items-center gap-2">
-              <input type="number" name="minPrice" placeholder="Min" value="<%= filters.minPrice || '' %>" 
-                     class="w-1/2 border border-[#e0dcd4] p-2 rounded-md focus:ring-2 focus:ring-[#f8c78d]/30 focus:outline-none">
-              <span>-</span>
-              <input type="number" name="maxPrice" placeholder="Max" value="<%= filters.maxPrice || '' %>" 
-                     class="w-1/2 border border-[#e0dcd4] p-2 rounded-md focus:ring-2 focus:ring-[#f8c78d]/30 focus:outline-none">
-            </div>
-          </div>
-
-          <div class="pt-4 flex flex-col gap-4">
-            <button type="submit" class="w-full px-6 py-3 bg-[#2C2C2C] text-white rounded-md hover:bg-[#1a1a1a] font-montserrat transition-colors">
-              Apply Filters
-            </button>
-            <a href="/shop/brand/<%= brand._id %>" class="w-full text-center px-6 py-3 border border-[#e0dcd4] text-[#2C2C2C] rounded-md hover:bg-[#f8c78d]/10 font-montserrat transition-colors">
-              Clear Filters
-            </a>
-          </div>
-        </form>
+    <div>
+      <label class="block text-sm font-montserrat text-[#2C2C2C]/70 mb-2">Price Range</label>
+      <div class="flex items-center gap-2">
+        <input type="number" name="minPrice" placeholder="Min" value="<%= filters.minPrice || '' %>" 
+               class="w-1/2 border border-[#e0dcd4] p-2 rounded-md focus:ring-2 focus:ring-[#f8c78d]/30 focus:outline-none">
+        <span>-</span>
+        <input type="number" name="maxPrice" placeholder="Max" value="<%= filters.maxPrice || '' %>" 
+               class="w-1/2 border border-[#e0dcd4] p-2 rounded-md focus:ring-2 focus:ring-[#f8c78d]/30 focus:outline-none">
       </div>
-    </section>
+    </div>
+
+    <!-- Add Sort By Dropdown -->
+    <div>
+      <label class="block text-sm font-montserrat text-[#2C2C2C]/70 mb-2">Sort By</label>
+      <select name="sort" class="w-full border border-[#e0dcd4] p-2 rounded-md focus:ring-2 focus:ring-[#f8c78d]/30 focus:outline-none">
+        <option value="">Default</option>
+        <option value="low-to-high" <%= filters.sort === 'low-to-high' ? 'selected' : '' %>>Price: Low to High</option>
+        <option value="high-to-low" <%= filters.sort === 'high-to-low' ? 'selected' : '' %>>Price: High to Low</option>
+      </select>
+    </div>
+
+    <div class="pt-4 flex flex-col gap-4">
+      <button type="submit" class="w-full px-6 py-3 bg-[#2C2C2C] text-white rounded-md hover:bg-[#1a1a1a] font-montserrat transition-colors">
+        Apply Filters
+      </button>
+      <a href="/shop/brand/<%= brand._id %>" class="w-full text-center px-6 py-3 border border-[#e0dcd4] text-[#2C2C2C] rounded-md hover:bg-[#f8c78d]/10 font-montserrat transition-colors">
+        Clear Filters
+      </a>
+    </div>
+  </form>
+</div>
+          </section>
 
     <%- include('../partials/user/footer.ejs') %>
 

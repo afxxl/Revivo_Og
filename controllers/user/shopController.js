@@ -38,6 +38,7 @@ const shopPage = async (req, res) => {
       maxPrice: req.query.maxPrice ? parseFloat(req.query.maxPrice) : undefined,
       heritage: req.query.heritage,
       status: req.query.status || "Available",
+      sort: req.query.sort || "", // Add sort filter
     };
 
     const categories = await Category.find({ isListed: true }).lean();
@@ -71,6 +72,16 @@ const shopPage = async (req, res) => {
     });
     const totalPages = Math.ceil(totalProducts / perPage);
 
+    // Define sort options
+    let sortOption = {};
+    if (filters.sort === "low-to-high") {
+      sortOption = { salesPrice: 1 }; // Ascending (low to high)
+    } else if (filters.sort === "high-to-low") {
+      sortOption = { salesPrice: -1 }; // Descending (high to low)
+    } else {
+      sortOption = {}; // Default no specific sorting (natural order)
+    }
+
     const products = await Product.find(query)
       .populate({
         path: "category",
@@ -80,6 +91,7 @@ const shopPage = async (req, res) => {
         path: "brand",
         match: { isActive: true },
       })
+      .sort(sortOption) // Apply sorting
       .skip(skip)
       .limit(perPage)
       .lean();
@@ -124,6 +136,7 @@ const loadBrandPage = async (req, res) => {
       minPrice: req.query.minPrice ? parseFloat(req.query.minPrice) : undefined,
       maxPrice: req.query.maxPrice ? parseFloat(req.query.maxPrice) : undefined,
       status: req.query.status || "Available",
+      sort: req.query.sort || "", // Add sort filter
     };
 
     let query = {
@@ -146,11 +159,20 @@ const loadBrandPage = async (req, res) => {
     });
     const totalPages = Math.ceil(totalProducts / perPage);
 
+    // Define sort options
+    let sortOption = {};
+    if (filters.sort === "low-to-high") {
+      sortOption = { salesPrice: 1 }; // Ascending (low to high)
+    } else if (filters.sort === "high-to-low") {
+      sortOption = { salesPrice: -1 }; // Descending (high to low)
+    }
+
     const products = await Product.find(query)
       .populate({
         path: "category",
         match: { isListed: true },
       })
+      .sort(sortOption) // Apply sorting
       .skip(skip)
       .limit(perPage)
       .lean();
@@ -187,6 +209,7 @@ const loadPrimeLayers = async (req, res) => {
       minPrice: req.query.minPrice ? parseFloat(req.query.minPrice) : undefined,
       maxPrice: req.query.maxPrice ? parseFloat(req.query.maxPrice) : undefined,
       status: req.query.status || "Available",
+      sort: req.query.sort || "", // Add sort filter
     };
 
     const categories = await Category.find({ isListed: true }).lean();
@@ -215,6 +238,16 @@ const loadPrimeLayers = async (req, res) => {
     });
     const totalPages = Math.ceil(totalProducts / perPage);
 
+    // Define sort options
+    let sortOption = {};
+    if (filters.sort === "low-to-high") {
+      sortOption = { salesPrice: 1 }; // Ascending (low to high)
+    } else if (filters.sort === "high-to-low") {
+      sortOption = { salesPrice: -1 }; // Descending (high to low)
+    } else {
+      sortOption = {}; // Default no specific sorting (natural order)
+    }
+
     const products = await Product.find(query)
       .populate({
         path: "category",
@@ -224,6 +257,7 @@ const loadPrimeLayers = async (req, res) => {
         path: "brand",
         match: { isActive: true },
       })
+      .sort(sortOption) // Apply sorting
       .skip(skip)
       .limit(perPage)
       .lean();
@@ -257,6 +291,7 @@ const loadVintageAthletics = async (req, res) => {
       minPrice: req.query.minPrice ? parseFloat(req.query.minPrice) : undefined,
       maxPrice: req.query.maxPrice ? parseFloat(req.query.maxPrice) : undefined,
       status: req.query.status || "Available",
+      sort: req.query.sort || "", // Add sort filter
     };
 
     const categories = await Category.find({ isListed: true }).lean();
@@ -285,6 +320,16 @@ const loadVintageAthletics = async (req, res) => {
     });
     const totalPages = Math.ceil(totalProducts / perPage);
 
+    // Define sort options
+    let sortOption = {};
+    if (filters.sort === "low-to-high") {
+      sortOption = { salesPrice: 1 }; // Ascending (low to high)
+    } else if (filters.sort === "high-to-low") {
+      sortOption = { salesPrice: -1 }; // Descending (high to low)
+    } else {
+      sortOption = {}; // Default no specific sorting (natural order)
+    }
+
     const products = await Product.find(query)
       .populate({
         path: "category",
@@ -294,6 +339,7 @@ const loadVintageAthletics = async (req, res) => {
         path: "brand",
         match: { isActive: true },
       })
+      .sort(sortOption) // Apply sorting
       .skip(skip)
       .limit(perPage)
       .lean();
@@ -327,6 +373,7 @@ const loadY2kEssentials = async (req, res) => {
       minPrice: req.query.minPrice ? parseFloat(req.query.minPrice) : undefined,
       maxPrice: req.query.maxPrice ? parseFloat(req.query.maxPrice) : undefined,
       status: req.query.status || "Available",
+      sort: req.query.sort || "", // Add sort filter
     };
 
     const categories = await Category.find({ isListed: true }).lean();
@@ -341,7 +388,6 @@ const loadY2kEssentials = async (req, res) => {
       category: { $in: listedCategoryIds },
       brand: { $in: activeBrandIds },
     };
-
     if (filters.size) query.size = filters.size;
     if (filters.condition) query.condition = filters.condition;
     if (filters.minPrice || filters.maxPrice) {
@@ -356,6 +402,16 @@ const loadY2kEssentials = async (req, res) => {
     });
     const totalPages = Math.ceil(totalProducts / perPage);
 
+    // Define sort options
+    let sortOption = {};
+    if (filters.sort === "low-to-high") {
+      sortOption = { salesPrice: 1 }; // Ascending (low to high)
+    } else if (filters.sort === "high-to-low") {
+      sortOption = { salesPrice: -1 }; // Descending (high to low)
+    } else {
+      sortOption = {}; // Default no specific sorting (natural order)
+    }
+
     const products = await Product.find(query)
       .populate({
         path: "category",
@@ -365,6 +421,7 @@ const loadY2kEssentials = async (req, res) => {
         path: "brand",
         match: { isActive: true },
       })
+      .sort(sortOption) // Apply sorting
       .skip(skip)
       .limit(perPage)
       .lean();
@@ -586,10 +643,10 @@ const loadCartPage = async (req, res) => {
         product.status !== "Available" ||
         !product.isListed
       ) {
+        canCheckout = false;
         continue;
       } else {
         item.quantity = Math.min(item.quantity, product.stock, 10);
-
         const productOffer = product.productOffer || 0;
         const categoryOffer = product.category?.categoryOffer || 0;
         const bestOfferPercentage = Math.max(productOffer, categoryOffer);
@@ -622,22 +679,25 @@ const loadCartPage = async (req, res) => {
 
     let appliedCoupon = null;
     let discount = 0;
+    let sessionModified = false;
 
     if (req.session.appliedCoupon) {
       const sessionCoupon = await Coupon.findById(
         req.session.appliedCoupon.couponId,
       );
-
       if (
         sessionCoupon &&
         sessionCoupon.isActive &&
         subtotal >= sessionCoupon.minPurchase &&
         new Date() >= sessionCoupon.startDate &&
-        new Date() <= sessionCoupon.endDate
+        new Date() <= sessionCoupon.endDate &&
+        sessionCoupon.usedCount < sessionCoupon.usageLimit &&
+        !sessionCoupon.usedBy.some(
+          (usage) => usage.user.toString() === userId.toString(),
+        )
       ) {
         if (sessionCoupon.discountType === "percentage") {
           discount = subtotal * (sessionCoupon.discountAmount / 100);
-
           if (
             sessionCoupon.maxDiscount &&
             discount > sessionCoupon.maxDiscount
@@ -647,9 +707,7 @@ const loadCartPage = async (req, res) => {
         } else {
           discount = sessionCoupon.discountAmount;
         }
-
         discount = Math.min(discount, subtotal);
-
         appliedCoupon = {
           code: sessionCoupon.code,
           id: sessionCoupon._id,
@@ -659,11 +717,26 @@ const loadCartPage = async (req, res) => {
         };
       } else {
         delete req.session.appliedCoupon;
+        sessionModified = true;
       }
     }
 
     const total =
       subtotal + shipping - (appliedCoupon ? appliedCoupon.discount : 0);
+
+    if (sessionModified) {
+      await new Promise((resolve, reject) => {
+        req.session.save((err) => {
+          if (err) {
+            console.error("Error saving session:", err);
+            reject(err);
+          } else {
+            console.log("Session saved successfully");
+            resolve();
+          }
+        });
+      });
+    }
 
     res.render("cart", {
       cart: {
@@ -764,6 +837,8 @@ const loadCheckoutPage = async (req, res) => {
           total: 0,
           canCheckout: false,
           errorMessage: `Cannot proceed to checkout. "${product.productName}" is no longer available or invalid.`,
+          coupons: [],
+          appliedCoupon: null,
         });
       }
     }
@@ -774,6 +849,7 @@ const loadCheckoutPage = async (req, res) => {
     let appliedCoupon = null;
     let discount = 0;
 
+    // Validate session coupon
     if (req.session.appliedCoupon) {
       const sessionCoupon = await Coupon.findById(
         req.session.appliedCoupon.couponId,
@@ -784,11 +860,14 @@ const loadCheckoutPage = async (req, res) => {
         sessionCoupon.isActive &&
         subtotal >= sessionCoupon.minPurchase &&
         new Date() >= sessionCoupon.startDate &&
-        new Date() <= sessionCoupon.endDate
+        new Date() <= sessionCoupon.endDate &&
+        sessionCoupon.usedCount < sessionCoupon.usageLimit &&
+        !sessionCoupon.usedBy.some(
+          (usage) => usage.user.toString() === userId.toString(),
+        )
       ) {
         if (sessionCoupon.discountType === "percentage") {
           discount = subtotal * (sessionCoupon.discountAmount / 100);
-
           if (
             sessionCoupon.maxDiscount &&
             discount > sessionCoupon.maxDiscount
@@ -808,6 +887,9 @@ const loadCheckoutPage = async (req, res) => {
           discountType: sessionCoupon.discountType,
           discountAmount: sessionCoupon.discountAmount,
         };
+      } else {
+        // Clear invalid or used coupon from session
+        delete req.session.appliedCoupon;
       }
     }
 
@@ -949,16 +1031,22 @@ const createOrder = async (req, res) => {
     let discount = 0;
     let couponCode = null;
     let couponId = null;
+
     if (req.session.appliedCoupon) {
       const sessionCoupon = await Coupon.findById(
         req.session.appliedCoupon.couponId,
       ).session(session);
+
       if (
         sessionCoupon &&
         sessionCoupon.isActive &&
         subtotal >= sessionCoupon.minPurchase &&
         new Date() >= sessionCoupon.startDate &&
-        new Date() <= sessionCoupon.endDate
+        new Date() <= sessionCoupon.endDate &&
+        sessionCoupon.usedCount < sessionCoupon.usageLimit &&
+        !sessionCoupon.usedBy.some(
+          (usage) => usage.user.toString() === userId.toString(),
+        )
       ) {
         if (sessionCoupon.discountType === "percentage") {
           discount = subtotal * (sessionCoupon.discountAmount / 100);
@@ -977,8 +1065,12 @@ const createOrder = async (req, res) => {
         sessionCoupon.usedCount += 1;
         sessionCoupon.usedBy.push({ user: userId, usedAt: new Date() });
         await sessionCoupon.save({ session });
+      } else {
+        // Clear invalid coupon
+        delete req.session.appliedCoupon;
       }
     }
+
     const finalAmount = subtotal + shipping - discount;
 
     if (paymentMethod === "WALLET") {
@@ -1035,6 +1127,8 @@ const createOrder = async (req, res) => {
     await order.save({ session });
     await User.findByIdAndUpdate(userId, { $set: { cart: [] } });
     await Cart.deleteOne({ userId });
+    // Clear applied coupon from session after successful order
+    delete req.session.appliedCoupon;
     await session.commitTransaction();
     session.endSession();
     res.json({
@@ -1440,6 +1534,7 @@ const getAvailableCoupons = async (userId, cartTotal) => {
       startDate: { $lte: currentDate },
       endDate: { $gte: currentDate },
       minPurchase: { $lte: cartTotal },
+      $expr: { $lt: ["$usedCount", "$usageLimit"] }, // Compare usedCount < usageLimit
     });
 
     const filteredCoupons = await Promise.all(
@@ -1450,11 +1545,6 @@ const getAvailableCoupons = async (userId, cartTotal) => {
         if (userUsed) {
           return null;
         }
-
-        if (coupon.usedCount >= coupon.usageLimit) {
-          return null;
-        }
-
         return coupon;
       }),
     );
@@ -1491,6 +1581,13 @@ const applyCoupon = async (req, res) => {
       });
     }
 
+    if (coupon.usedCount >= coupon.usageLimit) {
+      return res.status(400).json({
+        success: false,
+        message: "This coupon has reached its usage limit",
+      });
+    }
+
     const userUsed = coupon.usedBy.some(
       (usage) => usage.user.toString() === userId.toString(),
     );
@@ -1498,13 +1595,6 @@ const applyCoupon = async (req, res) => {
       return res.status(400).json({
         success: false,
         message: "You have already used this coupon",
-      });
-    }
-
-    if (coupon.usedCount >= coupon.usageLimit) {
-      return res.status(400).json({
-        success: false,
-        message: "This coupon has reached its usage limit",
       });
     }
 
@@ -1532,7 +1622,6 @@ const applyCoupon = async (req, res) => {
     let discountAmount = 0;
     if (coupon.discountType === "percentage") {
       discountAmount = subtotal * (coupon.discountAmount / 100);
-
       if (coupon.maxDiscount && discountAmount > coupon.maxDiscount) {
         discountAmount = coupon.maxDiscount;
       }
@@ -1542,9 +1631,10 @@ const applyCoupon = async (req, res) => {
 
     discountAmount = Math.min(discountAmount, subtotal);
 
-    const shipping = 5;
-    const total = subtotal + shipping - discountAmount;
+    // Clear any existing invalid coupon
+    delete req.session.appliedCoupon;
 
+    // Set the new coupon in session
     req.session.appliedCoupon = {
       couponId: coupon._id,
       code: coupon.code,
@@ -1557,8 +1647,8 @@ const applyCoupon = async (req, res) => {
       cart: {
         subtotal,
         discount: discountAmount,
-        shipping,
-        total,
+        shipping: 5,
+        total: subtotal + 5 - discountAmount,
         couponCode: coupon.code,
         couponId: coupon._id,
       },
@@ -1574,7 +1664,13 @@ const applyCoupon = async (req, res) => {
 
 const removeCoupon = async (req, res) => {
   try {
+    console.log(
+      "Attempting to remove coupon from session:",
+      req.session.appliedCoupon,
+    );
+
     if (!req.session.appliedCoupon) {
+      console.log("No coupon found in session");
       return res.status(400).json({
         success: false,
         message: "No coupon applied to remove",
@@ -1582,16 +1678,69 @@ const removeCoupon = async (req, res) => {
     }
 
     delete req.session.appliedCoupon;
+    console.log("Coupon removed from session");
+
+    const userId = req.session.user;
+    const cart = await Cart.findOne({ userId }).populate({
+      path: "items.productId",
+      populate: [{ path: "brand" }, { path: "category" }],
+    });
+
+    let subtotal = 0;
+    let items = [];
+    if (cart && cart.items.length > 0) {
+      items = cart.items.filter((item) => {
+        const product = item.productId;
+        return (
+          product &&
+          product.isListed &&
+          product.status === "Available" &&
+          product.stock >= item.quantity
+        );
+      });
+      subtotal = items.reduce((sum, item) => sum + item.totalPrice, 0);
+    }
+    const shipping = subtotal > 0 ? 5 : 0;
+    const total = subtotal + shipping;
+
+    // Update cart if items were filtered
+    if (cart && items.length !== cart.items.length) {
+      cart.items = items;
+      await cart.save();
+    }
+
+    await new Promise((resolve, reject) => {
+      req.session.save((err) => {
+        if (err) {
+          console.error("Error saving session:", err);
+          reject(err);
+        } else {
+          console.log("Session saved successfully");
+          resolve();
+        }
+      });
+    });
 
     return res.status(200).json({
       success: true,
       message: "Coupon removed successfully",
+      cart: {
+        subtotal,
+        shipping,
+        total,
+        items,
+      },
     });
   } catch (error) {
-    console.error("Error removing coupon:", error);
+    console.error("Detailed error removing coupon:", {
+      message: error.message,
+      stack: error.stack,
+    });
     return res.status(500).json({
       success: false,
-      message: "An error occurred while removing the coupon",
+      message: "An error occurred while removing the coupon: " + error.message,
+      errorDetails:
+        process.env.NODE_ENV === "development" ? error.stack : undefined,
     });
   }
 };
@@ -1690,7 +1839,6 @@ const verifyRazorpayPayment = async (req, res) => {
       razorpay_signature,
       orderId,
     } = req.body;
-
     const body = razorpay_order_id + "|" + razorpay_payment_id;
     const crypto = require("crypto");
     const expectedSignature = crypto

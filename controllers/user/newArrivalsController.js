@@ -18,6 +18,7 @@ const newArrivalsPage = async (req, res) => {
       condition: req.query.condition || "",
       minPrice: req.query.minPrice ? parseFloat(req.query.minPrice) : undefined,
       maxPrice: req.query.maxPrice ? parseFloat(req.query.maxPrice) : undefined,
+      sort: req.query.sort || "", // Add sort filter
     };
 
     const categories = await Category.find({ isListed: true }).lean();
@@ -56,6 +57,16 @@ const newArrivalsPage = async (req, res) => {
     });
     const totalPages = Math.ceil(totalProducts / perPage);
 
+    // Define sort options
+    let sortOption = {};
+    if (filters.sort === "low-to-high") {
+      sortOption = { salesPrice: 1 }; // Ascending (low to high)
+    } else if (filters.sort === "high-to-low") {
+      sortOption = { salesPrice: -1 }; // Descending (high to low)
+    } else {
+      sortOption = { createdAt: -1 }; // Default sorting by creation date
+    }
+
     const products = await Product.find(query)
       .populate({
         path: "category",
@@ -65,7 +76,7 @@ const newArrivalsPage = async (req, res) => {
         path: "brand",
         match: { isActive: true },
       })
-      .sort({ createdAt: -1 })
+      .sort(sortOption) // Apply sorting
       .skip(skip)
       .limit(perPage)
       .lean();
@@ -87,6 +98,7 @@ const newArrivalsPage = async (req, res) => {
     res.status(500).send("Server Error");
   }
 };
+
 module.exports = {
   newArrivalsPage,
 };

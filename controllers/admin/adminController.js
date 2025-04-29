@@ -55,6 +55,44 @@ const login = async (req, res) => {
 const loadDashboard = async (req, res) => {
   if (req.session.admin) {
     try {
+      const totalProducts = await Product.countDocuments();
+
+      const totalUsers = await User.countDocuments({ isAdmin: false });
+
+      const totalOrdersExcludingCancelledAndReturned =
+        await Order.countDocuments({
+          status: { $nin: ["Cancelled", "Returned"] },
+        });
+
+      const orderStatusStats = await Order.aggregate([
+        {
+          $group: {
+            _id: "$status",
+            count: { $sum: 1 },
+          },
+        },
+      ]);
+
+      res.render("dashboard", {
+        totalProducts,
+        totalUsers,
+        totalOrdersExcludingCancelledAndReturned,
+        orderStatusStats,
+      });
+    } catch (err) {
+      console.error("Dashboard error:", err);
+      res.status(500).render("admin-error", {
+        message: "Failed to load dashboard",
+      });
+    }
+  } else {
+    res.redirect("/admin/login");
+  }
+};
+
+const loadSalesReport = async (req, res) => {
+  if (req.session.admin) {
+    try {
       const { filter = "daily", startDate, endDate } = req.query;
 
       let dateFilter = {};
@@ -62,54 +100,66 @@ const loadDashboard = async (req, res) => {
       let groupByFormat = {
         $dateToString: { format: "%Y-%m-%d", date: "$createdOn" },
       };
+      let dateRange = [];
 
       const now = new Date();
       const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 
+      // Helper function to generate date range
+      const generateDateRange = (start, end, format) => {
+        const dates = [];
+        let currentDate = new Date(start);
+        while (currentDate <= end) {
+          if (format === "%Y-%m") {
+            dates.push(
+              `${currentDate.getFullYear()}-${String(currentDate.getMonth() + 1).padStart(2, "0")}`,
+            );
+            currentDate.setMonth(currentDate.getMonth() + 1);
+          } else {
+            dates.push(
+              `${currentDate.getFullYear()}-${String(currentDate.getMonth() + 1).padStart(2, "0")}-${String(
+                currentDate.getDate(),
+              ).padStart(2, "0")}`,
+            );
+            currentDate.setDate(currentDate.getDate() + 1);
+          }
+        }
+        return dates;
+      };
+
+      // Set date filter and generate date range
       if (filter === "custom" && startDate && endDate) {
         const start = new Date(startDate);
         const end = new Date(endDate);
         end.setHours(23, 59, 59, 999);
-
-        dateFilter = {
-          createdOn: {
-            $gte: start,
-            $lte: end,
-          },
-        };
+        dateFilter = { createdOn: { $gte: start, $lte: end } };
+        dateRange = generateDateRange(start, end, timeFormat);
       } else if (filter === "yearly") {
         const startOfYear = new Date(now.getFullYear(), 0, 1);
-        dateFilter = {
-          createdOn: { $gte: startOfYear },
-        };
+        const endOfYear = new Date(now.getFullYear(), 11, 31);
+        dateFilter = { createdOn: { $gte: startOfYear } };
         timeFormat = "%Y-%m";
         groupByFormat = {
           $dateToString: { format: "%Y-%m", date: "$createdOn" },
         };
+        dateRange = generateDateRange(startOfYear, endOfYear, timeFormat);
       } else if (filter === "weekly") {
         const startOfWeek = new Date(today);
         startOfWeek.setDate(today.getDate() - today.getDay());
-        dateFilter = {
-          createdOn: { $gte: startOfWeek },
-        };
+        const endOfWeek = new Date(startOfWeek);
+        endOfWeek.setDate(startOfWeek.getDate() + 6);
+        dateFilter = { createdOn: { $gte: startOfWeek } };
+        dateRange = generateDateRange(startOfWeek, endOfWeek, timeFormat);
       } else {
         const startOfDay = new Date(today);
         const endOfDay = new Date(today);
         endOfDay.setHours(23, 59, 59, 999);
-
-        dateFilter = {
-          createdOn: {
-            $gte: startOfDay,
-            $lte: endOfDay,
-          },
-        };
+        dateFilter = { createdOn: { $gte: startOfDay, $lte: endOfDay } };
+        dateRange = generateDateRange(startOfDay, endOfDay, timeFormat);
       }
 
-      const matchFilter = {
-        ...dateFilter,
-        status: { $nin: ["Cancelled", "Returned"] },
-      };
-      const orderStats = await Order.aggregate([
+      const matchFilter = { ...dateFilter, status: "Delivered" };
+      const orderStatsRaw = await Order.aggregate([
         { $match: matchFilter },
         {
           $group: {
@@ -121,6 +171,14 @@ const loadDashboard = async (req, res) => {
         },
         { $sort: { _id: 1 } },
       ]);
+
+      // Merge orderStats with the full date range
+      const orderStats = dateRange.map((date) => {
+        const stat = orderStatsRaw.find((stat) => stat._id === date);
+        return stat || { _id: date, count: 0, revenue: 0, discount: 0 };
+      });
+
+      console.log("Adjusted Order Stats:", orderStats);
 
       const paymentMethodStats = await Order.aggregate([
         { $match: dateFilter },
@@ -135,12 +193,7 @@ const loadDashboard = async (req, res) => {
 
       const orderStatusStats = await Order.aggregate([
         { $match: dateFilter },
-        {
-          $group: {
-            _id: "$status",
-            count: { $sum: 1 },
-          },
-        },
+        { $group: { _id: "$status", count: { $sum: 1 } } },
       ]);
 
       const couponStats = await Order.aggregate([
@@ -152,40 +205,37 @@ const loadDashboard = async (req, res) => {
             totalDiscount: { $sum: "$discount" },
           },
         },
-        { $sort: { count: -1 } },
+        { $sort: { totalDiscount: -1 } },
         { $limit: 5 },
       ]);
 
-      const totalStats = await Promise.all([
-        Order.countDocuments(matchFilter),
-        Order.aggregate([
-          { $match: matchFilter },
-          { $group: { _id: null, total: { $sum: "$finalAmount" } } },
-        ]),
-        Order.aggregate([
-          { $match: matchFilter },
-          { $group: { _id: null, total: { $sum: "$discount" } } },
-        ]),
-      ]);
-      const dashboardData = {
-        currentPage: "dashboard",
+      const totalRevenue = orderStats.reduce(
+        (acc, curr) => acc + curr.revenue,
+        0,
+      );
+      const totalOrders = orderStats.reduce((acc, curr) => acc + curr.count, 0);
+      const totalDiscount = orderStats.reduce(
+        (acc, curr) => acc + curr.discount,
+        0,
+      );
+
+      res.render("sales-report", {
         orderStats,
+        totalRevenue,
+        totalOrders,
+        totalDiscount,
         paymentMethodStats,
         orderStatusStats,
         couponStats,
-        totalOrders: totalStats[0],
-        totalRevenue: totalStats[1][0]?.total || 0,
-        totalDiscount: totalStats[2][0]?.total || 0,
         filter,
         startDate: startDate || "",
         endDate: endDate || "",
-        moment,
-      };
-
-      res.render("dashboard", dashboardData);
+      });
     } catch (err) {
-      console.error("Dashboard error:", err);
-      res.redirect("/admin/pageerror");
+      console.error("Sales Report error:", err);
+      res
+        .status(500)
+        .render("admin-error", { message: "Failed to load sales report" });
     }
   } else {
     res.redirect("/admin/login");
@@ -196,192 +246,405 @@ const logout = async (req, res) => {
   try {
     req.session.destroy((err) => {
       if (err) {
-        console.log("Session destruction error", err.message);
-        return res.redirect("/pageerror");
+        return res.status(500).json({
+          success: false,
+          message: "Logout failed",
+        });
       }
       return res.redirect("/admin/login");
     });
   } catch (err) {
-    console.log("Logout error", err);
-    res.redirect("/pageerror");
+    console.error("Logout error:", err);
+    return res.status(500).json({
+      success: false,
+      message: "Server error",
+    });
   }
 };
 
 const exportDashboardData = async (req, res) => {
   try {
+    try {
+      require.resolve("pdfkit");
+      require.resolve("exceljs");
+    } catch (e) {
+      return res.status(500).json({
+        success: false,
+        message: "Missing dependencies. Run: npm install pdfkit exceljs",
+      });
+    }
+
     const { filter = "daily", startDate, endDate, format = "pdf" } = req.query;
+
+    // Validate custom date filter
+    if (filter === "custom" && (!startDate || !endDate)) {
+      return res.status(400).json({
+        success: false,
+        message: "Both startDate and endDate are required for custom filter",
+      });
+    }
 
     let dateFilter = {};
     const now = new Date();
     const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 
-    if (filter === "custom" && startDate && endDate) {
-      const start = new Date(startDate);
-      const end = new Date(endDate);
-      end.setHours(23, 59, 59, 999);
-
-      dateFilter = {
-        createdOn: {
-          $gte: start,
-          $lte: end,
-        },
-      };
-    } else if (filter === "yearly") {
-      const startOfYear = new Date(now.getFullYear(), 0, 1);
-      dateFilter = {
-        createdOn: { $gte: startOfYear },
-      };
-    } else if (filter === "weekly") {
-      const startOfWeek = new Date(today);
-      startOfWeek.setDate(today.getDate() - today.getDay());
-      dateFilter = {
-        createdOn: { $gte: startOfWeek },
-      };
-    } else {
-      const startOfDay = new Date(today);
-      const endOfDay = new Date(today);
-      endOfDay.setHours(23, 59, 59, 999);
-
-      dateFilter = {
-        createdOn: {
-          $gte: startOfDay,
-          $lte: endOfDay,
-        },
-      };
+    // Date filter configuration
+    switch (filter) {
+      case "custom":
+        const start = new Date(startDate);
+        const end = new Date(endDate);
+        end.setHours(23, 59, 59, 999);
+        dateFilter = { createdOn: { $gte: start, $lte: end } };
+        break;
+      case "yearly":
+        dateFilter = { createdOn: { $gte: new Date(now.getFullYear(), 0, 1) } };
+        break;
+      case "weekly":
+        const startOfWeek = new Date(today);
+        startOfWeek.setDate(today.getDate() - today.getDay());
+        dateFilter = { createdOn: { $gte: startOfWeek } };
+        break;
+      default: // daily
+        const startOfDay = new Date(today);
+        const endOfDay = new Date(today);
+        endOfDay.setHours(23, 59, 59, 999);
+        dateFilter = { createdOn: { $gte: startOfDay, $lte: endOfDay } };
     }
 
-    const orders = await Order.find(dateFilter)
+    // Generate date range text
+    let dateRangeText;
+    switch (filter) {
+      case "custom":
+        dateRangeText = `${moment(startDate).format("MMM D, YYYY")} - ${moment(endDate).format("MMM D, YYYY")}`;
+        break;
+      case "yearly":
+        dateRangeText = `Year ${moment().format("YYYY")}`;
+        break;
+      case "weekly":
+        dateRangeText = `Week of ${moment().startOf("week").format("MMM D")}`;
+        break;
+      default:
+        dateRangeText = moment().format("MMM D, YYYY");
+    }
+
+    // Fetch orders
+    const orders = await Order.find({
+      ...dateFilter,
+      status: "Delivered",
+    })
       .populate("user", "name email")
-      .populate("couponId", "code discountType discountValue")
       .sort({ createdOn: -1 })
       .lean();
+
+    // Calculate totals with fallbacks
+    const totalRevenue = orders.reduce(
+      (sum, order) => sum + (order.finalAmount || 0),
+      0,
+    );
+    const totalDiscount = orders.reduce(
+      (sum, order) => sum + (order.discount || 0),
+      0,
+    );
 
     if (format === "excel") {
       const excel = require("exceljs");
       const workbook = new excel.Workbook();
-      const worksheet = workbook.addWorksheet("Dashboard Report");
+      const worksheet = workbook.addWorksheet("Sales Report");
 
+      // Excel formatting
       worksheet.columns = [
-        { header: "Order ID", key: "orderId", width: 15 },
-        { header: "Customer", key: "customer", width: 20 },
+        { header: "Order ID", key: "orderId", width: 20 },
+        { header: "Customer", key: "customer", width: 25 },
         { header: "Date", key: "date", width: 15 },
         { header: "Status", key: "status", width: 15 },
-        { header: "Payment Method", key: "paymentMethod", width: 15 },
-        { header: "Total Amount", key: "amount", width: 15 },
-        { header: "Discount", key: "discount", width: 15 },
-        { header: "Coupon", key: "coupon", width: 15 },
+        { header: "Payment Method", key: "paymentMethod", width: 18 },
+        {
+          header: "Amount (₹)",
+          key: "amount",
+          width: 15,
+          style: { numFmt: "#,##0.00" },
+        },
+        {
+          header: "Discount (₹)",
+          key: "discount",
+          width: 15,
+          style: { numFmt: "#,##0.00" },
+        },
+        { header: "Coupon Code", key: "coupon", width: 15 },
       ];
 
-      orders.forEach((order) => {
-        worksheet.addRow({
-          orderId: order.orderId,
-          customer: order.user
-            ? `${order.user.name} (${order.user.email})`
-            : "Unknown",
-          date: moment(order.createdOn).format("YYYY-MM-DD"),
-          status: order.status,
-          paymentMethod: order.paymentMethod,
-          amount: order.finalAmount,
-          discount: order.discount,
-          coupon: order.couponCode || "None",
+      if (orders.length > 0) {
+        orders.forEach((order) => {
+          worksheet.addRow({
+            orderId: order.orderId,
+            customer: order.user
+              ? `${order.user.name} <${order.user.email}>`
+              : "Guest",
+            date: moment(order.createdOn).format("YYYY-MM-DD"),
+            status: order.status,
+            paymentMethod: order.paymentMethod,
+            amount: order.finalAmount,
+            discount: order.discount,
+            coupon: order.couponCode || "N/A",
+          });
         });
-      });
+      } else {
+        worksheet.addRow({
+          orderId: "N/A",
+          customer: "No Data",
+          date: "N/A",
+          status: "N/A",
+          paymentMethod: "N/A",
+          amount: 0,
+          discount: 0,
+          coupon: "N/A",
+        });
+      }
 
+      // Set response headers
       res.setHeader(
         "Content-Type",
         "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
       );
       res.setHeader(
         "Content-Disposition",
-        `attachment; filename=dashboard-report-${moment().format("YYYY-MM-DD")}.xlsx`,
+        `attachment; filename=Revivo-Sales-${moment().format("YYYY-MM-DD")}.xlsx`,
       );
 
       await workbook.xlsx.write(res);
       res.end();
     } else {
       const PDFDocument = require("pdfkit");
-      const doc = new PDFDocument();
+      const path = require("path");
+      const doc = new PDFDocument({
+        size: "A4",
+        margins: { top: 40, bottom: 40, left: 50, right: 50 },
+      });
 
+      // PDF error handling
+      doc.on("error", (err) => {
+        console.error("PDF stream error:", err);
+        if (!res.headersSent) {
+          res.status(500).json({
+            success: false,
+            message: "PDF generation failed",
+          });
+        }
+      });
+
+      // PDF headers
       res.setHeader("Content-Type", "application/pdf");
       res.setHeader(
         "Content-Disposition",
-        `attachment; filename=dashboard-report-${moment().format("YYYY-MM-DD")}.pdf`,
+        `attachment; filename=Revivo-Sales-${moment().format("YYYY-MM-DD")}.pdf`,
       );
 
       doc.pipe(res);
 
-      doc.fontSize(16).text("Dashboard Report", { align: "center" });
-      doc.moveDown();
-
-      let dateRangeText = "";
-      if (filter === "custom") {
-        dateRangeText = `${moment(startDate).format("YYYY-MM-DD")} to ${moment(endDate).format("YYYY-MM-DD")}`;
-      } else {
-        dateRangeText =
-          filter.charAt(0).toUpperCase() + filter.slice(1) + " Report";
+      // Register Google Fonts
+      try {
+        doc.registerFont(
+          "HennyPenny-Regular",
+          path.join(__dirname, "..", "..", "fonts", "HennyPenny-Regular.ttf"),
+        );
+        doc.registerFont(
+          "DancingScript-Regular",
+          path.join(
+            __dirname,
+            "..",
+            "..",
+            "fonts",
+            "DancingScript-Regular.ttf",
+          ),
+        );
+      } catch (err) {
+        console.error("Font registration error:", err.message);
+        doc.registerFont("HennyPenny-Regular", "Helvetica-Bold");
+        doc.registerFont("DancingScript-Regular", "Times-Roman");
       }
-      doc.fontSize(12).text(dateRangeText, { align: "center" });
-      doc.moveDown();
 
-      const totalRevenue = orders.reduce(
-        (sum, order) => sum + order.finalAmount,
-        0,
-      );
-      const totalDiscount = orders.reduce(
-        (sum, order) => sum + order.discount,
-        0,
-      );
+      // PDF content
+      // Header Section
+      doc
+        .fillColor("#10b981")
+        .font("HennyPenny-Regular", 28)
+        .text("Revivo", 50, 40, { align: "center" })
+        .font("DancingScript-Regular", 16)
+        .fillColor("#2C2C2C")
+        .text("Sales Report", 50, 70, { align: "center" })
+        .moveDown(0.5);
 
-      doc.fontSize(12).text(`Total Orders: ${orders.length}`);
-      doc.fontSize(12).text(`Total Revenue: ₹${totalRevenue.toFixed(2)}`);
-      doc.fontSize(12).text(`Total Discount: ₹${totalDiscount.toFixed(2)}`);
-      doc.moveDown();
+      // Gradient Header Background
+      const gradient = doc.linearGradient(50, 100, 550, 100);
+      gradient.stop(0, "#10b981").stop(1, "#059669");
+      doc.rect(50, 100, 500, 40).fill(gradient);
 
-      const tableTop = 200;
-      const itemsPerPage = 20;
-      let currentPage = 1;
-      let yPosition = tableTop;
+      // Report Metadata
+      doc
+        .font("Helvetica", 10)
+        .fillColor("#ffffff")
+        .text(`Generated: ${moment().format("MMM D, YYYY h:mm A")}`, 60, 110)
+        .text(`Period: ${dateRangeText}`, 60, 125)
+        .moveDown(1);
 
-      doc.fontSize(10);
-      doc.text("Order ID", 50, yPosition);
-      doc.text("Date", 150, yPosition);
-      doc.text("Status", 220, yPosition);
-      doc.text("Amount", 290, yPosition);
-      doc.text("Discount", 360, yPosition);
-      doc.text("Payment", 430, yPosition);
+      // Summary Section
+      doc
+        .font("Helvetica-Bold", 12)
+        .fillColor("#2C2C2C")
+        .text("Summary", 50, 160)
+        .moveTo(50, 170)
+        .lineTo(150, 170)
+        .strokeColor("#10b981")
+        .stroke();
 
-      yPosition += 20;
+      if (orders.length > 0) {
+        doc
+          .font("Helvetica", 10)
+          .text(`Total Orders: ${orders.length}`, 50, 180)
+          .text(`Total Revenue: ₹${totalRevenue.toFixed(2)}`, 50, 195)
+          .text(`Total Discount: ₹${totalDiscount.toFixed(2)}`, 50, 210)
+          .text(
+            `Net Revenue: ₹${(totalRevenue - totalDiscount).toFixed(2)}`,
+            50,
+            225,
+          )
+          .moveDown(2);
 
-      orders.forEach((order, index) => {
-        if (index > 0 && index % itemsPerPage === 0) {
-          doc.addPage();
-          yPosition = 50;
+        // Table Setup
+        const tableConfig = {
+          startY: 260,
+          columns: [
+            { header: "Order ID", width: 75, align: "left" },
+            { header: "Date", width: 65, align: "left" },
+            { header: "Status", width: 80, align: "center" },
+            { header: "Amount", width: 80, align: "right" },
+            { header: "Discount", width: 120, align: "right" },
+            { header: "Payment", width: 100, align: "left" },
+          ],
+          rows: orders.map((order) => {
+            const discountValue = `₹${order.discount.toFixed(2)}   `;
+            return [
+              order.orderId,
+              moment(order.createdOn).format("MMM D, YY"),
+              order.status,
+              `₹${order.finalAmount.toFixed(2)}`,
+              discountValue,
+              order.paymentMethod,
+            ];
+          }),
+        };
 
-          doc.text("Order ID", 50, yPosition);
-          doc.text("Date", 150, yPosition);
-          doc.text("Status", 220, yPosition);
-          doc.text("Amount", 290, yPosition);
-          doc.text("Discount", 360, yPosition);
-          doc.text("Payment", 430, yPosition);
+        // Draw Table Header
+        let yPosition = tableConfig.startY;
+        doc
+          .rect(50, yPosition - 10, 520, 25)
+          .fillColor("#10b981")
+          .fill();
+        doc.font("Helvetica-Bold", 10).fillColor("#ffffff");
+        tableConfig.columns.forEach((col, i) => {
+          const xPosition =
+            50 +
+            tableConfig.columns.slice(0, i).reduce((a, c) => a + c.width, 0);
+          doc.text(col.header, xPosition, yPosition, {
+            width: col.width,
+            align: col.align,
+          });
+        });
 
-          yPosition += 20;
-        }
+        // Draw Table Rows
+        doc.font("Helvetica", 9).fillColor("#2C2C2C");
+        tableConfig.rows.forEach((row, rowIndex) => {
+          yPosition += 25;
+          if (yPosition > 720) {
+            doc.addPage();
+            yPosition = 50;
+            // Redraw header on new page
+            doc
+              .rect(50, yPosition - 10, 520, 25)
+              .fillColor("#10b981")
+              .fill();
+            doc.font("Helvetica-Bold", 10).fillColor("#ffffff");
+            tableConfig.columns.forEach((col, i) => {
+              const xPosition =
+                50 +
+                tableConfig.columns
+                  .slice(0, i)
+                  .reduce((a, c) => a + c.width, 0);
+              doc.text(col.header, xPosition, yPosition, {
+                width: col.width,
+                align: col.align,
+              });
+            });
+            yPosition += 25;
+          }
 
-        doc.text(order.orderId, 50, yPosition);
-        doc.text(moment(order.createdOn).format("YYYY-MM-DD"), 150, yPosition);
-        doc.text(order.status, 220, yPosition);
-        doc.text(`₹${order.finalAmount.toFixed(2)}`, 290, yPosition);
-        doc.text(`₹${order.discount.toFixed(2)}`, 360, yPosition);
-        doc.text(order.paymentMethod, 430, yPosition);
+          // Alternating row background
+          if (rowIndex % 2 === 0) {
+            doc
+              .rect(50, yPosition - 10, 520, 25)
+              .fillColor("#f8f8f8")
+              .fill();
+          }
 
-        yPosition += 20;
-      });
+          // Row content
+          doc.fillColor("#2C2C2C");
+          row.forEach((cell, cellIndex) => {
+            const xPosition =
+              50 +
+              tableConfig.columns
+                .slice(0, cellIndex)
+                .reduce((a, c) => a + c.width, 0);
+            const adjustedX = xPosition + (cellIndex === 5 ? 10 : 0);
+            doc.text(cell, adjustedX, yPosition, {
+              width: tableConfig.columns[cellIndex].width,
+              align: tableConfig.columns[cellIndex].align,
+            });
+          });
+        });
+      } else {
+        doc
+          .font("Helvetica", 12)
+          .fillColor("#2C2C2C")
+          .text("No delivered orders found in the selected period.", 50, 180, {
+            align: "center",
+          })
+          .moveDown(2);
+      }
+
+      // Footer with Branding
+      doc
+        .font("DancingScript-Regular", 12)
+        .fillColor("#10b981")
+        .text("Revivo - Empowering Sustainable Fashion", 50, 760, {
+          align: "center",
+        });
+
+      // Subtle Watermark
+      doc
+        .font("HennyPenny-Regular", 40)
+        .fillColor("#10b981")
+        .opacity(0.1)
+        .text("Revivo", 150, 400, { align: "center", rotate: -45 });
 
       doc.end();
     }
   } catch (err) {
-    console.error("Export error:", err);
-    res.status(500).json({ success: false, message: "Export failed" });
+    console.error("Export error:", {
+      message: err.message,
+      stack: err.stack,
+      query: req.query,
+    });
+
+    if (!res.headersSent) {
+      res.status(500).json({
+        success: false,
+        message:
+          process.env.NODE_ENV === "development"
+            ? err.message
+            : "Export failed. Please check server logs",
+        errorCode: "EXPORT_ERROR",
+      });
+    }
   }
 };
 
@@ -389,6 +652,7 @@ module.exports = {
   loadLogin,
   login,
   loadDashboard,
+  loadSalesReport,
   pageerror,
   logout,
   exportDashboardData,

@@ -302,20 +302,20 @@
                   <span class="font-montserrat font-medium shipping-display">₹<%= shipping.toFixed(2) %></span>
                 </div>
                 
-                <% if (appliedCoupon) { %>
-                <div class="flex justify-between text-green-600">
-                  <span class="font-montserrat text-sm font-medium flex items-center">
-                    Coupon: <%= appliedCoupon.code %>
-                    <button type="button" id="remove-coupon" class="ml-2 text-red-500 hover:text-red-700">
-                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                      </svg>
-                    </button>
-                  </span>
-                  <span class="font-montserrat font-medium coupon-discount-display">-₹<%= appliedCoupon.discount.toFixed(2) %></span>
-                </div>
-                <% } %>
-                
+<% if (appliedCoupon) { %>
+<div class="flex justify-between text-green-600 coupon-discount-row">
+  <span class="font-montserrat text-sm font-medium flex items-center">
+    Coupon: <%= appliedCoupon.code %>
+    <button type="button" id="remove-coupon" class="ml-2 text-red-500 hover:text-red-700">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+      </svg>
+    </button>
+  </span>
+  <span class="font-montserrat font-medium coupon-discount-display">-₹<%= appliedCoupon.discount.toFixed(2) %></span>
+</div>
+<% } %>
+                                
                 <div class="border-t border-[#e0dcd4] pt-3 flex justify-between">
                   <span class="font-montserrat font-medium">Total</span>
                   <span class="font-montserrat font-medium text-lg total-display">₹<%= total.toFixed(2) %></span>
@@ -405,11 +405,50 @@
       <%- include('../partials/user/footer.ejs') %>
 
 <script>
+
 document.addEventListener('DOMContentLoaded', function() {
+  // Exit early if cart is empty
   if (document.querySelector('.empty-cart-message')) {
     return;
   }
 
+  // Validate applied coupon on page load
+  async function validateAppliedCoupon() {
+    const appliedCouponInput = document.getElementById('coupon-code');
+    if (appliedCouponInput && appliedCouponInput.value) {
+      try {
+        const response = await fetch('/apply-coupon', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ couponCode: appliedCouponInput.value }),
+          credentials: 'include'
+        });
+        
+        const data = await response.json();
+        
+        if (!data.success) {
+          appliedCouponInput.value = '';
+          document.getElementById('apply-coupon-btn').disabled = false;
+          const couponRow = document.querySelector('.coupon-discount-display');
+          if (couponRow) couponRow.closest('.flex').remove();
+          showToast(data.message || 'Invalid coupon removed', 'error');
+        }
+      } catch (error) {
+        console.error('Error validating coupon:', error);
+        appliedCouponInput.value = '';
+        document.getElementById('apply-coupon-btn').disabled = false;
+        const couponRow = document.querySelector('.coupon-discount-display');
+        if (couponRow) couponRow.closest('.flex').remove();
+        showToast('Error validating coupon', 'error');
+      }
+    }
+  }
+
+  validateAppliedCoupon();
+
+  // Debounce utility function
   function debounce(func, wait) {
     let timeout;
     return function (...args) {
@@ -420,13 +459,14 @@ document.addEventListener('DOMContentLoaded', function() {
     };
   }
 
-  function manageSpinner(input, show) {
-    const existingSpinner = input.parentNode.querySelector('.spinner-border');
+  // Spinner management
+  function manageSpinner(element, show) {
+    const existingSpinner = element.parentNode.querySelector('.spinner-border');
     if (show) {
       if (!existingSpinner) {
         const spinner = document.createElement('div');
         spinner.className = 'spinner-border spinner-border-sm text-secondary ms-2';
-        input.parentNode.appendChild(spinner);
+        element.parentNode.appendChild(spinner);
       }
     } else {
       if (existingSpinner) {
@@ -435,113 +475,109 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   }
 
-  const updateCart = debounce(async function(productId, newQuantity) {
-    const input = document.querySelector(`.quantity-input[data-product-id="${productId}"]`);
-    if (!input) return;
+  // Update cart
+  
+const updateCart = debounce(async function(productId, newQuantity) {
+  const input = document.querySelector(`.quantity-input[data-product-id="${productId}"]`);
+  if (!input) return;
 
-    if (newQuantity > 10) {
-      newQuantity = 10;
-      input.value = 10;
-      showToast('Maximum 10 items per product allowed', 'warning');
+  if (newQuantity > 10) {
+    newQuantity = 10;
+    input.value = 10;
+    showToast('Maximum 10 items per product allowed', 'warning');
+  }
+
+  try {
+    input.disabled = true;
+    manageSpinner(input, true);
+
+    const response = await fetch('/update-cart', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        items: [{
+          productId,
+          quantity: newQuantity
+        }]
+      }),
+      credentials: 'include'
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || 'Failed to update cart');
     }
 
-    try {
-      input.disabled = true;
-      manageSpinner(input, true);
-
-      const response = await fetch('/update-cart', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          items: [{
-            productId,
-            quantity: newQuantity
-          }]
-        }),
-        credentials: 'include'
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || 'Failed to update cart');
+    if (data.success) {
+      const cartCountEl = document.getElementById('cart-count');
+      if (cartCountEl) {
+        cartCountEl.textContent = data.cartCount || 0;
       }
 
-      if (data.success) {
-        const cartCountEl = document.getElementById('cart-count');
-        if (cartCountEl) {
-          cartCountEl.textContent = data.cartCount || 0;
-        }
+      const subtotalEl = document.querySelector('.subtotal-display');
+      const shippingEl = document.querySelector('.shipping-display');
+      const totalEl = document.querySelector('.total-display');
+      const totalSavingsEl = document.querySelector('.total-savings-display');
 
-        const subtotalEl = document.querySelector('.subtotal-display');
-        const shippingEl = document.querySelector('.shipping-display');
-        const totalEl = document.querySelector('.total-display');
-        const totalSavingsEl = document.querySelector('.total-savings-display');
-
-        if (subtotalEl) subtotalEl.textContent = `₹${data.cart.subtotal.toFixed(2)}`;
-        if (shippingEl) shippingEl.textContent = `₹${data.cart.shipping.toFixed(2)}`;
-        if (totalEl) totalEl.textContent = `₹${data.cart.total.toFixed(2)}`;
+      if (subtotalEl) subtotalEl.textContent = `₹${data.cart.subtotal.toFixed(2)}`;
+      if (shippingEl) shippingEl.textContent = `₹${data.cart.shipping.toFixed(2)}`;
+      if (totalEl) totalEl.textContent = `₹${data.cart.total.toFixed(2)}`;
+      
+      if (totalSavingsEl) {
+        let newTotalSavings = 0;
+        data.cart.items.forEach(item => {
+          if (item.productId && item.price) {
+            const originalPrice = item.productId.salesPrice * item.quantity;
+            const discountAmount = originalPrice - item.totalPrice;
+            newTotalSavings += discountAmount;
+          }
+        });
         
-        if (totalSavingsEl) {
-          let newTotalSavings = 0;
-          data.cart.items.forEach(item => {
-            if (item.productId && item.price) {
-              const originalPrice = item.productId.salesPrice * item.quantity;
-              const discountAmount = originalPrice - item.totalPrice;
-              newTotalSavings += discountAmount;
-            }
-          });
-          
-          if (newTotalSavings > 0) {
-            totalSavingsEl.textContent = `-₹${newTotalSavings.toFixed(2)}`;
-            totalSavingsEl.closest('.flex').style.display = 'flex';
-          } else {
-            totalSavingsEl.closest('.flex').style.display = 'none';
-          }
-        }
-
-        const updatedItem = data.cart.items.find(item => item.productId._id.toString() === productId);
-        if (updatedItem) {
-          const escapedColorClass = 'text-\\[\\#2C2C2C\\]';
-          const itemTotalEl = document.querySelector(
-            `.cart-item .remove-btn[data-product-id="${productId}"]`
-          ).parentElement.querySelector(`.font-montserrat.${escapedColorClass}`);
-          
-          if (itemTotalEl) {
-            itemTotalEl.textContent = `₹${updatedItem.totalPrice.toFixed(2)}`;
-          } else {
-            console.error('Total element not found for productId:', productId);
-            const fallbackTotalEl = document.querySelector(
-              `.cart-item .remove-btn[data-product-id="${productId}"]`
-            ).parentElement.querySelector('div');
-            if (fallbackTotalEl) {
-              fallbackTotalEl.textContent = `₹${updatedItem.totalPrice.toFixed(2)}`;
-              console.log('Used fallback selector for total price');
-            }
-          }
+        if (newTotalSavings > 0) {
+          totalSavingsEl.textContent = `-₹${newTotalSavings.toFixed(2)}`;
+          totalSavingsEl.closest('.flex').style.display = 'flex';
         } else {
-          console.error('Updated item not found in response for productId:', productId);
+          totalSavingsEl.closest('.flex').style.display = 'none';
         }
-
-        input.defaultValue = newQuantity;
-
-        showToast('Cart updated successfully', 'success');
-      } else {
-        input.value = input.defaultValue;
-        showToast(data.message || 'Failed to update cart', 'error');
       }
-    } catch (error) {
-      console.error('Error updating cart:', error);
-      input.value = input.defaultValue;
-      showToast(error.message || 'Error updating cart', 'error');
-    } finally {
-      manageSpinner(input, false);
-      input.disabled = false;
-    }
-  }, 500);
 
+      const updatedItem = data.cart.items.find(item => item.productId._id.toString() === productId);
+      if (updatedItem) {
+        const itemTotalEl = document.querySelector(
+          `.cart-item .remove-btn[data-product-id="${productId}"]`
+        ).parentElement.querySelector('.font-montserrat');
+        
+        if (itemTotalEl) {
+          itemTotalEl.textContent = `₹${updatedItem.totalPrice.toFixed(2)}`;
+        }
+      }
+
+      input.defaultValue = newQuantity;
+      showToast('Cart updated successfully', 'success');
+
+      // Check if a coupon is applied and reapply it
+      const couponInput = document.getElementById('coupon-code');
+      if (couponInput && couponInput.value && couponInput.disabled) {
+        await applyCoupon(); // Reapply the coupon to update the discount
+      }
+    } else {
+      input.value = input.defaultValue;
+      showToast(data.message || 'Failed to update cart', 'error');
+    }
+  } catch (error) {
+    console.error('Error updating cart:', error);
+    input.value = input.defaultValue;
+    showToast(error.message || 'Error updating cart', 'error');
+  } finally {
+    manageSpinner(input, false);
+    input.disabled = false;
+  }
+}, 500);
+
+  // Quantity buttons
   document.querySelectorAll('.increase-btn, .decrease-btn').forEach(btn => {
     btn.addEventListener('click', function() {
       if (this.disabled) return;
@@ -552,7 +588,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
       let quantity = parseInt(input.value);
       if (this.classList.contains('increase-btn')) {
-        // Enforce max of 10 items per product
         if (quantity < 10 && quantity < parseInt(input.max)) {
           quantity++;
         } else if (quantity >= 10) {
@@ -567,14 +602,13 @@ document.addEventListener('DOMContentLoaded', function() {
       }
 
       input.value = quantity;
-
       updateCart(productId, quantity);
     });
   });
 
+  // Quantity input
   document.querySelectorAll('.quantity-input').forEach(input => {
     input.defaultValue = input.value;
-    
     const currentMax = parseInt(input.max);
     input.max = Math.min(currentMax, 10);
 
@@ -604,6 +638,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   });
 
+  // Remove item
   document.querySelectorAll('.remove-btn').forEach(btn => {
     btn.addEventListener('click', function() {
       const productId = this.getAttribute('data-product-id');
@@ -619,7 +654,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
   async function removeItem(productId, productName) {
     try {
-      console.log('removeItem called:', { productId, productName });
       const response = await fetch('/remove-from-cart', {
         method: 'POST',
         headers: {
@@ -630,7 +664,6 @@ document.addEventListener('DOMContentLoaded', function() {
       });
 
       const data = await response.json();
-      console.log('Response from /remove-from-cart:', data);
 
       if (data.success) {
         showToast(`Removed ${productName} from cart`, 'success');
@@ -690,7 +723,7 @@ document.addEventListener('DOMContentLoaded', function() {
               </svg>
               <h2 class="text-xl font-medium text-[#2C2C2C] mb-4">Your cart is empty</h2>
               <p class="text-[#2C2C2C]/70 mb-6 font-montserrat">Start shopping to add items to your cart</p>
-              <a href="/shop" class="inline-block px-6 py-3 bg-[#2C2C2C] text-white rounded-sm hover:bg-[#1a1a1a] transition-colors font-montserrat" style="display: block; margin: 0 auto; text-align: center;">
+              <a href="/shop" class="inline-block px-6 py-3 bg-[#2C2C2C] text-white rounded-sm hover:bg-[#1a1a1a] transition-colors font-montserrat">
                 Continue Shopping
               </a>
             </div>
@@ -708,6 +741,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   }
 
+  // Toast notifications
   function showToast(message, type = 'success') {
     const toast = document.createElement('div');
     toast.className = `fixed bottom-4 right-4 ${
@@ -738,6 +772,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }, 3000);
   }
 
+  // Confirmation toast
   function showConfirmToast(message, onConfirm, onCancel) {
     const toast = document.createElement('div');
     toast.className = 'toast-confirm fixed bottom-4 right-4 bg-[#2C2C2C] text-white px-6 py-4 rounded-lg shadow-xl z-50';
@@ -764,7 +799,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     let timeout = setTimeout(() => {
       if (!isDismissing) {
-        console.log('Auto-cancel timeout triggered');
         isDismissing = true;
         toast.classList.add('hidden');
         setTimeout(() => {
@@ -776,7 +810,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     confirmBtn.addEventListener('click', () => {
       if (isDismissing) return;
-      console.log('Confirm button clicked');
       isDismissing = true;
       clearTimeout(timeout);
       toast.classList.add('hidden');
@@ -788,7 +821,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     cancelBtn.addEventListener('click', () => {
       if (isDismissing) return;
-      console.log('Cancel button clicked');
       isDismissing = true;
       clearTimeout(timeout);
       toast.classList.add('hidden');
@@ -799,16 +831,13 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     toast.addEventListener('mouseenter', () => {
-      console.log('Mouse entered toast');
       clearTimeout(timeout);
     });
 
     toast.addEventListener('mouseleave', () => {
       if (isDismissing) return;
-      console.log('Mouse left toast');
       timeout = setTimeout(() => {
         if (!isDismissing) {
-          console.log('Mouseleave timeout triggered');
           isDismissing = true;
           toast.classList.add('hidden');
           setTimeout(() => {
@@ -820,11 +849,11 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 
+  // Coupon handling
   const applyCouponBtn = document.getElementById('apply-coupon-btn');
   const couponInput = document.getElementById('coupon-code');
   const couponMessage = document.getElementById('coupon-message');
-  const removeCouponBtn = document.getElementById('remove-coupon');
-  
+
   if (applyCouponBtn && couponInput) {
     applyCouponBtn.addEventListener('click', applyCoupon);
     
@@ -835,13 +864,10 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     });
   }
-  
-  if (removeCouponBtn) {
-    removeCouponBtn.addEventListener('click', removeCoupon);
-  }
-  
+
   document.querySelectorAll('.use-coupon-btn').forEach(btn => {
     btn.addEventListener('click', function() {
+      if (this.disabled) return;
       const couponCode = this.getAttribute('data-coupon-code');
       if (couponInput) {
         couponInput.value = couponCode;
@@ -849,84 +875,203 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     });
   });
+
+async function applyCoupon() {
+  const couponCode = couponInput.value.trim().toUpperCase();
   
-  async function applyCoupon() {
-    const couponCode = couponInput.value.trim();
+  if (!couponCode) {
+    displayCouponMessage('Please enter a coupon code', 'error');
+    return;
+  }
+  
+  try {
+    applyCouponBtn.disabled = true;
+    applyCouponBtn.innerHTML = '<div class="spinner-border spinner-border-sm"></div>';
     
-    if (!couponCode) {
-      displayCouponMessage('Please enter a coupon code', 'error');
-      return;
-    }
+    const response = await fetch('/apply-coupon', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ couponCode }),
+      credentials: 'include'
+    });
     
-    try {
+    const data = await response.json();
+    
+    if (response.ok && data.success) {
+      updateOrderSummaryWithCoupon(data.cart);
+      
+      couponInput.disabled = true;
       applyCouponBtn.disabled = true;
-      applyCouponBtn.innerHTML = '<div class="spinner-border spinner-border-sm"></div>';
       
-      const response = await fetch('/apply-coupon', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ couponCode }),
-        credentials: 'include'
+      document.querySelectorAll('.use-coupon-btn').forEach(btn => {
+        btn.disabled = true;
       });
       
-      const data = await response.json();
+      displayCouponMessage(`Coupon ${couponCode} applied successfully!`, 'success');
+      showToast(`Coupon ${couponCode} applied successfully!`, 'success');
       
-      if (response.ok && data.success) {
-        updateOrderSummaryWithCoupon(data.cart);
-        
-        couponInput.disabled = true;
-        applyCouponBtn.disabled = true;
-        
-        document.querySelectorAll('.use-coupon-btn').forEach(btn => {
-          btn.disabled = true;
-        });
-        
-        displayCouponMessage(`Coupon ${data.cart.couponCode} applied successfully!`, 'success');
-        showToast(`Coupon ${data.cart.couponCode} applied successfully!`, 'success');
-        
-        setTimeout(() => {
-          window.location.reload();
-        }, 1000);
-      } else {
-        displayCouponMessage(data.message || 'Failed to apply coupon', 'error');
+      // Update checkout button
+      const checkoutBtn = document.querySelector('.checkout-btn');
+      if (checkoutBtn && data.cart.items?.length > 0) {
+        checkoutBtn.classList.remove('opacity-60', 'cursor-not-allowed');
+        checkoutBtn.href = '/checkout';
+        checkoutBtn.removeAttribute('title');
       }
-    } catch (error) {
-      console.error('Error applying coupon:', error);
-      displayCouponMessage('An error occurred while applying the coupon', 'error');
-    } finally {
+    } else {
+      // Remove coupon if it becomes invalid
+      couponInput.value = '';
+      couponInput.disabled = false;
       applyCouponBtn.disabled = false;
-      applyCouponBtn.innerHTML = 'Apply';
-    }
-  }
-  
-  async function removeCoupon() {
-    try {
-      removeCouponBtn.innerHTML = '<div class="spinner-border spinner-border-sm"></div>';
-      
-      const response = await fetch('/apply-coupon/remove', {
-        method: 'POST',
-        credentials: 'include'
+      document.querySelectorAll('.use-coupon-btn').forEach(btn => {
+        btn.disabled = false;
       });
+      const couponRow = document.querySelector('.coupon-discount-row');
+      if (couponRow) couponRow.remove();
       
-      const data = await response.json();
+      displayCouponMessage(data.message || 'Failed to apply coupon', 'error');
+      showToast(data.message || 'Coupon removed due to invalid conditions', 'error');
       
-      if (response.ok && data.success) {
-        showToast('Coupon removed successfully', 'success');
-        
-        setTimeout(() => {
-          window.location.reload();
-        }, 800);
-      } else {
-        showToast(data.message || 'Failed to remove coupon', 'error');
+      // Update order summary without coupon
+      const subtotalEl = document.querySelector('.subtotal-display');
+      const shippingEl = document.querySelector('.shipping-display');
+      const totalEl = document.querySelector('.total-display');
+      if (subtotalEl) subtotalEl.textContent = `₹${data.cart.subtotal.toFixed(2)}`;
+      if (shippingEl) shippingEl.textContent = `₹${data.cart.shipping.toFixed(2)}`;
+      if (totalEl) totalEl.textContent = `₹${(data.cart.subtotal + data.cart.shipping).toFixed(2)}`;
+    }
+  } catch (error) {
+    console.error('Error applying coupon:', error);
+    displayCouponMessage('An error occurred while applying the coupon', 'error');
+  } finally {
+    applyCouponBtn.disabled = false;
+    applyCouponBtn.innerHTML = 'Apply';
+  }
+}
+  
+  // Debounced removeCoupon function
+
+const removeCoupon = debounce(async function () {
+  let toastShown = false;
+
+  try {
+    const removeCouponBtn = document.querySelector('#remove-coupon');
+    if (removeCouponBtn) {
+      removeCouponBtn.disabled = true;
+      removeCouponBtn.innerHTML = '<div class="spinner-border spinner-border-sm"></div>';
+    }
+
+    const response = await fetch('/apply-coupon/remove', {
+      method: 'POST',
+      credentials: 'include',
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || `HTTP error! Status: ${response.status}`);
+    }
+
+    if (data.success) {
+      // Reset coupon input
+      couponInput.value = '';
+      couponInput.disabled = false;
+      applyCouponBtn.disabled = false;
+
+      // Enable use coupon buttons
+      document.querySelectorAll('.use-coupon-btn').forEach((btn) => {
+        btn.disabled = false;
+      });
+
+      // Remove coupon display
+      const couponRow = document.querySelector('.coupon-discount-row');
+      if (couponRow) {
+        couponRow.remove();
       }
-    } catch (error) {
-      console.error('Error removing coupon:', error);
-      showToast('An error occurred while removing the coupon', 'error');
+
+      // Update order summary with server-provided cart data
+      const subtotalEl = document.querySelector('.subtotal-display');
+      const shippingEl = document.querySelector('.shipping-display');
+      const totalEl = document.querySelector('.total-display');
+
+      if (subtotalEl && data.cart.subtotal !== undefined) {
+        subtotalEl.textContent = `₹${data.cart.subtotal.toFixed(2)}`;
+      }
+      if (shippingEl && data.cart.shipping !== undefined) {
+        shippingEl.textContent = `₹${data.cart.shipping.toFixed(2)}`;
+      }
+      if (totalEl && data.cart.total !== undefined) {
+        totalEl.textContent = `₹${data.cart.total.toFixed(2)}`;
+      }
+
+      // Update checkout button
+      const checkoutBtn = document.querySelector('.checkout-btn');
+      const cartItems = document.querySelectorAll('.cart-item');
+      if (checkoutBtn && cartItems.length > 0) {
+        checkoutBtn.classList.remove('opacity-60', 'cursor-not-allowed');
+        checkoutBtn.href = '/checkout';
+        checkoutBtn.removeAttribute('title');
+      }
+
+      if (!toastShown) {
+        showToast('Coupon removed successfully', 'success');
+        toastShown = true;
+      }
+    } else {
+      throw new Error(data.message || 'Failed to remove coupon');
+    }
+  } catch (error) {
+    console.error('Error removing coupon:', {
+      message: error.message,
+      stack: error.stack,
+      status: error.status,
+    });
+    if (!toastShown) {
+      showToast(error.message || 'An error occurred while removing the coupon', 'error');
+      toastShown = true;
+    }
+  } finally {
+    const removeCouponBtn = document.querySelector('#remove-coupon');
+    if (removeCouponBtn) {
+      removeCouponBtn.disabled = false;
+      removeCouponBtn.innerHTML = `
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+        </svg>
+      `;
     }
   }
+}, 500);
   
+  async function fetchCartData(attempt = 1, maxAttempts = 3) {
+    try {
+      const response = await fetch('/cart', {
+        credentials: 'include',
+        headers: {
+          'Accept': 'application/json'
+        }
+      });
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      const data = await response.json();
+      return data.cart;
+    } catch (error) {
+      console.error(`Attempt ${attempt} failed to fetch cart data:`, {
+        message: error.message,
+        stack: error.stack,
+        status: error.status
+      });
+      if (attempt < maxAttempts) {
+        console.log(`Retrying fetchCartData (attempt ${attempt + 1})`);
+        await new Promise(resolve => setTimeout(resolve, 1000)); // Wait 1s before retry
+        return fetchCartData(attempt + 1, maxAttempts);
+      }
+      return null;
+    }
+  }
+
   function updateOrderSummaryWithCoupon(cartData) {
     const subtotalEl = document.querySelector('.subtotal-display');
     const shippingEl = document.querySelector('.shipping-display');
@@ -938,58 +1083,36 @@ document.addEventListener('DOMContentLoaded', function() {
     
     const orderSummary = totalEl.closest('.space-y-4');
     
+    // Remove existing coupon row if present
     let couponRow = document.querySelector('.coupon-discount-row');
+    if (couponRow) couponRow.remove();
     
-    if (!couponRow) {
-      couponRow = document.createElement('div');
-      couponRow.className = 'flex justify-between text-green-600 coupon-discount-row';
-      
-      const couponLabel = document.createElement('span');
-      couponLabel.className = 'font-montserrat text-sm font-medium flex items-center';
-      couponLabel.innerHTML = `
-        Coupon: ${cartData.couponCode}
-        <button type="button" id="remove-coupon" class="ml-2 text-red-500 hover:text-red-700">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-          </svg>
-        </button>
-      `;
-      
-      const couponValue = document.createElement('span');
-      couponValue.className = 'font-montserrat font-medium coupon-discount-display';
-      couponValue.textContent = `-₹${cartData.discount.toFixed(2)}`;
-      
-      couponRow.appendChild(couponLabel);
-      couponRow.appendChild(couponValue);
-      
-      const totalRow = totalEl.closest('.border-t');
-      orderSummary.insertBefore(couponRow, totalRow);
-      
-      const newRemoveBtn = couponRow.querySelector('#remove-coupon');
-      if (newRemoveBtn) {
-        newRemoveBtn.addEventListener('click', removeCoupon);
-      }
-    } else {
-      const couponLabel = couponRow.querySelector('.font-montserrat.text-sm');
-      const couponValue = couponRow.querySelector('.coupon-discount-display');
-      
-      if (couponLabel) {
-        couponLabel.innerHTML = `
-          Coupon: ${cartData.couponCode}
-          <button type="button" id="remove-coupon" class="ml-2 text-red-500 hover:text-red-700">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-            </svg>
-          </button>
-        `;
-      }
-      
-      if (couponValue) {
-        couponValue.textContent = `-₹${cartData.discount.toFixed(2)}`;
-      }
-    }
+    // Add new coupon row
+    couponRow = document.createElement('div');
+    couponRow.className = 'flex justify-between text-green-600 coupon-discount-row';
+    
+    const couponLabel = document.createElement('span');
+    couponLabel.className = 'font-montserrat text-sm font-medium flex items-center';
+    couponLabel.innerHTML = `
+      Coupon: ${cartData.couponCode}
+      <button type="button" id="remove-coupon" class="ml-2 text-red-500 hover:text-red-700">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+        </svg>
+      </button>
+    `;
+    
+    const couponValue = document.createElement('span');
+    couponValue.className = 'font-montserrat font-medium coupon-discount-display';
+    couponValue.textContent = `-₹${cartData.discount.toFixed(2)}`;
+    
+    couponRow.appendChild(couponLabel);
+    couponRow.appendChild(couponValue);
+    
+    const totalRow = totalEl.closest('.border-t');
+    orderSummary.insertBefore(couponRow, totalRow);
   }
-  
+
   function displayCouponMessage(message, type = 'success') {
     if (!couponMessage) return;
     
@@ -1001,6 +1124,15 @@ document.addEventListener('DOMContentLoaded', function() {
       couponMessage.classList.add('hidden');
     }, 5000);
   }
+
+  // Event delegation for dynamically added remove-coupon buttons
+document.querySelector('.space-y-4').addEventListener('click', function (event) {
+  const removeCouponBtn = event.target.closest('#remove-coupon');
+  if (removeCouponBtn && !removeCouponBtn.disabled) {
+    removeCoupon();
+  }
+});
+  
 });
 </script>
   </body>
