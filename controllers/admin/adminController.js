@@ -244,21 +244,29 @@ const loadSalesReport = async (req, res) => {
 
 const logout = async (req, res) => {
   try {
-    req.session.destroy((err) => {
-      if (err) {
-        return res.status(500).json({
-          success: false,
-          message: "Logout failed",
-        });
-      }
-      return res.redirect("/admin/login");
-    });
+    console.log("Before Admin Logout - Session ID:", req.sessionID);
+    console.log("Admin Session data:", req.session);
+    console.log("Cookies:", JSON.stringify(req.cookies, null, 2));
+
+    if (req.session) {
+      req.session.destroy((err) => {
+        if (err) {
+          console.error("Admin session destruction error:", err);
+          return res.status(500).redirect("/admin/login");
+        }
+
+        res.clearCookie("admin.sid", { path: "/admin" });
+
+        console.log("Admin session destroyed successfully");
+        res.redirect("/admin/login");
+      });
+    } else {
+      res.clearCookie("admin.sid", { path: "/admin" });
+      res.redirect("/admin/login");
+    }
   } catch (err) {
-    console.error("Logout error:", err);
-    return res.status(500).json({
-      success: false,
-      message: "Server error",
-    });
+    console.error("Admin Logout error:", err);
+    res.status(500).redirect("/admin/login");
   }
 };
 

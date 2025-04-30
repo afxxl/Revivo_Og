@@ -16,6 +16,8 @@ db();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(nocache());
+
 app.use((req, res, next) => {
   res.setHeader(
     "Cache-Control",
@@ -25,47 +27,130 @@ app.use((req, res, next) => {
   res.setHeader("Expires", "0");
   next();
 });
+
+const userSessionStore = MongoStore.create({
+  mongoUrl: process.env.MONGO_URL,
+  collectionName: "user_sessions",
+  ttl: 72 * 60 * 60,
+  autoRemove: "native",
+});
+
+const adminSessionStore = MongoStore.create({
+  mongoUrl: process.env.MONGO_URL,
+  collectionName: "admin_sessions",
+  ttl: 72 * 60 * 60,
+  autoRemove: "native",
+});
+
 app.use(
+  /^(?!\/admin).*/,
   session({
-    secret: process.env.SESSION_SECRET,
-
+    name: "user.sid",
+    secret: process.env.SESSION_SECRET + "_user",
     resave: false,
-
     saveUninitialized: false,
-
-    store: MongoStore.create({ mongoUrl: process.env.MONGO_URL }),
-
+    store: userSessionStore,
     cookie: {
-      secure: false,
-
+      secure: process.env.NODE_ENV === "production",
       httpOnly: true,
-
       maxAge: 72 * 60 * 60 * 1000,
+      path: "/",
+      sameSite: "lax",
     },
   }),
 );
 
-app.use(passport.initialize());
-app.use(passport.session());
+app.use(/^(?!\/admin).*/, passport.initialize());
+app.use(/^(?!\/admin).*/, passport.session());
+
+app.use(
+  "/admin",
+  session({
+    name: "admin.sid",
+    secret: process.env.SESSION_SECRET + "_admin",
+    resave: false,
+    saveUninitialized: false,
+    store: adminSessionStore,
+    cookie: {
+      secure: process.env.NODE_ENV === "production",
+      httpOnly: true,
+      maxAge: 72 * 60 * 60 * 1000,
+      path: "/admin",
+      sameSite: "lax",
+    },
+  }),
+);
+
+app.use((req, res, next) => {
+  next();
+});
 
 app.use(async (req, res, next) => {
   try {
-    if (req.user) {
-      res.locals.user = req.user;
-      req.session.user = req.user._id;
-      return next();
-    }
+    res.locals.user = null;
+    res.locals.admin = null;
 
-    if (req.session.user) {
+    // Handle user session
+    if (
+      req.session.user &&
+      req.path.startsWith("/") &&
+      !req.path.startsWith("/admin")
+    ) {
       const user = await User.findById(req.session.user);
-      if (user) {
+      if (user && !user.isBlocked && !user.isAdmin) {
         res.locals.user = user;
         req.user = user;
-        return next();
+      } else {
+        req.session.user = null;
+        req.session.passport = null;
+        await new Promise((resolve, reject) => {
+          req.session.save((err) => {
+            if (err) reject(err);
+            resolve();
+          });
+        });
       }
     }
 
-    res.locals.user = null;
+    // Handle Passport user
+    if (
+      req.user &&
+      req.path.startsWith("/") &&
+      !req.path.startsWith("/admin")
+    ) {
+      const user = await User.findById(req.user._id);
+      if (user && !user.isBlocked && !user.isAdmin) {
+        res.locals.user = user;
+        req.session.user = user._id;
+      } else {
+        req.user = null;
+        req.session.user = null;
+        req.session.passport = null;
+        await new Promise((resolve, reject) => {
+          req.session.save((err) => {
+            if (err) reject(err);
+            resolve();
+          });
+        });
+      }
+    }
+
+    // Handle admin session
+    if (req.session.admin && req.path.startsWith("/admin")) {
+      const admin = await User.findById(req.session.admin);
+      if (admin && admin.isAdmin) {
+        res.locals.admin = admin;
+      } else {
+        req.session.admin = null;
+        await new Promise((resolve, reject) => {
+          req.session.save((err) => {
+            if (err) reject(err);
+            resolve();
+          });
+        });
+      }
+    }
+
     next();
   } catch (err) {
     console.error("Session middleware error:", err);

@@ -776,14 +776,42 @@ const removeFromCart = async (req, res) => {
 
     await cart.save();
 
-    const subtotal = cart.items.reduce((sum, item) => sum + item.totalPrice, 0);
-    const shipping = subtotal > 0 ? 5 : 0;
-    const total = subtotal + shipping;
-
     const updatedCart = await Cart.findOne({ userId });
     const cartCount = updatedCart
       ? updatedCart.items.reduce((sum, item) => sum + item.quantity, 0)
       : 0;
+
+    const subtotal = cart.items.reduce((sum, item) => sum + item.totalPrice, 0);
+
+    // Check if applied coupon is still valid
+    let couponRemoved = false;
+    let couponMessage = null;
+
+    if (req.session.appliedCoupon) {
+      const sessionCoupon = await Coupon.findById(
+        req.session.appliedCoupon.couponId,
+      );
+
+      if (
+        !sessionCoupon ||
+        !sessionCoupon.isActive ||
+        subtotal < sessionCoupon.minPurchase ||
+        new Date() < sessionCoupon.startDate ||
+        new Date() > sessionCoupon.endDate ||
+        sessionCoupon.usedCount >= sessionCoupon.usageLimit ||
+        sessionCoupon.usedBy.some(
+          (usage) => usage.user.toString() === userId.toString(),
+        )
+      ) {
+        // Coupon is no longer valid, remove it from session
+        delete req.session.appliedCoupon;
+        couponRemoved = true;
+        couponMessage = "Coupon removed as it is no longer valid.";
+      }
+    }
+
+    const shipping = subtotal > 0 ? 5 : 0;
+    const total = subtotal + shipping;
 
     res.json({
       success: true,
@@ -794,6 +822,8 @@ const removeFromCart = async (req, res) => {
         total,
       },
       cartCount,
+      couponRemoved, // Indicate if coupon was removed
+      couponMessage, // Message to display
     });
   } catch (err) {
     console.log("Error removing from cart:", err);
@@ -1534,7 +1564,7 @@ const getAvailableCoupons = async (userId, cartTotal) => {
       startDate: { $lte: currentDate },
       endDate: { $gte: currentDate },
       minPurchase: { $lte: cartTotal },
-      $expr: { $lt: ["$usedCount", "$usageLimit"] }, // Compare usedCount < usageLimit
+      $expr: { $lt: ["$usedCount", "$usageLimit"] },
     });
 
     const filteredCoupons = await Promise.all(
@@ -1553,6 +1583,43 @@ const getAvailableCoupons = async (userId, cartTotal) => {
   } catch (error) {
     console.error("Error fetching available coupons:", error);
     return [];
+  }
+};
+
+const getDynamicCoupons = async (req, res) => {
+  try {
+    const userId = req.session.user;
+    if (!userId) {
+      return res.status(401).json({
+        success: false,
+        message: "User not authenticated",
+      });
+    }
+
+    // Fetch the user's cart to calculate subtotal
+    const cart = await Cart.findOne({ userId }).populate({
+      path: "items.productId",
+      populate: [{ path: "brand" }, { path: "category" }],
+    });
+
+    let subtotal = 0;
+    if (cart && cart.items.length > 0) {
+      subtotal = cart.items.reduce((sum, item) => sum + item.totalPrice, 0);
+    }
+
+    // Fetch available coupons
+    const availableCoupons = await getAvailableCoupons(userId, subtotal);
+
+    res.status(200).json({
+      success: true,
+      coupons: availableCoupons,
+    });
+  } catch (error) {
+    console.error("Error fetching dynamic coupons:", error);
+    res.status(500).json({
+      success: false,
+      message: "Error fetching available coupons",
+    });
   }
 };
 
@@ -1930,6 +1997,7 @@ module.exports = {
   requestReturn,
   generateInvoice,
   getAvailableCoupons,
+  getDynamicCoupons,
   applyCoupon,
   removeCoupon,
   createRazorpayOrder,

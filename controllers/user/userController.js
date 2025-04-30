@@ -366,20 +366,39 @@ const login = async (req, res) => {
 
 const logout = async (req, res) => {
   try {
-    const referer = req.headers.referer || "/";
+    if (req.isAuthenticated()) {
+      await new Promise((resolve) => {
+        req.logout((err) => {
+          if (err) {
+            console.error("Passport logout error:", err);
+          }
+          resolve();
+        });
+      });
+    }
 
-    req.session.destroy((err) => {
-      if (err) {
-        console.log("Session destruction error", err.message);
-        return res.redirect("/pageNotFound");
-      }
-      return res.redirect(referer);
-    });
+    if (req.session) {
+      req.session.destroy((err) => {
+        if (err) {
+          console.error("Session destruction error:", err);
+        }
+
+        res.clearCookie("user.sid", { path: "/" });
+
+        console.log("User session destroyed successfully");
+        res.redirect("/");
+      });
+    } else {
+      res.clearCookie("user.sid", { path: "/" });
+      res.redirect("/");
+    }
   } catch (err) {
-    console.log("Logout error", err);
+    console.error("User Logout error:", err);
     res.redirect("/pageNotFound");
   }
 };
+
+module.exports = { logout };
 
 const loadResetPassword = async (req, res) => {
   try {
@@ -1451,6 +1470,52 @@ const getReferralStats = async (req, res) => {
     });
   }
 };
+const checkSession = async (req, res) => {
+  try {
+    const userId = req.session.user || (req.user && req.user._id);
+    if (!userId) {
+      return res.json({
+        loggedIn: false,
+        user: null,
+        isBlocked: false,
+      });
+    }
+
+    const user = await User.findById(userId).lean();
+    if (!user) {
+      return res.json({
+        loggedIn: false,
+        user: null,
+        isBlocked: false,
+      });
+    }
+
+    if (user.isBlocked) {
+      return res.json({
+        loggedIn: false,
+        user: null,
+        isBlocked: true,
+      });
+    }
+
+    return res.json({
+      loggedIn: true,
+      user: {
+        name: user.name,
+        email: user.email,
+      },
+      isBlocked: false,
+    });
+  } catch (err) {
+    console.error("Check session error:", err);
+    return res.status(500).json({
+      loggedIn: false,
+      user: null,
+      isBlocked: false,
+      error: "Server error",
+    });
+  }
+};
 
 module.exports = {
   loadHomepage,
@@ -1484,4 +1549,5 @@ module.exports = {
   verifyPasswordChangeOtp,
   sendPasswordChangeOtp,
   getReferralStats,
+  checkSession,
 };

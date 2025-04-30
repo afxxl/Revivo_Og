@@ -87,6 +87,7 @@ router.post("/verifyResetOtp", userController.verifyResetOtp);
 router.post("/updatePassword", userController.updatePassword);
 
 router.get("/logout", userController.logout);
+router.get("/api/check-session", userController.checkSession);
 
 router.post("/resend-reset-otp", userController.resendResetOtp);
 
@@ -94,45 +95,6 @@ router.get("/shop", shopController.shopPage);
 router.get("/featured", featuredController.featuredPage);
 
 router.get("/new-arrivals", newArrivalsController.newArrivalsPage);
-
-router.get("/api/check-session", async (req, res) => {
-  try {
-    const user =
-      req.user ||
-      (req.session.user ? await User.findById(req.session.user) : null);
-
-    if (user && user.isBlocked) {
-      // User is blocked - destroy session
-      req.session.destroy((err) => {
-        if (err) {
-          console.error("Error destroying session:", err);
-        }
-      });
-
-      return res.json({
-        loggedIn: false,
-        isBlocked: true,
-        user: null,
-      });
-    }
-
-    res.json({
-      loggedIn: !!user,
-      user: user
-        ? {
-            name: user.name,
-            email: user.email,
-          }
-        : null,
-    });
-  } catch (error) {
-    console.error("Session check error:", error);
-    res.json({
-      loggedIn: false,
-      user: null,
-    });
-  }
-});
 
 router.get("/shop/brand/:brandId", shopController.loadBrandPage);
 
@@ -193,6 +155,7 @@ router.post("/update-cart", userAuth, shopController.updateCart);
 router.post("/remove-from-cart", userAuth, shopController.removeFromCart);
 router.post("/apply-coupon", userAuth, shopController.applyCoupon);
 router.post("/apply-coupon/remove", userAuth, shopController.removeCoupon);
+router.get("/get-dynamic-coupons", userAuth, shopController.getDynamicCoupons);
 
 //checkout
 
