@@ -53,6 +53,11 @@ const orderSchema = new Schema(
       type: Number,
       required: true,
     },
+    shipping: {
+      type: Number,
+      required: true,
+      default: 40,
+    },
     address: {
       type: Schema.Types.ObjectId,
       ref: "Address",

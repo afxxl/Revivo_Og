@@ -246,6 +246,95 @@
             <% } %>
         </div>
     </div>
+    
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+        <!-- Top 5 Categories -->
+        <div class="dashboard-card p-6">
+            <h2 class="text-lg font-medium text-[#2C2C2C] mb-4">Top 5 Categories</h2>
+            <% if (topCategories && topCategories.length > 0) { %>
+                <div class="table-container overflow-hidden">
+                    <table class="min-w-full">
+                        <thead>
+                            <tr class="table-header">
+                                <th class="py-2 px-4 text-left">Category</th>
+                                <th class="py-2 px-4 text-right">Sales</th>
+                                <th class="py-2 px-4 text-right">Orders</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% topCategories.forEach(category => { %>
+                                <tr class="border-b border-[#e0dcd4] hover:bg-[#f8f7f5]">
+                                    <td class="py-2 px-4"><%= category.categoryName %></td>
+                                    <td class="py-2 px-4 text-right">₹<%= category.totalSales.toFixed(2) %></td>
+                                    <td class="py-2 px-4 text-right"><%= category.count %></td>
+                                </tr>
+                            <% }); %>
+                        </tbody>
+                    </table>
+                </div>
+            <% } else { %>
+                <p class="text-gray-500 text-center py-4">No category data available for this period</p>
+            <% } %>
+        </div>
+
+        <!-- Top 5 Products -->
+        <div class="dashboard-card p-6">
+            <h2 class="text-lg font-medium text-[#2C2C2C] mb-4">Top 5 Products</h2>
+            <% if (topProducts && topProducts.length > 0) { %>
+                <div class="table-container overflow-hidden">
+                    <table class="min-w-full">
+                        <thead>
+                            <tr class="table-header">
+                                <th class="py-2 px-4 text-left">Product</th>
+                                <th class="py-2 px-4 text-right">Sales</th>
+                                <th class="py-2 px-4 text-right">Units</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% topProducts.forEach(product => { %>
+                                <tr class="border-b border-[#e0dcd4] hover:bg-[#f8f7f5]">
+                                    <td class="py-2 px-4"><%= product.productName %></td>
+                                    <td class="py-2 px-4 text-right">₹<%= product.totalSales.toFixed(2) %></td>
+                                    <td class="py-2 px-4 text-right"><%= product.count %></td>
+                                </tr>
+                            <% }); %>
+                        </tbody>
+                    </table>
+                </div>
+            <% } else { %>
+                <p class="text-gray-500 text-center py-4">No product data available for this period</p>
+            <% } %>
+        </div>
+
+        <!-- Top 5 Brands -->
+        <div class="dashboard-card p-6">
+            <h2 class="text-lg font-medium text-[#2C2C2C] mb-4">Top 5 Brands</h2>
+            <% if (topBrands && topBrands.length > 0) { %>
+                <div class="table-container overflow-hidden">
+                    <table class="min-w-full">
+                        <thead>
+                            <tr class="table-header">
+                                <th class="py-2 px-4 text-left">Brand</th>
+                                <th class="py-2 px-4 text-right">Sales</th>
+                                <th class="py-2 px-4 text-right">Orders</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% topBrands.forEach(brand => { %>
+                                <tr class="border-b border-[#e0dcd4] hover:bg-[#f8f7f5]">
+                                    <td class="py-2 px-4"><%= brand.brandName %></td>
+                                    <td class="py-2 px-4 text-right">₹<%= brand.totalSales.toFixed(2) %></td>
+                                    <td class="py-2 px-4 text-right"><%= brand.count %></td>
+                                </tr>
+                            <% }); %>
+                        </tbody>
+                    </table>
+                </div>
+            <% } else { %>
+                <p class="text-gray-500 text-center py-4">No brand data available for this period</p>
+            <% } %>
+        </div>
+    </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>

@@ -1081,7 +1081,11 @@
           <!-- Change Password section -->
           <div id="change-password-section" class="tab-content hidden profile-content p-4 sm:p-8">
             <h2 class="section-title text-xl sm:text-2xl font-playfair">Change Password</h2>
-            <form id="changePasswordForm" class="space-y-4 sm:space-y-6 max-w-md">
+            <form id="changePasswordForm" class="space-y-4 sm:space-y-6 max-w-md" data-google-login="<%= user.googleId && !user.hasPassword ? 'true' : 'false' %>">
+              <% if (user.googleId && !user.hasPassword) { %>
+              <!-- Hidden field for Google users who don't have a password yet -->
+              <input type="hidden" name="currentPassword" value="google-auth-user">
+              <% } else { %>
               <div>
                 <label for="current-password" class="form-label">Current Password</label>
                 <div class="relative">
@@ -1102,6 +1106,7 @@
                   </button>
                 </div>
               </div>
+              <% } %>
               
               <div>
                 <label for="new-password" class="form-label">New Password</label>
@@ -2145,29 +2150,36 @@
         
         document.querySelectorAll('.password-error').forEach(el => el.remove());
         
+        const isGoogleLogin = this.dataset.googleLogin === 'true';
+        
         const formData = {
-          currentPassword: this.currentPassword.value,
           newPassword: this.newPassword.value,
           confirmPassword: this.confirmPassword.value
         };
+        
+        // Add currentPassword for all users, but for Google users it will be the hidden field value
+        formData.currentPassword = this.currentPassword.value;
         
         const submitButton = this.querySelector('button[type="submit"]');
         const originalButtonText = submitButton.innerHTML;
         
         try {
-          const verifyResponse = await fetch('/verify-current-password', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              currentPassword: formData.currentPassword
-            })
-          });
-          
-          const verifyData = await verifyResponse.json();
-          
-          if (!verifyResponse.ok) {
-            showError(this.currentPassword, verifyData.message || 'Incorrect current password');
-            return;
+          // Skip password verification for Google users
+          if (!isGoogleLogin) {
+            const verifyResponse = await fetch('/verify-current-password', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                currentPassword: formData.currentPassword
+              })
+            });
+            
+            const verifyData = await verifyResponse.json();
+            
+            if (!verifyResponse.ok) {
+              showError(this.currentPassword, verifyData.message || 'Incorrect current password');
+              return;
+            }
           }
           
           const validateResponse = await fetch('/validate-password-change', {
@@ -2197,8 +2209,9 @@
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-              currentPassword: formData.currentPassword,
-              newPassword: formData.newPassword
+              currentPassword: formData.currentPassword || '',
+              newPassword: formData.newPassword,
+              isGoogleLogin: isGoogleLogin
             })
           });
           
@@ -2275,8 +2288,9 @@
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-              currentPassword: passwordData.currentPassword,
-              newPassword: passwordData.newPassword
+              currentPassword: passwordData.currentPassword || '',
+              newPassword: passwordData.newPassword,
+              isGoogleLogin: document.getElementById('changePasswordForm').dataset.googleLogin === 'true'
             })
           });
           
@@ -2316,8 +2330,9 @@
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
               otp: otp,
-              currentPassword: passwordData.currentPassword,
-              newPassword: passwordData.newPassword
+              currentPassword: passwordData.currentPassword || '',
+              newPassword: passwordData.newPassword,
+              isGoogleLogin: document.getElementById('changePasswordForm').dataset.googleLogin === 'true'
             })
           });
           

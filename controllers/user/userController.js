@@ -837,6 +837,10 @@ const loadProfilePage = async (req, res) => {
 
     const user = await User.findById(userId).populate("addresses").lean();
 
+    // Add a flag to indicate if the user has a password set
+    user.hasPassword = !!user.password;
+    delete user.password; // Remove the actual password for security
+
     user.orders = orders;
     user.ordersCurrentPage = Number(ordersPage);
     user.ordersTotal = totalOrders;
@@ -1264,8 +1268,23 @@ const sendPasswordChangeOtp = async (req, res) => {
       });
     }
 
-    const { currentPassword, newPassword } = req.body;
+    const { currentPassword, newPassword, isGoogleLogin } = req.body;
     req.session.tempNewPassword = newPassword;
+
+    // Skip password verification for Google users
+    if (!isGoogleLogin && user.password) {
+      // Only verify password for non-Google users
+      const passwordMatch = await bcrypt.compare(
+        currentPassword,
+        user.password,
+      );
+      if (!passwordMatch) {
+        return res.status(400).json({
+          success: false,
+          message: "Incorrect current password",
+        });
+      }
+    }
 
     const otp = generateOtp();
     const emailSent = await sendVerificationEmail(user.email, otp);
@@ -1295,7 +1314,7 @@ const sendPasswordChangeOtp = async (req, res) => {
 
 const verifyPasswordChangeOtp = async (req, res) => {
   try {
-    const { otp, newPassword } = req.body;
+    const { otp, newPassword, isGoogleLogin } = req.body;
     const user = await User.findById(req.session.user);
 
     if (!user) {

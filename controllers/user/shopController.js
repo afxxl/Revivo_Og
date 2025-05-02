@@ -587,7 +587,17 @@ const updateCart = async (req, res) => {
       (sum, item) => sum + item.totalPrice,
       0,
     );
-    const shipping = subtotal > 0 ? 5 : 0;
+    // Calculate shipping charge - base charge of ₹40 with additional charges based on total quantity
+    const totalQuantity = cart.items.reduce(
+      (sum, item) => sum + item.quantity,
+      0,
+    );
+    const shipping =
+      subtotal > 0
+        ? subtotal > 1000
+          ? 0
+          : Math.max(40, 40 + Math.floor(totalQuantity / 3) * 10)
+        : 0;
     const total = subtotal + shipping;
 
     res.json({
@@ -673,9 +683,17 @@ const loadCartPage = async (req, res) => {
       (sum, item) => sum + item.totalPrice,
       0,
     );
-    const shipping = subtotal > 0 ? 5 : 0;
-
-    const availableCoupons = await getAvailableCoupons(userId, subtotal);
+    // Calculate shipping charge - base charge of ₹40 with additional charges based on total quantity
+    const totalQuantity = cart.items.reduce(
+      (sum, item) => sum + item.quantity,
+      0,
+    );
+    const shipping =
+      subtotal > 0
+        ? subtotal > 1000
+          ? 0
+          : Math.max(40, 40 + Math.floor(totalQuantity / 3) * 10)
+        : 0;
 
     let appliedCoupon = null;
     let discount = 0;
@@ -737,6 +755,8 @@ const loadCartPage = async (req, res) => {
         });
       });
     }
+
+    const availableCoupons = await getAvailableCoupons(userId, subtotal);
 
     res.render("cart", {
       cart: {
@@ -810,7 +830,17 @@ const removeFromCart = async (req, res) => {
       }
     }
 
-    const shipping = subtotal > 0 ? 5 : 0;
+    // Calculate shipping charge - base charge of ₹40 with additional charges based on total quantity
+    const totalQuantity = cart.items.reduce(
+      (sum, item) => sum + item.quantity,
+      0,
+    );
+    const shipping =
+      subtotal > 0
+        ? subtotal > 1000
+          ? 0
+          : Math.max(40, 40 + Math.floor(totalQuantity / 3) * 10)
+        : 0;
     const total = subtotal + shipping;
 
     res.json({
@@ -874,7 +904,17 @@ const loadCheckoutPage = async (req, res) => {
     }
 
     const subtotal = cart.items.reduce((sum, item) => sum + item.totalPrice, 0);
-    const shipping = subtotal > 0 ? 5 : 0;
+    // Calculate shipping charge - base charge of ₹40 with additional charges based on total quantity
+    const totalQuantity = cart.items.reduce(
+      (sum, item) => sum + item.quantity,
+      0,
+    );
+    const shipping =
+      subtotal > 0
+        ? subtotal > 1000
+          ? 0
+          : Math.max(40, 40 + Math.floor(totalQuantity / 3) * 10)
+        : 0;
 
     let appliedCoupon = null;
     let discount = 0;
@@ -907,9 +947,7 @@ const loadCheckoutPage = async (req, res) => {
         } else {
           discount = sessionCoupon.discountAmount;
         }
-
         discount = Math.min(discount, subtotal);
-
         appliedCoupon = {
           code: sessionCoupon.code,
           id: sessionCoupon._id,
@@ -929,6 +967,9 @@ const loadCheckoutPage = async (req, res) => {
     const wallet = await Wallet.findOne({ userId });
     const walletBalance = wallet ? wallet.balance : 0;
 
+    // Determine if COD is available (total <= 1000)
+    const isCODAvailable = total <= 1000;
+
     res.render("checkout", {
       user,
       cart,
@@ -938,6 +979,7 @@ const loadCheckoutPage = async (req, res) => {
       total,
       appliedCoupon,
       walletBalance,
+      isCODAvailable, // Pass the COD availability flag to the template
     });
   } catch (err) {
     console.error("Error loading checkout:", err);
@@ -979,35 +1021,6 @@ const createOrder = async (req, res) => {
         redirectUrl:
           "/order-failure?errorMessage=Please%20select%20a%20payment%20method",
       });
-    }
-
-    if (paymentMethod === "RAZORPAY") {
-      if (!razorpay_order_id || !razorpay_payment_id || !razorpay_signature) {
-        await session.abortTransaction();
-        session.endSession();
-        return res.status(400).json({
-          success: false,
-          message: "Missing Razorpay payment details",
-          redirectUrl:
-            "/order-failure?errorMessage=Missing%20payment%20details.%20Please%20try%20again.",
-        });
-      }
-      const crypto = require("crypto");
-      const body = razorpay_order_id + "|" + razorpay_payment_id;
-      const expectedSignature = crypto
-        .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
-        .update(body.toString())
-        .digest("hex");
-      if (expectedSignature !== razorpay_signature) {
-        await session.abortTransaction();
-        session.endSession();
-        return res.status(400).json({
-          success: false,
-          message: "Payment verification failed",
-          redirectUrl:
-            "/order-failure?errorMessage=Payment%20verification%20failed.%20Please%20try%20again.",
-        });
-      }
     }
 
     const cart = await Cart.findOne({ userId }).populate({
@@ -1056,7 +1069,12 @@ const createOrder = async (req, res) => {
       item.totalPrice = item.quantity * finalPrice;
       subtotal += item.totalPrice;
     }
-    const shipping = 5;
+    // Calculate shipping charge - base charge of ₹40 with additional charges based on total quantity
+    const totalQuantity = cart.items.reduce(
+      (sum, item) => sum + item.quantity,
+      0,
+    );
+    const shipping = Math.max(40, 40 + Math.floor(totalQuantity / 3) * 10);
     const totalPrice = subtotal;
     let discount = 0;
     let couponCode = null;
@@ -1103,6 +1121,47 @@ const createOrder = async (req, res) => {
 
     const finalAmount = subtotal + shipping - discount;
 
+    // Validate COD eligibility
+    if (paymentMethod === "COD" && finalAmount > 1000) {
+      await session.abortTransaction();
+      session.endSession();
+      return res.status(400).json({
+        success: false,
+        message: "Cash on Delivery is not available for orders above ₹1000",
+        redirectUrl:
+          "/order-failure?errorMessage=Cash%20on%20Delivery%20is%20not%20available%20for%20orders%20above%20%E2%82%B91000",
+      });
+    }
+
+    if (paymentMethod === "RAZORPAY") {
+      if (!razorpay_order_id || !razorpay_payment_id || !razorpay_signature) {
+        await session.abortTransaction();
+        session.endSession();
+        return res.status(400).json({
+          success: false,
+          message: "Missing Razorpay payment details",
+          redirectUrl:
+            "/order-failure?errorMessage=Missing%20payment%20details.%20Please%20try%20again.",
+        });
+      }
+      const crypto = require("crypto");
+      const body = razorpay_order_id + "|" + razorpay_payment_id;
+      const expectedSignature = crypto
+        .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
+        .update(body.toString())
+        .digest("hex");
+      if (expectedSignature !== razorpay_signature) {
+        await session.abortTransaction();
+        session.endSession();
+        return res.status(400).json({
+          success: false,
+          message: "Payment verification failed",
+          redirectUrl:
+            "/order-failure?errorMessage=Payment%20verification%20failed.%20Please%20try%20again.",
+        });
+      }
+    }
+
     if (paymentMethod === "WALLET") {
       const wallet = await Wallet.findOne({ userId });
       if (!wallet || wallet.balance < finalAmount) {
@@ -1145,15 +1204,18 @@ const createOrder = async (req, res) => {
       couponId,
       couponApplied: !!couponCode,
       finalAmount,
+      shipping,
       paymentMethod: paymentMethod,
       status: paymentMethod === "RAZORPAY" ? "Confirmed" : "Pending",
     });
+    // Update product stock
     for (const item of cart.items) {
       await Product.updateOne(
         { _id: item.productId._id },
         { $inc: { stock: -item.quantity } },
       );
     }
+
     await order.save({ session });
     await User.findByIdAndUpdate(userId, { $set: { cart: [] } });
     await Cart.deleteOne({ userId });
@@ -1206,7 +1268,7 @@ const loadOrderConfirmation = async (req, res) => {
       discount: order.discount,
       couponCode: order.couponCode,
       couponApplied: !!order.couponCode,
-      shipping: 5,
+      shipping: order.shipping || 0,
       paymentMethod: order.paymentMethod,
     });
   } catch (err) {
@@ -1535,7 +1597,7 @@ const generateInvoice = async (req, res) => {
     doc.moveDown();
     doc.font("Helvetica");
     doc.text(`Subtotal: ₹${order.totalPrice.toFixed(2)}`, { align: "right" });
-    doc.text(`Shipping: ₹5.00`, { align: "right" });
+    doc.text(`Shipping: ₹${order.shipping.toFixed(2)}`, { align: "right" });
     doc.moveDown();
     doc
       .font("Helvetica-Bold")
@@ -1686,6 +1748,18 @@ const applyCoupon = async (req, res) => {
       });
     }
 
+    // Calculate shipping charge
+    const totalQuantity = cart.items.reduce(
+      (sum, item) => sum + item.quantity,
+      0,
+    );
+    const shipping =
+      subtotal > 0
+        ? subtotal > 1000
+          ? 0
+          : Math.max(40, 40 + Math.floor(totalQuantity / 3) * 10)
+        : 0;
+
     let discountAmount = 0;
     if (coupon.discountType === "percentage") {
       discountAmount = subtotal * (coupon.discountAmount / 100);
@@ -1714,8 +1788,8 @@ const applyCoupon = async (req, res) => {
       cart: {
         subtotal,
         discount: discountAmount,
-        shipping: 5,
-        total: subtotal + 5 - discountAmount,
+        shipping: shipping,
+        total: subtotal + shipping - discountAmount,
         couponCode: coupon.code,
         couponId: coupon._id,
       },
@@ -1767,8 +1841,19 @@ const removeCoupon = async (req, res) => {
       });
       subtotal = items.reduce((sum, item) => sum + item.totalPrice, 0);
     }
-    const shipping = subtotal > 0 ? 5 : 0;
-    const total = subtotal + shipping;
+    // Calculate shipping charge - base charge of ₹40 with additional charges based on total quantity
+    const totalQuantity = cart.items.reduce(
+      (sum, item) => sum + item.quantity,
+      0,
+    );
+    const shipping =
+      subtotal > 0
+        ? subtotal > 1000
+          ? 0
+          : Math.max(40, 40 + Math.floor(totalQuantity / 3) * 10)
+        : 0;
+
+    let total = subtotal + shipping;
 
     // Update cart if items were filtered
     if (cart && items.length !== cart.items.length) {
@@ -1853,7 +1938,12 @@ const createRazorpayOrder = async (req, res) => {
       }
       subtotal += item.quantity * finalPrice;
     }
-    const shipping = 5;
+    // Calculate shipping charge - base charge of ₹40 with additional charges based on total quantity
+    const totalQuantity = cart.items.reduce(
+      (sum, item) => sum + item.quantity,
+      0,
+    );
+    const shipping = Math.max(40, 40 + Math.floor(totalQuantity / 3) * 10);
     let discount = 0;
     if (req.session.appliedCoupon) {
       discount = req.session.appliedCoupon.discount || 0;

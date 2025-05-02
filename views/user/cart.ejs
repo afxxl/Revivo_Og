@@ -554,6 +554,13 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 
+  // Calculate shipping based on total quantity
+  function calculateShipping(items) {
+    const totalQuantity = items.reduce((sum, item) => sum + item.quantity, 0);
+    const subtotal = items.reduce((sum, item) => sum + item.totalPrice, 0);
+    return subtotal > 1000 ? 0 : Math.max(40, 40 + Math.floor(totalQuantity / 3) * 10);
+  }
+
   // Update cart
   const updateCart = debounce(async function(productId, newQuantity) {
     const input = document.querySelector(`.quantity-input[data-product-id="${productId}"]`);
@@ -600,9 +607,16 @@ document.addEventListener('DOMContentLoaded', function() {
         const totalEl = document.querySelector('.total-display');
         const totalSavingsEl = document.querySelector('.total-savings-display');
 
+        // Calculate the new shipping cost based on the remaining items
+        const remainingItems = data.cart.items || [];
+        const shippingCost = calculateShipping(remainingItems);
+        
         if (subtotalEl) subtotalEl.textContent = `₹${data.cart.subtotal.toFixed(2)}`;
-        if (shippingEl) shippingEl.textContent = `₹${data.cart.shipping.toFixed(2)}`;
-        if (totalEl) totalEl.textContent = `₹${data.cart.total.toFixed(2)}`;
+        if (shippingEl) shippingEl.textContent = `₹${shippingCost.toFixed(2)}`;
+        
+        // Calculate the new total with the updated shipping cost
+        const newTotal = data.cart.subtotal + shippingCost - (data.cart.discount || 0);
+        if (totalEl) totalEl.textContent = `₹${newTotal.toFixed(2)}`;
         
         if (totalSavingsEl) {
           let newTotalSavings = 0;
@@ -764,9 +778,16 @@ document.addEventListener('DOMContentLoaded', function() {
         const totalEl = document.querySelector('.total-display');
         const totalSavingsEl = document.querySelector('.total-savings-display');
 
+        // Calculate the new shipping cost based on the remaining items
+        const remainingItems = data.cart.items || [];
+        const shippingCost = calculateShipping(remainingItems);
+        
         if (subtotalEl) subtotalEl.textContent = `₹${data.cart.subtotal.toFixed(2)}`;
-        if (shippingEl) shippingEl.textContent = `₹${data.cart.shipping.toFixed(2)}`;
-        if (totalEl) totalEl.textContent = `₹${data.cart.total.toFixed(2)}`;
+        if (shippingEl) shippingEl.textContent = `₹${shippingCost.toFixed(2)}`;
+        
+        // Calculate the new total with the updated shipping cost
+        const newTotal = data.cart.subtotal + shippingCost - (data.cart.discount || 0);
+        if (totalEl) totalEl.textContent = `₹${newTotal.toFixed(2)}`;
         
         if (totalSavingsEl) {
           let newTotalSavings = 0;
@@ -842,8 +863,29 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   }
 
-  // Toast notifications
-  function showToast(message, type = 'success') {
+  // Update shipping display when page loads
+  document.addEventListener('DOMContentLoaded', function() {
+    const cartItemsData = <%- JSON.stringify(cart.items || []) %>;
+    const shippingEl = document.querySelector('.shipping-display');
+    
+    if (shippingEl && cartItemsData.length > 0) {
+      const shippingCost = calculateShipping(cartItemsData);
+      shippingEl.textContent = `₹${shippingCost.toFixed(2)}`;
+      
+      // Update total with the calculated shipping
+      const subtotalValue = <%= subtotal || 0 %>;
+      const discountValue = <%= appliedCoupon ? appliedCoupon.discount : 0 %>;
+      const totalEl = document.querySelector('.total-display');
+      
+      if (totalEl) {
+        const newTotal = subtotalValue + shippingCost - discountValue;
+        totalEl.textContent = `₹${newTotal.toFixed(2)}`;
+      }
+    }
+  });
+  
+  // Show toast message
+  function showToast(message, type = 'info') {
     const toast = document.createElement('div');
     toast.className = `fixed bottom-4 right-4 ${
       type === 'success' ? 'bg-[#2C2C2C]' : 
@@ -1186,9 +1228,15 @@ document.addEventListener('DOMContentLoaded', function() {
     const shippingEl = document.querySelector('.shipping-display');
     const totalEl = document.querySelector('.total-display');
     
+    // Calculate shipping based on current cart items
+    const shippingCost = calculateShipping(cartData.items || []);
+    
     if (subtotalEl) subtotalEl.textContent = `₹${cartData.subtotal.toFixed(2)}`;
-    if (shippingEl) shippingEl.textContent = `₹${cartData.shipping.toFixed(2)}`;
-    if (totalEl) totalEl.textContent = `₹${cartData.total.toFixed(2)}`;
+    if (shippingEl) shippingEl.textContent = `₹${shippingCost.toFixed(2)}`;
+    
+    // Calculate total with dynamic shipping
+    const newTotal = cartData.subtotal + shippingCost - (cartData.discount || 0);
+    if (totalEl) totalEl.textContent = `₹${newTotal.toFixed(2)}`;
     
     const orderSummary = totalEl.closest('.space-y-4');
     
@@ -1283,4 +1331,3 @@ document.addEventListener('DOMContentLoaded', function() {
 
   </body>
 </html>
-

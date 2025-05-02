@@ -172,13 +172,10 @@ const loadSalesReport = async (req, res) => {
         { $sort: { _id: 1 } },
       ]);
 
-      // Merge orderStats with the full date range
       const orderStats = dateRange.map((date) => {
         const stat = orderStatsRaw.find((stat) => stat._id === date);
         return stat || { _id: date, count: 0, revenue: 0, discount: 0 };
       });
-
-      console.log("Adjusted Order Stats:", orderStats);
 
       const paymentMethodStats = await Order.aggregate([
         { $match: dateFilter },
@@ -209,6 +206,98 @@ const loadSalesReport = async (req, res) => {
         { $limit: 5 },
       ]);
 
+      const topCategories = await Order.aggregate([
+        { $match: { status: "Delivered", ...dateFilter } },
+        { $unwind: "$orderItems" },
+        {
+          $lookup: {
+            from: "products",
+            localField: "orderItems.product",
+            foreignField: "_id",
+            as: "product",
+          },
+        },
+        { $unwind: "$product" },
+        {
+          $lookup: {
+            from: "categories",
+            localField: "product.category",
+            foreignField: "_id",
+            as: "category",
+          },
+        },
+        { $unwind: "$category" },
+        {
+          $group: {
+            _id: "$category._id",
+            categoryName: { $first: "$category.name" },
+            totalSales: { $sum: "$orderItems.price" },
+            count: { $sum: 1 },
+          },
+        },
+        { $sort: { totalSales: -1 } },
+        { $limit: 5 },
+      ]);
+
+      // Get top 5 products by sales
+      const topProducts = await Order.aggregate([
+        { $match: { status: "Delivered", ...dateFilter } },
+        { $unwind: "$orderItems" },
+        {
+          $lookup: {
+            from: "products",
+            localField: "orderItems.product",
+            foreignField: "_id",
+            as: "product",
+          },
+        },
+        { $unwind: "$product" },
+        {
+          $group: {
+            _id: "$product._id",
+            productName: { $first: "$product.productName" },
+            totalSales: { $sum: "$orderItems.price" },
+            count: { $sum: 1 },
+          },
+        },
+        { $sort: { count: -1 } },
+        { $limit: 5 },
+      ]);
+
+      // Get top 5 brands by sales
+      const topBrands = await Order.aggregate([
+        { $match: { status: "Delivered", ...dateFilter } },
+        { $unwind: "$orderItems" },
+        {
+          $lookup: {
+            from: "products",
+            localField: "orderItems.product",
+            foreignField: "_id",
+            as: "product",
+          },
+        },
+        { $unwind: "$product" },
+        {
+          $lookup: {
+            from: "brands",
+            localField: "product.brand",
+            foreignField: "_id",
+            as: "brand",
+          },
+        },
+        { $unwind: "$brand" },
+        {
+          $group: {
+            _id: "$brand._id",
+            brandName: { $first: "$brand.brandName" },
+            totalSales: { $sum: "$orderItems.price" },
+            count: { $sum: 1 },
+          },
+        },
+        { $sort: { totalSales: -1 } },
+        { $limit: 5 },
+      ]);
+
       const totalRevenue = orderStats.reduce(
         (acc, curr) => acc + curr.revenue,
         0,
@@ -227,6 +316,9 @@ const loadSalesReport = async (req, res) => {
         paymentMethodStats,
         orderStatusStats,
         couponStats,
+        topCategories,
+        topProducts,
+        topBrands,
         filter,
         startDate: startDate || "",
         endDate: endDate || "",

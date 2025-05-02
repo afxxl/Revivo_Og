@@ -98,26 +98,36 @@
                     <div class="pt-6 border-t border-gray-200">
                         <h3 class="text-lg font-medium mb-4">Payment Method</h3>
 
+<!-- Inside the payment method section -->
 <div class="grid grid-cols-2 gap-4">
+    <% if (isCODAvailable) { %>
     <div class="payment-method p-4 rounded-lg border bg-white text-center cursor-pointer"
-        data-method="COD"
-        onclick="selectPaymentMethod(this)">
+         data-method="COD"
+         onclick="selectPaymentMethod(this)">
         <i class="fas fa-money-bill-wave text-2xl mb-2 text-green-500"></i>
         <p class="font-medium">Cash on Delivery</p>
         <p class="text-xs text-gray-500 mt-1">Pay when you receive</p>
     </div>
+    <% } else { %>
+    <div class="payment-method p-4 rounded-lg border bg-gray-100 text-center cursor-not-allowed opacity-75"
+         title="Cash on Delivery is not available for orders above ₹1000">
+        <i class="fas fa-money-bill-wave text-2xl mb-2 text-gray-300"></i>
+        <p class="font-medium text-gray-400">Cash on Delivery</p>
+        <p class="text-xs text-gray-400 mt-1">Not available (Order > ₹1000)</p>
+    </div>
+    <% } %>
 
     <% if (walletBalance >= total) { %>
     <div class="payment-method p-4 rounded-lg border bg-white text-center cursor-pointer"
-        data-method="WALLET"
-        onclick="selectPaymentMethod(this)">
+         data-method="WALLET"
+         onclick="selectPaymentMethod(this)">
         <i class="fas fa-wallet text-2xl mb-2 text-purple-500"></i>
         <p class="font-medium">Wallet</p>
         <p class="text-xs text-gray-500 mt-1">Balance: ₹<%= walletBalance.toFixed(2) %></p>
     </div>
     <% } else { %>
     <div class="payment-method p-4 rounded-lg border bg-gray-100 text-center cursor-not-allowed opacity-75"
-        title="Insufficient wallet balance">
+         title="Insufficient wallet balance">
         <i class="fas fa-wallet text-2xl mb-2 text-purple-300"></i>
         <p class="font-medium text-gray-400">Wallet</p>
         <p class="text-xs text-gray-400">Balance: ₹<%= walletBalance.toFixed(2) %></p>
@@ -126,8 +136,8 @@
     <% } %>
 
     <div class="payment-method p-4 rounded-lg border bg-white text-center cursor-pointer"
-        data-method="RAZORPAY"
-        onclick="selectPaymentMethod(this)">
+         data-method="RAZORPAY"
+         onclick="selectPaymentMethod(this)">
         <i class="fas fa-credit-card text-2xl mb-2 text-blue-500"></i>
         <p class="font-medium">Razorpay</p>
         <p class="text-xs text-gray-500 mt-1">Credit/Debit Cards, UPI, Wallets</p>
@@ -229,7 +239,7 @@
 
 <script>
     let selectedAddressId = null;
-    let selectedPaymentMethod = 'COD'; 
+    let selectedPaymentMethod = null;
 
     function selectAddress(element) {
         document.querySelectorAll('.address-card').forEach(card => {
@@ -280,13 +290,17 @@
             return;
         }
 
+        if (!selectedPaymentMethod) {
+            showToast('Please select a payment method', 'error');
+            return;
+        }
+
         const btn = document.getElementById('placeOrderBtn');
         btn.disabled = true;
         btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Processing...';
 
         try {
             if (selectedPaymentMethod === 'RAZORPAY') {
-                // 1. Create Razorpay order (no DB order yet)
                 const razorpayResponse = await fetch('/create-razorpay-order', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -300,11 +314,8 @@
                     showToast(razorpayData.message || 'Failed to create Razorpay order', 'error');
                     btn.disabled = false;
                     btn.innerHTML = 'Place Order';
-                    
-                    // If there's a redirect URL, navigate to it (likely order-failure page)
                     if (razorpayData.redirectUrl) {
                         window.location.href = razorpayData.redirectUrl;
-                        return;
                     }
                     return;
                 }
@@ -316,7 +327,6 @@
                     description: 'Purchase from REVIVO',
                     order_id: razorpayData.order.id,
                     handler: async function (response) {
-                        // On payment success, create order in DB
                         const orderResponse = await fetch('/create-order', {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
@@ -333,7 +343,6 @@
                             window.location.href = orderData.redirectUrl;
                         } else {
                             showToast(orderData.message || 'Order creation failed after payment', 'error');
-                            // If there's a redirect URL, navigate to it (likely order-failure page)
                             if (orderData.redirectUrl) {
                                 window.location.href = orderData.redirectUrl;
                             }
@@ -356,7 +365,6 @@
                     showToast('Payment failed: ' + response.error.description, 'error');
                 });
             } else {
-                // COD/WALLET: existing flow
                 const response = await fetch('/create-order', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -370,7 +378,6 @@
                     window.location.href = data.redirectUrl;
                 } else {
                     showToast(data.message || 'Failed to place order', 'error');
-                    // If there's a redirect URL, navigate to it (likely order-failure page)
                     if (data.redirectUrl) {
                         window.location.href = data.redirectUrl;
                     }
@@ -381,8 +388,6 @@
             showToast('An error occurred while placing the order', 'error');
             btn.disabled = false;
             btn.innerHTML = 'Place Order';
-            
-            // Redirect to order failure page for unexpected errors
             window.location.href = '/order-failure?errorMessage=An%20unexpected%20error%20occurred%20while%20processing%20your%20order.%20Please%20try%20again.';
         }
     }
@@ -456,28 +461,41 @@
     }
 
     document.getElementById('addressForm')?.addEventListener('submit', handleAddressFormSubmit);
+
     document.addEventListener('DOMContentLoaded', () => {
+        // Log initial state for debugging
+        console.log('isCODAvailable:', <%= isCODAvailable %>);
+        console.log('walletBalance:', <%= walletBalance %>);
+        console.log('total:', <%= total %>);
+
         // Select a default payment method
-        <% if (walletBalance >= total) { %>
-            const walletMethod = document.querySelector('[data-method="WALLET"]');
-            if (walletMethod) {
-                walletMethod.classList.add('selected');
-                selectedPaymentMethod = 'WALLET';
-            } else {
-                const codMethod = document.querySelector('[data-method="COD"]');
-                if (codMethod) {
-                    codMethod.classList.add('selected');
-                    selectedPaymentMethod = 'COD';
-                }
-            }
-        <% } else { %>
-            const codMethod = document.querySelector('[data-method="COD"]');
-            if (codMethod) {
-                codMethod.classList.add('selected');
+        let defaultMethod = null;
+        if (<%= isCODAvailable %>) {
+            defaultMethod = document.querySelector('[data-method="COD"]');
+            if (defaultMethod) {
+                defaultMethod.classList.add('selected');
                 selectedPaymentMethod = 'COD';
             }
-        <% } %>
-        
+        } else if (<%= walletBalance %> >= <%= total %>) {
+            defaultMethod = document.querySelector('[data-method="WALLET"]');
+            if (defaultMethod) {
+                defaultMethod.classList.add('selected');
+                selectedPaymentMethod = 'WALLET';
+            }
+        } else {
+            defaultMethod = document.querySelector('[data-method="RAZORPAY"]');
+            if (defaultMethod) {
+                defaultMethod.classList.add('selected');
+                selectedPaymentMethod = 'RAZORPAY';
+            }
+        }
+
+        if (!defaultMethod) {
+            console.warn('No valid payment method found for default selection');
+        } else {
+            console.log('Default payment method selected:', selectedPaymentMethod);
+        }
+
         // Select a default address
         const defaultAddress = document.querySelector('.address-card [data-is-default="true"]');
         if (defaultAddress) {
