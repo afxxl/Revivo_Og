@@ -44,9 +44,40 @@ const userInfo = async (req, res) => {
 const userBlocked = async (req, res) => {
   try {
     let id = req.query.id;
+
     await User.updateOne({ _id: id }, { $set: { isBlocked: true } });
+
+    const sessions = req.sessionStore.sessions;
+    let sessionUpdated = false;
+
+    console.log(`Blocking user with ID: ${id}`);
+
+    for (let sessionId in sessions) {
+      try {
+        const sessionData = JSON.parse(sessions[sessionId]);
+        if (sessionData.user && sessionData.user.toString() === id.toString()) {
+          console.log(
+            `Found session for user ${id}, setting wasBlockedByAdmin flag`,
+          );
+
+          sessionData.wasBlockedByAdmin = true;
+          req.sessionStore.sessions[sessionId] = JSON.stringify(sessionData);
+          sessionUpdated = true;
+        }
+      } catch (e) {
+        console.error("Error parsing session:", e);
+      }
+    }
+
+    if (sessionUpdated) {
+      console.log(`Successfully updated session for user ${id}`);
+    } else {
+      console.log(`No active session found for user ${id}`);
+    }
+
     res.redirect("/admin/users");
   } catch (err) {
+    console.error("Error blocking user:", err);
     res.redirect("/pageerror");
   }
 };

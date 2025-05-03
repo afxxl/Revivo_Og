@@ -364,17 +364,23 @@ window.addEventListener('load', function() {
 
     async function checkSession() {
       try {
+        console.log("Checking session status..."); // Debug log
         const response = await fetch('/api/check-session');
         if (!response.ok) throw new Error('Network response was not ok');
         
-        const { loggedIn, user, isBlocked } = await response.json();
+        const data = await response.json();
+        console.log("Session check response:", data); // Debug log
+        
+        const { loggedIn, user, isBlocked } = data;
         const authSection = document.getElementById('auth-state');
         
         if (isBlocked) {
+          console.log("User is blocked, showing message"); // Debug log
           showBlockedMessage();
           setTimeout(() => {
+            console.log("Redirecting to login page"); // Debug log
             window.location.href = '/login';
-          }, 3000);
+          }, 5000);
           return;
         }
         
@@ -482,22 +488,62 @@ window.addEventListener('load', function() {
     });
 
     function showBlockedMessage() {
-      const toast = document.createElement('div');
-      toast.className = 'fixed top-4 right-4 bg-red-600 text-white px-6 py-4 rounded-lg shadow-xl z-50 max-w-sm';
-      toast.innerHTML = `
-        <div class="flex items-center">
-          <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
-          </svg>
-          <div>
-            <h3 class="font-bold mb-1">Account Blocked</h3>
-            <p class="text-sm">Your account has been blocked by admin. You are being logged out.</p>
+      console.log("Showing blocked message"); // Debug log
+      
+      // Create a modal-style notification instead of a toast
+      const blockedModal = document.createElement('div');
+      blockedModal.id = 'blockedModal';
+      blockedModal.className = 'fixed inset-0 flex items-center justify-center z-[9999] bg-black bg-opacity-50';
+      blockedModal.innerHTML = `
+        <div class="bg-white rounded-lg shadow-xl max-w-md mx-4 overflow-hidden animate-bounce-in">
+          <div class="bg-red-600 p-4">
+            <div class="flex items-center">
+              <svg class="w-8 h-8 text-white mr-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+              </svg>
+              <h3 class="text-xl font-bold text-white">Account Blocked</h3>
+            </div>
+          </div>
+          <div class="p-6">
+            <p class="text-gray-700 mb-4">Your account has been blocked by the administrator. You will be redirected to the login page.</p>
+            <div class="flex justify-end">
+              <button id="blockedOkBtn" class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition-colors">
+                OK
+              </button>
+            </div>
           </div>
         </div>
       `;
-      document.body.appendChild(toast);
+      
+      // Add animation styles
+      const style = document.createElement('style');
+      style.textContent = `
+        @keyframes bounceIn {
+          from, 20%, 40%, 60%, 80%, to { animation-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000); }
+          0% { opacity: 0; transform: scale3d(0.3, 0.3, 0.3); }
+          20% { transform: scale3d(1.1, 1.1, 1.1); }
+          40% { transform: scale3d(0.9, 0.9, 0.9); }
+          60% { opacity: 1; transform: scale3d(1.03, 1.03, 1.03); }
+          80% { transform: scale3d(0.97, 0.97, 0.97); }
+          to { opacity: 1; transform: scale3d(1, 1, 1); }
+        }
+        .animate-bounce-in {
+          animation: bounceIn 0.75s;
+        }
+      `;
+      document.head.appendChild(style);
+      
+      // Add to DOM
+      document.body.appendChild(blockedModal);
+      
+      // Add event listener to the OK button
+      document.getElementById('blockedOkBtn').addEventListener('click', function() {
+        window.location.href = '/login';
+      });
+      
+      // Auto redirect after delay
       setTimeout(() => {
-        toast.remove();
+        window.location.href = '/login';
       }, 5000);
     }
 
@@ -516,7 +562,14 @@ window.addEventListener('load', function() {
     }
 
     checkSession();
-    setInterval(checkSession, 10000);
+    
+    // Check session more frequently (every 2 seconds) to detect blocked status faster
+    const sessionCheckInterval = setInterval(checkSession, 2000);
+    
+    // Clear interval when page is unloaded to prevent memory leaks
+    window.addEventListener('beforeunload', () => {
+      clearInterval(sessionCheckInterval);
+    });
 
   // Referral modal and functionality
   const referralModal = document.createElement('div');
@@ -749,7 +802,3 @@ window.addEventListener('load', function() {
   }
 });
 </script>
-
-
-
-

@@ -1492,6 +1492,25 @@ const getReferralStats = async (req, res) => {
 const checkSession = async (req, res) => {
   try {
     const userId = req.session.user || (req.user && req.user._id);
+
+    if (req.session.wasBlockedByAdmin) {
+      const response = {
+        loggedIn: false,
+        user: null,
+        isBlocked: true,
+      };
+
+      req.session.destroy((err) => {
+        if (err) {
+          console.error("Error destroying session:", err);
+        }
+
+        return res.json(response);
+      });
+
+      return;
+    }
+
     if (!userId) {
       return res.json({
         loggedIn: false,
@@ -1510,11 +1529,23 @@ const checkSession = async (req, res) => {
     }
 
     if (user.isBlocked) {
-      return res.json({
+      console.log("User found to be blocked in database");
+
+      const response = {
         loggedIn: false,
         user: null,
         isBlocked: true,
+      };
+
+      req.session.destroy((err) => {
+        if (err) {
+          console.error("Error destroying session:", err);
+        }
+
+        return res.json(response);
       });
+
+      return;
     }
 
     return res.json({
