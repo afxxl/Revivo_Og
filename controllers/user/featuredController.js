@@ -16,6 +16,7 @@ const featuredPage = async (req, res) => {
       minPrice: req.query.minPrice ? parseFloat(req.query.minPrice) : undefined,
       maxPrice: req.query.maxPrice ? parseFloat(req.query.maxPrice) : undefined,
       sort: req.query.sort || "", // Add sort filter
+      search: req.query.search || "", // Add search filter
     };
 
     const categories = await Category.find({ isListed: true }).lean();
@@ -30,13 +31,46 @@ const featuredPage = async (req, res) => {
       brand: { $in: activeBrandIds },
     };
 
+    // Add search functionality
+    if (filters.search) {
+      query.$or = [
+        { productName: { $regex: new RegExp(filters.search, 'i') } },
+        { description: { $regex: new RegExp(filters.search, 'i') } }
+      ];
+      
+      // Also search by brand name
+      const matchingBrands = await Brand.find({ 
+        name: { $regex: new RegExp(filters.search, 'i') },
+        isActive: true 
+      }).lean();
+      
+      if (matchingBrands.length > 0) {
+        const brandIds = matchingBrands.map(brand => brand._id);
+        query.$or.push({ brand: { $in: brandIds } });
+      }
+    }
+
     if (filters.category) {
       query.category = filters.category;
     } else {
-      query.$or = [
-        { category: { $in: listedCategoryIds } },
-        { category: { $exists: true } },
-      ];
+      if (!filters.search) {
+        query.$or = [
+          { category: { $in: listedCategoryIds } },
+          { category: { $exists: true } },
+        ];
+      } else {
+        // If we have a search query, add category filter to existing $or
+        query.$and = [
+          { $or: query.$or },
+          { 
+            $or: [
+              { category: { $in: listedCategoryIds } },
+              { category: { $exists: true } },
+            ]
+          }
+        ];
+        delete query.$or;
+      }
     }
 
     if (filters.brand) query.brand = filters.brand;

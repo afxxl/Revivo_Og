@@ -1228,14 +1228,16 @@ document.addEventListener('DOMContentLoaded', function() {
     const shippingEl = document.querySelector('.shipping-display');
     const totalEl = document.querySelector('.total-display');
     
-    // Calculate shipping based on current cart items
-    const shippingCost = calculateShipping(cartData.items || []);
+    console.log("Cart data from server:", cartData);
+    
+    // Use the shipping value from the server instead of recalculating
+    const shippingCost = cartData.shipping;
     
     if (subtotalEl) subtotalEl.textContent = `₹${cartData.subtotal.toFixed(2)}`;
     if (shippingEl) shippingEl.textContent = `₹${shippingCost.toFixed(2)}`;
     
-    // Calculate total with dynamic shipping
-    const newTotal = cartData.subtotal + shippingCost - (cartData.discount || 0);
+    // Use the total from the server or calculate it with the server's shipping value
+    const newTotal = cartData.total || (cartData.subtotal + shippingCost - (cartData.discount || 0));
     if (totalEl) totalEl.textContent = `₹${newTotal.toFixed(2)}`;
     
     const orderSummary = totalEl.closest('.space-y-4');

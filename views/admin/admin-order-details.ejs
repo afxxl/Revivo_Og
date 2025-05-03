@@ -350,10 +350,19 @@
                 <div>
                     <h2 class="text-xl font-semibold mb-4 text-[#2C2C2C]">Shipping Information</h2>
                     <div class="space-y-2 text-[#2C2C2C]">
+                        <% if (order.addressDetails) { %>
+                        <p><%= order.addressDetails.name %></p>
+                        <p><%= order.addressDetails.address %></p>
+                        <p><%= order.addressDetails.city %>, <%= order.addressDetails.state %> <%= order.addressDetails.pincode %></p>
+                        <p class="mt-4"><span class="font-medium">Contact:</span> <%= order.addressDetails.phone %></p>
+                        <% } else if (order.address) { %>
                         <p><%= order.address.name %></p>
                         <p><%= order.address.address %></p>
                         <p><%= order.address.city %>, <%= order.address.state %> <%= order.address.pincode %></p>
                         <p class="mt-4"><span class="font-medium">Contact:</span> <%= order.address.phone %></p>
+                        <% } else { %>
+                        <p class="text-red-500">Address information not available</p>
+                        <% } %>
                         <p><span class="font-medium">Email:</span> <%= order.user.email %></p>
                     </div>
                 </div>
@@ -516,4 +525,3 @@ function handleReturn(action, orderId) {
 </script>
 
 <%- include('../partials/admin/admin-footer') %>
-

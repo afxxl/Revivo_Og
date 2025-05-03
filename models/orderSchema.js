@@ -61,7 +61,42 @@ const orderSchema = new Schema(
     address: {
       type: Schema.Types.ObjectId,
       ref: "Address",
-      required: true,
+      required: false,
+    },
+    addressDetails: {
+      name: {
+        type: String,
+        required: true,
+      },
+      addressType: {
+        type: String,
+        enum: ["HOME", "WORK", "OTHER"],
+        default: "HOME",
+      },
+      address: {
+        type: String,
+        required: true,
+      },
+      city: {
+        type: String,
+        required: true,
+      },
+      state: {
+        type: String,
+        required: true,
+      },
+      pincode: {
+        type: String,
+        required: true,
+      },
+      phone: {
+        type: String,
+        required: true,
+      },
+      altPhone: {
+        type: String,
+        required: false,
+      },
     },
     invoiceDate: {
       type: Date,

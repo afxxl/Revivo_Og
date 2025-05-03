@@ -131,6 +131,7 @@
         overflow: hidden;
         display: -webkit-box;
         -webkit-line-clamp: 2;
+        line-clamp: 2;
         -webkit-box-orient: vertical;
       }
       
@@ -668,7 +669,7 @@
 
             <!-- Decorative Elements -->
             <div class="absolute top-1/4 right-1/4 w-12 h-12 rounded-full bg-[#2C2C2C]/5 animate-ping"></div>
-            <div class="absolute bottom-10 right-10 w-20 h-20 border border-[#f8c78d]/20 rounded-full"></div>
+            <div class="absolute bottom-10 right-10 w-20 h-20 border-2 border-[#f8c78d]/10 rounded-full hidden lg:block"></div>
             <div class="absolute -top-5 -left-5 w-10 h-10 border border-[#2C2C2C]/10 rounded-full"></div>
           </div>
         </div>
@@ -684,12 +685,62 @@
       <div class="container mx-auto px-4">
         <!-- Category Navigation -->
         <div class="mb-12">
-          <div class="flex items-center justify-between mb-6">
+          <div class="flex flex-col md:flex-row md:items-center justify-between mb-6 gap-4">
             <div>
               <h4 class="text-[#f8c78d] text-xs tracking-widest uppercase mb-2 font-montserrat">Discover</h4>
               <h2 class="text-3xl section-heading text-[#2C2C2C]">Vintage Collection</h2>
-              </div>
             </div>
+            
+            <!-- Search Bar -->
+            <div class="relative w-full md:max-w-md">
+              <form action="/shop" method="GET" class="flex items-center">
+                <div class="relative flex-grow">
+                  <input 
+                    type="text" 
+                    name="search" 
+                    placeholder="Search products..." 
+                    value="<%= filters.search %>"
+                    class="w-full px-4 py-2 border border-[#e0dcd4] rounded-l-md focus:outline-none focus:ring-1 focus:ring-[#f8c78d] focus:border-[#f8c78d] font-montserrat text-sm"
+                  >
+                  <% if (filters.search) { %>
+                    <a href="<%= filters.category && filters.category !== 'all' ? `/shop?category=${filters.category}` : '/shop' %>" class="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600">
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                      </svg>
+                    </a>
+                  <% } %>
+                </div>
+                <button type="submit" class="bg-[#2C2C2C] text-white px-4 py-2 rounded-r-md hover:bg-[#1a1a1a] transition-colors flex items-center justify-center">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                  </svg>
+                </button>
+                
+                <!-- Preserve other filters -->
+                <% if (filters.category && filters.category !== 'all') { %>
+                  <input type="hidden" name="category" value="<%= filters.category %>">
+                <% } %>
+                <% if (filters.brand) { %>
+                  <input type="hidden" name="brand" value="<%= filters.brand %>">
+                <% } %>
+                <% if (filters.size) { %>
+                  <input type="hidden" name="size" value="<%= filters.size %>">
+                <% } %>
+                <% if (filters.condition) { %>
+                  <input type="hidden" name="condition" value="<%= filters.condition %>">
+                <% } %>
+                <% if (filters.minPrice) { %>
+                  <input type="hidden" name="minPrice" value="<%= filters.minPrice %>">
+                <% } %>
+                <% if (filters.maxPrice) { %>
+                  <input type="hidden" name="maxPrice" value="<%= filters.maxPrice %>">
+                <% } %>
+                <% if (filters.sort) { %>
+                  <input type="hidden" name="sort" value="<%= filters.sort %>">
+                <% } %>
+              </form>
+            </div>
+          </div>
 
           <div class="category-tags">
             <a href="/shop" 

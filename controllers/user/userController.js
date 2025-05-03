@@ -385,7 +385,6 @@ const logout = async (req, res) => {
 
         res.clearCookie("user.sid", { path: "/" });
 
-        console.log("User session destroyed successfully");
         res.redirect("/");
       });
     } else {

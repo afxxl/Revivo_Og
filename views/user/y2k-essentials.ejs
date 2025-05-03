@@ -114,21 +114,15 @@
       }
       
       .product-title {
-        font-family: 'Montserrat', sans-serif;
-        font-weight: 500;
-        font-size: 0.9rem;
-        line-height: 1.4;
-        margin-bottom: 0.75rem;
-        transition: color 0.3s ease;
-        letter-spacing: 0.03rem;
-        overflow: hidden;
+        font-family: 'Playfair Display', serif;
+        font-size: 1rem;
+        margin-top: 0.75rem;
+        color: #2C2C2C;
         display: -webkit-box;
         -webkit-line-clamp: 2;
         -webkit-box-orient: vertical;
-      }
-      
-      .product-card:hover .product-title {
-        color: #f8c78d;
+        line-clamp: 2;
+        overflow: hidden;
       }
       
       .product-footer {
@@ -588,6 +582,57 @@
           <p class="text-[#2C2C2C]/70 max-w-2xl mx-auto mt-4 font-montserrat">A curated collection of iconic Y2K fashion pieces, featuring futuristic aesthetics, bold colors, and nostalgic millennium style statements.</p>
         </div>
 
+        <!-- Search Bar -->
+        <div class="flex flex-col md:flex-row md:items-center justify-between mb-6 gap-4">
+          <div>
+            <h4 class="text-[#f8c78d] text-xs tracking-widest uppercase mb-2 font-montserrat">Y2K Nostalgia</h4>
+            <h2 class="text-3xl section-heading text-[#2C2C2C]">Y2K Essentials Collection</h2>
+          </div>
+          
+          <div class="relative w-full md:max-w-md">
+            <form action="/shop/collection/y2k-essentials" method="GET" class="flex items-center">
+              <div class="relative flex-grow">
+                <input 
+                  type="text" 
+                  name="search" 
+                  placeholder="Search Y2K Essentials..." 
+                  value="<%= filters.search %>"
+                  class="w-full px-4 py-2 border border-[#e0dcd4] rounded-l-md focus:outline-none focus:ring-1 focus:ring-[#f8c78d] focus:border-[#f8c78d] font-montserrat text-sm"
+                >
+                <% if (filters.search) { %>
+                  <a href="/shop/collection/y2k-essentials" class="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                  </a>
+                <% } %>
+              </div>
+              <button type="submit" class="bg-[#2C2C2C] text-white px-4 py-2 rounded-r-md hover:bg-[#1a1a1a] transition-colors flex items-center justify-center">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                </svg>
+              </button>
+              
+              <!-- Preserve other filters -->
+              <% if (filters.size) { %>
+                <input type="hidden" name="size" value="<%= filters.size %>">
+              <% } %>
+              <% if (filters.condition) { %>
+                <input type="hidden" name="condition" value="<%= filters.condition %>">
+              <% } %>
+              <% if (filters.minPrice) { %>
+                <input type="hidden" name="minPrice" value="<%= filters.minPrice %>">
+              <% } %>
+              <% if (filters.maxPrice) { %>
+                <input type="hidden" name="maxPrice" value="<%= filters.maxPrice %>">
+              <% } %>
+              <% if (filters.sort) { %>
+                <input type="hidden" name="sort" value="<%= filters.sort %>">
+              <% } %>
+            </form>
+          </div>
+        </div>
+
         <!-- Category Tags -->
         <div class="mb-12">
           <div class="category-tags">
@@ -681,7 +726,7 @@
                       class="cart-button"
                       title="Add to cart"
                     >
-                      <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
                       </svg>
                     </button>

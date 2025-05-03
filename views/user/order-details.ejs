@@ -408,7 +408,21 @@
         <div>
           <h3 class="section-title">Shipping Information</h3>
           <div class="info-card">
-            <div class="space-y-2">
+            <% if (order.addressDetails) { %>
+              <p class="font-medium"><%= order.addressDetails.name %></p>
+              <p><%= order.addressDetails.address %></p>
+              <p><%= order.addressDetails.city %>, <%= order.addressDetails.state %> <%= order.addressDetails.pincode %></p>
+              <div class="flex items-center mt-4 text-[#2C2C2C]/80">
+                <i class="fas fa-phone-alt mr-2"></i>
+                <p><%= order.addressDetails.phone %></p>
+              </div>
+              <% if (order.addressDetails.altPhone) { %>
+                <div class="flex items-center text-[#2C2C2C]/80">
+                  <i class="fas fa-phone-alt mr-2"></i>
+                  <p>Alt: <%= order.addressDetails.altPhone %></p>
+                </div>
+              <% } %>
+            <% } else if (order.address) { %>
               <p class="font-medium"><%= order.address.name %></p>
               <p><%= order.address.address %></p>
               <p><%= order.address.city %>, <%= order.address.state %> <%= order.address.pincode %></p>
@@ -422,7 +436,9 @@
                   <p>Alt: <%= order.address.altPhone %></p>
                 </div>
               <% } %>
-            </div>
+            <% } else { %>
+              <p class="text-red-500">Address information not available</p>
+            <% } %>
           </div>
         </div>
 

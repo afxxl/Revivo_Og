@@ -217,9 +217,17 @@
                         <div class="flex items-start">
                             <i class="fas fa-map-marker-alt mt-1 mr-3 text-[#2C2C2C]/70"></i>
                             <div>
+                                <% if (order.addressDetails) { %>
+                                <p class="font-medium mb-2"><%= order.addressDetails.name %></p>
+                                <p class="text-[#2C2C2C]/70"><%= order.addressDetails.address %></p>
+                                <p class="text-[#2C2C2C]/70"><%= order.addressDetails.city %>, <%= order.addressDetails.state %> - <%= order.addressDetails.pincode %></p>
+                                <% } else if (order.address) { %>
                                 <p class="font-medium mb-2"><%= order.address.name %></p>
                                 <p class="text-[#2C2C2C]/70"><%= order.address.address %></p>
                                 <p class="text-[#2C2C2C]/70"><%= order.address.city %>, <%= order.address.state %> - <%= order.address.pincode %></p>
+                                <% } else { %>
+                                <p class="text-red-500">Address information not available</p>
+                                <% } %>
                             </div>
                         </div>
                     </div>

@@ -39,6 +39,7 @@ const shopPage = async (req, res) => {
       heritage: req.query.heritage,
       status: req.query.status || "Available",
       sort: req.query.sort || "", // Add sort filter
+      search: req.query.search || "", // Add search filter
     };
 
     const categories = await Category.find({ isListed: true }).lean();
@@ -66,20 +67,29 @@ const shopPage = async (req, res) => {
       if (filters.maxPrice) query.salesPrice.$lte = filters.maxPrice;
     }
 
+    if (filters.search) {
+      const searchRegex = new RegExp(filters.search, "i");
+
+      query.$or = [
+        { productName: searchRegex },
+        { description: searchRegex },
+        { "brand.name": searchRegex },
+      ];
+    }
+
     const totalProducts = await Product.countDocuments({
       ...query,
       isListed: true,
     });
     const totalPages = Math.ceil(totalProducts / perPage);
 
-    // Define sort options
     let sortOption = {};
     if (filters.sort === "low-to-high") {
-      sortOption = { salesPrice: 1 }; // Ascending (low to high)
+      sortOption = { salesPrice: 1 };
     } else if (filters.sort === "high-to-low") {
-      sortOption = { salesPrice: -1 }; // Descending (high to low)
+      sortOption = { salesPrice: -1 };
     } else {
-      sortOption = {}; // Default no specific sorting (natural order)
+      sortOption = {};
     }
 
     const products = await Product.find(query)
@@ -122,14 +132,6 @@ const loadBrandPage = async (req, res) => {
     const perPage = 15;
     const skip = (page - 1) * perPage;
 
-    const categories = await Category.find({ isListed: true }).lean();
-    const listedCategoryIds = categories.map((cat) => cat._id);
-
-    const brand = await Brand.findOne({ _id: brandId, isActive: true }).lean();
-    if (!brand) {
-      return res.status(404).render("page-404");
-    }
-
     const filters = {
       size: req.query.size || "",
       condition: req.query.condition || "",
@@ -137,7 +139,16 @@ const loadBrandPage = async (req, res) => {
       maxPrice: req.query.maxPrice ? parseFloat(req.query.maxPrice) : undefined,
       status: req.query.status || "Available",
       sort: req.query.sort || "", // Add sort filter
+      search: req.query.search || "", // Add search filter
     };
+
+    const categories = await Category.find({ isListed: true }).lean();
+    const listedCategoryIds = categories.map((cat) => cat._id);
+
+    const brand = await Brand.findOne({ _id: brandId, isActive: true }).lean();
+    if (!brand) {
+      return res.status(404).render("page-404");
+    }
 
     let query = {
       brand: brandId,
@@ -153,6 +164,19 @@ const loadBrandPage = async (req, res) => {
       if (filters.maxPrice) query.salesPrice.$lte = filters.maxPrice;
     }
 
+    // Add search functionality
+    if (filters.search) {
+      // Create a case-insensitive search regex
+      const searchRegex = new RegExp(filters.search, "i");
+
+      // Search in product name, description, and brand name
+      query.$or = [
+        { productName: searchRegex },
+        { description: searchRegex },
+        { "brand.name": searchRegex },
+      ];
+    }
+
     const totalProducts = await Product.countDocuments({
       ...query,
       isListed: true,
@@ -165,6 +189,8 @@ const loadBrandPage = async (req, res) => {
       sortOption = { salesPrice: 1 }; // Ascending (low to high)
     } else if (filters.sort === "high-to-low") {
       sortOption = { salesPrice: -1 }; // Descending (high to low)
+    } else {
+      sortOption = {}; // Default no specific sorting (natural order)
     }
 
     const products = await Product.find(query)
@@ -210,6 +236,7 @@ const loadPrimeLayers = async (req, res) => {
       maxPrice: req.query.maxPrice ? parseFloat(req.query.maxPrice) : undefined,
       status: req.query.status || "Available",
       sort: req.query.sort || "", // Add sort filter
+      search: req.query.search || "", // Add search filter
     };
 
     const categories = await Category.find({ isListed: true }).lean();
@@ -230,6 +257,19 @@ const loadPrimeLayers = async (req, res) => {
       query.salesPrice = {};
       if (filters.minPrice) query.salesPrice.$gte = filters.minPrice;
       if (filters.maxPrice) query.salesPrice.$lte = filters.maxPrice;
+    }
+
+    // Add search functionality
+    if (filters.search) {
+      // Create a case-insensitive search regex
+      const searchRegex = new RegExp(filters.search, "i");
+
+      // Search in product name, description, and brand name
+      query.$or = [
+        { productName: searchRegex },
+        { description: searchRegex },
+        { "brand.name": searchRegex },
+      ];
     }
 
     const totalProducts = await Product.countDocuments({
@@ -292,6 +332,7 @@ const loadVintageAthletics = async (req, res) => {
       maxPrice: req.query.maxPrice ? parseFloat(req.query.maxPrice) : undefined,
       status: req.query.status || "Available",
       sort: req.query.sort || "", // Add sort filter
+      search: req.query.search || "", // Add search filter
     };
 
     const categories = await Category.find({ isListed: true }).lean();
@@ -312,6 +353,19 @@ const loadVintageAthletics = async (req, res) => {
       query.salesPrice = {};
       if (filters.minPrice) query.salesPrice.$gte = filters.minPrice;
       if (filters.maxPrice) query.salesPrice.$lte = filters.maxPrice;
+    }
+
+    // Add search functionality
+    if (filters.search) {
+      // Create a case-insensitive search regex
+      const searchRegex = new RegExp(filters.search, "i");
+
+      // Search in product name, description, and brand name
+      query.$or = [
+        { productName: searchRegex },
+        { description: searchRegex },
+        { "brand.name": searchRegex },
+      ];
     }
 
     const totalProducts = await Product.countDocuments({
@@ -374,6 +428,7 @@ const loadY2kEssentials = async (req, res) => {
       maxPrice: req.query.maxPrice ? parseFloat(req.query.maxPrice) : undefined,
       status: req.query.status || "Available",
       sort: req.query.sort || "", // Add sort filter
+      search: req.query.search || "", // Add search filter
     };
 
     const categories = await Category.find({ isListed: true }).lean();
@@ -394,6 +449,19 @@ const loadY2kEssentials = async (req, res) => {
       query.salesPrice = {};
       if (filters.minPrice) query.salesPrice.$gte = filters.minPrice;
       if (filters.maxPrice) query.salesPrice.$lte = filters.maxPrice;
+    }
+
+    // Add search functionality
+    if (filters.search) {
+      // Create a case-insensitive search regex
+      const searchRegex = new RegExp(filters.search, "i");
+
+      // Search in product name, description, and brand name
+      query.$or = [
+        { productName: searchRegex },
+        { description: searchRegex },
+        { "brand.name": searchRegex },
+      ];
     }
 
     const totalProducts = await Product.countDocuments({
@@ -587,7 +655,6 @@ const updateCart = async (req, res) => {
       (sum, item) => sum + item.totalPrice,
       0,
     );
-    // Calculate shipping charge - base charge of ₹40 with additional charges based on total quantity
     const totalQuantity = cart.items.reduce(
       (sum, item) => sum + item.quantity,
       0,
@@ -684,10 +751,12 @@ const loadCartPage = async (req, res) => {
       0,
     );
     // Calculate shipping charge - base charge of ₹40 with additional charges based on total quantity
-    const totalQuantity = cart.items.reduce(
-      (sum, item) => sum + item.quantity,
-      0,
-    );
+    const totalQuantity = cart.items.reduce((sum, item) => {
+      // Ensure item.quantity is treated as a number
+      const quantity = parseInt(item.quantity, 10) || 0;
+      return sum + quantity;
+    }, 0);
+
     const shipping =
       subtotal > 0
         ? subtotal > 1000
@@ -1060,6 +1129,7 @@ const createOrder = async (req, res) => {
       const productOffer = product.productOffer || 0;
       const categoryOffer = product.category?.categoryOffer || 0;
       const bestOfferPercentage = Math.max(productOffer, categoryOffer);
+
       let finalPrice = product.salesPrice;
       if (bestOfferPercentage > 0) {
         const offerAmount = product.salesPrice * (bestOfferPercentage / 100);
@@ -1190,9 +1260,31 @@ const createOrder = async (req, res) => {
       }
     }
 
+    const address = await Address.findById(addressId);
+    if (!address) {
+      await session.abortTransaction();
+      session.endSession();
+      return res.status(400).json({
+        success: false,
+        message: "Selected address not found",
+        redirectUrl:
+          "/order-failure?errorMessage=Selected%20address%20not%20found",
+      });
+    }
+
     const order = new Order({
       user: userId,
       address: addressId,
+      addressDetails: {
+        name: address.name,
+        addressType: address.addressType,
+        address: address.address,
+        city: address.city,
+        state: address.state,
+        pincode: address.pincode,
+        phone: address.phone,
+        altPhone: address.altPhone || "",
+      },
       orderItems: cart.items.map((item) => ({
         product: item.productId._id,
         quantity: item.quantity,
@@ -1543,71 +1635,433 @@ const generateInvoice = async (req, res) => {
       });
     }
 
-    const doc = new PDFDocument();
+    // Create a new PDF document
+    const doc = new PDFDocument({
+      margin: 50,
+      size: "A4",
+    });
 
+    // Set response headers
     res.setHeader("Content-Type", "application/pdf");
     res.setHeader(
       "Content-Disposition",
-      `attachment; filename="invoice-${order.orderId}.pdf"`,
+      `attachment; filename="REVIVO-Invoice-${order.orderId}.pdf"`,
     );
 
     doc.pipe(res);
 
-    doc.fontSize(20).text("REVIVO", { align: "center" });
-    doc.moveDown();
-    doc.fontSize(14).text("INVOICE", { align: "center", underline: true });
-    doc.moveDown();
+    // Define colors
+    const primaryColor = "#2C2C2C";
+    const secondaryColor = "#f8c78d";
+    const textColor = "#333333";
+    const lightGray = "#e0e0e0";
 
-    doc.fontSize(12).text(`Invoice #: ${order.orderId}`);
-    doc.text(`Date: ${order.createdOn.toLocaleDateString()}`);
-    doc.text(`Status: ${order.status}`);
-    doc.moveDown();
-
-    doc.fontSize(14).text("Customer Information", { underline: true });
-    doc.fontSize(12).text(`Name: ${order.address.name}`);
-    doc.text(`Address: ${order.address.address}`);
-    doc.text(
-      `City: ${order.address.city}, ${order.address.state} ${order.address.pincode}`,
-    );
-    doc.text(`Phone: ${order.address.phone}`);
-    doc.moveDown();
-
-    doc.fontSize(14).text("Order Items", { underline: true });
-    doc.moveDown();
-
-    doc.font("Helvetica-Bold");
-    doc.text("Item", 50, doc.y);
-    doc.text("Quantity", 300, doc.y);
-    doc.text("Price", 400, doc.y, { width: 100, align: "right" });
-    doc.moveDown();
-
-    doc.font("Helvetica");
-    order.orderItems.forEach((item) => {
-      doc.text(item.product.productName, 50, doc.y);
-      doc.text(item.quantity.toString(), 300, doc.y);
-      doc.text(`₹${item.price.toFixed(2)}`, 400, doc.y, {
-        width: 100,
-        align: "right",
-      });
-      doc.moveDown();
-    });
-
-    doc.moveDown();
-    doc.font("Helvetica-Bold").text("Order Summary", { underline: true });
-    doc.moveDown();
-    doc.font("Helvetica");
-    doc.text(`Subtotal: ₹${order.totalPrice.toFixed(2)}`, { align: "right" });
-    doc.text(`Shipping: ₹${order.shipping.toFixed(2)}`, { align: "right" });
-    doc.moveDown();
+    // Add logo and header
     doc
+      .fontSize(28)
+      .fillColor(primaryColor)
       .font("Helvetica-Bold")
-      .text(`Total: ₹${order.finalAmount.toFixed(2)}`, { align: "right" });
-    doc.moveDown();
+      .text("REVIVO", { align: "center" });
 
     doc
       .fontSize(10)
-      .text("Thank you for shopping with REVIVO!", { align: "center" });
+      .fillColor(textColor)
+      .font("Helvetica")
+      .text("Premium Vintage Clothing", { align: "center" });
 
+    doc.moveDown(1);
+
+    // Add horizontal line
+    doc
+      .strokeColor(secondaryColor)
+      .lineWidth(3)
+      .moveTo(50, doc.y)
+      .lineTo(doc.page.width - 50, doc.y)
+      .stroke();
+
+    doc.moveDown(1.5);
+
+    // Two-column layout for invoice details and company info
+    const colWidth = (doc.page.width - 100) / 2;
+
+    // Left column - Invoice details
+    doc
+      .fontSize(16)
+      .fillColor(primaryColor)
+      .font("Helvetica-Bold")
+      .text("INVOICE", 50, doc.y);
+
+    doc.moveDown(0.5);
+
+    doc
+      .fontSize(10)
+      .fillColor(textColor)
+      .font("Helvetica")
+      .text(`Invoice #: ${order.orderId}`, 50);
+
+    doc.moveDown(0.3);
+
+    doc.text(
+      `Date: ${new Date(order.createdOn).toLocaleDateString("en-IN", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      })}`,
+      50,
+    );
+
+    doc.moveDown(0.3);
+
+    doc.text(`Payment: ${order.paymentMethod}`, 50);
+
+    doc.moveDown(0.3);
+
+    // Status with color coding
+    let statusColor = primaryColor;
+    if (order.status === "Delivered") statusColor = "#48bb78";
+    if (order.status === "Returned") statusColor = "#e53e3e";
+
+    doc
+      .fillColor(statusColor)
+      .font("Helvetica-Bold")
+      .text(`Status: ${order.status}`, 50);
+
+    // Right column - Company info
+    doc
+      .fontSize(10)
+      .fillColor(textColor)
+      .font("Helvetica")
+      .text(
+        "REVIVO Vintage Clothing",
+        doc.page.width - 50 - colWidth,
+        doc.y - 80,
+        {
+          width: colWidth,
+          align: "right",
+        },
+      );
+
+    doc.moveDown(0.3);
+
+    doc.text("123 Fashion Street, Bangalore", {
+      width: colWidth,
+      align: "right",
+    });
+
+    doc.moveDown(0.3);
+
+    doc.text("Karnataka, India - 560001", {
+      width: colWidth,
+      align: "right",
+    });
+
+    doc.moveDown(0.3);
+
+    doc.text("support@revivo.com | +91 9876543210", {
+      width: colWidth,
+      align: "right",
+    });
+
+    doc.moveDown(2);
+
+    // Customer and Shipping Information in two columns
+    doc
+      .strokeColor(lightGray)
+      .lineWidth(1)
+      .rect(50, doc.y, doc.page.width - 100, 120)
+      .stroke();
+
+    // Left column - Customer Info
+    doc
+      .fontSize(12)
+      .fillColor(primaryColor)
+      .font("Helvetica-Bold")
+      .text("CUSTOMER", 70, doc.y + 15);
+
+    doc.moveDown(0.5);
+
+    doc
+      .fontSize(10)
+      .fillColor(textColor)
+      .font("Helvetica-Bold")
+      .text(`${order.user.name || "Customer"}`, 70);
+
+    doc.moveDown(0.3);
+
+    doc
+      .font("Helvetica")
+      .text(`Email: ${order.user.email || "Not available"}`, 70);
+
+    doc.moveDown(0.3);
+
+    doc.text(`Phone: ${order.user.phone || "Not available"}`, 70);
+
+    // Right column - Shipping Info
+    doc
+      .fontSize(12)
+      .fillColor(primaryColor)
+      .font("Helvetica-Bold")
+      .text("SHIPPING ADDRESS", doc.page.width / 2, doc.y - 65);
+
+    doc.moveDown(0.5);
+
+    // Use addressDetails if available, otherwise fall back to address
+    if (order.addressDetails) {
+      doc
+        .fontSize(10)
+        .fillColor(textColor)
+        .font("Helvetica-Bold")
+        .text(`${order.addressDetails.name}`, doc.page.width / 2);
+
+      doc.moveDown(0.3);
+
+      doc
+        .font("Helvetica")
+        .text(`${order.addressDetails.address}`, doc.page.width / 2);
+
+      doc.moveDown(0.3);
+
+      doc.text(
+        `${order.addressDetails.city}, ${order.addressDetails.state} - ${order.addressDetails.pincode}`,
+        doc.page.width / 2,
+      );
+
+      doc.moveDown(0.3);
+
+      doc.text(`Phone: ${order.addressDetails.phone}`, doc.page.width / 2);
+    } else if (order.address) {
+      doc
+        .fontSize(10)
+        .fillColor(textColor)
+        .font("Helvetica-Bold")
+        .text(`${order.address.name}`, doc.page.width / 2);
+
+      doc.moveDown(0.3);
+
+      doc
+        .font("Helvetica")
+        .text(`${order.address.address}`, doc.page.width / 2);
+
+      doc.moveDown(0.3);
+
+      doc.text(
+        `${order.address.city}, ${order.address.state} - ${order.address.pincode}`,
+        doc.page.width / 2,
+      );
+
+      doc.moveDown(0.3);
+
+      doc.text(`Phone: ${order.address.phone}`, doc.page.width / 2);
+    } else {
+      doc
+        .fontSize(10)
+        .fillColor(textColor)
+        .font("Helvetica-Bold")
+        .text(`${order.user.name || "Customer"}`, doc.page.width / 2);
+
+      doc.moveDown(0.3);
+
+      doc
+        .font("Helvetica")
+        .text(`Address information not available`, doc.page.width / 2);
+    }
+
+    doc.moveDown(3);
+
+    // Order Items section with clean table
+    doc
+      .fontSize(14)
+      .fillColor(primaryColor)
+      .font("Helvetica-Bold")
+      .text("ORDER ITEMS", 50);
+
+    doc.moveDown(1);
+
+    // Table header with background
+    const tableTop = doc.y;
+    doc.rect(50, tableTop, doc.page.width - 100, 25).fill(primaryColor);
+
+    doc
+      .fillColor("#FFFFFF")
+      .fontSize(10)
+      .font("Helvetica-Bold")
+      .text("PRODUCT", 70, tableTop + 8)
+      .text("QTY", 300, tableTop + 8, { width: 40, align: "center" })
+      .text("PRICE", 370, tableTop + 8, { width: 70, align: "right" })
+      .text("TOTAL", 470, tableTop + 8, { width: 70, align: "right" });
+
+    // Table rows
+    let tableRowY = tableTop + 30;
+    let alternateRow = false;
+
+    order.orderItems.forEach((item, i) => {
+      // Alternate row background for better readability
+      if (alternateRow) {
+        doc.rect(50, tableRowY - 5, doc.page.width - 100, 30).fill("#f9f9f9");
+      }
+      alternateRow = !alternateRow;
+
+      doc
+        .fillColor(textColor)
+        .fontSize(10)
+        .font("Helvetica")
+        .text(item.product.productName, 70, tableRowY, { width: 220 });
+
+      doc.text(item.quantity.toString(), 300, tableRowY, {
+        width: 40,
+        align: "center",
+      });
+      doc.text(`₹${item.price.toFixed(2)}`, 370, tableRowY, {
+        width: 70,
+        align: "right",
+      });
+      doc.text(`₹${(item.price * item.quantity).toFixed(2)}`, 470, tableRowY, {
+        width: 70,
+        align: "right",
+      });
+
+      tableRowY += 30;
+    });
+
+    // Add a line at the bottom of the table
+    doc
+      .strokeColor(lightGray)
+      .lineWidth(1)
+      .moveTo(50, tableRowY + 5)
+      .lineTo(doc.page.width - 50, tableRowY + 5)
+      .stroke();
+
+    // Order summary - right aligned
+    doc.moveDown(1.5);
+
+    // Summary table (right-aligned)
+    const summaryX = 350;
+    const summaryWidth = 170; // Fixed width to ensure proper containment
+
+    // Create a box for the summary section
+    doc
+      .strokeColor(lightGray)
+      .lineWidth(1)
+      .rect(summaryX - 10, doc.y - 5, summaryWidth + 20, 140)
+      .stroke();
+
+    // Add some padding inside the summary box
+    const summaryStartY = doc.y + 10;
+
+    // Summary header
+    doc
+      .fillColor(primaryColor)
+      .font("Helvetica-Bold")
+      .fontSize(12)
+      .text("ORDER SUMMARY", summaryX + 10, summaryStartY, {
+        width: summaryWidth,
+      });
+
+    doc.moveDown(1);
+
+    // Subtotal
+    doc
+      .fontSize(10)
+      .fillColor(textColor)
+      .font("Helvetica")
+      .text("Subtotal:", summaryX + 10, doc.y, { width: 80 })
+      .text(`₹${order.totalPrice.toFixed(2)}`, summaryX + 90, doc.y - 12, {
+        width: 70,
+        align: "right",
+      });
+
+    doc.moveDown(0.7);
+
+    // Shipping
+    doc
+      .text("Shipping:", summaryX + 10, doc.y, { width: 80 })
+      .text(`₹${order.shipping.toFixed(2)}`, summaryX + 90, doc.y - 12, {
+        width: 70,
+        align: "right",
+      });
+
+    // Discount if applicable
+    if (order.discount > 0) {
+      doc.moveDown(0.7);
+      doc
+        .fillColor("#48bb78")
+        .text("Discount:", summaryX + 10, doc.y, { width: 80 })
+        .text(`-₹${order.discount.toFixed(2)}`, summaryX + 90, doc.y - 12, {
+          width: 70,
+          align: "right",
+        });
+    }
+
+    // Divider line before total
+    doc.moveDown(0.7);
+    doc
+      .strokeColor(lightGray)
+      .lineWidth(1)
+      .moveTo(summaryX, doc.y)
+      .lineTo(summaryX + summaryWidth, doc.y)
+      .stroke();
+
+    doc.moveDown(0.7);
+
+    // Total with background
+    doc
+      .strokeColor(primaryColor)
+      .lineWidth(1)
+      .rect(summaryX, doc.y - 5, summaryWidth, 30)
+      .fill(primaryColor);
+
+    // Position text properly inside the total box
+    const totalTextY = doc.y + 7;
+
+    // Use a single text command with continued option to keep on same line
+    doc.fillColor("#FFFFFF").font("Helvetica-Bold").fontSize(12);
+
+    // Draw the label "TOTAL:" at the left side
+    doc.text("TOTAL:", summaryX + 10, totalTextY, { continued: true });
+
+    // Draw the amount at the right side (on the same line)
+    doc.text(`₹${order.finalAmount.toFixed(2)}`, {
+      align: "right",
+      width: summaryWidth - 20,
+    });
+
+    doc.moveDown(3);
+
+    // Footer
+    const footerY = doc.page.height - 80;
+
+    doc
+      .strokeColor(secondaryColor)
+      .lineWidth(2)
+      .moveTo(50, footerY)
+      .lineTo(doc.page.width - 50, footerY)
+      .stroke();
+
+    doc
+      .fontSize(10)
+      .fillColor(primaryColor)
+      .font("Helvetica-Bold")
+      .text("Thank you for shopping with REVIVO!", 50, footerY + 15, {
+        align: "center",
+      });
+
+    doc
+      .fontSize(8)
+      .fillColor(textColor)
+      .font("Helvetica")
+      .text(
+        "For any questions or concerns regarding this order, please contact our customer support.",
+        { align: "center" },
+      );
+
+    doc
+      .fontSize(8)
+      .fillColor(primaryColor)
+      .text("www.revivo.com | support@revivo.com | +91 9876543210", {
+        align: "center",
+      });
+
+    // End the document
     doc.end();
   } catch (err) {
     console.error("Error generating invoice:", err);
@@ -1749,16 +2203,21 @@ const applyCoupon = async (req, res) => {
     }
 
     // Calculate shipping charge
-    const totalQuantity = cart.items.reduce(
-      (sum, item) => sum + item.quantity,
-      0,
-    );
+    const totalQuantity = cart.items.reduce((sum, item) => {
+      // Ensure item.quantity is treated as a number
+      const quantity = parseInt(item.quantity, 10) || 0;
+      return sum + quantity;
+    }, 0);
+    console.log("Total quantity when applying coupon:", totalQuantity);
+
     const shipping =
       subtotal > 0
         ? subtotal > 1000
           ? 0
           : Math.max(40, 40 + Math.floor(totalQuantity / 3) * 10)
         : 0;
+
+    console.log("Calculated shipping charge:", shipping);
 
     let discountAmount = 0;
     if (coupon.discountType === "percentage") {
@@ -1788,10 +2247,14 @@ const applyCoupon = async (req, res) => {
       cart: {
         subtotal,
         discount: discountAmount,
-        shipping: shipping,
+        shipping, // Ensure this is the correct shipping value
         total: subtotal + shipping - discountAmount,
         couponCode: coupon.code,
         couponId: coupon._id,
+        debug: {
+          totalQuantity,
+          calculatedShipping: shipping,
+        },
       },
     });
   } catch (error) {
@@ -1842,16 +2305,21 @@ const removeCoupon = async (req, res) => {
       subtotal = items.reduce((sum, item) => sum + item.totalPrice, 0);
     }
     // Calculate shipping charge - base charge of ₹40 with additional charges based on total quantity
-    const totalQuantity = cart.items.reduce(
-      (sum, item) => sum + item.quantity,
-      0,
-    );
+    const totalQuantity = cart.items.reduce((sum, item) => {
+      // Ensure item.quantity is treated as a number
+      const quantity = parseInt(item.quantity, 10) || 0;
+      return sum + quantity;
+    }, 0);
+    console.log("Total quantity when removing coupon:", totalQuantity);
+
     const shipping =
       subtotal > 0
         ? subtotal > 1000
           ? 0
           : Math.max(40, 40 + Math.floor(totalQuantity / 3) * 10)
         : 0;
+
+    console.log("Calculated shipping charge when removing coupon:", shipping);
 
     let total = subtotal + shipping;
 
@@ -1931,6 +2399,7 @@ const createRazorpayOrder = async (req, res) => {
       const productOffer = product.productOffer || 0;
       const categoryOffer = product.category?.categoryOffer || 0;
       const bestOfferPercentage = Math.max(productOffer, categoryOffer);
+
       let finalPrice = product.salesPrice;
       if (bestOfferPercentage > 0) {
         const offerAmount = product.salesPrice * (bestOfferPercentage / 100);
