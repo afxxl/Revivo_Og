@@ -38,8 +38,8 @@ const shopPage = async (req, res) => {
       maxPrice: req.query.maxPrice ? parseFloat(req.query.maxPrice) : undefined,
       heritage: req.query.heritage,
       status: req.query.status || "Available",
-      sort: req.query.sort || "", // Add sort filter
-      search: req.query.search || "", // Add search filter
+      sort: req.query.sort || "",
+      search: req.query.search || "",
     };
 
     const categories = await Category.find({ isListed: true }).lean();
@@ -101,7 +101,7 @@ const shopPage = async (req, res) => {
         path: "brand",
         match: { isActive: true },
       })
-      .sort(sortOption) // Apply sorting
+      .sort(sortOption)
       .skip(skip)
       .limit(perPage)
       .lean();
@@ -138,8 +138,8 @@ const loadBrandPage = async (req, res) => {
       minPrice: req.query.minPrice ? parseFloat(req.query.minPrice) : undefined,
       maxPrice: req.query.maxPrice ? parseFloat(req.query.maxPrice) : undefined,
       status: req.query.status || "Available",
-      sort: req.query.sort || "", // Add sort filter
-      search: req.query.search || "", // Add search filter
+      sort: req.query.sort || "",
+      search: req.query.search || "",
     };
 
     const categories = await Category.find({ isListed: true }).lean();
@@ -164,12 +164,9 @@ const loadBrandPage = async (req, res) => {
       if (filters.maxPrice) query.salesPrice.$lte = filters.maxPrice;
     }
 
-    // Add search functionality
     if (filters.search) {
-      // Create a case-insensitive search regex
       const searchRegex = new RegExp(filters.search, "i");
 
-      // Search in product name, description, and brand name
       query.$or = [
         { productName: searchRegex },
         { description: searchRegex },
@@ -183,14 +180,13 @@ const loadBrandPage = async (req, res) => {
     });
     const totalPages = Math.ceil(totalProducts / perPage);
 
-    // Define sort options
     let sortOption = {};
     if (filters.sort === "low-to-high") {
-      sortOption = { salesPrice: 1 }; // Ascending (low to high)
+      sortOption = { salesPrice: 1 };
     } else if (filters.sort === "high-to-low") {
-      sortOption = { salesPrice: -1 }; // Descending (high to low)
+      sortOption = { salesPrice: -1 };
     } else {
-      sortOption = {}; // Default no specific sorting (natural order)
+      sortOption = {};
     }
 
     const products = await Product.find(query)
@@ -198,7 +194,7 @@ const loadBrandPage = async (req, res) => {
         path: "category",
         match: { isListed: true },
       })
-      .sort(sortOption) // Apply sorting
+      .sort(sortOption)
       .skip(skip)
       .limit(perPage)
       .lean();
@@ -221,8 +217,6 @@ const loadBrandPage = async (req, res) => {
   }
 };
 
-//heritage
-
 const loadPrimeLayers = async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
@@ -235,8 +229,8 @@ const loadPrimeLayers = async (req, res) => {
       minPrice: req.query.minPrice ? parseFloat(req.query.minPrice) : undefined,
       maxPrice: req.query.maxPrice ? parseFloat(req.query.maxPrice) : undefined,
       status: req.query.status || "Available",
-      sort: req.query.sort || "", // Add sort filter
-      search: req.query.search || "", // Add search filter
+      sort: req.query.sort || "",
+      search: req.query.search || "",
     };
 
     const categories = await Category.find({ isListed: true }).lean();
@@ -259,12 +253,9 @@ const loadPrimeLayers = async (req, res) => {
       if (filters.maxPrice) query.salesPrice.$lte = filters.maxPrice;
     }
 
-    // Add search functionality
     if (filters.search) {
-      // Create a case-insensitive search regex
       const searchRegex = new RegExp(filters.search, "i");
 
-      // Search in product name, description, and brand name
       query.$or = [
         { productName: searchRegex },
         { description: searchRegex },
@@ -278,14 +269,13 @@ const loadPrimeLayers = async (req, res) => {
     });
     const totalPages = Math.ceil(totalProducts / perPage);
 
-    // Define sort options
     let sortOption = {};
     if (filters.sort === "low-to-high") {
-      sortOption = { salesPrice: 1 }; // Ascending (low to high)
+      sortOption = { salesPrice: 1 };
     } else if (filters.sort === "high-to-low") {
-      sortOption = { salesPrice: -1 }; // Descending (high to low)
+      sortOption = { salesPrice: -1 };
     } else {
-      sortOption = {}; // Default no specific sorting (natural order)
+      sortOption = {};
     }
 
     const products = await Product.find(query)
@@ -297,7 +287,7 @@ const loadPrimeLayers = async (req, res) => {
         path: "brand",
         match: { isActive: true },
       })
-      .sort(sortOption) // Apply sorting
+      .sort(sortOption)
       .skip(skip)
       .limit(perPage)
       .lean();
@@ -331,8 +321,8 @@ const loadVintageAthletics = async (req, res) => {
       minPrice: req.query.minPrice ? parseFloat(req.query.minPrice) : undefined,
       maxPrice: req.query.maxPrice ? parseFloat(req.query.maxPrice) : undefined,
       status: req.query.status || "Available",
-      sort: req.query.sort || "", // Add sort filter
-      search: req.query.search || "", // Add search filter
+      sort: req.query.sort || "",
+      search: req.query.search || "",
     };
 
     const categories = await Category.find({ isListed: true }).lean();
@@ -355,12 +345,9 @@ const loadVintageAthletics = async (req, res) => {
       if (filters.maxPrice) query.salesPrice.$lte = filters.maxPrice;
     }
 
-    // Add search functionality
     if (filters.search) {
-      // Create a case-insensitive search regex
       const searchRegex = new RegExp(filters.search, "i");
 
-      // Search in product name, description, and brand name
       query.$or = [
         { productName: searchRegex },
         { description: searchRegex },
@@ -374,14 +361,13 @@ const loadVintageAthletics = async (req, res) => {
     });
     const totalPages = Math.ceil(totalProducts / perPage);
 
-    // Define sort options
     let sortOption = {};
     if (filters.sort === "low-to-high") {
-      sortOption = { salesPrice: 1 }; // Ascending (low to high)
+      sortOption = { salesPrice: 1 };
     } else if (filters.sort === "high-to-low") {
-      sortOption = { salesPrice: -1 }; // Descending (high to low)
+      sortOption = { salesPrice: -1 };
     } else {
-      sortOption = {}; // Default no specific sorting (natural order)
+      sortOption = {};
     }
 
     const products = await Product.find(query)
@@ -393,7 +379,7 @@ const loadVintageAthletics = async (req, res) => {
         path: "brand",
         match: { isActive: true },
       })
-      .sort(sortOption) // Apply sorting
+      .sort(sortOption)
       .skip(skip)
       .limit(perPage)
       .lean();
@@ -427,8 +413,8 @@ const loadY2kEssentials = async (req, res) => {
       minPrice: req.query.minPrice ? parseFloat(req.query.minPrice) : undefined,
       maxPrice: req.query.maxPrice ? parseFloat(req.query.maxPrice) : undefined,
       status: req.query.status || "Available",
-      sort: req.query.sort || "", // Add sort filter
-      search: req.query.search || "", // Add search filter
+      sort: req.query.sort || "",
+      search: req.query.search || "",
     };
 
     const categories = await Category.find({ isListed: true }).lean();
@@ -451,12 +437,9 @@ const loadY2kEssentials = async (req, res) => {
       if (filters.maxPrice) query.salesPrice.$lte = filters.maxPrice;
     }
 
-    // Add search functionality
     if (filters.search) {
-      // Create a case-insensitive search regex
       const searchRegex = new RegExp(filters.search, "i");
 
-      // Search in product name, description, and brand name
       query.$or = [
         { productName: searchRegex },
         { description: searchRegex },
@@ -470,14 +453,13 @@ const loadY2kEssentials = async (req, res) => {
     });
     const totalPages = Math.ceil(totalProducts / perPage);
 
-    // Define sort options
     let sortOption = {};
     if (filters.sort === "low-to-high") {
-      sortOption = { salesPrice: 1 }; // Ascending (low to high)
+      sortOption = { salesPrice: 1 };
     } else if (filters.sort === "high-to-low") {
-      sortOption = { salesPrice: -1 }; // Descending (high to low)
+      sortOption = { salesPrice: -1 };
     } else {
-      sortOption = {}; // Default no specific sorting (natural order)
+      sortOption = {};
     }
 
     const products = await Product.find(query)
@@ -489,7 +471,7 @@ const loadY2kEssentials = async (req, res) => {
         path: "brand",
         match: { isActive: true },
       })
-      .sort(sortOption) // Apply sorting
+      .sort(sortOption)
       .skip(skip)
       .limit(perPage)
       .lean();
@@ -750,9 +732,7 @@ const loadCartPage = async (req, res) => {
       (sum, item) => sum + item.totalPrice,
       0,
     );
-    // Calculate shipping charge - base charge of ₹40 with additional charges based on total quantity
     const totalQuantity = cart.items.reduce((sum, item) => {
-      // Ensure item.quantity is treated as a number
       const quantity = parseInt(item.quantity, 10) || 0;
       return sum + quantity;
     }, 0);
@@ -872,7 +852,6 @@ const removeFromCart = async (req, res) => {
 
     const subtotal = cart.items.reduce((sum, item) => sum + item.totalPrice, 0);
 
-    // Check if applied coupon is still valid
     let couponRemoved = false;
     let couponMessage = null;
 
@@ -892,14 +871,12 @@ const removeFromCart = async (req, res) => {
           (usage) => usage.user.toString() === userId.toString(),
         )
       ) {
-        // Coupon is no longer valid, remove it from session
         delete req.session.appliedCoupon;
         couponRemoved = true;
         couponMessage = "Coupon removed as it is no longer valid.";
       }
     }
 
-    // Calculate shipping charge - base charge of ₹40 with additional charges based on total quantity
     const totalQuantity = cart.items.reduce(
       (sum, item) => sum + item.quantity,
       0,
@@ -921,8 +898,8 @@ const removeFromCart = async (req, res) => {
         total,
       },
       cartCount,
-      couponRemoved, // Indicate if coupon was removed
-      couponMessage, // Message to display
+      couponRemoved,
+      couponMessage,
     });
   } catch (err) {
     console.log("Error removing from cart:", err);
@@ -973,7 +950,6 @@ const loadCheckoutPage = async (req, res) => {
     }
 
     const subtotal = cart.items.reduce((sum, item) => sum + item.totalPrice, 0);
-    // Calculate shipping charge - base charge of ₹40 with additional charges based on total quantity
     const totalQuantity = cart.items.reduce(
       (sum, item) => sum + item.quantity,
       0,
@@ -988,7 +964,6 @@ const loadCheckoutPage = async (req, res) => {
     let appliedCoupon = null;
     let discount = 0;
 
-    // Validate session coupon
     if (req.session.appliedCoupon) {
       const sessionCoupon = await Coupon.findById(
         req.session.appliedCoupon.couponId,
@@ -1025,7 +1000,6 @@ const loadCheckoutPage = async (req, res) => {
           discountAmount: sessionCoupon.discountAmount,
         };
       } else {
-        // Clear invalid or used coupon from session
         delete req.session.appliedCoupon;
       }
     }
@@ -1036,7 +1010,6 @@ const loadCheckoutPage = async (req, res) => {
     const wallet = await Wallet.findOne({ userId });
     const walletBalance = wallet ? wallet.balance : 0;
 
-    // Determine if COD is available (total <= 1000)
     const isCODAvailable = total <= 1000;
 
     res.render("checkout", {
@@ -1048,7 +1021,7 @@ const loadCheckoutPage = async (req, res) => {
       total,
       appliedCoupon,
       walletBalance,
-      isCODAvailable, // Pass the COD availability flag to the template
+      isCODAvailable,
     });
   } catch (err) {
     console.error("Error loading checkout:", err);
@@ -1139,7 +1112,6 @@ const createOrder = async (req, res) => {
       item.totalPrice = item.quantity * finalPrice;
       subtotal += item.totalPrice;
     }
-    // Calculate shipping charge - base charge of ₹40 with additional charges based on total quantity
     const totalQuantity = cart.items.reduce(
       (sum, item) => sum + item.quantity,
       0,
@@ -1184,14 +1156,12 @@ const createOrder = async (req, res) => {
         sessionCoupon.usedBy.push({ user: userId, usedAt: new Date() });
         await sessionCoupon.save({ session });
       } else {
-        // Clear invalid coupon
         delete req.session.appliedCoupon;
       }
     }
 
     const finalAmount = subtotal + shipping - discount;
 
-    // Validate COD eligibility
     if (paymentMethod === "COD" && finalAmount > 1000) {
       await session.abortTransaction();
       session.endSession();
@@ -1300,7 +1270,6 @@ const createOrder = async (req, res) => {
       paymentMethod: paymentMethod,
       status: paymentMethod === "RAZORPAY" ? "Confirmed" : "Pending",
     });
-    // Update product stock
     for (const item of cart.items) {
       await Product.updateOne(
         { _id: item.productId._id },
@@ -1311,7 +1280,6 @@ const createOrder = async (req, res) => {
     await order.save({ session });
     await User.findByIdAndUpdate(userId, { $set: { cart: [] } });
     await Cart.deleteOne({ userId });
-    // Clear applied coupon from session after successful order
     delete req.session.appliedCoupon;
     await session.commitTransaction();
     session.endSession();
@@ -1635,13 +1603,11 @@ const generateInvoice = async (req, res) => {
       });
     }
 
-    // Create a new PDF document
     const doc = new PDFDocument({
       margin: 50,
       size: "A4",
     });
 
-    // Set response headers
     res.setHeader("Content-Type", "application/pdf");
     res.setHeader(
       "Content-Disposition",
@@ -1650,13 +1616,11 @@ const generateInvoice = async (req, res) => {
 
     doc.pipe(res);
 
-    // Define colors
     const primaryColor = "#2C2C2C";
     const secondaryColor = "#f8c78d";
     const textColor = "#333333";
     const lightGray = "#e0e0e0";
 
-    // Add logo and header
     doc
       .fontSize(28)
       .fillColor(primaryColor)
@@ -1671,7 +1635,6 @@ const generateInvoice = async (req, res) => {
 
     doc.moveDown(1);
 
-    // Add horizontal line
     doc
       .strokeColor(secondaryColor)
       .lineWidth(3)
@@ -1681,10 +1644,8 @@ const generateInvoice = async (req, res) => {
 
     doc.moveDown(1.5);
 
-    // Two-column layout for invoice details and company info
     const colWidth = (doc.page.width - 100) / 2;
 
-    // Left column - Invoice details
     doc
       .fontSize(16)
       .fillColor(primaryColor)
@@ -1716,7 +1677,6 @@ const generateInvoice = async (req, res) => {
 
     doc.moveDown(0.3);
 
-    // Status with color coding
     let statusColor = primaryColor;
     if (order.status === "Delivered") statusColor = "#48bb78";
     if (order.status === "Returned") statusColor = "#e53e3e";
@@ -1726,7 +1686,6 @@ const generateInvoice = async (req, res) => {
       .font("Helvetica-Bold")
       .text(`Status: ${order.status}`, 50);
 
-    // Right column - Company info
     doc
       .fontSize(10)
       .fillColor(textColor)
@@ -1764,14 +1723,12 @@ const generateInvoice = async (req, res) => {
 
     doc.moveDown(2);
 
-    // Customer and Shipping Information in two columns
     doc
       .strokeColor(lightGray)
       .lineWidth(1)
       .rect(50, doc.y, doc.page.width - 100, 120)
       .stroke();
 
-    // Left column - Customer Info
     doc
       .fontSize(12)
       .fillColor(primaryColor)
@@ -1796,7 +1753,6 @@ const generateInvoice = async (req, res) => {
 
     doc.text(`Phone: ${order.user.phone || "Not available"}`, 70);
 
-    // Right column - Shipping Info
     doc
       .fontSize(12)
       .fillColor(primaryColor)
@@ -1805,7 +1761,6 @@ const generateInvoice = async (req, res) => {
 
     doc.moveDown(0.5);
 
-    // Use addressDetails if available, otherwise fall back to address
     if (order.addressDetails) {
       doc
         .fontSize(10)
@@ -1868,7 +1823,6 @@ const generateInvoice = async (req, res) => {
 
     doc.moveDown(3);
 
-    // Order Items section with clean table
     doc
       .fontSize(14)
       .fillColor(primaryColor)
@@ -1877,7 +1831,6 @@ const generateInvoice = async (req, res) => {
 
     doc.moveDown(1);
 
-    // Table header with background
     const tableTop = doc.y;
     doc.rect(50, tableTop, doc.page.width - 100, 25).fill(primaryColor);
 
@@ -1890,12 +1843,10 @@ const generateInvoice = async (req, res) => {
       .text("PRICE", 370, tableTop + 8, { width: 70, align: "right" })
       .text("TOTAL", 470, tableTop + 8, { width: 70, align: "right" });
 
-    // Table rows
     let tableRowY = tableTop + 30;
     let alternateRow = false;
 
     order.orderItems.forEach((item, i) => {
-      // Alternate row background for better readability
       if (alternateRow) {
         doc.rect(50, tableRowY - 5, doc.page.width - 100, 30).fill("#f9f9f9");
       }
@@ -1923,7 +1874,6 @@ const generateInvoice = async (req, res) => {
       tableRowY += 30;
     });
 
-    // Add a line at the bottom of the table
     doc
       .strokeColor(lightGray)
       .lineWidth(1)
@@ -1931,24 +1881,19 @@ const generateInvoice = async (req, res) => {
       .lineTo(doc.page.width - 50, tableRowY + 5)
       .stroke();
 
-    // Order summary - right aligned
     doc.moveDown(1.5);
 
-    // Summary table (right-aligned)
     const summaryX = 350;
-    const summaryWidth = 170; // Fixed width to ensure proper containment
+    const summaryWidth = 170;
 
-    // Create a box for the summary section
     doc
       .strokeColor(lightGray)
       .lineWidth(1)
       .rect(summaryX - 10, doc.y - 5, summaryWidth + 20, 140)
       .stroke();
 
-    // Add some padding inside the summary box
     const summaryStartY = doc.y + 10;
 
-    // Summary header
     doc
       .fillColor(primaryColor)
       .font("Helvetica-Bold")
@@ -1959,7 +1904,6 @@ const generateInvoice = async (req, res) => {
 
     doc.moveDown(1);
 
-    // Subtotal
     doc
       .fontSize(10)
       .fillColor(textColor)
@@ -1972,7 +1916,6 @@ const generateInvoice = async (req, res) => {
 
     doc.moveDown(0.7);
 
-    // Shipping
     doc
       .text("Shipping:", summaryX + 10, doc.y, { width: 80 })
       .text(`₹${order.shipping.toFixed(2)}`, summaryX + 90, doc.y - 12, {
@@ -1980,7 +1923,6 @@ const generateInvoice = async (req, res) => {
         align: "right",
       });
 
-    // Discount if applicable
     if (order.discount > 0) {
       doc.moveDown(0.7);
       doc
@@ -1992,7 +1934,6 @@ const generateInvoice = async (req, res) => {
         });
     }
 
-    // Divider line before total
     doc.moveDown(0.7);
     doc
       .strokeColor(lightGray)
@@ -2003,23 +1944,18 @@ const generateInvoice = async (req, res) => {
 
     doc.moveDown(0.7);
 
-    // Total with background
     doc
       .strokeColor(primaryColor)
       .lineWidth(1)
       .rect(summaryX, doc.y - 5, summaryWidth, 30)
       .fill(primaryColor);
 
-    // Position text properly inside the total box
     const totalTextY = doc.y + 7;
 
-    // Use a single text command with continued option to keep on same line
     doc.fillColor("#FFFFFF").font("Helvetica-Bold").fontSize(12);
 
-    // Draw the label "TOTAL:" at the left side
     doc.text("TOTAL:", summaryX + 10, totalTextY, { continued: true });
 
-    // Draw the amount at the right side (on the same line)
     doc.text(`₹${order.finalAmount.toFixed(2)}`, {
       align: "right",
       width: summaryWidth - 20,
@@ -2027,7 +1963,6 @@ const generateInvoice = async (req, res) => {
 
     doc.moveDown(3);
 
-    // Footer
     const footerY = doc.page.height - 80;
 
     doc
@@ -2061,7 +1996,6 @@ const generateInvoice = async (req, res) => {
         align: "center",
       });
 
-    // End the document
     doc.end();
   } catch (err) {
     console.error("Error generating invoice:", err);
@@ -2112,7 +2046,6 @@ const getDynamicCoupons = async (req, res) => {
       });
     }
 
-    // Fetch the user's cart to calculate subtotal
     const cart = await Cart.findOne({ userId }).populate({
       path: "items.productId",
       populate: [{ path: "brand" }, { path: "category" }],
@@ -2123,7 +2056,6 @@ const getDynamicCoupons = async (req, res) => {
       subtotal = cart.items.reduce((sum, item) => sum + item.totalPrice, 0);
     }
 
-    // Fetch available coupons
     const availableCoupons = await getAvailableCoupons(userId, subtotal);
 
     res.status(200).json({
@@ -2202,9 +2134,7 @@ const applyCoupon = async (req, res) => {
       });
     }
 
-    // Calculate shipping charge
     const totalQuantity = cart.items.reduce((sum, item) => {
-      // Ensure item.quantity is treated as a number
       const quantity = parseInt(item.quantity, 10) || 0;
       return sum + quantity;
     }, 0);
@@ -2231,10 +2161,8 @@ const applyCoupon = async (req, res) => {
 
     discountAmount = Math.min(discountAmount, subtotal);
 
-    // Clear any existing invalid coupon
     delete req.session.appliedCoupon;
 
-    // Set the new coupon in session
     req.session.appliedCoupon = {
       couponId: coupon._id,
       code: coupon.code,
@@ -2247,7 +2175,7 @@ const applyCoupon = async (req, res) => {
       cart: {
         subtotal,
         discount: discountAmount,
-        shipping, // Ensure this is the correct shipping value
+        shipping,
         total: subtotal + shipping - discountAmount,
         couponCode: coupon.code,
         couponId: coupon._id,
@@ -2304,9 +2232,7 @@ const removeCoupon = async (req, res) => {
       });
       subtotal = items.reduce((sum, item) => sum + item.totalPrice, 0);
     }
-    // Calculate shipping charge - base charge of ₹40 with additional charges based on total quantity
     const totalQuantity = cart.items.reduce((sum, item) => {
-      // Ensure item.quantity is treated as a number
       const quantity = parseInt(item.quantity, 10) || 0;
       return sum + quantity;
     }, 0);
@@ -2323,7 +2249,6 @@ const removeCoupon = async (req, res) => {
 
     let total = subtotal + shipping;
 
-    // Update cart if items were filtered
     if (cart && items.length !== cart.items.length) {
       cart.items = items;
       await cart.save();
@@ -2407,7 +2332,6 @@ const createRazorpayOrder = async (req, res) => {
       }
       subtotal += item.quantity * finalPrice;
     }
-    // Calculate shipping charge - base charge of ₹40 with additional charges based on total quantity
     const totalQuantity = cart.items.reduce(
       (sum, item) => sum + item.quantity,
       0,

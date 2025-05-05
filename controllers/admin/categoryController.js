@@ -219,7 +219,6 @@ const updateCategoryOffer = async (req, res) => {
     const categoryId = req.params.id;
     const { categoryOffer } = req.body;
 
-    // Validate offer percentage
     if (categoryOffer !== undefined) {
       if (isNaN(categoryOffer) || categoryOffer < 0 || categoryOffer > 100) {
         return res.status(400).json({

@@ -105,7 +105,6 @@ const loadSalesReport = async (req, res) => {
       const now = new Date();
       const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 
-      // Helper function to generate date range
       const generateDateRange = (start, end, format) => {
         const dates = [];
         let currentDate = new Date(start);
@@ -127,7 +126,6 @@ const loadSalesReport = async (req, res) => {
         return dates;
       };
 
-      // Set date filter and generate date range
       if (filter === "custom" && startDate && endDate) {
         const start = new Date(startDate);
         const end = new Date(endDate);
@@ -239,7 +237,6 @@ const loadSalesReport = async (req, res) => {
         { $limit: 5 },
       ]);
 
-      // Get top 5 products by sales
       const topProducts = await Order.aggregate([
         { $match: { status: "Delivered", ...dateFilter } },
         { $unwind: "$orderItems" },
@@ -264,7 +261,6 @@ const loadSalesReport = async (req, res) => {
         { $limit: 5 },
       ]);
 
-      // Get top 5 brands by sales
       const topBrands = await Order.aggregate([
         { $match: { status: "Delivered", ...dateFilter } },
         { $unwind: "$orderItems" },
@@ -376,7 +372,6 @@ const exportDashboardData = async (req, res) => {
 
     const { filter = "daily", startDate, endDate, format = "pdf" } = req.query;
 
-    // Validate custom date filter
     if (filter === "custom" && (!startDate || !endDate)) {
       return res.status(400).json({
         success: false,
@@ -388,7 +383,6 @@ const exportDashboardData = async (req, res) => {
     const now = new Date();
     const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 
-    // Date filter configuration
     switch (filter) {
       case "custom":
         const start = new Date(startDate);
@@ -404,14 +398,13 @@ const exportDashboardData = async (req, res) => {
         startOfWeek.setDate(today.getDate() - today.getDay());
         dateFilter = { createdOn: { $gte: startOfWeek } };
         break;
-      default: // daily
+      default:
         const startOfDay = new Date(today);
         const endOfDay = new Date(today);
         endOfDay.setHours(23, 59, 59, 999);
         dateFilter = { createdOn: { $gte: startOfDay, $lte: endOfDay } };
     }
 
-    // Generate date range text
     let dateRangeText;
     switch (filter) {
       case "custom":
@@ -427,7 +420,6 @@ const exportDashboardData = async (req, res) => {
         dateRangeText = moment().format("MMM D, YYYY");
     }
 
-    // Fetch orders
     const orders = await Order.find({
       ...dateFilter,
       status: "Delivered",
@@ -436,7 +428,6 @@ const exportDashboardData = async (req, res) => {
       .sort({ createdOn: -1 })
       .lean();
 
-    // Calculate totals with fallbacks
     const totalRevenue = orders.reduce(
       (sum, order) => sum + (order.finalAmount || 0),
       0,
@@ -451,7 +442,6 @@ const exportDashboardData = async (req, res) => {
       const workbook = new excel.Workbook();
       const worksheet = workbook.addWorksheet("Sales Report");
 
-      // Excel formatting
       worksheet.columns = [
         { header: "Order ID", key: "orderId", width: 20 },
         { header: "Customer", key: "customer", width: 25 },
@@ -501,7 +491,6 @@ const exportDashboardData = async (req, res) => {
         });
       }
 
-      // Set response headers
       res.setHeader(
         "Content-Type",
         "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
@@ -521,7 +510,6 @@ const exportDashboardData = async (req, res) => {
         margins: { top: 40, bottom: 40, left: 50, right: 50 },
       });
 
-      // PDF error handling
       doc.on("error", (err) => {
         console.error("PDF stream error:", err);
         if (!res.headersSent) {
@@ -532,7 +520,6 @@ const exportDashboardData = async (req, res) => {
         }
       });
 
-      // PDF headers
       res.setHeader("Content-Type", "application/pdf");
       res.setHeader(
         "Content-Disposition",
@@ -541,7 +528,6 @@ const exportDashboardData = async (req, res) => {
 
       doc.pipe(res);
 
-      // Register Google Fonts
       try {
         doc.registerFont(
           "HennyPenny-Regular",
@@ -563,8 +549,6 @@ const exportDashboardData = async (req, res) => {
         doc.registerFont("DancingScript-Regular", "Times-Roman");
       }
 
-      // PDF content
-      // Header Section
       doc
         .fillColor("#10b981")
         .font("HennyPenny-Regular", 28)
@@ -574,12 +558,10 @@ const exportDashboardData = async (req, res) => {
         .text("Sales Report", 50, 70, { align: "center" })
         .moveDown(0.5);
 
-      // Gradient Header Background
       const gradient = doc.linearGradient(50, 100, 550, 100);
       gradient.stop(0, "#10b981").stop(1, "#059669");
       doc.rect(50, 100, 500, 40).fill(gradient);
 
-      // Report Metadata
       doc
         .font("Helvetica", 10)
         .fillColor("#ffffff")
@@ -587,7 +569,6 @@ const exportDashboardData = async (req, res) => {
         .text(`Period: ${dateRangeText}`, 60, 125)
         .moveDown(1);
 
-      // Summary Section
       doc
         .font("Helvetica-Bold", 12)
         .fillColor("#2C2C2C")
@@ -610,7 +591,6 @@ const exportDashboardData = async (req, res) => {
           )
           .moveDown(2);
 
-        // Table Setup
         const tableConfig = {
           startY: 260,
           columns: [
@@ -634,7 +614,6 @@ const exportDashboardData = async (req, res) => {
           }),
         };
 
-        // Draw Table Header
         let yPosition = tableConfig.startY;
         doc
           .rect(50, yPosition - 10, 520, 25)
@@ -651,14 +630,12 @@ const exportDashboardData = async (req, res) => {
           });
         });
 
-        // Draw Table Rows
         doc.font("Helvetica", 9).fillColor("#2C2C2C");
         tableConfig.rows.forEach((row, rowIndex) => {
           yPosition += 25;
           if (yPosition > 720) {
             doc.addPage();
             yPosition = 50;
-            // Redraw header on new page
             doc
               .rect(50, yPosition - 10, 520, 25)
               .fillColor("#10b981")
@@ -678,7 +655,6 @@ const exportDashboardData = async (req, res) => {
             yPosition += 25;
           }
 
-          // Alternating row background
           if (rowIndex % 2 === 0) {
             doc
               .rect(50, yPosition - 10, 520, 25)
@@ -686,7 +662,6 @@ const exportDashboardData = async (req, res) => {
               .fill();
           }
 
-          // Row content
           doc.fillColor("#2C2C2C");
           row.forEach((cell, cellIndex) => {
             const xPosition =
@@ -711,7 +686,6 @@ const exportDashboardData = async (req, res) => {
           .moveDown(2);
       }
 
-      // Footer with Branding
       doc
         .font("DancingScript-Regular", 12)
         .fillColor("#10b981")
@@ -719,7 +693,6 @@ const exportDashboardData = async (req, res) => {
           align: "center",
         });
 
-      // Subtle Watermark
       doc
         .font("HennyPenny-Regular", 40)
         .fillColor("#10b981")

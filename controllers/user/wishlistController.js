@@ -155,7 +155,6 @@ const addToWishlist = async (req, res) => {
       });
     }
 
-    // Check product availability
     if (!product.isListed) {
       return res.status(400).json({
         success: false,

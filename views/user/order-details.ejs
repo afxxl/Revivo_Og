@@ -680,7 +680,6 @@
         }
       }).then((result) => {
         if (result.isConfirmed && result.value) {
-          // Call directly with the reason from SweetAlert
           fetch(`/orders/${orderId}/request-return`, {
             method: 'POST',
             headers: {

@@ -407,12 +407,10 @@
 <script>
 
 document.addEventListener('DOMContentLoaded', function() {
-  // Exit early if cart is empty
   if (document.querySelector('.empty-cart-message')) {
     return;
   }
 
-  // Validate applied coupon on page load
   async function validateAppliedCoupon() {
     const appliedCouponInput = document.getElementById('coupon-code');
     if (appliedCouponInput && appliedCouponInput.value) {
@@ -448,7 +446,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
   validateAppliedCoupon();
 
-  // Debounce utility function
   function debounce(func, wait) {
     let timeout;
     return function (...args) {
@@ -459,7 +456,6 @@ document.addEventListener('DOMContentLoaded', function() {
     };
   }
 
-  // Spinner management
   function manageSpinner(element, show) {
     const existingSpinner = element.parentNode.querySelector('.spinner-border');
     if (show) {
@@ -499,7 +495,6 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
 
-  // Update the coupons UI
   function updateCouponsUI(coupons) {
     const couponsContainer = document.querySelector('.space-y-3.max-h-48.overflow-y-auto.pr-1');
     if (!couponsContainer) return;
@@ -541,7 +536,6 @@ document.addEventListener('DOMContentLoaded', function() {
       couponsContainer.appendChild(couponDiv);
     });
 
-    // Re-attach event listeners for "Use" buttons
     document.querySelectorAll('.use-coupon-btn').forEach(btn => {
       btn.addEventListener('click', function() {
         if (this.disabled) return;
@@ -554,14 +548,12 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 
-  // Calculate shipping based on total quantity
   function calculateShipping(items) {
     const totalQuantity = items.reduce((sum, item) => sum + item.quantity, 0);
     const subtotal = items.reduce((sum, item) => sum + item.totalPrice, 0);
     return subtotal > 1000 ? 0 : Math.max(40, 40 + Math.floor(totalQuantity / 3) * 10);
   }
 
-  // Update cart
   const updateCart = debounce(async function(productId, newQuantity) {
     const input = document.querySelector(`.quantity-input[data-product-id="${productId}"]`);
     if (!input) return;
@@ -607,14 +599,12 @@ document.addEventListener('DOMContentLoaded', function() {
         const totalEl = document.querySelector('.total-display');
         const totalSavingsEl = document.querySelector('.total-savings-display');
 
-        // Calculate the new shipping cost based on the remaining items
         const remainingItems = data.cart.items || [];
         const shippingCost = calculateShipping(remainingItems);
         
         if (subtotalEl) subtotalEl.textContent = `₹${data.cart.subtotal.toFixed(2)}`;
         if (shippingEl) shippingEl.textContent = `₹${shippingCost.toFixed(2)}`;
         
-        // Calculate the new total with the updated shipping cost
         const newTotal = data.cart.subtotal + shippingCost - (data.cart.discount || 0);
         if (totalEl) totalEl.textContent = `₹${newTotal.toFixed(2)}`;
         
@@ -650,13 +640,11 @@ document.addEventListener('DOMContentLoaded', function() {
         input.defaultValue = newQuantity;
         showToast('Cart updated successfully', 'success');
 
-        // Check if a coupon is applied and reapply it
         const couponInput = document.getElementById('coupon-code');
         if (couponInput && couponInput.value && couponInput.disabled) {
-          await applyCoupon(); // Reapply the coupon to update the discount
+          await applyCoupon(); 
         }
 
-        // Fetch and update available coupons
         await fetchAndUpdateCoupons();
       } else {
         input.value = input.defaultValue;
@@ -672,7 +660,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   }, 500);
 
-  // Quantity buttons
   document.querySelectorAll('.increase-btn, .decrease-btn').forEach(btn => {
     btn.addEventListener('click', function() {
       if (this.disabled) return;
@@ -701,7 +688,6 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   });
 
-  // Quantity input
   document.querySelectorAll('.quantity-input').forEach(input => {
     input.defaultValue = input.value;
     const currentMax = parseInt(input.max);
@@ -733,7 +719,6 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   });
 
-  // Remove item
   document.querySelectorAll('.remove-btn').forEach(btn => {
     btn.addEventListener('click', function() {
       const productId = this.getAttribute('data-product-id');
@@ -778,14 +763,12 @@ document.addEventListener('DOMContentLoaded', function() {
         const totalEl = document.querySelector('.total-display');
         const totalSavingsEl = document.querySelector('.total-savings-display');
 
-        // Calculate the new shipping cost based on the remaining items
         const remainingItems = data.cart.items || [];
         const shippingCost = calculateShipping(remainingItems);
         
         if (subtotalEl) subtotalEl.textContent = `₹${data.cart.subtotal.toFixed(2)}`;
         if (shippingEl) shippingEl.textContent = `₹${shippingCost.toFixed(2)}`;
         
-        // Calculate the new total with the updated shipping cost
         const newTotal = data.cart.subtotal + shippingCost - (data.cart.discount || 0);
         if (totalEl) totalEl.textContent = `₹${newTotal.toFixed(2)}`;
         
@@ -808,7 +791,6 @@ document.addEventListener('DOMContentLoaded', function() {
           }
         }
 
-        // Handle coupon removal
         if (data.couponRemoved) {
           const couponInput = document.getElementById('coupon-code');
           const applyCouponBtn = document.getElementById('apply-coupon-btn');
@@ -825,7 +807,6 @@ document.addEventListener('DOMContentLoaded', function() {
           showToast(data.couponMessage || 'Coupon removed as it is no longer valid.', 'warning');
         }
 
-        // Fetch and update available coupons
         await fetchAndUpdateCoupons();
 
         const checkoutBtn = document.querySelector('.checkout-btn');
@@ -863,7 +844,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   }
 
-  // Update shipping display when page loads
   document.addEventListener('DOMContentLoaded', function() {
     const cartItemsData = <%- JSON.stringify(cart.items || []) %>;
     const shippingEl = document.querySelector('.shipping-display');
@@ -872,7 +852,6 @@ document.addEventListener('DOMContentLoaded', function() {
       const shippingCost = calculateShipping(cartItemsData);
       shippingEl.textContent = `₹${shippingCost.toFixed(2)}`;
       
-      // Update total with the calculated shipping
       const subtotalValue = <%= subtotal || 0 %>;
       const discountValue = <%= appliedCoupon ? appliedCoupon.discount : 0 %>;
       const totalEl = document.querySelector('.total-display');
@@ -884,7 +863,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   });
   
-  // Show toast message
   function showToast(message, type = 'info') {
     const toast = document.createElement('div');
     toast.className = `fixed bottom-4 right-4 ${
@@ -915,7 +893,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }, 3000);
   }
 
-  // Confirmation toast
   function showConfirmToast(message, onConfirm, onCancel) {
     const toast = document.createElement('div');
     toast.className = 'toast-confirm fixed bottom-4 right-4 bg-[#2C2C2C] text-white px-6 py-4 rounded-lg shadow-xl z-50';
@@ -992,7 +969,6 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 
-  // Coupon handling
   const applyCouponBtn = document.getElementById('apply-coupon-btn');
   const couponInput = document.getElementById('coupon-code');
   const couponMessage = document.getElementById('coupon-message');
@@ -1055,7 +1031,6 @@ document.addEventListener('DOMContentLoaded', function() {
         displayCouponMessage(`Coupon ${couponCode} applied successfully!`, 'success');
         showToast(`Coupon ${couponCode} applied successfully!`, 'success');
         
-        // Update checkout button
         const checkoutBtn = document.querySelector('.checkout-btn');
         if (checkoutBtn && data.cart.items?.length > 0) {
           checkoutBtn.classList.remove('opacity-60', 'cursor-not-allowed');
@@ -1063,10 +1038,8 @@ document.addEventListener('DOMContentLoaded', function() {
           checkoutBtn.removeAttribute('title');
         }
 
-        // Fetch and update available coupons
         await fetchAndUpdateCoupons();
       } else {
-        // Remove coupon if it becomes invalid
         couponInput.value = '';
         couponInput.disabled = false;
         applyCouponBtn.disabled = false;
@@ -1079,7 +1052,6 @@ document.addEventListener('DOMContentLoaded', function() {
         displayCouponMessage(data.message || 'Failed to apply coupon', 'error');
         showToast(data.message || 'Coupon removed due to invalid conditions', 'error');
         
-        // Update order summary without coupon
         const subtotalEl = document.querySelector('.subtotal-display');
         const shippingEl = document.querySelector('.shipping-display');
         const totalEl = document.querySelector('.total-display');
@@ -1087,7 +1059,6 @@ document.addEventListener('DOMContentLoaded', function() {
         if (shippingEl) shippingEl.textContent = `₹${data.cart.shipping.toFixed(2)}`;
         if (totalEl) totalEl.textContent = `₹${(data.cart.subtotal + data.cart.shipping).toFixed(2)}`;
 
-        // Fetch and update available coupons
         await fetchAndUpdateCoupons();
       }
     } catch (error) {
@@ -1099,7 +1070,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   }
 
-  // Debounced removeCoupon function
   const removeCoupon = debounce(async function () {
     let toastShown = false;
 
@@ -1122,23 +1092,19 @@ document.addEventListener('DOMContentLoaded', function() {
       }
 
       if (data.success) {
-        // Reset coupon input
         couponInput.value = '';
         couponInput.disabled = false;
         applyCouponBtn.disabled = false;
 
-        // Enable use coupon buttons
         document.querySelectorAll('.use-coupon-btn').forEach((btn) => {
           btn.disabled = false;
         });
 
-        // Remove coupon display
         const couponRow = document.querySelector('.coupon-discount-row');
         if (couponRow) {
           couponRow.remove();
         }
 
-        // Update order summary with server-provided cart data
         const subtotalEl = document.querySelector('.subtotal-display');
         const shippingEl = document.querySelector('.shipping-display');
         const totalEl = document.querySelector('.total-display');
@@ -1153,7 +1119,6 @@ document.addEventListener('DOMContentLoaded', function() {
           totalEl.textContent = `₹${data.cart.total.toFixed(2)}`;
         }
 
-        // Update checkout button
         const checkoutBtn = document.querySelector('.checkout-btn');
         const cartItems = document.querySelectorAll('.cart-item');
         if (checkoutBtn && cartItems.length > 0) {
@@ -1167,7 +1132,6 @@ document.addEventListener('DOMContentLoaded', function() {
           toastShown = true;
         }
 
-        // Fetch and update available coupons
         await fetchAndUpdateCoupons();
       } else {
         throw new Error(data.message || 'Failed to remove coupon');
@@ -1216,7 +1180,7 @@ document.addEventListener('DOMContentLoaded', function() {
       });
       if (attempt < maxAttempts) {
         console.log(`Retrying fetchCartData (attempt ${attempt + 1})`);
-        await new Promise(resolve => setTimeout(resolve, 1000)); // Wait 1s before retry
+        await new Promise(resolve => setTimeout(resolve, 1000));
         return fetchCartData(attempt + 1, maxAttempts);
       }
       return null;
@@ -1230,23 +1194,19 @@ document.addEventListener('DOMContentLoaded', function() {
     
     console.log("Cart data from server:", cartData);
     
-    // Use the shipping value from the server instead of recalculating
     const shippingCost = cartData.shipping;
     
     if (subtotalEl) subtotalEl.textContent = `₹${cartData.subtotal.toFixed(2)}`;
     if (shippingEl) shippingEl.textContent = `₹${shippingCost.toFixed(2)}`;
     
-    // Use the total from the server or calculate it with the server's shipping value
     const newTotal = cartData.total || (cartData.subtotal + shippingCost - (cartData.discount || 0));
     if (totalEl) totalEl.textContent = `₹${newTotal.toFixed(2)}`;
     
     const orderSummary = totalEl.closest('.space-y-4');
     
-    // Remove existing coupon row if present
     let couponRow = document.querySelector('.coupon-discount-row');
     if (couponRow) couponRow.remove();
     
-    // Add new coupon row
     couponRow = document.createElement('div');
     couponRow.className = 'flex justify-between text-green-600 coupon-discount-row';
     
@@ -1284,7 +1244,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }, 5000);
   }
 
-  // Event delegation for dynamically added remove-coupon buttons
   document.querySelector('.space-y-4').addEventListener('click', function (event) {
     const removeCouponBtn = event.target.closest('#remove-coupon');
     if (removeCouponBtn && !removeCouponBtn.disabled) {
@@ -1292,8 +1251,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   });
 
-  // Handle add-to-cart (if implemented on this page)
-  // Example: If you have an "Add to Cart" button on the cart page for related products
   document.querySelectorAll('.add-to-cart-btn').forEach(btn => {
     btn.addEventListener('click', async function() {
       const productId = this.getAttribute('data-product-id');
@@ -1310,15 +1267,12 @@ document.addEventListener('DOMContentLoaded', function() {
         const data = await response.json();
         if (data.success) {
           showToast('Product added to cart', 'success');
-          // Update cart count
           const cartCountEl = document.getElementById('cart-count');
           if (cartCountEl) {
             cartCountEl.textContent = data.cartCount || 0;
           }
-          // Fetch and update available coupons
           await fetchAndUpdateCoupons();
-          // Optionally, reload the cart or update the UI
-          window.location.reload(); // Or implement dynamic cart update
+          window.location.reload(); 
         } else {
           showToast(data.message || 'Failed to add product to cart', 'error');
         }

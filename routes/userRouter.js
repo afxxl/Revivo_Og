@@ -34,7 +34,6 @@ router.get(
   passport.authenticate("google", { scope: ["profile", "email"] }),
 );
 
-// Route to store referral code in session before Google auth
 router.post("/store-referral-code", (req, res) => {
   try {
     const { referralCode } = req.body;

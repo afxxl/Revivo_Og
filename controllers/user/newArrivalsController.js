@@ -18,8 +18,8 @@ const newArrivalsPage = async (req, res) => {
       condition: req.query.condition || "",
       minPrice: req.query.minPrice ? parseFloat(req.query.minPrice) : undefined,
       maxPrice: req.query.maxPrice ? parseFloat(req.query.maxPrice) : undefined,
-      sort: req.query.sort || "", // Add sort filter
-      search: req.query.search || "", // Add search filter
+      sort: req.query.sort || "",
+      search: req.query.search || "",
     };
 
     const categories = await Category.find({ isListed: true }).lean();
@@ -34,21 +34,19 @@ const newArrivalsPage = async (req, res) => {
       brand: { $in: activeBrandIds },
     };
 
-    // Add search functionality
     if (filters.search) {
       query.$or = [
-        { productName: { $regex: new RegExp(filters.search, 'i') } },
-        { description: { $regex: new RegExp(filters.search, 'i') } }
+        { productName: { $regex: new RegExp(filters.search, "i") } },
+        { description: { $regex: new RegExp(filters.search, "i") } },
       ];
-      
-      // Also search by brand name
-      const matchingBrands = await Brand.find({ 
-        name: { $regex: new RegExp(filters.search, 'i') },
-        isActive: true 
+
+      const matchingBrands = await Brand.find({
+        name: { $regex: new RegExp(filters.search, "i") },
+        isActive: true,
       }).lean();
-      
+
       if (matchingBrands.length > 0) {
-        const brandIds = matchingBrands.map(brand => brand._id);
+        const brandIds = matchingBrands.map((brand) => brand._id);
         query.$or.push({ brand: { $in: brandIds } });
       }
     }
@@ -62,15 +60,14 @@ const newArrivalsPage = async (req, res) => {
           { category: { $exists: true } },
         ];
       } else {
-        // If we have a search query, add category filter to existing $or
         query.$and = [
           { $or: query.$or },
-          { 
+          {
             $or: [
               { category: { $in: listedCategoryIds } },
               { category: { $exists: true } },
-            ]
-          }
+            ],
+          },
         ];
         delete query.$or;
       }
@@ -91,14 +88,13 @@ const newArrivalsPage = async (req, res) => {
     });
     const totalPages = Math.ceil(totalProducts / perPage);
 
-    // Define sort options
     let sortOption = {};
     if (filters.sort === "low-to-high") {
-      sortOption = { salesPrice: 1 }; // Ascending (low to high)
+      sortOption = { salesPrice: 1 };
     } else if (filters.sort === "high-to-low") {
-      sortOption = { salesPrice: -1 }; // Descending (high to low)
+      sortOption = { salesPrice: -1 };
     } else {
-      sortOption = { createdAt: -1 }; // Default sorting by creation date
+      sortOption = { createdAt: -1 };
     }
 
     const products = await Product.find(query)
@@ -110,7 +106,7 @@ const newArrivalsPage = async (req, res) => {
         path: "brand",
         match: { isActive: true },
       })
-      .sort(sortOption) // Apply sorting
+      .sort(sortOption)
       .skip(skip)
       .limit(perPage)
       .lean();

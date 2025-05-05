@@ -408,21 +408,17 @@ window.addEventListener('load', function() {
 
     async function checkSession() {
       try {
-        console.log("Checking session status..."); // Debug log
         const response = await fetch('/api/check-session');
         if (!response.ok) throw new Error('Network response was not ok');
         
         const data = await response.json();
-        console.log("Session check response:", data); // Debug log
         
         const { loggedIn, user, isBlocked } = data;
         const authSection = document.getElementById('auth-state');
         
         if (isBlocked) {
-          console.log("User is blocked, showing message"); // Debug log
           showBlockedMessage();
           setTimeout(() => {
-            console.log("Redirecting to login page"); // Debug log
             window.location.href = '/login';
           }, 5000);
           return;
@@ -532,9 +528,7 @@ window.addEventListener('load', function() {
     });
 
     function showBlockedMessage() {
-      console.log("Showing blocked message"); // Debug log
       
-      // Create a modal-style notification instead of a toast
       const blockedModal = document.createElement('div');
       blockedModal.id = 'blockedModal';
       blockedModal.className = 'fixed inset-0 flex items-center justify-center z-[9999] bg-black bg-opacity-50';

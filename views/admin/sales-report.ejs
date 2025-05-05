@@ -353,7 +353,6 @@ document.getElementById('customRangeBtn').addEventListener('click', function() {
     
     const labels = salesData.map(item => {
         const date = item._id;
-        // For yearly filter, show month name instead of "YYYY-MM"
         if (<%- JSON.stringify(filter) %> === "yearly") {
             const [year, month] = date.split('-');
             const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];

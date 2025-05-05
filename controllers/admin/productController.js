@@ -19,6 +19,7 @@ const productInfo = async (req, res) => {
     })
       .populate("brand")
       .populate("category")
+      .sort({ createdAt: -1 })
       .limit(limit)
       .skip((page - 1) * limit)
       .exec();
