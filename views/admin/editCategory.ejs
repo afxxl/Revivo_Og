@@ -2,12 +2,32 @@
 <%- include('../partials/admin/admin-sidebar', {currentPage: 'category'}) %>
 
 <style>
+    :root {
+        --mobile: 480px;
+        --tablet: 768px;
+        --laptop: 1024px;
+        --desktop: 1280px;
+    }
+    
     .form-container {
         background: linear-gradient(145deg, #ffffff, #f8f7f5);
         border: 1px solid #e0dcd4;
-        border-radius: 0.75rem;
+        border-radius: 0.5rem;
         box-shadow: 0 2px 4px rgba(0,0,0,0.05);
         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        width: 100%;
+    }
+    
+    @media (min-width: 480px) {
+        .form-container {
+            border-radius: 0.625rem;
+        }
+    }
+    
+    @media (min-width: 768px) {
+        .form-container {
+            border-radius: 0.75rem;
+        }
     }
 
     .form-container:hover {
@@ -18,16 +38,50 @@
     .form-label {
         color: #2C2C2C;
         font-weight: 500;
-        margin-bottom: 0.5rem;
+        margin-bottom: 0.375rem;
+        font-size: 0.875rem;
+        display: block;
+    }
+    
+    @media (min-width: 480px) {
+        .form-label {
+            margin-bottom: 0.438rem;
+            font-size: 0.938rem;
+        }
+    }
+    
+    @media (min-width: 768px) {
+        .form-label {
+            margin-bottom: 0.5rem;
+            font-size: 1rem;
+        }
     }
 
     .form-input {
         background: linear-gradient(145deg, #ffffff, #f8f7f5);
         border: 1px solid #e0dcd4;
-        border-radius: 0.5rem;
-        padding: 0.75rem 1rem;
+        border-radius: 0.375rem;
+        padding: 0.625rem 0.75rem;
         color: #2C2C2C;
         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        font-size: 0.875rem;
+        width: 100%;
+    }
+    
+    @media (min-width: 480px) {
+        .form-input {
+            border-radius: 0.438rem;
+            padding: 0.688rem 0.875rem;
+            font-size: 0.938rem;
+        }
+    }
+    
+    @media (min-width: 768px) {
+        .form-input {
+            border-radius: 0.5rem;
+            padding: 0.75rem 1rem;
+            font-size: 1rem;
+        }
     }
 
     .form-input:focus {
@@ -42,14 +96,43 @@
 
     .error-message {
         color: #ef4444;
-        font-size: 0.875rem;
+        font-size: 0.75rem;
         margin-top: 0.25rem;
+    }
+    
+    @media (min-width: 480px) {
+        .error-message {
+            font-size: 0.813rem;
+        }
+    }
+    
+    @media (min-width: 768px) {
+        .error-message {
+            font-size: 0.875rem;
+        }
     }
 
     .current-image {
         border: 1px solid #e0dcd4;
-        border-radius: 0.5rem;
+        border-radius: 0.375rem;
         transition: all 0.3s ease;
+        max-width: 100%;
+        height: auto;
+        max-height: 8rem;
+    }
+    
+    @media (min-width: 480px) {
+        .current-image {
+            border-radius: 0.438rem;
+            max-height: 9rem;
+        }
+    }
+    
+    @media (min-width: 768px) {
+        .current-image {
+            border-radius: 0.5rem;
+            max-height: 10rem;
+        }
     }
 
     .current-image:hover {
@@ -61,6 +144,23 @@
         color: #2C2C2C;
         opacity: 0.75;
         transition: all 0.3s ease;
+        font-size: 0.813rem;
+        text-align: center;
+        display: inline-block;
+        width: 100%;
+    }
+    
+    @media (min-width: 480px) {
+        .cancel-button {
+            font-size: 0.875rem;
+            width: auto;
+        }
+    }
+    
+    @media (min-width: 768px) {
+        .cancel-button {
+            font-size: 0.938rem;
+        }
     }
 
     .cancel-button:hover {
@@ -72,9 +172,28 @@
         background: linear-gradient(135deg, #2C2C2C, #1a1a1a);
         color: #f8f7f5;
         border: none;
-        border-radius: 0.5rem;
-        padding: 0.5rem 1rem;
+        border-radius: 0.375rem;
+        padding: 0.5rem 0.75rem;
         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        font-size: 0.813rem;
+        width: 100%;
+    }
+    
+    @media (min-width: 480px) {
+        .submit-button {
+            border-radius: 0.438rem;
+            padding: 0.5rem 0.875rem;
+            font-size: 0.875rem;
+            width: auto;
+        }
+    }
+    
+    @media (min-width: 768px) {
+        .submit-button {
+            border-radius: 0.5rem;
+            padding: 0.5rem 1rem;
+            font-size: 0.938rem;
+        }
     }
 
     .submit-button:hover {
@@ -85,10 +204,28 @@
     .file-input {
         background: linear-gradient(145deg, #ffffff, #f8f7f5);
         border: 1px solid #e0dcd4;
-        border-radius: 0.5rem;
-        padding: 0.75rem 1rem;
+        border-radius: 0.375rem;
+        padding: 0.625rem 0.75rem;
         color: #2C2C2C;
         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        font-size: 0.813rem;
+        width: 100%;
+    }
+    
+    @media (min-width: 480px) {
+        .file-input {
+            border-radius: 0.438rem;
+            padding: 0.688rem 0.875rem;
+            font-size: 0.875rem;
+        }
+    }
+    
+    @media (min-width: 768px) {
+        .file-input {
+            border-radius: 0.5rem;
+            padding: 0.75rem 1rem;
+            font-size: 0.938rem;
+        }
     }
 
     .file-input:focus {
@@ -104,16 +241,30 @@
     .helper-text {
         color: #2C2C2C;
         opacity: 0.75;
-        font-size: 0.75rem;
+        font-size: 0.688rem;
         margin-top: 0.25rem;
+        line-height: 1.2;
+    }
+    
+    @media (min-width: 480px) {
+        .helper-text {
+            font-size: 0.75rem;
+        }
+    }
+    
+    @media (min-width: 768px) {
+        .helper-text {
+            font-size: 0.75rem;
+            line-height: 1.4;
+        }
     }
 </style>
 
-<div class="flex-1 overflow-auto p-3 md:p-6 pt-20">
-    <div class="max-w-2xl mx-auto form-container p-6">
-        <h2 class="text-2xl font-semibold mb-6 text-[#2C2C2C]">Edit Category</h2>
+<div class="flex-1 overflow-auto p-2 sm:p-3 md:p-6 pt-16 sm:pt-18 md:pt-20">
+    <div class="max-w-2xl mx-auto form-container p-4 sm:p-5 md:p-6">
+        <h2 class="text-xl sm:text-xl md:text-2xl font-semibold mb-4 sm:mb-5 md:mb-6 text-[#2C2C2C]">Edit Category</h2>
         
-        <form id="editCategoryForm" enctype="multipart/form-data" class="space-y-4">
+        <form id="editCategoryForm" enctype="multipart/form-data" class="space-y-3 sm:space-y-4">
             <div>
                 <label for="name" class="form-label">Category Name</label>
                 <input type="text" id="name" name="name" value="<%= category.name %>" required
@@ -132,7 +283,7 @@
                 <label class="form-label">Current Image</label>
                 <% if (category.image) { %>
                     <div class="mb-2">
-                        <img src="<%= category.image %>" alt="Current Category Image" class="current-image h-32 object-cover">
+                        <img src="<%= category.image %>" alt="Current Category Image" class="current-image object-cover">
                     </div>
                     <input type="hidden" name="existingImage" value="<%= category.image %>">
                 <% } else { %>
@@ -155,7 +306,7 @@
                 <p class="helper-text">Enter a percentage between 0 and 100 (0 means no offer)</p>
             </div>
             
-            <div class="flex justify-end space-x-4">
+            <div class="flex flex-col sm:flex-row sm:justify-end space-y-2 sm:space-y-0 sm:space-x-4 mt-4 sm:mt-5 md:mt-6">
                 <a href="/admin/category" class="cancel-button px-4 py-2 text-sm font-medium">
                     Cancel
                 </a>

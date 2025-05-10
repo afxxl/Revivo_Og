@@ -2,6 +2,13 @@
 <%- include('../partials/admin/admin-sidebar', {currentPage: 'users'}) %>
 
 <style>
+    :root {
+        --mobile: 480px;
+        --tablet: 768px;
+        --laptop: 1024px;
+        --desktop: 1280px;
+    }
+    
     .user-card {
         background: linear-gradient(145deg, #ffffff, #f8f7f5);
         border: 1px solid #e0dcd4;
@@ -12,6 +19,12 @@
     .user-card:hover {
         box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         border-color: #2C2C2C;
+    }
+    
+    @media (max-width: 480px) {
+        .user-card {
+            margin: 0.5rem 0;
+        }
     }
 
     .search-container {
@@ -32,6 +45,13 @@
         padding: 0.75rem 1rem 0.75rem 2.5rem;
         width: 100%;
         transition: all 0.3s ease;
+        font-size: 0.875rem;
+    }
+    
+    @media (min-width: 768px) {
+        .search-input {
+            font-size: 1rem;
+        }
     }
 
     .search-input:focus {
@@ -89,18 +109,34 @@
         background: linear-gradient(135deg, #ef4444, #dc2626);
         color: white;
         border-radius: 9999px;
-        padding: 0.25rem 0.75rem;
+        padding: 0.25rem 0.5rem;
         transition: all 0.3s ease;
         margin-right: 0.5rem;
+        font-size: 0.7rem;
+    }
+    
+    @media (min-width: 768px) {
+        .block-button {
+            padding: 0.25rem 0.75rem;
+            font-size: 0.75rem;
+        }
     }
 
     .unblock-button {
         background: linear-gradient(135deg, #10b981, #059669);
         color: white;
         border-radius: 9999px;
-        padding: 0.25rem 0.75rem;
+        padding: 0.25rem 0.5rem;
         transition: all 0.3s ease;
         margin-right: 0.5rem;
+        font-size: 0.7rem;
+    }
+    
+    @media (min-width: 768px) {
+        .unblock-button {
+            padding: 0.25rem 0.75rem;
+            font-size: 0.75rem;
+        }
     }
 
     .edit-button {
@@ -116,39 +152,75 @@
 
     .pagination-container {
         display: flex;
-        justify-content: space-between;
+        flex-direction: column;
+        gap: 1rem;
+        justify-content: center;
         align-items: center;
         padding: 1rem;
         background: linear-gradient(145deg, #ffffff, #f8f7f5);
         border-top: 1px solid #e0dcd4;
     }
+    
+    @media (min-width: 768px) {
+        .pagination-container {
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+        }
+    }
 
     .pagination-info {
         color: #2C2C2C;
-        font-size: 0.875rem;
+        font-size: 0.75rem;
         opacity: 0.9;
+        text-align: center;
+    }
+    
+    @media (min-width: 768px) {
+        .pagination-info {
+            font-size: 0.875rem;
+            text-align: left;
+        }
     }
 
     .pagination {
         display: flex;
-        gap: 0.5rem;
+        gap: 0.25rem;
         align-items: center;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    
+    @media (min-width: 768px) {
+        .pagination {
+            gap: 0.5rem;
+            flex-wrap: nowrap;
+        }
     }
 
     .pagination-btn {
-        min-width: 2.5rem;
-        height: 2.5rem;
+        min-width: 2rem;
+        height: 2rem;
         display: flex;
         align-items: center;
         justify-content: center;
-        padding: 0.5rem 1rem;
+        padding: 0.5rem;
         background: linear-gradient(145deg, #ffffff, #f8f7f5);
         border: 1px solid #e0dcd4;
         border-radius: 0.5rem;
         color: #2C2C2C;
-        font-size: 0.875rem;
+        font-size: 0.75rem;
         font-weight: 500;
         transition: all 0.3s ease;
+    }
+    
+    @media (min-width: 768px) {
+        .pagination-btn {
+            min-width: 2.5rem;
+            height: 2.5rem;
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+        }
     }
 
     .pagination-btn:hover {
@@ -172,7 +244,7 @@
     }
 </style>
 
-<div class="flex-1 overflow-auto p-2 md:p-4 lg:p-6 pt-16 md:pt-20">
+<div class="flex-1 overflow-auto p-2 md:p-4 lg:p-6 pt-16 md:pt-20 max-w-full">
   <div class="flex flex-col gap-3 md:gap-4 mb-4 md:mb-6">
     <div
       class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 md:gap-4"
@@ -237,8 +309,8 @@
     <div class="block md:hidden">
       <div class="divide-y divide-gray-200">
         <% for (let i = 0; i < data.length; i++) { %>
-        <div class="p-3 space-y-2 user-card">
-          <div class="flex items-center space-x-2">
+        <div class="p-2 sm:p-3 space-y-1 sm:space-y-2 user-card">
+          <div class="flex items-center space-x-1 sm:space-x-2">
             <div
               class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center"
             >
@@ -269,13 +341,13 @@
               <p class="text-xs text-gray-500 truncate"><%= data[i].email %></p>
             </div>
           </div>
-          <div class="text-xs text-gray-500 space-y-1">
+          <div class="text-xs text-gray-500 space-y-0.5 sm:space-y-1">
             <p class="truncate">Phone: <%= data[i].phone || 'N/A' %></p>
             <p>
               Created: <%= new Date(data[i].createdAt).toLocaleDateString() %>
             </p>
           </div>
-          <div class="flex items-center justify-end space-x-2">
+          <div class="flex items-center justify-end space-x-1 sm:space-x-2">
             <% if (!data[i].isBlocked) { %>
             <a
               href="/admin/blockUser?id=<%= data[i]._id %>"
@@ -298,37 +370,37 @@
     </div>
 
     <!-- Desktop/Tablet View (Table) -->
-    <div class="hidden md:block overflow-x-auto">
-      <table class="w-full whitespace-nowrap">
+    <div class="hidden md:block overflow-x-auto" style="scrollbar-width: thin;">
+      <table class="w-full whitespace-nowrap min-w-[650px]">
         <thead>
           <tr class="table-header">
             <th
-              class="px-4 py-2 text-xs md:text-sm font-medium text-gray-500 uppercase tracking-wider"
+              class="px-2 sm:px-3 md:px-4 py-2 text-xs md:text-sm font-medium text-gray-500 uppercase tracking-wider"
             >
               User
             </th>
             <th
-              class="px-4 py-2 text-xs md:text-sm font-medium text-gray-500 uppercase tracking-wider"
+              class="px-2 sm:px-3 md:px-4 py-2 text-xs md:text-sm font-medium text-gray-500 uppercase tracking-wider"
             >
               Name
             </th>
             <th
-              class="px-4 py-2 text-xs md:text-sm font-medium text-gray-500 uppercase tracking-wider"
+              class="px-2 sm:px-3 md:px-4 py-2 text-xs md:text-sm font-medium text-gray-500 uppercase tracking-wider"
             >
               Email
             </th>
             <th
-              class="px-4 py-2 text-xs md:text-sm font-medium text-gray-500 uppercase tracking-wider"
+              class="px-2 sm:px-3 md:px-4 py-2 text-xs md:text-sm font-medium text-gray-500 uppercase tracking-wider"
             >
               Phone
             </th>
             <th
-              class="px-4 py-2 text-xs md:text-sm font-medium text-gray-500 uppercase tracking-wider"
+              class="px-2 sm:px-3 md:px-4 py-2 text-xs md:text-sm font-medium text-gray-500 uppercase tracking-wider"
             >
               Created
             </th>
             <th
-              class="px-4 py-2 text-xs md:text-sm font-medium text-gray-500 uppercase tracking-wider"
+              class="px-2 sm:px-3 md:px-4 py-2 text-xs md:text-sm font-medium text-gray-500 uppercase tracking-wider"
             >
               Actions
             </th>
@@ -365,25 +437,25 @@
               </div>
             </td>
             <td
-              class="px-4 py-3 text-xs md:text-sm text-gray-900 max-w-[120px] md:max-w-none truncate"
+              class="px-2 sm:px-3 md:px-4 py-3 text-xs md:text-sm text-gray-900 max-w-[100px] sm:max-w-[120px] md:max-w-none truncate"
             >
               <%= data[i].name %>
             </td>
             <td
-              class="px-4 py-3 text-xs md:text-sm text-gray-500 max-w-[150px] md:max-w-none truncate"
+              class="px-2 sm:px-3 md:px-4 py-3 text-xs md:text-sm text-gray-500 max-w-[120px] sm:max-w-[150px] md:max-w-none truncate"
             >
               <%= data[i].email %>
             </td>
-            <td class="px-4 py-3 text-xs md:text-sm text-gray-500">
+            <td class="px-2 sm:px-3 md:px-4 py-3 text-xs md:text-sm text-gray-500">
               <%= data[i].phone || 'N/A' %>
             </td>
             <td
-              class="px-4 py-3 text-xs md:text-sm text-gray-500 whitespace-nowrap"
+              class="px-2 sm:px-3 md:px-4 py-3 text-xs md:text-sm text-gray-500 whitespace-nowrap"
             >
               <%= new Date(data[i].createdAt).toLocaleDateString() %>
             </td>
             <td
-              class="px-4 py-3 text-xs md:text-sm flex space-x-1 md:space-x-2"
+              class="px-2 sm:px-3 md:px-4 py-3 text-xs md:text-sm flex space-x-1 md:space-x-2"
             >
               <div class="action-buttons">
                 <% if (!data[i].isBlocked) { %>

@@ -1,14 +1,28 @@
 <%- include('../partials/admin/admin-header.ejs') %>
 <%- include('../partials/admin/admin-sidebar', {currentPage: 'category'}) %>
 <style>
+    :root {
+        --mobile: 480px;
+        --tablet: 768px;
+        --laptop: 1024px;
+        --desktop: 1280px;
+    }
+    
     .category-image {
-        width: 64px;
-        height: 64px;
+        width: 56px;
+        height: 56px;
         object-fit: cover;
         border-radius: 0.375rem;
         border: 1px solid #e0dcd4;
         background: linear-gradient(145deg, #ffffff, #f8f7f5);
         transition: all 0.3s ease;
+    }
+    
+    @media (min-width: 768px) {
+        .category-image {
+            width: 64px;
+            height: 64px;
+        }
     }
 
     .category-image:hover {
@@ -17,8 +31,8 @@
     }
 
     .image-placeholder {
-        width: 64px;
-        height: 64px;
+        width: 56px;
+        height: 56px;
         background: linear-gradient(145deg, #ffffff, #f8f7f5);
         border: 1px dashed #e0dcd4;
         border-radius: 0.375rem;
@@ -26,6 +40,13 @@
         align-items: center;
         justify-content: center;
         transition: all 0.3s ease;
+    }
+    
+    @media (min-width: 768px) {
+        .image-placeholder {
+            width: 64px;
+            height: 64px;
+        }
     }
 
     .image-placeholder:hover {
@@ -39,6 +60,13 @@
         border-radius: 0.5rem;
         padding: 0.75rem 1rem 0.75rem 2.5rem;
         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        font-size: 0.875rem;
+    }
+    
+    @media (min-width: 768px) {
+        .search-input {
+            font-size: 1rem;
+        }
     }
 
     .search-input:focus {
@@ -95,11 +123,19 @@
     }
 
     .status-badge {
-        padding: 0.25rem 0.75rem;
+        padding: 0.2rem 0.5rem;
         border-radius: 0.375rem;
-        font-size: 0.75rem;
+        font-size: 0.7rem;
         font-weight: 500;
         transition: all 0.3s ease;
+        white-space: nowrap;
+    }
+    
+    @media (min-width: 768px) {
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            font-size: 0.75rem;
+        }
     }
 
     .status-listed {
@@ -113,9 +149,15 @@
     }
 
     .action-button {
-        padding: 0.5rem;
+        padding: 0.4rem;
         border-radius: 0.375rem;
         transition: all 0.3s ease;
+    }
+    
+    @media (min-width: 768px) {
+        .action-button {
+            padding: 0.5rem;
+        }
     }
 
     .action-button:hover {
@@ -213,9 +255,17 @@
     }
 
     .pagination-button {
-        padding: 0.5rem 1rem;
+        padding: 0.4rem 0.75rem;
         border-radius: 0.375rem;
         transition: all 0.3s ease;
+        font-size: 0.875rem;
+    }
+    
+    @media (min-width: 768px) {
+        .pagination-button {
+            padding: 0.5rem 1rem;
+            font-size: 1rem;
+        }
     }
 
     .pagination-active {
@@ -236,12 +286,12 @@
 </style>
 
 
-<div class="flex-1 overflow-auto p-3 md:p-6 pt-20">
-    <div class="p-4 md:p-6 bg-white shadow-sm rounded-lg">
-        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-            <h1 class="text-2xl font-semibold text-[#2C2C2C]">Categories</h1>
+<div class="flex-1 overflow-auto p-2 sm:p-3 md:p-6 pt-16 sm:pt-20 max-w-full">
+    <div class="p-3 sm:p-4 md:p-6 bg-white shadow-sm rounded-lg">
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-4">
+            <h1 class="text-xl sm:text-2xl font-semibold text-[#2C2C2C]">Categories</h1>
             <button onclick="openAddModal()" 
-                    class="submit-button">
+                    class="submit-button w-full sm:w-auto text-sm sm:text-base">
                 Add New Category
             </button>
         </div>
@@ -272,22 +322,22 @@
         </div>
     </div>
 
-    <div class="hidden md:block overflow-x-auto m-6">
+    <div class="hidden md:block overflow-x-auto mx-3 my-4 sm:m-6">
         <div class="table-container">
             <table class="w-full whitespace-nowrap">
                 <thead>
                     <tr class="table-header">
-                        <th class="px-6 py-3 text-sm font-medium">Image</th>
-                        <th class="px-6 py-3 text-sm font-medium">Category Name</th>
-                        <th class="px-6 py-3 text-sm font-medium">Description</th>
-                        <th class="px-6 py-3 text-sm font-medium">Status</th>
-                        <th class="px-6 py-3 text-sm font-medium">Actions</th>
+                        <th class="px-3 sm:px-4 md:px-6 py-2 sm:py-3 text-xs sm:text-sm font-medium">Image</th>
+                        <th class="px-3 sm:px-4 md:px-6 py-2 sm:py-3 text-xs sm:text-sm font-medium">Category Name</th>
+                        <th class="px-3 sm:px-4 md:px-6 py-2 sm:py-3 text-xs sm:text-sm font-medium">Description</th>
+                        <th class="px-3 sm:px-4 md:px-6 py-2 sm:py-3 text-xs sm:text-sm font-medium">Status</th>
+                        <th class="px-3 sm:px-4 md:px-6 py-2 sm:py-3 text-xs sm:text-sm font-medium">Actions</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-200">
                     <% cat.forEach(category => { %>
                         <tr class="table-row">
-                            <td class="px-6 py-4">
+                            <td class="px-3 sm:px-4 md:px-6 py-3 sm:py-4">
                                 <% if (category.image) { %>
                                     <img src="<%= category.image %>" alt="<%= category.name %>" 
                                          class="category-image">
@@ -299,9 +349,9 @@
                                     </div>
                                 <% } %>
                             </td>
-                            <td class="px-6 py-4 text-sm text-[#2C2C2C]"><%= category.name %></td>
-                            <td class="px-6 py-4 text-sm text-[#2C2C2C]"><%= category.description %></td>
-                            <td class="px-6 py-4 text-sm">
+                            <td class="px-3 sm:px-4 md:px-6 py-3 sm:py-4 text-xs sm:text-sm text-[#2C2C2C]"><%= category.name %></td>
+                            <td class="px-3 sm:px-4 md:px-6 py-3 sm:py-4 text-xs sm:text-sm text-[#2C2C2C]"><%= category.description %></td>
+                            <td class="px-3 sm:px-4 md:px-6 py-3 sm:py-4 text-xs sm:text-sm">
                                 <span class="status-badge <%= category.isListed ? 'status-listed' : 'status-unlisted' %>">
                                     <%= category.isListed ? 'Listed' : 'Unlisted' %>
                                 </span>
@@ -311,7 +361,7 @@
                                 </span>
                                 <% } %>
                             </td>
-                            <td class="px-6 py-4 text-sm">
+                            <td class="px-3 sm:px-4 md:px-6 py-3 sm:py-4 text-xs sm:text-sm">
                                 <div class="flex items-center space-x-3">
                                     <a href="/admin/editCategory/<%= category._id %>" class="action-button edit-button">
                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -373,15 +423,15 @@
         </div>
     </div>
 
-    <div class="md:hidden space-y-4 m-4">
+    <div class="md:hidden space-y-3 sm:space-y-4 mx-2 my-3 sm:m-4">
         <% cat.forEach(category => { %>
-            <div class="bg-white p-4 rounded-lg shadow">
-                <div class="flex items-start gap-4">
+            <div class="bg-white p-3 sm:p-4 rounded-lg shadow">
+                <div class="flex items-start gap-3 sm:gap-4">
                     <% if (category.image) { %>
                         <img src="<%= category.image %>" alt="<%= category.name %>" 
-                             class="w-16 h-16 object-cover rounded-md">
+                             class="w-14 h-14 sm:w-16 sm:h-16 object-cover rounded-md">
                     <% } else { %>
-                        <div class="w-16 h-16 bg-gray-100 rounded-md flex items-center justify-center">
+                        <div class="w-14 h-14 sm:w-16 sm:h-16 bg-gray-100 rounded-md flex items-center justify-center">
                             <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
                             </svg>
@@ -390,8 +440,8 @@
                     <div class="flex-1">
                         <div class="flex justify-between items-start">
                             <div>
-                                <h3 class="font-medium text-gray-900"><%= category.name %></h3>
-                                <p class="text-sm text-gray-500 mt-1"><%= category.description %></p>
+                                <h3 class="font-medium text-gray-900 text-sm sm:text-base"><%= category.name %></h3>
+                                <p class="text-xs sm:text-sm text-gray-500 mt-1"><%= category.description %></p>
                             </div>
                             <div class="flex flex-col gap-1 items-end">
                                 <span class="px-2 py-1 text-xs font-semibold rounded-full 
@@ -406,7 +456,7 @@
                             </div>
                         </div>
 
-                        <div class="mt-4 flex justify-end space-x-3">
+                        <div class="mt-3 sm:mt-4 flex justify-end space-x-2 sm:space-x-3">
                             <a href="/admin/editCategory/<%= category._id %>" class="text-blue-600 hover:text-blue-800 p-2">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
@@ -472,7 +522,7 @@
         <% }); %>
     </div>
     <% if (totalPages > 1) { %>
-        <div class="flex justify-center items-center space-x-2 my-6">
+        <div class="flex flex-wrap justify-center items-center gap-2 my-4 sm:my-6">
             <% for(let i = 1; i <= totalPages; i++) { %>
                 <a href="?page=<%= i %><% if (searchQuery) { %>&search=<%= searchQuery %><% } %>" 
                    class="pagination-button <%= currentPage === i ? 'pagination-active' : 'pagination-inactive' %>">
@@ -484,17 +534,17 @@
 </div>
 
 <div id="addModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden">
-    <div class="min-h-screen flex items-center justify-center p-4">
-        <div class="modal-container p-6 max-w-md w-full mx-4 relative">
-            <div class="modal-header flex justify-between items-center mb-4">
-                <h3 class="modal-title text-xl">Add New Category</h3>
+    <div class="min-h-screen flex items-center justify-center p-2 sm:p-4">
+        <div class="modal-container p-4 sm:p-6 max-w-md w-full mx-2 sm:mx-4 relative">
+            <div class="flex justify-between items-center mb-3 sm:mb-4 pb-3 sm:pb-4 border-b border-gray-200">
+                <h2 class="text-lg sm:text-xl font-semibold text-[#2C2C2C]">Add New Category</h2>
                 <button type="button" onclick="closeAddModal()" class="modal-close">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                     </svg>
                 </button>
             </div>
-            <form action="/admin/addCategory" method="POST" class="space-y-4" onsubmit="handleFormSubmit(event)">
+            <form id="categoryForm" action="/admin/addCategory" method="POST" enctype="multipart/form-data" class="space-y-3 sm:space-y-4">
                 <div>
                     <label for="name" class="form-label">Category Name</label>
                     <input type="text" id="name" name="name" required class="form-input w-full">

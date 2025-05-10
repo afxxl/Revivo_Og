@@ -9,6 +9,13 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
     <style>
+        :root {
+            --mobile: 480px;
+            --tablet: 768px;
+            --laptop: 1024px;
+            --desktop: 1280px;
+        }
+        
         body {
             font-family: 'Poppins', sans-serif;
             background-color: #f8f7f5;
@@ -17,8 +24,22 @@
             font-family: 'Henny Penny', cursive;
             color: #2C2C2C;
             text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+            font-size: 1.25rem;
+            line-height: 1.2;
         }
-        @media (max-width: 768px) {
+        
+        @media (min-width: 480px) {
+            .brand-heading {
+                font-size: 1.5rem;
+            }
+        }
+        
+        @media (min-width: 768px) {
+            .brand-heading {
+                font-size: 1.75rem;
+            }
+        }
+        @media (max-width: 1023px) {
             .sidebar-open {
                 transform: translateX(0);
             }
@@ -26,8 +47,8 @@
                 transform: translateX(-100%);
             }
             .header-content {
-                padding: 0 1rem;
-                height: 60px;
+                padding: 0 0.75rem;
+                height: 70px;
             }
             .logo-container {
                 margin-left: 0;
@@ -35,17 +56,27 @@
             .user-actions {
                 margin-right: 0;
             }
+        }
+        
+        @media (max-width: 767px) {
+            .header-content {
+                padding: 0 0.5rem;
+                height: 60px;
+            }
             .admin-dashboard-text {
                 display: none;
             }
             .logo {
-                display: none;
+                height: 50px;
             }
             .user-profile {
                 display: none;
             }
-            .brand-heading {
-                font-size: 1.5rem;
+        }
+        
+        @media (max-width: 480px) {
+            .logo {
+                display: none;
             }
         }
         .header-shadow {
@@ -55,17 +86,30 @@
             display: none;
             transition: all 0.3s ease;
         }
-        @media (max-width: 768px) {
+        
+        @media (max-width: 1023px) {
             .burger-button {
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                width: 40px;
-                height: 40px;
-                margin-right: 1rem;
+                width: 36px;
+                height: 36px;
+                margin-right: 0.75rem;
             }
             .logo-container {
                 flex: 1;
+            }
+        }
+        
+        @media (max-width: 767px) {
+            .burger-button {
+                width: 32px;
+                height: 32px;
+                margin-right: 0.5rem;
+            }
+            .burger-button svg {
+                width: 20px;
+                height: 20px;
             }
         }
         .modal-animation {
@@ -82,10 +126,22 @@
             }
         }
         .logo {
-            height: 85px;
+            height: 70px;
             width: auto;
             max-width: 100%;
             transition: transform 0.3s ease;
+        }
+        
+        @media (min-width: 768px) {
+            .logo {
+                height: 75px;
+            }
+        }
+        
+        @media (min-width: 1024px) {
+            .logo {
+                height: 85px;
+            }
         }
         .logo:hover {
             transform: scale(1.05);
@@ -93,10 +149,24 @@
         .admin-text {
             color: #2C2C2C;
             font-family: 'Henny Penny', cursive;
+            font-size: 0.875rem;
+        }
+        
+        @media (min-width: 768px) {
+            .admin-text {
+                font-size: 1rem;
+            }
         }
         .logout-button {
             background-color: #2C2C2C;
             transition: all 0.3s ease;
+            padding: 0.375rem 0.75rem;
+        }
+        
+        @media (min-width: 768px) {
+            .logout-button {
+                padding: 0.5rem 1rem;
+            }
         }
         .logout-button:hover {
             background-color: #1a1a1a;
@@ -119,16 +189,32 @@
         .user-avatar {
             background: linear-gradient(135deg, #2C2C2C, #1a1a1a);
             color: #f8f7f5;
-            width: 40px;
-            height: 40px;
+            width: 32px;
+            height: 32px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: 600;
-            font-size: 1rem;
+            font-size: 0.875rem;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
             transition: all 0.3s ease;
+        }
+        
+        @media (min-width: 480px) {
+            .user-avatar {
+                width: 36px;
+                height: 36px;
+                font-size: 0.938rem;
+            }
+        }
+        
+        @media (min-width: 768px) {
+            .user-avatar {
+                width: 40px;
+                height: 40px;
+                font-size: 1rem;
+            }
         }
         .user-avatar:hover {
             transform: scale(1.05);
@@ -138,9 +224,9 @@
 </head>
 <body class="bg-[#f8f7f5]">
     <!-- Revivo Header -->
-    <div class="fixed top-0 left-0 right-0 h-24 bg-white header-shadow z-50">
-        <div class="flex items-center justify-between h-full px-6 header-content">
-            <div class="flex items-center space-x-4 logo-container">
+    <div class="fixed top-0 left-0 right-0 h-16 sm:h-20 md:h-24 bg-white header-shadow z-50">
+        <div class="flex items-center justify-between h-full px-3 sm:px-4 md:px-6 header-content">
+            <div class="flex items-center space-x-2 sm:space-x-3 md:space-x-4 logo-container">
                 <button class="burger-button" onclick="toggleSidebar()">
                     <svg class="w-6 h-6 text-[#2C2C2C]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
@@ -148,11 +234,11 @@
                 </button>
                 <img src="/Images/logo.svg" alt="Revivo Logo" class="logo">
                 <div>
-                    <h1 class="brand-heading text-2xl md:text-3xl font-bold tracking-wide">REVIVO</h1>
-                    <p class="admin-dashboard-text text-xs font-medium text-[#2C2C2C]/70 tracking-wider uppercase">Admin Dashboard</p>
+                    <h1 class="brand-heading text-xl sm:text-2xl md:text-3xl font-bold tracking-wide">REVIVO</h1>
+                    <p class="admin-dashboard-text text-[10px] sm:text-xs font-medium text-[#2C2C2C]/70 tracking-wider uppercase">Admin Dashboard</p>
                 </div>
             </div>
-            <div class="flex items-center space-x-4 user-actions">
+            <div class="flex items-center space-x-2 sm:space-x-3 md:space-x-4 user-actions">
                 <div class="flex items-center user-profile">
                     <div class="hidden md:block text-right mr-3">
                         <p class="text-sm font-medium text-[#2C2C2C]">Admin</p>
@@ -164,7 +250,7 @@
                 </div>
 
                 <button onclick="confirmLogout()" 
-                        class="logout-button px-4 py-2 text-white rounded-lg flex items-center space-x-2 shadow-sm hover:shadow-md">
+                        class="logout-button text-white rounded-lg flex items-center space-x-1 sm:space-x-2 shadow-sm hover:shadow-md">
                     <span class="hidden md:inline text-sm font-medium">Logout</span>
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
@@ -192,7 +278,7 @@
         </div>
     </div>
 
-    <div class="flex h-screen pt-24">
+    <div class="flex h-screen pt-16 sm:pt-20 md:pt-24">
 
     <script>
         function confirmLogout() {
@@ -204,10 +290,38 @@
         }
 
         function toggleSidebar() {
-            const sidebar = document.querySelector('.sidebar');
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('overlay');
+            const menuButton = document.getElementById('menuButton');
+            
             if (sidebar) {
-                sidebar.classList.toggle('sidebar-open');
-                sidebar.classList.toggle('sidebar-closed');
+                if (sidebar.classList.contains('-translate-x-full')) {
+                    // Open sidebar
+                    sidebar.classList.remove('-translate-x-full');
+                    sidebar.classList.add('sidebar-open');
+                    if (overlay) {
+                        overlay.classList.remove('hidden');
+                        overlay.style.opacity = '1';
+                    }
+                    document.body.style.overflow = 'hidden';
+                    if (menuButton) {
+                        menuButton.classList.add('hidden');
+                    }
+                } else {
+                    // Close sidebar
+                    sidebar.classList.add('-translate-x-full');
+                    sidebar.classList.remove('sidebar-open');
+                    if (overlay) {
+                        overlay.style.opacity = '0';
+                        setTimeout(() => {
+                            overlay.classList.add('hidden');
+                        }, 300);
+                    }
+                    document.body.style.overflow = 'auto';
+                    if (menuButton) {
+                        menuButton.classList.remove('hidden');
+                    }
+                }
             }
         }
 

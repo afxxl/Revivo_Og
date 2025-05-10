@@ -155,17 +155,25 @@
     .mobile-menu-container {
         max-height: 0;
         overflow: hidden;
-        transition: max-height 0.3s ease-in-out;
+        transition: max-height 0.5s ease-in-out;
+        visibility: hidden;
     }
     .mobile-menu-container.open {
-        max-height: 300px;
+        max-height: 500px; /* Increased to accommodate all menu items */
+        visibility: visible;
     }
     
     .mobile-nav-link {
         position: relative;
         transition: all 0.3s ease;
         padding: 0.8rem 0;
-        border-bottom: 1px solid rgba(44, 44, 44, 0.05);
+        border-bottom: 1px solid rgba(44, 44, 44, 0.1);
+        font-weight: 500;
+        font-size: 0.9rem;
+        letter-spacing: 1px;
+    }
+    .mobile-nav-link:active {
+        background-color: rgba(44, 44, 44, 0.05);
     }
     
     .mobile-nav-link:last-child {
@@ -301,7 +309,7 @@
         <!-- Mobile Header -->
         <div class="md:hidden py-3">
             <div class="flex justify-between items-center">
-                <button id="burger-menu" class="p-2 text-[#2C2C2C] transition-colors focus:outline-none">
+                <button id="burger-menu" class="p-2 text-[#2C2C2C] transition-colors focus:outline-none" aria-expanded="false" aria-controls="mobile-menu" aria-label="Toggle navigation menu">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6h16M4 12h16M4 18h16"></path>
                     </svg>
@@ -314,7 +322,7 @@
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
                         </svg>
-                        <span class="absolute -top-1 -right-1 bg-[#f8c78d] text-[#2C2C2C] text-xs rounded-full w-4 h-4 flex items-center justify-center text-[10px]">
+                        <span class="absolute -top-1 -right-1 bg-[#f8c78d] text-[#2C2C2C] text-xs rounded-full w-4 h-4 flex items-center justify-center text-[10px] mobile-wishlist-count">
                             <%= locals.wishlistCount || 0 %>
                         </span>
                     </a>
@@ -323,28 +331,30 @@
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
                         </svg>
-                        <span class="absolute -top-1 -right-1 bg-[#f8c78d] text-[#2C2C2C] text-xs rounded-full w-4 h-4 flex items-center justify-center text-[10px]">
+                        <span class="absolute -top-1 -right-1 bg-[#f8c78d] text-[#2C2C2C] text-xs rounded-full w-4 h-4 flex items-center justify-center text-[10px] mobile-cart-count">
                             <%= locals.cartCount || 0 %>
                         </span>
                     </a>
                 </div>
             </div>
 
-            <div id="mobile-menu" class="mobile-menu-container overflow-hidden">
+            <div id="mobile-menu" class="mobile-menu-container overflow-hidden" aria-hidden="true">
                 <div class="pt-3 space-y-1 px-2">
                     <div class="flex flex-col">
-                        <a href="/shop" class="mobile-nav-link nav-link block text-center py-2">SHOP ALL</a>
-                        <a href="/featured" class="mobile-nav-link nav-link block text-center py-2">FEATURED</a>
-                        <a href="/new-arrivals" class="mobile-nav-link nav-link block text-center py-2">NEW ARRIVALS</a>
+                        <a href="/shop" class="mobile-nav-link nav-link block text-center py-3">SHOP ALL</a>
+                        <a href="/featured" class="mobile-nav-link nav-link block text-center py-3">FEATURED</a>
+                        <a href="/new-arrivals" class="mobile-nav-link nav-link block text-center py-3">NEW ARRIVALS</a>
                         
                         <% if(locals.user){ %>
-                            <a href="/profile" class="mobile-nav-link nav-link block text-center py-2">MY PROFILE</a>
-                            <a href="/profile#orders" class="mobile-nav-link nav-link block text-center py-2">MY ORDERS</a>
-                            <a href="/wallet" class="mobile-nav-link nav-link block text-center py-2">WALLET</a>
-                            <a href="/logout" class="mobile-nav-link nav-link block text-center py-2 text-red-600">LOGOUT</a>
+                            <a href="/profile" class="mobile-nav-link nav-link block text-center py-3">MY PROFILE</a>
+                            <a href="/profile#orders" class="mobile-nav-link nav-link block text-center py-3">MY ORDERS</a>
+                            <a href="/wishlist" class="mobile-nav-link nav-link block text-center py-3">WISHLIST</a>
+                            <a href="/cart" class="mobile-nav-link nav-link block text-center py-3">CART</a>
+                            <a href="/wallet" class="mobile-nav-link nav-link block text-center py-3">WALLET</a>
+                            <a href="/logout" class="mobile-nav-link nav-link block text-center py-3 text-red-600">LOGOUT</a>
                         <% } else { %>
-                            <a href="/login" class="mobile-nav-link nav-link block text-center py-2">LOGIN</a>
-                            <a href="/signup" class="mobile-nav-link nav-link block text-center py-2">SIGN UP</a>
+                            <a href="/login" class="mobile-nav-link nav-link block text-center py-3">LOGIN</a>
+                            <a href="/signup" class="mobile-nav-link nav-link block text-center py-3">SIGN UP</a>
                         <% } %>
                     </div>
                 </div>
@@ -362,16 +372,22 @@
 </style>
 <script>
 window.addEventListener('load', function() {
+    // Mobile menu toggle
     const burgerMenu = document.getElementById('burger-menu');
     if (burgerMenu) {
-      burgerMenu.addEventListener('click', function() {
+      burgerMenu.addEventListener('click', function(e) {
+        e.preventDefault();
         const mobileMenu = document.getElementById('mobile-menu');
         if (mobileMenu) {
           mobileMenu.classList.toggle('open');
+          // Toggle aria-expanded for accessibility
+          const expanded = mobileMenu.classList.contains('open');
+          burgerMenu.setAttribute('aria-expanded', expanded);
         }
       });
     }
 
+    // Desktop dropdown toggle
     document.addEventListener('click', function(event) {
       const dropdownBtn = event.target.closest('.dropdown > button');
       if (dropdownBtn) {
@@ -379,14 +395,19 @@ window.addEventListener('load', function() {
         const dropdown = dropdownBtn.parentElement;
         const dropdownContent = dropdown.querySelector('.dropdown-content');
         
+        // Close other dropdowns
         document.querySelectorAll('.dropdown-content').forEach(content => {
           if (content !== dropdownContent) {
             content.style.display = 'none';
           }
         });
         
-        dropdownContent.style.display = dropdownContent.style.display === 'block' ? 'none' : 'block';
+        // Toggle current dropdown
+        const isVisible = dropdownContent.style.display === 'block';
+        dropdownContent.style.display = isVisible ? 'none' : 'block';
+        dropdownBtn.setAttribute('aria-expanded', !isVisible);
       } else if (!event.target.closest('.dropdown') && !event.target.closest('a[href="/logout"]')) {
+        // Close all dropdowns when clicking outside
         document.querySelectorAll('.dropdown-content').forEach(content => {
           content.style.display = 'none';
         });

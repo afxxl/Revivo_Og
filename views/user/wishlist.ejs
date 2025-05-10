@@ -1,6 +1,8 @@
 <!doctype html>
 <html lang="en">
   <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Revivo - Your Wishlist</title>
     <link href="/css/styles.css" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
@@ -10,6 +12,7 @@
 <style>
   .wishlist-item {
     transition: all 0.3s ease;
+    width: 100%;
   }
   .wishlist-item:hover {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
@@ -24,6 +27,7 @@
     transition: all 0.3s ease;
     position: relative;
     overflow: hidden;
+    width: 100%;
   }
   .add-to-cart-btn::after {
     content: '';
@@ -76,9 +80,12 @@
     transform: translateY(0);
     opacity: 1;
     transition: all 0.3s ease;
+    max-width: 90%;
+    width: 300px;
+    z-index: 9999;
   }
   .toast-confirm.hidden {
-    transform: translateY(100%);
+    transform: translateY(-20px);
     opacity: 0;
   }
   .empty-wishlist-message {
@@ -98,20 +105,40 @@
     justify-content: center !important;
     width: 100% !important;
   }
+  
+  /* Responsive adjustments */
+  @media (max-width: 640px) {
+    .wishlist-item {
+      padding: 0.75rem !important;
+    }
+    .product-image-container {
+      height: 120px !important;
+    }
+    .product-title {
+      font-size: 0.875rem !important;
+    }
+    .product-price {
+      font-size: 0.875rem !important;
+    }
+    .add-to-cart-btn {
+      padding: 0.5rem 0.75rem !important;
+      font-size: 0.75rem !important;
+    }
+  }
 </style>
   </head>
 
   <body class="bg-[#f8f7f5]">
     <%- include('../partials/user/header.ejs') %>
 
-    <div class="container mx-auto px-4 py-12 max-w-7xl">
-      <div class="flex items-center gap-3 mb-8">
+    <div class="container mx-auto px-4 py-6 sm:py-8 md:py-12 max-w-7xl">
+      <div class="flex items-center gap-3 mb-4 sm:mb-8">
         <a href="/" class="text-[#2C2C2C]/60 hover:text-[#2C2C2C] transition-colors font-montserrat text-sm">Home</a>
         <span class="text-[#2C2C2C]/40">/</span>
         <span class="text-[#2C2C2C] font-montserrat text-sm">Wishlist</span>
       </div>
 
-      <h1 class="text-3xl font-henny mb-8 text-[#2C2C2C]">Your Wishlist</h1>
+      <h1 class="text-2xl sm:text-3xl font-henny mb-4 sm:mb-8 text-[#2C2C2C]">Your Wishlist</h1>
 
       <% if (unavailableItems && unavailableItems.length > 0) { %>
         <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-6" role="alert">
@@ -121,22 +148,22 @@
       <% } %>
 
       <% if (wishlistItems.length === 0 && (!unavailableItems || unavailableItems.length === 0)) { %>
-        <div class="text-center py-16 empty-wishlist-message">
-          <svg class="w-16 h-16 mx-auto text-[#2C2C2C]/30 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div class="text-center py-8 sm:py-12 md:py-16 empty-wishlist-message">
+          <svg class="w-12 h-12 sm:w-16 sm:h-16 mx-auto text-[#2C2C2C]/30 mb-3 sm:mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
           </svg>
-          <h2 class="text-xl font-medium text-[#2C2C2C] mb-4">Your wishlist is empty</h2>
-          <p class="text-[#2C2C2C]/70 mb-6 font-montserrat">Save items you love to your wishlist</p>
-          <a href="/shop" class="inline-block px-6 py-3 bg-[#2C2C2C] text-white rounded-sm hover:bg-[#1a1a1a] transition-colors font-montserrat">
+          <h2 class="text-lg sm:text-xl font-medium text-[#2C2C2C] mb-2 sm:mb-4">Your wishlist is empty</h2>
+          <p class="text-[#2C2C2C]/70 mb-4 sm:mb-6 font-montserrat text-sm sm:text-base">Save items you love to your wishlist</p>
+          <a href="/shop" class="inline-block px-4 sm:px-6 py-2 sm:py-3 bg-[#2C2C2C] text-white rounded-sm hover:bg-[#1a1a1a] transition-colors font-montserrat text-sm sm:text-base">
             Discover Products
           </a>
         </div>
       <% } else { %>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
           <% wishlistItems.forEach((item, index) => { %>
-            <div class="wishlist-item bg-white rounded-sm shadow-sm p-4 group">
+            <div class="wishlist-item bg-white rounded-sm shadow-sm p-3 sm:p-4 group">
               <div class="relative">
-                <a href="/product/<%= item.productId._id %>" class="block relative h-48 w-full overflow-hidden">
+                <a href="/product/<%= item.productId._id %>" class="block relative h-36 sm:h-48 w-full overflow-hidden product-image-container">
                   <img 
                     src="<%= item.productId.productImage[0] || '/Images/placeholder.jpg' %>" 
                     alt="<%= item.productId.productName %>"
@@ -145,11 +172,11 @@
                   >
                 </a>
                 <button 
-                  class="remove-btn absolute top-2 right-2 text-[#2C2C2C]/40 hover:text-[#d32f2f] bg-white rounded-full p-2 shadow-md opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                  class="remove-btn absolute top-1 sm:top-2 right-1 sm:right-2 p-1.5 sm:p-2 bg-white rounded-full shadow-md z-10 text-[#2C2C2C]/60 hover:text-red-600 transition-colors"
                   data-product-id="<%= item.productId._id %>"
                   data-product-name="<%= item.productId.productName %>"
                 >
-                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                   </svg>
                 </button>
@@ -157,29 +184,29 @@
 
               <div class="mt-4">
                 <div class="mb-1">
-                  <span class="text-xs text-[#2C2C2C]/60 font-montserrat uppercase tracking-wider">
+                  <span class="text-[10px] sm:text-xs text-[#2C2C2C]/60 font-montserrat uppercase tracking-wider">
                     <%= item.productId.category?.name || 'Vintage' %> / <%= item.productId.brand?.brandName || 'Generic' %>
                   </span>
                 </div>
-                <a href="/product/<%= item.productId._id %>" class="font-medium text-[#2C2C2C] hover:text-[#f8c78d] transition-colors font-montserrat">
+                <a href="/product/<%= item.productId._id %>" class="text-sm sm:text-base font-medium text-[#2C2C2C] hover:text-[#f8c78d] transition-colors line-clamp-2 h-10 sm:h-12 product-title">
                   <%= item.productId.productName %>
                 </a>
 
                 <div class="mt-2">
                   <% if (item.offerPercentage > 0) { %>
-                    <div class="flex items-center">
+                    <div class="flex items-center gap-1 sm:gap-2">
                       <span class="bg-green-100 text-green-700 text-xs font-semibold px-1.5 py-0.5 rounded-sm mr-2">-<%= item.offerPercentage %>%</span>
-                      <span class="font-medium text-[#2C2C2C]">₹<%= item.finalPrice.toFixed(2) %></span>
-                      <span class="ml-2 text-xs text-[#2C2C2C]/60 line-through">₹<%= item.originalPrice.toFixed(2) %></span>
+                      <p class="font-medium text-[#f8c78d] text-sm sm:text-base product-price">₹<%= (item.originalPrice - (item.originalPrice * item.offerPercentage / 100)).toFixed(2) %></p>
+                      <p class="font-medium text-[#2C2C2C] line-through text-sm sm:text-base product-price">₹<%= item.originalPrice.toFixed(2) %></p>
                     </div>
                   <% } else { %>
-                    <p class="font-medium text-[#2C2C2C]">₹<%= item.originalPrice.toFixed(2) %></p>
+                    <p class="font-medium text-[#2C2C2C] text-sm sm:text-base product-price">₹<%= item.originalPrice.toFixed(2) %></p>
                   <% } %>
                 </div>
 
-                <div class="mt-4 flex items-center justify-between">
-                  <span class="text-xs text-green-600 flex items-center gap-1">
-                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div class="mt-3 sm:mt-4 flex items-center justify-between">
+                  <span class="text-[10px] sm:text-xs text-green-600 flex items-center gap-0.5 sm:gap-1">
+                    <svg class="w-2.5 h-2.5 sm:w-3 sm:h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
                     </svg>
                     In Stock
@@ -190,7 +217,7 @@
                 </div>
 
                 <button 
-                  class="w-full mt-4 py-2.5 bg-[#2C2C2C] text-white rounded-sm add-to-cart-btn text-sm font-montserrat"
+                  class="w-full mt-4 py-1.5 sm:py-2 bg-[#2C2C2C] text-white rounded-sm add-to-cart-btn text-xs sm:text-sm font-montserrat"
                   data-product-id="<%= String(item.productId._id) %>"
                   data-product-name="<%= item.productId.productName %>"
                   data-product-index="<%= index %>"
@@ -203,11 +230,11 @@
         </div>
 
         <% if (unavailableItems && unavailableItems.length > 0) { %>
-          <h2 class="text-xl font-henny mt-12 mb-6 text-[#2C2C2C]">Unavailable Items</h2>
-          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <h2 class="text-lg sm:text-xl font-henny mt-8 sm:mt-12 mb-4 sm:mb-6 text-[#2C2C2C]">Unavailable Items</h2>
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
             <% unavailableItems.forEach(item => { %>
-              <div class="wishlist-item bg-white rounded-sm shadow-sm p-4 unavailable-item">
-                <div class="relative h-32 w-full overflow-hidden mb-3">
+              <div class="wishlist-item bg-white rounded-sm shadow-sm p-3 sm:p-4 unavailable-item">
+                <div class="relative h-24 sm:h-32 w-full overflow-hidden mb-2 sm:mb-3">
                   <img 
                     src="<%= item.productId?.productImage?.[0] || '/Images/placeholder.jpg' %>" 
                     alt="<%= item.productId?.productName || 'Unavailable Product' %>"
@@ -216,14 +243,14 @@
                   >
                 </div>
                 <div>
-                  <h3 class="font-medium text-[#2C2C2C] font-montserrat text-sm">
+                  <h3 class="font-medium text-[#2C2C2C] font-montserrat text-xs sm:text-sm">
                     <%= item.productId?.productName || 'Unavailable Product' %>
                   </h3>
-                  <p class="text-xs text-red-600 mt-1">No longer available</p>
+                  <p class="text-[10px] sm:text-xs text-red-600 mt-0.5 sm:mt-1">No longer available</p>
                   <button 
-                    class="w-full mt-3 py-2 bg-gray-200 text-[#2C2C2C]/60 rounded-sm text-xs font-montserrat"
+                    class="w-full mt-2 sm:mt-3 py-1.5 sm:py-2 bg-gray-200 text-[#2C2C2C]/60 rounded-sm text-[10px] sm:text-xs font-montserrat unavailable-remove-btn"
                     data-product-id="<%= item.productId?._id %>"
-                    onclick="removeFromWishlist('<%= item.productId?._id %>', '<%= item.productId?.productName || 'This item' %>')"
+                    data-product-name="<%= item.productId?.productName || 'Unavailable Product' %>"
                   >
                     Remove
                   </button>
@@ -233,7 +260,7 @@
           </div>
         <% } %>
 
-        <div class="mt-6">
+        <div class="mt-4 sm:mt-6">
           <a href="/shop" class="text-[#2C2C2C] hover:text-[#f8c78d] transition-colors font-montserrat flex items-center gap-2">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
@@ -254,7 +281,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const productName = btn.getAttribute('data-product-name');
     const productIndex = btn.getAttribute('data-product-index');
     
-    
     btn.removeAttribute('onclick');
     
     btn.addEventListener('click', function(event) {
@@ -266,6 +292,20 @@ document.addEventListener('DOMContentLoaded', function() {
   });
   
   document.querySelectorAll('.remove-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+      const productId = this.getAttribute('data-product-id');
+      const productName = this.getAttribute('data-product-name');
+      
+      showConfirmToast(
+        `Remove <strong>${productName}</strong> from wishlist?`,
+        () => removeFromWishlist(productId, productName),
+        () => showToast('Remove action cancelled', 'info')
+      );
+    });
+  });
+  
+  // Add event listeners for unavailable items remove buttons
+  document.querySelectorAll('.unavailable-remove-btn').forEach(btn => {
     btn.addEventListener('click', function() {
       const productId = this.getAttribute('data-product-id');
       const productName = this.getAttribute('data-product-name');
@@ -362,15 +402,22 @@ async function addToCart(productId, productName) {
         cartCountEl.textContent = data.cartCount || 0;
       }
       
+      // Update cart count in all header elements (desktop and mobile)
+      if (data.cartCount !== undefined) {
+        document.querySelectorAll('#cart-count, .mobile-cart-count').forEach(el => {
+          el.textContent = data.cartCount || 0;
+        });
+      }
+      
+      // Update wishlist count
       if (data.wishlistCount !== undefined) {
-        document.querySelectorAll('#wishlist-count').forEach(el => {
+        document.querySelectorAll('#wishlist-count, .mobile-wishlist-count').forEach(el => {
           el.textContent = data.wishlistCount;
         });
         
         const productCards = document.querySelectorAll(`[data-product-id="${productId}"]`);
         let itemRemoved = false;
 
-        
         productCards.forEach(el => {
           const card = el.closest('.wishlist-item');
           if (card) {
@@ -426,7 +473,7 @@ async function removeFromWishlist(productId, productName) {
     if (data.success) {
       showToast(`Removed ${productName} from wishlist`, 'success');
       
-      document.querySelectorAll('#wishlist-count').forEach(el => {
+      document.querySelectorAll('#wishlist-count, .mobile-wishlist-count').forEach(el => {
         el.textContent = data.wishlistCount;
       });
       
@@ -466,19 +513,19 @@ function showEmptyWishlistUI() {
   const container = document.querySelector('.container');
   if (container) {
     container.innerHTML = `
-      <div class="flex items-center gap-3 mb-8">
+      <div class="flex items-center gap-3 mb-4 sm:mb-8">
         <a href="/" class="text-[#2C2C2C]/60 hover:text-[#2C2C2C] transition-colors font-montserrat text-sm">Home</a>
         <span class="text-[#2C2C2C]/40">/</span>
         <span class="text-[#2C2C2C] font-montserrat text-sm">Wishlist</span>
       </div>
-      <h1 class="text-3xl font-henny mb-8 text-[#2C2C2C]">Your Wishlist</h1>
+      <h1 class="text-2xl sm:text-3xl font-henny mb-4 sm:mb-8 text-[#2C2C2C]">Your Wishlist</h1>
       <div class="text-center py-16 empty-wishlist-message">
         <svg class="w-16 h-16 mx-auto text-[#2C2C2C]/30 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
         </svg>
         <h2 class="text-xl font-medium text-[#2C2C2C] mb-4">Your wishlist is empty</h2>
         <p class="text-[#2C2C2C]/70 mb-6 font-montserrat">Save items you love to your wishlist</p>
-        <a href="/shop" class="inline-block px-6 py-3 bg-[#2C2C2C] text-white rounded-sm hover:bg-[#1a1a1a] transition-colors font-montserrat">
+        <a href="/shop" class="inline-block px-4 sm:px-6 py-2 sm:py-3 bg-[#2C2C2C] text-white rounded-sm hover:bg-[#1a1a1a] transition-colors font-montserrat text-sm sm:text-base">
           Discover Products
         </a>
       </div>
@@ -488,11 +535,11 @@ function showEmptyWishlistUI() {
 
 function showToast(message, type = 'success') {
   const toast = document.createElement('div');
-  toast.className = `fixed bottom-4 right-4 ${
+  toast.className = `fixed top-16 sm:top-20 right-4 max-w-[90%] sm:max-w-xs ${
     type === 'success' ? 'bg-[#2C2C2C]' : 
     type === 'warning' ? 'bg-yellow-500' : 
     type === 'info' ? 'bg-blue-500' : 'bg-red-500'
-  } text-white px-6 py-3 rounded-lg shadow-xl transform translate-y-0 opacity-100 transition-all duration-300 z-50 flex items-center`;
+  } text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg shadow-xl transform translate-y-0 opacity-100 transition-all duration-300 z-50 flex items-center text-xs sm:text-sm`;
 
   const icon = document.createElement('span');
   icon.className = 'mr-2';
@@ -511,14 +558,14 @@ function showToast(message, type = 'success') {
   document.body.appendChild(toast);
 
   setTimeout(() => {
-    toast.classList.add('translate-y-full', 'opacity-0');
+    toast.classList.add('-translate-y-5', 'opacity-0');
     setTimeout(() => toast.remove(), 300);
   }, 3000);
 }
 
 function showConfirmToast(message, onConfirm, onCancel) {
   const toast = document.createElement('div');
-  toast.className = 'toast-confirm fixed bottom-4 right-4 bg-[#2C2C2C] text-white px-6 py-4 rounded-lg shadow-xl z-50';
+  toast.className = 'toast-confirm fixed top-16 sm:top-20 right-4 max-w-[90%] sm:max-w-xs bg-[#2C2C2C] text-white px-4 sm:px-6 py-3 sm:py-4 rounded-lg shadow-xl z-50 text-xs sm:text-sm';
   let isDismissing = false;
 
   toast.innerHTML = `

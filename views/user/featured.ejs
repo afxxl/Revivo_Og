@@ -1,6 +1,8 @@
 <!doctype html>
 <html lang="en">
   <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Featured | REVIVO</title>
     <link href="/css/styles.css" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
@@ -8,6 +10,14 @@
     <link href="https://fonts.googleapis.com/css2?family=Henny+Penny&family=Playfair+Display:wght@400;500;600&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
 
     <style>
+      /* Responsive breakpoints */
+      :root {
+        --mobile: 480px;
+        --tablet: 768px;
+        --laptop: 1024px;
+        --desktop: 1280px;
+      }
+      
       .product-card {
         position: relative;
         transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
@@ -20,10 +30,21 @@
         flex-direction: column;
       }
       
-      .product-card:hover {
-        transform: translateY(-8px);
-        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
-        border-color: rgba(248, 199, 141, 0.3);
+      /* Adjust hover effect for touch devices */
+      @media (hover: hover) {
+        .product-card:hover {
+          transform: translateY(-8px);
+          box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+          border-color: rgba(248, 199, 141, 0.3);
+        }
+      }
+      
+      /* For mobile devices, reduce shadow size */
+      @media (max-width: 480px) {
+        .product-card:active {
+          transform: translateY(-4px);
+          box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
+        }
       }
       
       .product-image-container {
@@ -45,8 +66,10 @@
         padding: 1rem;
       }
       
-      .product-card:hover .product-image {
-        transform: scale(1.05);
+      @media (hover: hover) {
+        .product-card:hover .product-image {
+          transform: scale(1.05);
+        }
       }
       
       .product-overlay {
@@ -61,8 +84,17 @@
         padding-bottom: 1rem;
       }
       
-      .product-card:hover .product-overlay {
-        opacity: 1;
+      @media (hover: hover) {
+        .product-card:hover .product-overlay {
+          opacity: 1;
+        }
+      }
+      
+      /* For mobile devices, show overlay on tap */
+      @media (max-width: 480px) {
+        .product-card:active .product-overlay {
+          opacity: 1;
+        }
       }
       
       .featured-badge, .product-badge {
@@ -77,6 +109,14 @@
         border-radius: 2rem;
         letter-spacing: 0.05rem;
         box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      }
+      
+      /* Make badges more visible on smaller screens */
+      @media (max-width: 480px) {
+        .featured-badge, .product-badge {
+          font-size: 0.6rem;
+          padding: 0.2rem 0.6rem;
+        }
       }
       
       .product-badge.featured, .featured-badge {
@@ -100,6 +140,13 @@
         flex-direction: column;
         flex-grow: 1;
         position: relative;
+      }
+      
+      /* Adjust padding for smaller screens */
+      @media (max-width: 480px) {
+        .product-content {
+          padding: 1rem;
+        }
       }
       
       .product-category {
@@ -126,8 +173,18 @@
         line-clamp: 2;
       }
       
-      .product-card:hover .product-title {
-        color: #f8c78d;
+      /* Adjust font size for mobile */
+      @media (max-width: 480px) {
+        .product-title {
+          font-size: 0.8rem;
+          margin-bottom: 0.5rem;
+        }
+      }
+      
+      @media (hover: hover) {
+        .product-card:hover .product-title {
+          color: #f8c78d;
+        }
       }
       
       .product-footer {
@@ -147,11 +204,24 @@
         color: #2C2C2C;
       }
       
+      /* Adjust price size for mobile */
+      @media (max-width: 480px) {
+        .current-price {
+          font-size: 0.85rem;
+        }
+      }
+      
       .original-price {
         font-size: 0.75rem;
         text-decoration: line-through;
         color: rgba(44, 44, 44, 0.5);
         margin-left: 0.5rem;
+      }
+      
+      @media (max-width: 480px) {
+        .original-price {
+          font-size: 0.7rem;
+        }
       }
       
       .cart-button {
@@ -167,11 +237,21 @@
         border: 2px solid #2C2C2C;
       }
       
-      .cart-button:hover {
-        background-color: #f8c78d;
-        color: #2C2C2C;
-        transform: scale(1.1);
-        border-color: #f8c78d;
+      /* Make cart button more tappable on mobile */
+      @media (max-width: 480px) {
+        .cart-button {
+          width: 2.25rem;
+          height: 2.25rem;
+        }
+      }
+      
+      @media (hover: hover) {
+        .cart-button:hover {
+          background-color: #f8c78d;
+          color: #2C2C2C;
+          transform: scale(1.1);
+          border-color: #f8c78d;
+        }
       }
       
       .quick-view-button {
@@ -187,14 +267,28 @@
         letter-spacing: 0.05rem;
       }
       
-      .product-card:hover .quick-view-button {
-        transform: translateY(0);
-        opacity: 1;
+      /* Make quick view button always visible on mobile for better UX */
+      @media (max-width: 480px) {
+        .quick-view-button {
+          transform: translateY(0);
+          opacity: 0.9;
+          font-size: 0.65rem;
+          padding: 0.4rem 1rem;
+        }
       }
       
-      .quick-view-button:hover {
-        background-color: #f8c78d;
-        color: #2C2C2C;
+      @media (hover: hover) {
+        .product-card:hover .quick-view-button {
+          transform: translateY(0);
+          opacity: 1;
+        }
+      }
+      
+      @media (hover: hover) {
+        .quick-view-button:hover {
+          background-color: #f8c78d;
+          color: #2C2C2C;
+        }
       }
       .section-heading {
         font-family: 'Playfair Display', serif;
@@ -359,6 +453,28 @@
         padding: 2rem;
       }
       
+      /* Adjust filter sidebar for different screen sizes */
+      @media (max-width: 480px) {
+        .filter-sidebar {
+          width: 85%;
+          padding: 1.25rem;
+        }
+      }
+      
+      @media (min-width: 481px) and (max-width: 768px) {
+        .filter-sidebar {
+          width: 70%;
+          padding: 1.5rem;
+        }
+      }
+      
+      @media (min-width: 769px) and (max-width: 1024px) {
+        .filter-sidebar {
+          width: 50%;
+          padding: 1.75rem;
+        }
+      }
+      
       .filter-sidebar.active {
         right: 0;
       }
@@ -394,14 +510,37 @@
         align-items: center;
         justify-content: center;
         box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-        z-index: 48;
+        cursor: pointer;
+        z-index: 40;
         transition: all 0.3s ease;
       }
       
-      .filter-button:hover {
-        transform: scale(1.1);
-        background-color: #f8c78d;
-        color: #2C2C2C;
+      /* Make filter button more tappable on mobile */
+      @media (max-width: 480px) {
+        .filter-button {
+          bottom: 1.25rem;
+          right: 1.25rem;
+          width: 56px;
+          height: 56px;
+        }
+      }
+      
+      /* Adjust filter button position for different screen sizes */
+      @media (min-width: 481px) and (max-width: 768px) {
+        .filter-button {
+          bottom: 1.5rem;
+          right: 1.5rem;
+          width: 52px;
+          height: 52px;
+        }
+      }
+      
+      @media (hover: hover) {
+        .filter-button:hover {
+          background-color: #f8c78d;
+          color: #2C2C2C;
+          transform: scale(1.05);
+        }
       }
       
       .category-tags {
@@ -567,7 +706,7 @@
   <body class="bg-[#f8f7f5]">
     <%- include('../partials/user/header.ejs') %>
 
-    <section class="thrift-hero-section py-20 md:py-28 overflow-hidden">
+    <section class="thrift-hero-section py-12 sm:py-16 md:py-20 lg:py-28 overflow-hidden">
       <div class="thrift-pattern-bg"></div>
       
       <div class="clothesline hidden lg:block">
@@ -638,12 +777,12 @@
       </svg>
     </section>
 
-    <section class="py-16 bg-[#f8f7f5]" id="featured-products">
-      <div class="container mx-auto px-4">
-        <div class="text-center mb-12">
-          <h4 class="text-[#f8c78d] text-xs tracking-widest uppercase mb-2 font-montserrat">Handpicked Selection</h4>
-          <h2 class="text-3xl section-heading text-[#2C2C2C]">Featured Products</h2>
-          <p class="text-[#2C2C2C]/70 max-w-2xl mx-auto mt-4 font-montserrat">Each piece in this collection has been marked as featured for its exceptional quality and unique character.</p>
+    <section class="py-10 sm:py-12 md:py-16 bg-[#f8f7f5]" id="featured-products">
+      <div class="container mx-auto px-4 sm:px-6">
+        <div class="text-center mb-8 md:mb-12">
+          <h4 class="text-[#f8c78d] text-xs tracking-widest uppercase mb-1 sm:mb-2 font-montserrat">Handpicked Selection</h4>
+          <h2 class="text-2xl sm:text-3xl section-heading text-[#2C2C2C]">Featured Products</h2>
+          <p class="text-[#2C2C2C]/70 max-w-2xl mx-auto mt-3 md:mt-4 font-montserrat text-sm sm:text-base">Each piece in this collection has been marked as featured for its exceptional quality and unique character.</p>
         </div>
 
         <div class="flex flex-col md:flex-row md:items-center justify-between mb-6 gap-4">
@@ -718,7 +857,7 @@
           </div>
         </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6">
+        <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4 md:gap-6">
           <% if (products && products.length > 0) { %>
             <% products.forEach(product => { %>
               <div class="product-card">
@@ -805,7 +944,7 @@
         </div>
 
         <% if (totalPages > 1) { %>
-        <div class="mt-16 flex justify-center">
+        <div class="mt-8 sm:mt-12 md:mt-16 flex justify-center">
           <div class="inline-flex rounded-md shadow-sm">
             <% if (hasPreviousPage) { %>
               <a href="/featured?page=<%= previousPage %>&<%= new URLSearchParams(filters).toString() %>" 
@@ -855,19 +994,19 @@
       <div class="filter-overlay"></div>
       
 <div class="filter-sidebar">
-  <div class="flex justify-between items-center mb-6">
-    <h3 class="text-xl font-playfair text-[#2C2C2C]">Filter Products</h3>
-    <button id="close-filter" class="text-[#2C2C2C] hover:text-[#f8c78d] focus:outline-none">
-      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+  <div class="flex justify-between items-center mb-4 sm:mb-6">
+    <h3 class="text-lg sm:text-xl font-playfair text-[#2C2C2C]">Filter Products</h3>
+    <button id="close-filter" class="text-[#2C2C2C] hover:text-[#f8c78d] focus:outline-none p-1">
+      <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
       </svg>
     </button>
   </div>
   
-  <form id="filterForm" class="space-y-6">
+  <form id="filterForm" class="space-y-4 sm:space-y-5 md:space-y-6">
     <div>
-      <label class="block text-sm font-montserrat text-[#2C2C2C]/70 mb-2">Category</label>
-      <select name="category" class="w-full border border-[#e0dcd4] p-2 rounded-md focus:ring-2 focus:ring-[#f8c78d]/30 focus:outline-none">
+      <label class="block text-xs sm:text-sm font-montserrat text-[#2C2C2C]/70 mb-1 sm:mb-2">Category</label>
+      <select name="category" class="w-full border border-[#e0dcd4] p-1.5 sm:p-2 text-sm rounded-md focus:ring-2 focus:ring-[#f8c78d]/30 focus:outline-none">
         <option value="">All Categories</option>
         <% categories.forEach(category => { %>
           <option value="<%= category._id %>" <%= filters.category === category._id.toString() ? 'selected' : '' %>>
@@ -878,8 +1017,8 @@
     </div>
 
     <div>
-      <label class="block text-sm font-montserrat text-[#2C2C2C]/70 mb-2">Brand</label>
-      <select name="brand" class="w-full border border-[#e0dcd4] p-2 rounded-md focus:ring-2 focus:ring-[#f8c78d]/30 focus:outline-none">
+      <label class="block text-xs sm:text-sm font-montserrat text-[#2C2C2C]/70 mb-1 sm:mb-2">Brand</label>
+      <select name="brand" class="w-full border border-[#e0dcd4] p-1.5 sm:p-2 text-sm rounded-md focus:ring-2 focus:ring-[#f8c78d]/30 focus:outline-none">
         <option value="">All Brands</option>
         <% brands.forEach(brand => { %>
           <option value="<%= brand._id %>" <%= filters.brand === brand._id.toString() ? 'selected' : '' %>>
@@ -890,8 +1029,8 @@
     </div>
 
     <div>
-      <label class="block text-sm font-montserrat text-[#2C2C2C]/70 mb-2">Size</label>
-      <select name="size" class="w-full border border-[#e0dcd4] p-2 rounded-md focus:ring-2 focus:ring-[#f8c78d]/30 focus:outline-none">
+      <label class="block text-xs sm:text-sm font-montserrat text-[#2C2C2C]/70 mb-1 sm:mb-2">Size</label>
+      <select name="size" class="w-full border border-[#e0dcd4] p-1.5 sm:p-2 text-sm rounded-md focus:ring-2 focus:ring-[#f8c78d]/30 focus:outline-none">
         <option value="">All Sizes</option>
         <option value="S" <%= filters.size === 'S' ? 'selected' : '' %>>S</option>
         <option value="M" <%= filters.size === 'M' ? 'selected' : '' %>>M</option>
@@ -901,8 +1040,8 @@
     </div>
 
     <div>
-      <label class="block text-sm font-montserrat text-[#2C2C2C]/70 mb-2">Condition</label>
-      <select name="condition" class="w-full border border-[#e0dcd4] p-2 rounded-md focus:ring-2 focus:ring-[#f8c78d]/30 focus:outline-none">
+      <label class="block text-xs sm:text-sm font-montserrat text-[#2C2C2C]/70 mb-1 sm:mb-2">Condition</label>
+      <select name="condition" class="w-full border border-[#e0dcd4] p-1.5 sm:p-2 text-sm rounded-md focus:ring-2 focus:ring-[#f8c78d]/30 focus:outline-none">
         <option value="">All Conditions</option>
         <option value="Like New" <%= filters.condition === 'Like New' ? 'selected' : '' %>>Like New</option>
         <option value="Gently Used" <%= filters.condition === 'Gently Used' ? 'selected' : '' %>>Gently Used</option>
@@ -911,31 +1050,31 @@
     </div>
 
     <div>
-      <label class="block text-sm font-montserrat text-[#2C2C2C]/70 mb-2">Price Range</label>
+      <label class="block text-xs sm:text-sm font-montserrat text-[#2C2C2C]/70 mb-1 sm:mb-2">Price Range</label>
       <div class="flex items-center gap-2">
         <input type="number" name="minPrice" placeholder="Min" value="<%= filters.minPrice || '' %>" 
-               class="w-1/2 border border-[#e0dcd4] p-2 rounded-md focus:ring-2 focus:ring-[#f8c78d]/30 focus:outline-none">
-        <span>-</span>
+               class="w-1/2 border border-[#e0dcd4] p-1.5 sm:p-2 text-sm rounded-md focus:ring-2 focus:ring-[#f8c78d]/30 focus:outline-none">
+        <span class="text-sm">-</span>
         <input type="number" name="maxPrice" placeholder="Max" value="<%= filters.maxPrice || '' %>" 
-               class="w-1/2 border border-[#e0dcd4] p-2 rounded-md focus:ring-2 focus:ring-[#f8c78d]/30 focus:outline-none">
+               class="w-1/2 border border-[#e0dcd4] p-1.5 sm:p-2 text-sm rounded-md focus:ring-2 focus:ring-[#f8c78d]/30 focus:outline-none">
       </div>
     </div>
 
     <!-- Add Sort By Dropdown -->
     <div>
-      <label class="block text-sm font-montserrat text-[#2C2C2C]/70 mb-2">Sort By</label>
-      <select name="sort" class="w-full border border-[#e0dcd4] p-2 rounded-md focus:ring-2 focus:ring-[#f8c78d]/30 focus:outline-none">
+      <label class="block text-xs sm:text-sm font-montserrat text-[#2C2C2C]/70 mb-1 sm:mb-2">Sort By</label>
+      <select name="sort" class="w-full border border-[#e0dcd4] p-1.5 sm:p-2 text-sm rounded-md focus:ring-2 focus:ring-[#f8c78d]/30 focus:outline-none">
         <option value="">Default</option>
         <option value="low-to-high" <%= filters.sort === 'low-to-high' ? 'selected' : '' %>>Price: Low to High</option>
         <option value="high-to-low" <%= filters.sort === 'high-to-low' ? 'selected' : '' %>>Price: High to Low</option>
       </select>
     </div>
 
-    <div class="pt-4 flex flex-col gap-4">
-      <button type="submit" class="w-full px-6 py-3 bg-[#2C2C2C] text-white rounded-md hover:bg-[#1a1a1a] font-montserrat transition-colors">
+    <div class="pt-3 sm:pt-4 flex flex-col gap-3 sm:gap-4">
+      <button type="submit" class="w-full px-4 sm:px-6 py-2.5 sm:py-3 bg-[#2C2C2C] text-white text-sm rounded-md hover:bg-[#1a1a1a] font-montserrat transition-colors">
         Apply Filters
       </button>
-      <a href="/featured" class="w-full text-center px-6 py-3 border border-[#e0dcd4] text-[#2C2C2C] rounded-md hover:bg-[#f8c78d]/10 font-montserrat transition-colors">
+      <a href="/featured" class="w-full text-center px-4 sm:px-6 py-2.5 sm:py-3 border border-[#e0dcd4] text-[#2C2C2C] text-sm rounded-md hover:bg-[#f8c78d]/10 font-montserrat transition-colors">
         Clear Filters
       </a>
     </div>

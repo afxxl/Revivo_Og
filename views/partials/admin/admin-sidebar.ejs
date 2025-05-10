@@ -1,18 +1,50 @@
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Henny+Penny&display=swap');
   
+  :root {
+    --mobile: 480px;
+    --tablet: 768px;
+    --laptop: 1024px;
+    --desktop: 1280px;
+  }
+  
   #sidebar {
     background-color: #ffffff;
     border-right: 1px solid #e0dcd4;
     box-shadow: 2px 0 4px rgba(0,0,0,0.05);
     transition: all 0.3s ease;
+    width: 250px;
+  }
+  
+  @media (max-width: 767px) {
+    #sidebar {
+      width: 240px;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    #sidebar {
+      width: 220px;
+    }
   }
 
   .logo {
-    height: 85px;
+    height: 60px;
     width: auto;
     max-width: 100%;
     transition: transform 0.3s ease;
+  }
+  
+  @media (min-width: 480px) {
+    .logo {
+      height: 70px;
+    }
+  }
+  
+  @media (min-width: 768px) {
+    .logo {
+      height: 85px;
+    }
   }
 
   .logo:hover {
@@ -24,12 +56,54 @@
     color: #2C2C2C;
     text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
     transition: color 0.3s ease;
+    font-size: 1.25rem;
+  }
+  
+  @media (min-width: 480px) {
+    .brand-heading {
+      font-size: 1.5rem;
+    }
+  }
+  
+  @media (min-width: 768px) {
+    .brand-heading {
+      font-size: 1.75rem;
+    }
   }
   
   #menuButton, #closeButton {
     transition: all 0.3s ease;
     background-color: #ffffff;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 50;
+  }
+  
+  #menuButton svg, #closeButton svg {
+    width: 20px;
+    height: 20px;
+  }
+  
+  @media (min-width: 480px) {
+    #menuButton, #closeButton {
+      width: 38px;
+      height: 38px;
+    }
+    
+    #menuButton svg, #closeButton svg {
+      width: 22px;
+      height: 22px;
+    }
+  }
+  
+  @media (min-width: 768px) {
+    #closeButton {
+      display: none;
+    }
   }
   
   #menuButton:hover, #closeButton:hover {
@@ -42,6 +116,22 @@
     border-left: 3px solid transparent;
     position: relative;
     overflow: hidden;
+    padding: 0.625rem 0.75rem;
+    font-size: 0.875rem;
+  }
+  
+  @media (min-width: 480px) {
+    nav a {
+      padding: 0.75rem 0.875rem;
+      font-size: 0.938rem;
+    }
+  }
+  
+  @media (min-width: 768px) {
+    nav a {
+      padding: 0.75rem 1rem;
+      font-size: 1rem;
+    }
   }
   
   nav a:hover {
@@ -52,6 +142,25 @@
   
   nav a svg {
     transition: all 0.2s ease;
+    width: 1.125rem;
+    height: 1.125rem;
+    min-width: 1.125rem;
+  }
+  
+  @media (min-width: 480px) {
+    nav a svg {
+      width: 1.25rem;
+      height: 1.25rem;
+      min-width: 1.25rem;
+    }
+  }
+  
+  @media (min-width: 768px) {
+    nav a svg {
+      width: 1.375rem;
+      height: 1.375rem;
+      min-width: 1.375rem;
+    }
   }
   
   nav a:hover svg {
@@ -125,15 +234,20 @@
   }
 </style>
 
-<button id="menuButton" class="md:hidden fixed top-4 left-4 z-50 p-2 rounded-lg bg-white shadow-lg hover:shadow-md transition-all">
+<button id="menuButton" class="md:hidden fixed top-3 sm:top-4 left-3 sm:left-4 z-50 p-2 rounded-lg bg-white shadow-lg hover:shadow-md transition-all">
     <svg class="w-6 h-6 text-[#2C2C2C]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
     </svg>
 </button>
 
-<div id="sidebar" class="fixed md:static w-64 h-full bg-white shadow-lg transition-transform duration-300 ease-in-out transform -translate-x-full md:translate-x-0 z-40">
-    <nav class="p-4 space-y-1">
-        <a href="/admin/dashboard" class="flex items-center space-x-3 p-3 <%= currentPage === 'dashboard' ? 'bg-purple-100 text-purple-600' : 'text-[#2C2C2C] hover:bg-[#f8f7f5]' %> rounded-lg">
+<div id="sidebar" class="fixed md:static h-full bg-white shadow-lg transition-transform duration-300 ease-in-out transform -translate-x-full md:translate-x-0 z-40 overflow-y-auto">
+    <button id="closeButton" class="md:hidden absolute top-3 right-3 p-2 rounded-lg bg-white shadow-lg hover:shadow-md transition-all" onclick="closeSidebar()">
+        <svg class="w-5 h-5 text-[#2C2C2C]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+        </svg>
+    </button>
+    <nav class="p-3 sm:p-3.5 md:p-4 space-y-0.5 sm:space-y-1">
+        <a href="/admin/dashboard" class="flex items-center space-x-2 sm:space-x-3 <%= currentPage === 'dashboard' ? 'bg-purple-100 text-purple-600' : 'text-[#2C2C2C] hover:bg-[#f8f7f5]' %> rounded-lg">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/>
             </svg>
@@ -204,7 +318,7 @@
             <span>Coupons</span>
         </a>
 
-        <div class="border-t border-[#e0dcd4] my-2"></div>
+        <div class="border-t border-[#e0dcd4] my-1.5 sm:my-2"></div>
 
         <a href="/admin/logout" class="flex items-center space-x-3 p-3 text-[#2C2C2C] hover:bg-[#f8f7f5] rounded-lg">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -229,6 +343,7 @@
         overlay.classList.remove('hidden');
         overlay.style.opacity = '1';
         document.body.style.overflow = 'hidden';
+        menuButton.classList.add('hidden');
     }
 
     function closeSidebar() {
@@ -239,6 +354,7 @@
             overlay.classList.add('hidden');
         }, 300);
         document.body.style.overflow = 'auto';
+        menuButton.classList.remove('hidden');
     }
 
     menuButton.addEventListener('click', openSidebar);
@@ -264,6 +380,7 @@
                 sidebar.classList.remove('-translate-x-full');
                 overlay.classList.add('hidden');
                 document.body.style.overflow = 'auto';
+                menuButton.classList.remove('hidden');
             }
         }, 100); 
     });

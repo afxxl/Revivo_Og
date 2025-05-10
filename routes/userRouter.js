@@ -26,14 +26,12 @@ router.post("/verify-otp", userController.verifyOtp);
 router.post("/resend-otp", userController.resendOtp);
 router.get("/login", userController.loadLogin);
 router.post("/login", userController.login);
-
 router.post("/add-to-cart", userController.addToCart);
 
 router.get(
   "/auth/google",
   passport.authenticate("google", { scope: ["profile", "email"] }),
 );
-
 router.post("/store-referral-code", (req, res) => {
   try {
     const { referralCode } = req.body;

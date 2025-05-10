@@ -2,18 +2,37 @@
 <html lang="en">
   <head>
     <title><%= product.productName %> | REVIVO</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link href="/css/styles.css" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Henny+Penny&family=Playfair+Display:wght@400;500;600&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
     <style>
+      /* Responsive breakpoints */
+      :root {
+        --mobile: 480px;
+        --tablet: 768px;
+        --laptop: 1024px;
+        --desktop: 1280px;
+      }
       .product-gallery-thumbnail {
         transition: all 0.3s ease;
       }
-      .product-gallery-thumbnail:hover {
-        transform: scale(1.05);
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-        border-color: #f8c78d;
+      
+      @media (hover: hover) {
+        .product-gallery-thumbnail:hover {
+          transform: scale(1.05);
+          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+          border-color: #f8c78d;
+        }
+      }
+      
+      @media (max-width: 480px) {
+        .product-gallery-thumbnail:active {
+          transform: scale(1.03);
+          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+          border-color: #f8c78d;
+        }
       }
       .product-gallery-thumbnail.active {
         border-color: #f8c78d;
@@ -54,9 +73,18 @@
         padding: 12px 16px;
         transition: transform 0.3s ease, box-shadow 0.3s ease;
       }
-      .trust-badge:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 8px 15px rgba(0, 0, 0, 0.05);
+      
+      @media (hover: hover) {
+        .trust-badge:hover {
+          transform: translateY(-3px);
+          box-shadow: 0 8px 15px rgba(0, 0, 0, 0.05);
+        }
+      }
+      
+      @media (max-width: 480px) {
+        .trust-badge {
+          padding: 10px 12px;
+        }
       }
       
       /* Image zoom container */
@@ -76,6 +104,18 @@
         max-height: 500px;
       }
       
+      @media (max-width: 768px) {
+        .img-zoom-container img {
+          max-height: 400px;
+        }
+      }
+      
+      @media (max-width: 480px) {
+        .img-zoom-container img {
+          max-height: 350px;
+        }
+      }
+      
       /* Custom quantity input styles */
       .custom-number-input button {
         background-color: #f8f7f5;
@@ -90,6 +130,14 @@
         transition: all 0.2s ease;
       }
       
+      @media (max-width: 480px) {
+        .custom-number-input button {
+          width: 36px;
+          height: 36px;
+          font-size: 18px;
+        }
+      }
+      
       .custom-number-input button:hover {
         background-color: #e0dcd4;
       }
@@ -101,6 +149,14 @@
         text-align: center;
         font-size: 14px;
         -moz-appearance: textfield;
+      }
+      
+      @media (max-width: 480px) {
+        .custom-number-input input {
+          width: 44px;
+          height: 36px;
+          font-size: 16px;
+        }
       }
       
       /* Remove arrows from number input */
@@ -118,6 +174,13 @@
         overflow: hidden;
       }
       
+      @media (max-width: 480px) {
+        .add-to-cart-btn {
+          padding: 0.75rem 1rem;
+          font-size: 0.95rem;
+        }
+      }
+      
       .add-to-cart-btn::after {
         content: '';
         position: absolute;
@@ -129,10 +192,20 @@
         transition: all 0.6s ease;
       }
       
-      .add-to-cart-btn:hover {
-        background-color: #1a1a1a;
-        transform: translateY(-2px);
-        box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+      @media (hover: hover) {
+        .add-to-cart-btn:hover {
+          background-color: #1a1a1a;
+          transform: translateY(-2px);
+          box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+        }
+      }
+      
+      @media (max-width: 480px) {
+        .add-to-cart-btn:active {
+          background-color: #1a1a1a;
+          transform: translateY(-1px);
+          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
       }
       
       .add-to-cart-btn:hover::after {
@@ -143,9 +216,18 @@
         position: relative;
         overflow: hidden;
       }
-      .wishlist-btn:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      @media (hover: hover) {
+        .wishlist-btn:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+      }
+      
+      @media (max-width: 480px) {
+        .wishlist-btn:active {
+          transform: translateY(-1px);
+          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
       }
       .wishlist-btn[disabled] {
         opacity: 0.6;
@@ -164,15 +246,15 @@
   <body class="bg-[#f8f7f5]">
     <%- include('../partials/user/header.ejs') %>
 
-    <section class="py-12">
-      <div class="container mx-auto px-4 max-w-7xl">
-        <div class="mb-6 font-montserrat text-sm text-[#2C2C2C]/70">
+    <section class="py-8 sm:py-10 md:py-12">
+      <div class="container mx-auto px-3 sm:px-4 max-w-7xl">
+        <div class="mb-4 sm:mb-6 font-montserrat text-xs sm:text-sm text-[#2C2C2C]/70">
           <a href="/" class="hover:text-[#f8c78d]">Home</a> / 
           <a href="/shop" class="hover:text-[#f8c78d]">Shop</a> / 
           <span class="text-[#2C2C2C]"><%= product.productName %></span>
         </div>
 
-        <div class="flex flex-col lg:flex-row gap-12">
+        <div class="flex flex-col lg:flex-row gap-6 sm:gap-8 md:gap-10 lg:gap-12">
           <div class="lg:w-1/2">
             <div class="img-zoom-container p-4 mb-4" id="imageZoomContainer">
               <img 
@@ -184,10 +266,10 @@
               >
             </div>
 
-            <div class="flex gap-3 overflow-x-auto py-2">
+            <div class="flex gap-2 sm:gap-3 overflow-x-auto py-2 scrollbar-hide">
               <% product.productImage.forEach((image, index) => { %>
                 <div 
-                  class="product-gallery-thumbnail flex-shrink-0 w-20 h-20 bg-white border-2 border-[#e0dcd4] rounded-md p-1 cursor-pointer <%= index === 0 ? 'active' : '' %>"
+                  class="product-gallery-thumbnail flex-shrink-0 w-16 h-16 sm:w-20 sm:h-20 bg-white border-2 border-[#e0dcd4] rounded-md p-1 cursor-pointer <%= index === 0 ? 'active' : '' %>"
                   onclick="changeMainImage('<%= image %>', this)"
                 >
                   <img 
@@ -200,7 +282,7 @@
               <% }); %>
             </div>
 
-            <div class="mt-8 grid grid-cols-2 gap-4">
+            <div class="mt-6 sm:mt-8 grid grid-cols-2 gap-3 sm:gap-4">
               <div class="trust-badge flex items-center gap-3">
                 <div class="text-[#f8c78d] text-xl">
                   <i class="fas fa-shield-alt"></i>
@@ -216,7 +298,7 @@
                 </div>
                 <div>
                   <p class="text-sm font-montserrat font-medium">Free Shipping</p>
-                  <p class="text-xs text-[#2C2C2C]/70">On orders over ₹3500</p>
+                  <p class="text-xs text-[#2C2C2C]/70">On orders over ₹1000</p>
                 </div>
               </div>
               <div class="trust-badge flex items-center gap-3">
@@ -241,9 +323,9 @@
           </div>
 
           <div class="lg:w-1/2">
-            <div class="bg-white p-8 rounded-lg shadow-sm">
+            <div class="bg-white p-4 sm:p-6 md:p-8 rounded-lg shadow-sm">
               <% if (!product.isListed || !product.brand.isActive || !product.category.isListed || product.stock <= 0 || product.status !== 'Available') { %>
-                <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-6" role="alert">
+                <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-3 sm:p-4 mb-4 sm:mb-6" role="alert">
                   <p class="font-bold">Product Unavailable</p>
                   <p>
                     <% if (!product.isListed) { %>
@@ -265,7 +347,7 @@
                 </span>
               </div>
 
-              <h1 class="text-3xl font-playfair mb-4 text-[#2C2C2C]"><%= product.productName %></h1>
+              <h1 class="text-2xl sm:text-2xl md:text-3xl font-playfair mb-3 sm:mb-4 text-[#2C2C2C]"><%= product.productName %></h1>
 
               <div class="flex items-center mb-4">
                 <div class="flex text-[#f8c78d] mr-2">
@@ -323,7 +405,7 @@
                 </div>
               <% } %>
 
-              <div class="mb-6 grid grid-cols-2 gap-4">
+              <div class="mb-4 sm:mb-6 grid grid-cols-2 gap-3 sm:gap-4">
                 <div class="bg-[#f8f7f5] p-3 rounded-lg">
                   <p class="text-xs text-[#2C2C2C]/60 font-montserrat mb-1">Condition</p>
                   <p class="font-montserrat font-medium"><%= product.condition %></p>
@@ -352,7 +434,7 @@
                 <p class="text-xs text-[#2C2C2C]/60 font-montserrat mt-2">Maximum 10 per order</p>
               </div>
 
-              <div class="flex gap-3 mb-6">
+              <div class="flex gap-2 sm:gap-3 mb-4 sm:mb-6">
                 <button 
                   onclick="addToCart('<%= product._id %>')"
                   class="flex-1 py-3 text-white rounded-md transition-all duration-300 font-montserrat add-to-cart-btn"
@@ -376,21 +458,21 @@
                 </button>
               </div>
 
-              <div class="mb-8 p-4 bg-[#f8f7f5] rounded-lg border border-[#e0dcd4]">
+              <div class="mb-6 sm:mb-8 p-3 sm:p-4 bg-[#f8f7f5] rounded-lg border border-[#e0dcd4]">
                 <div class="flex items-center justify-center gap-2">
                   <i class="fas fa-lock text-[#f8c78d]"></i>
                   <p class="text-sm font-montserrat">Secure Checkout</p>
                 </div>
               </div>
 
-              <div class="mb-8">
-                <h3 class="text-lg font-playfair mb-4 section-heading">Description</h3>
-                <p class="text-[#2C2C2C]/80 font-montserrat leading-relaxed"><%= product.description %></p>
+              <div class="mb-6 sm:mb-8">
+                <h3 class="text-base sm:text-lg font-playfair mb-3 sm:mb-4 section-heading">Description</h3>
+                <p class="text-[#2C2C2C]/80 font-montserrat text-sm sm:text-base leading-relaxed"><%= product.description %></p>
               </div>
 
-              <div class="mb-8">
-                <h3 class="text-lg font-playfair mb-4 section-heading">Product Details</h3>
-                <ul class="text-[#2C2C2C]/80 font-montserrat leading-relaxed space-y-3">
+              <div class="mb-6 sm:mb-8">
+                <h3 class="text-base sm:text-lg font-playfair mb-3 sm:mb-4 section-heading">Product Details</h3>
+                <ul class="text-[#2C2C2C]/80 font-montserrat text-sm sm:text-base leading-relaxed space-y-2 sm:space-y-3">
                   <li class="flex items-start">
                     <i class="fas fa-check text-[#f8c78d] mr-2 mt-1 text-xs"></i>
                     <span>Authentic vintage item carefully curated</span>
@@ -406,10 +488,10 @@
                 </ul>
               </div>
 
-              <div class="mb-6">
-                <h3 class="text-lg font-playfair mb-4 section-heading">Shipping & Returns</h3>
-                <div class="space-y-4">
-                  <div class="flex items-start gap-3 bg-[#f8f7f5] p-3 rounded-lg">
+              <div class="mb-4 sm:mb-6">
+                <h3 class="text-base sm:text-lg font-playfair mb-3 sm:mb-4 section-heading">Shipping & Returns</h3>
+                <div class="space-y-3 sm:space-y-4">
+                  <div class="flex items-start gap-2 sm:gap-3 bg-[#f8f7f5] p-2 sm:p-3 rounded-lg">
                     <div class="text-[#f8c78d] mt-1">
                       <i class="fas fa-shipping-fast"></i>
                     </div>
@@ -418,7 +500,7 @@
                       <p class="text-xs text-[#2C2C2C]/70">Typically ships within 1-2 business days</p>
                     </div>
                   </div>
-                  <div class="flex items-start gap-3 bg-[#f8f7f5] p-3 rounded-lg">
+                  <div class="flex items-start gap-2 sm:gap-3 bg-[#f8f7f5] p-2 sm:p-3 rounded-lg">
                     <div class="text-[#f8c78d] mt-1">
                       <i class="fas fa-undo"></i>
                     </div>

@@ -1,6 +1,8 @@
 <!doctype html>
 <html lang="en">
   <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>New Arrivals | REVIVO</title>
     <link href="/css/styles.css" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
@@ -8,6 +10,14 @@
     <link href="https://fonts.googleapis.com/css2?family=Henny+Penny&family=Playfair+Display:wght@400;500;600&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
 
     <style>
+      /* Responsive breakpoints */
+      :root {
+        --mobile: 480px;
+        --tablet: 768px;
+        --laptop: 1024px;
+        --desktop: 1280px;
+      }
+      
       .product-card {
         position: relative;
         transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
@@ -20,10 +30,21 @@
         flex-direction: column;
       }
       
-      .product-card:hover {
-        transform: translateY(-8px);
-        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
-        border-color: rgba(248, 199, 141, 0.3);
+      /* Adjust hover effect for touch devices */
+      @media (hover: hover) {
+        .product-card:hover {
+          transform: translateY(-8px);
+          box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+          border-color: rgba(248, 199, 141, 0.3);
+        }
+      }
+      
+      /* For mobile devices, reduce shadow size */
+      @media (max-width: 480px) {
+        .product-card:active {
+          transform: translateY(-4px);
+          box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
+        }
       }
       
       .product-image-container {
@@ -31,6 +52,13 @@
         overflow: hidden;
         padding-top: 100%; /* 1:1 Aspect Ratio */
         background-color: rgba(248, 247, 245, 0.5);
+      }
+      
+      /* Ensure product images display properly on all devices */
+      @media (max-width: 480px) {
+        .product-image-container {
+          padding-top: 120%; /* Slightly taller on mobile for better visibility */
+        }
       }
       
       .product-image {
@@ -45,8 +73,10 @@
         padding: 1rem;
       }
       
-      .product-card:hover .product-image {
-        transform: scale(1.05);
+      @media (hover: hover) {
+        .product-card:hover .product-image {
+          transform: scale(1.05);
+        }
       }
       
       .product-overlay {
@@ -61,8 +91,17 @@
         padding-bottom: 1rem;
       }
       
-      .product-card:hover .product-overlay {
-        opacity: 1;
+      @media (hover: hover) {
+        .product-card:hover .product-overlay {
+          opacity: 1;
+        }
+      }
+      
+      /* For mobile devices, show overlay on tap */
+      @media (max-width: 480px) {
+        .product-card:active .product-overlay {
+          opacity: 1;
+        }
       }
       
       .product-badge {
@@ -77,6 +116,16 @@
         border-radius: 2rem;
         letter-spacing: 0.05rem;
         box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      }
+      
+      /* Adjust badge size on smaller screens */
+      @media (max-width: 480px) {
+        .product-badge {
+          font-size: 0.6rem;
+          padding: 0.2rem 0.6rem;
+          top: 0.75rem;
+          right: 0.75rem;
+        }
       }
       
       .product-badge.featured {
@@ -102,6 +151,13 @@
         position: relative;
       }
       
+      /* Adjust content padding on smaller screens */
+      @media (max-width: 480px) {
+        .product-content {
+          padding: 1rem;
+        }
+      }
+      
       .product-category {
         font-size: 0.7rem;
         text-transform: uppercase;
@@ -124,6 +180,14 @@
         -webkit-line-clamp: 2;
         -webkit-box-orient: vertical;
         line-clamp: 2;
+      }
+      
+      /* Adjust title size on smaller screens */
+      @media (max-width: 480px) {
+        .product-title {
+          font-size: 0.85rem;
+          margin-bottom: 0.5rem;
+        }
       }
       
       .product-card:hover .product-title {
@@ -167,6 +231,14 @@
         border: 2px solid #2C2C2C;
       }
       
+      /* Make cart buttons more touch-friendly on mobile */
+      @media (max-width: 480px) {
+        .cart-button {
+          width: 2.75rem;
+          height: 2.75rem;
+        }
+      }
+      
       .cart-button:hover {
         background-color: #f8c78d;
         color: #2C2C2C;
@@ -187,9 +259,25 @@
         letter-spacing: 0.05rem;
       }
       
-      .product-card:hover .quick-view-button {
-        transform: translateY(0);
-        opacity: 1;
+      @media (hover: hover) {
+        .product-card:hover .quick-view-button {
+          transform: translateY(0);
+          opacity: 1;
+        }
+      }
+      
+      /* Adjust quick view button on mobile */
+      @media (max-width: 480px) {
+        .quick-view-button {
+          font-size: 0.65rem;
+          padding: 0.4rem 1rem;
+        }
+        
+        /* Show quick view button on tap for mobile */
+        .product-card:active .quick-view-button {
+          transform: translateY(0);
+          opacity: 1;
+        }
       }
       
       .quick-view-button:hover {
@@ -360,6 +448,14 @@
         padding: 2rem;
       }
       
+      /* Make filter sidebar more responsive on mobile */
+      @media (max-width: 480px) {
+        .filter-sidebar {
+          width: 85%;
+          padding: 1.5rem;
+        }
+      }
+      
       .filter-sidebar.active {
         right: 0;
       }
@@ -394,9 +490,21 @@
         display: flex;
         align-items: center;
         justify-content: center;
+        z-index: 40;
         box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-        z-index: 48;
+        border: none;
+        cursor: pointer;
         transition: all 0.3s ease;
+      }
+      
+      /* Make filter button more accessible on mobile */
+      @media (max-width: 480px) {
+        .filter-button {
+          bottom: 1.5rem;
+          right: 1.5rem;
+          width: 55px;
+          height: 55px;
+        }
       }
       
       .filter-button:hover {
@@ -512,11 +620,17 @@
         transform: translateX(100%);
       }
       
-      .rustic-headline {
+      .section-heading {
         font-family: 'Playfair Display', serif;
-        font-weight: 700;
         position: relative;
         display: inline-block;
+      }
+      
+      /* Responsive section headings */
+      @media (max-width: 480px) {
+        .section-heading {
+          font-size: 1.75rem !important;
+        }
       }
       
       .text-handwritten {
@@ -568,7 +682,7 @@
   <body class="bg-[#f8f7f5]">
     <%- include('../partials/user/header.ejs') %>
 
-    <section class="thrift-hero-section py-20 md:py-28 overflow-hidden">
+    <section class="thrift-hero-section py-12 sm:py-16 md:py-20 lg:py-28 overflow-hidden">
       <!-- Pattern Background -->
       <div class="thrift-pattern-bg"></div>
       
@@ -597,12 +711,12 @@
               These fresh finds are the perfect addition to your sustainable wardrobe.
             </p>
             
-            <div class="flex flex-wrap gap-4">
-              <a href="#new-products" class="vintage-button hover:shadow-lg transition-all">
-                View Products
+            <div class="flex flex-wrap gap-3 sm:space-x-4">
+              <a href="#new-products" class="px-5 sm:px-6 py-2.5 sm:py-3 bg-[#2C2C2C] text-white font-montserrat text-xs sm:text-sm tracking-wide rounded-md hover:bg-[#f8c78d] hover:text-[#2C2C2C] transition duration-300 ease-in-out">
+                Shop Now
               </a>
-              <a href="/shop" class="vintage-button bg-transparent border-2 border-[#2C2C2C] hover:border-[#f8c78d] hover:text-[#2C2C2C] hover:bg-[#f8c78d]/10 transition-all">
-                Shop All
+              <a href="/about" class="px-5 sm:px-6 py-2.5 sm:py-3 border-2 border-[#2C2C2C] text-[#2C2C2C] font-montserrat text-xs sm:text-sm tracking-wide rounded-md hover:bg-[#2C2C2C] hover:text-white transition duration-300 ease-in-out">
+                Learn More
               </a>
             </div>
             
@@ -649,12 +763,12 @@
       </svg>
     </section>
 
-    <section class="py-16 bg-[#f8f7f5]" id="new-products">
-      <div class="container mx-auto px-4">
-        <div class="flex flex-col md:flex-row md:items-center justify-between mb-6 gap-4">
+    <section class="py-10 sm:py-12 md:py-16 bg-[#f8f7f5]" id="new-products">
+      <div class="container mx-auto px-3 sm:px-4">
+        <div class="flex flex-col md:flex-row md:items-center justify-between mb-4 sm:mb-6 gap-2 sm:gap-4">
           <div>
-            <h4 class="text-[#f8c78d] text-xs tracking-widest uppercase mb-2 font-montserrat">Latest Additions</h4>
-            <h2 class="text-3xl section-heading text-[#2C2C2C]">New Arrivals</h2>
+            <h4 class="text-[#f8c78d] text-xs tracking-widest uppercase mb-1 sm:mb-2 font-montserrat">Latest Additions</h4>
+            <h2 class="text-2xl sm:text-3xl section-heading text-[#2C2C2C]">New Arrivals</h2>
           </div>
           
           <!-- Search Bar -->
@@ -725,7 +839,7 @@
         </div>
 
         <!-- Product Grid -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6">
+        <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4 md:gap-6">
           <% if (products && products.length > 0) { %>
             <% products.forEach(product => { %>
               <div class="product-card">
@@ -814,15 +928,15 @@
         </div>
 
         <% if (totalPages > 1) { %>
-        <div class="mt-16 flex justify-center">
-          <div class="inline-flex rounded-md shadow-sm">
+        <div class="mt-10 sm:mt-12 md:mt-16 flex justify-center">
+          <div class="inline-flex flex-wrap justify-center rounded-md shadow-sm">
             <% if (hasPreviousPage) { %>
               <a href="/new-arrivals?page=<%= previousPage %>&<%= new URLSearchParams(filters).toString() %>" 
-                 class="px-4 py-2 text-sm font-montserrat border border-[#e0dcd4] rounded-l-md hover:bg-[#f8c78d]/10 text-[#2C2C2C]">
+                 class="px-3 sm:px-4 py-2 text-xs sm:text-sm font-montserrat border border-[#e0dcd4] rounded-l-md hover:bg-[#f8c78d]/10 text-[#2C2C2C]">
                 Previous
               </a>
             <% } else { %>
-              <span class="px-4 py-2 text-sm font-montserrat border border-[#e0dcd4] rounded-l-md text-[#2C2C2C]/50 cursor-not-allowed">
+              <span class="relative inline-flex items-center px-3 sm:px-4 py-2 text-xs sm:text-sm font-montserrat border border-[#e0dcd4] bg-white text-[#2C2C2C]/50 cursor-not-allowed">
                 Previous
               </span>
             <% } %>
@@ -842,11 +956,11 @@
 
             <% if (hasNextPage) { %>
               <a href="/new-arrivals?page=<%= nextPage %>&<%= new URLSearchParams(filters).toString() %>" 
-                 class="px-4 py-2 text-sm font-montserrat border border-[#e0dcd4] rounded-r-md hover:bg-[#f8c78d]/10 text-[#2C2C2C]">
+                 class="px-3 sm:px-4 py-2 text-xs sm:text-sm font-montserrat border border-[#e0dcd4] rounded-r-md hover:bg-[#f8c78d]/10 text-[#2C2C2C]">
                 Next
               </a>
             <% } else { %>
-              <span class="px-4 py-2 text-sm font-montserrat border border-[#e0dcd4] rounded-r-md text-[#2C2C2C]/50 cursor-not-allowed">
+              <span class="px-3 sm:px-4 py-2 text-xs sm:text-sm font-montserrat border border-[#e0dcd4] rounded-r-md text-[#2C2C2C]/50 cursor-not-allowed">
                 Next
               </span>
             <% } %>

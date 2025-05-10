@@ -10,6 +10,13 @@
     <link href="https://fonts.googleapis.com/css2?family=Henny+Penny&family=Playfair+Display:wght@400;500;600&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
 
     <style>
+      /* Responsive breakpoints */
+      :root {
+        --mobile: 480px;
+        --tablet: 768px;
+        --laptop: 1024px;
+        --desktop: 1280px;
+      }
       .product-card {
         position: relative;
         transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
@@ -22,10 +29,21 @@
         flex-direction: column;
       }
       
-      .product-card:hover {
-        transform: translateY(-8px);
-        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
-        border-color: rgba(248, 199, 141, 0.3);
+      /* Adjust hover effect for touch devices */
+      @media (hover: hover) {
+        .product-card:hover {
+          transform: translateY(-8px);
+          box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+          border-color: rgba(248, 199, 141, 0.3);
+        }
+      }
+      
+      /* For mobile devices, reduce shadow size */
+      @media (max-width: 480px) {
+        .product-card:active {
+          transform: translateY(-4px);
+          box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
+        }
       }
       
       .product-image-container {
@@ -33,6 +51,13 @@
         overflow: hidden;
         padding-top: 100%; /* 1:1 Aspect Ratio */
         background-color: rgba(248, 247, 245, 0.5);
+      }
+      
+      /* Ensure product images display properly on all devices */
+      @media (max-width: 480px) {
+        .product-image-container {
+          padding-top: 120%; /* Slightly taller on mobile for better visibility */
+        }
       }
       
       .product-image {
@@ -47,8 +72,10 @@
         padding: 1rem;
       }
       
-      .product-card:hover .product-image {
-        transform: scale(1.05);
+      @media (hover: hover) {
+        .product-card:hover .product-image {
+          transform: scale(1.05);
+        }
       }
       
       .product-overlay {
@@ -63,8 +90,17 @@
         padding-bottom: 1rem;
       }
       
-      .product-card:hover .product-overlay {
-        opacity: 1;
+      @media (hover: hover) {
+        .product-card:hover .product-overlay {
+          opacity: 1;
+        }
+      }
+      
+      /* For mobile devices, show overlay on tap */
+      @media (max-width: 480px) {
+        .product-card:active .product-overlay {
+          opacity: 1;
+        }
       }
       
       .featured-badge, .product-badge {
@@ -79,6 +115,16 @@
         border-radius: 2rem;
         letter-spacing: 0.05rem;
         box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      }
+      
+      /* Adjust badge size on smaller screens */
+      @media (max-width: 480px) {
+        .featured-badge, .product-badge {
+          font-size: 0.6rem;
+          padding: 0.2rem 0.6rem;
+          top: 0.75rem;
+          right: 0.75rem;
+        }
       }
       
       .product-badge.featured, .featured-badge {
@@ -104,6 +150,13 @@
         position: relative;
       }
       
+      /* Adjust content padding on smaller screens */
+      @media (max-width: 480px) {
+        .product-content {
+          padding: 1rem;
+        }
+      }
+      
       .product-category {
         font-size: 0.7rem;
         text-transform: uppercase;
@@ -123,6 +176,14 @@
         -webkit-box-orient: vertical;
         line-clamp: 2;
         overflow: hidden;
+      }
+      
+      /* Adjust title size on smaller screens */
+      @media (max-width: 480px) {
+        .product-card .product-title {
+          font-size: 0.9rem;
+          margin-top: 0.5rem;
+        }
       }
       
       .product-card:hover .product-title {
@@ -146,11 +207,24 @@
         color: #2C2C2C;
       }
       
+      /* Adjust price size on smaller screens */
+      @media (max-width: 480px) {
+        .current-price {
+          font-size: 0.85rem;
+        }
+      }
+      
       .original-price {
         font-size: 0.75rem;
         text-decoration: line-through;
         color: rgba(44, 44, 44, 0.5);
         margin-left: 0.5rem;
+      }
+      
+      @media (max-width: 480px) {
+        .original-price {
+          font-size: 0.7rem;
+        }
       }
       
       .cart-button {
@@ -164,6 +238,14 @@
         justify-content: center;
         transition: all 0.3s ease;
         border: 2px solid #2C2C2C;
+      }
+      
+      /* Adjust button size on smaller screens */
+      @media (max-width: 480px) {
+        .cart-button {
+          width: 2.25rem;
+          height: 2.25rem;
+        }
       }
       
       .cart-button:hover {
@@ -186,9 +268,26 @@
         letter-spacing: 0.05rem;
       }
       
-      .product-card:hover .quick-view-button {
-        transform: translateY(0);
-        opacity: 1;
+      @media (max-width: 480px) {
+        .quick-view-button {
+          font-size: 0.65rem;
+          padding: 0.4rem 1rem;
+        }
+      }
+      
+      @media (hover: hover) {
+        .product-card:hover .quick-view-button {
+          transform: translateY(0);
+          opacity: 1;
+        }
+      }
+      
+      /* For mobile devices, show button on tap */
+      @media (max-width: 480px) {
+        .product-card:active .quick-view-button {
+          transform: translateY(0);
+          opacity: 1;
+        }
       }
       
       .quick-view-button:hover {
@@ -378,9 +477,21 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-        z-index: 48;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        z-index: 40;
         transition: all 0.3s ease;
+        border: none;
+        cursor: pointer;
+      }
+      
+      /* Adjust filter button position on mobile */
+      @media (max-width: 480px) {
+        .filter-button {
+          bottom: 1.5rem;
+          right: 1.5rem;
+          width: 45px;
+          height: 45px;
+        }
       }
       
       .filter-button:hover {
@@ -503,7 +614,7 @@
   <body class="bg-[#f8f7f5]">
     <%- include('../partials/user/header.ejs') %>
 
-    <section class="thrift-hero-section py-20 md:py-28 overflow-hidden">
+    <section class="thrift-hero-section py-12 sm:py-16 md:py-20 lg:py-28 overflow-hidden">
       <!-- Pattern Background -->
       <div class="thrift-pattern-bg"></div>
       
@@ -584,12 +695,12 @@
       </svg>
     </section>
 
-    <section class="py-16 bg-[#f8f7f5]" id="prime-layers-products">
-      <div class="container mx-auto px-4">
-        <div class="text-center mb-12">
-          <h4 class="text-[#f8c78d] text-xs tracking-widest uppercase mb-2 font-montserrat">Premium Outerwear</h4>
-          <h2 class="text-3xl section-heading text-[#2C2C2C]">Prime Layers Collection</h2>
-          <p class="text-[#2C2C2C]/70 max-w-2xl mx-auto mt-4 font-montserrat">A curated collection of vintage outerwear pieces, featuring luxurious jackets, coats, and layered essentials with timeless appeal.</p>
+    <section class="py-10 sm:py-12 md:py-16 bg-[#f8f7f5]" id="prime-layers-products">
+      <div class="container mx-auto px-3 sm:px-4">
+        <div class="text-center mb-8 sm:mb-10 md:mb-12">
+          <h4 class="text-[#f8c78d] text-xs tracking-widest uppercase mb-1 sm:mb-2 font-montserrat">Premium Outerwear</h4>
+          <h2 class="text-2xl sm:text-3xl section-heading text-[#2C2C2C]">Prime Layers Collection</h2>
+          <p class="text-[#2C2C2C]/70 max-w-2xl mx-auto mt-3 sm:mt-4 font-montserrat text-sm sm:text-base">A curated collection of vintage outerwear pieces, featuring luxurious jackets, coats, and layered essentials with timeless appeal.</p>
         </div>
 
         <!-- Search Bar -->
@@ -672,7 +783,7 @@
         </div>
 
         <!-- Product Grid -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6">
+        <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4 md:gap-6">
           <% if (products.length > 0) { %>
             <% products.forEach(product => { %>
               <div class="product-card">
@@ -761,11 +872,11 @@
         </div>
 
         <% if (totalPages > 1) { %>
-        <div class="mt-16 flex justify-center">
-          <div class="inline-flex rounded-md shadow-sm">
+        <div class="mt-10 sm:mt-12 md:mt-16 flex justify-center">
+          <div class="inline-flex flex-wrap justify-center rounded-md shadow-sm">
             <% if (hasPreviousPage) { %>
               <a href="/shop/collection/prime-layers?page=<%= previousPage %>&<%= new URLSearchParams(filters).toString() %>" 
-                 class="px-4 py-2 text-sm font-montserrat border border-[#e0dcd4] rounded-l-md hover:bg-[#f8c78d]/10 text-[#2C2C2C]">
+                 class="px-3 sm:px-4 py-2 text-xs sm:text-sm font-montserrat border border-[#e0dcd4] rounded-l-md hover:bg-[#f8c78d]/10 text-[#2C2C2C]">
                 Previous
               </a>
             <% } else { %>
@@ -789,7 +900,7 @@
 
             <% if (hasNextPage) { %>
               <a href="/shop/collection/prime-layers?page=<%= nextPage %>&<%= new URLSearchParams(filters).toString() %>" 
-                 class="px-4 py-2 text-sm font-montserrat border border-[#e0dcd4] rounded-r-md hover:bg-[#f8c78d]/10 text-[#2C2C2C]">
+                 class="px-3 sm:px-4 py-2 text-xs sm:text-sm font-montserrat border border-[#e0dcd4] rounded-r-md hover:bg-[#f8c78d]/10 text-[#2C2C2C]">
                 Next
               </a>
             <% } else { %>

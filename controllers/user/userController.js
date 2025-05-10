@@ -627,7 +627,6 @@ const addToCart = async (req, res) => {
     let cart = await Cart.findOne({ userId });
 
     if (!cart) {
-      console.log(`Creating new cart for user ${userId}`);
       cart = new Cart({
         userId,
         items: [],
@@ -641,8 +640,6 @@ const addToCart = async (req, res) => {
       cart.items = [];
     }
 
-    console.log(`Current cart has ${cart.items.length} items before update`);
-
     let existingItemIndex = -1;
     if (cart.items && cart.items.length > 0) {
       existingItemIndex = cart.items.findIndex(
@@ -650,8 +647,6 @@ const addToCart = async (req, res) => {
           item.productId && item.productId.toString() === productId.toString(),
       );
     }
-
-    console.log(`Existing item found: ${existingItemIndex !== -1}`);
 
     if (existingItemIndex !== -1) {
       const existingItem = cart.items[existingItemIndex];
@@ -664,18 +659,12 @@ const addToCart = async (req, res) => {
         });
       }
 
-      console.log(
-        `Updating existing item in cart. New quantity: ${newQuantity}`,
-      );
-
       existingItem.quantity = newQuantity;
       existingItem.price = finalPrice;
       existingItem.totalPrice = existingItem.quantity * finalPrice;
 
       cart.items[existingItemIndex] = existingItem;
     } else {
-      console.log(`Adding new item to cart. Quantity: ${quantity}`);
-
       const newItem = {
         productId,
         quantity: parseInt(quantity),
@@ -746,7 +735,7 @@ const loadProductPage = async (req, res) => {
 
     if (!productId || !productId.match(/^[0-9a-fA-F]{24}$/)) {
       console.log(`Invalid product ID format requested: ${productId}`);
-      return res.status(404).render("user/page-404", {
+      return res.status(404).render("page-404", {
         message: "Product not found - Invalid ID format",
       });
     }
@@ -768,7 +757,7 @@ const loadProductPage = async (req, res) => {
     if (!product || !product.brand || !product.category) {
       return res
         .status(404)
-        .render("user/page-404", { message: "Product not found" });
+        .render("page-404", { message: "Product not found" });
     }
 
     if (product._id) {
@@ -780,12 +769,12 @@ const loadProductPage = async (req, res) => {
     console.error("Error loading product page:", error);
 
     if (error.name === "CastError" && error.kind === "ObjectId") {
-      return res.status(404).render("user/page-404", {
+      return res.status(404).render("page-404", {
         message: "Product not found - Invalid ID format",
       });
     }
 
-    return res.status(500).render("user/page-404", {
+    return res.status(500).render("page-404", {
       message:
         "An error occurred while loading the product. Please try again later.",
     });

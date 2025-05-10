@@ -10,6 +10,14 @@
     <link href="https://fonts.googleapis.com/css2?family=Henny+Penny&family=Playfair+Display:wght@400;500;600&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
 
     <style>
+      /* Responsive breakpoints */
+      :root {
+        --mobile: 480px;
+        --tablet: 768px;
+        --laptop: 1024px;
+        --desktop: 1280px;
+      }
+
       .product-card {
         position: relative;
         transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
@@ -22,10 +30,21 @@
         flex-direction: column;
       }
       
-      .product-card:hover {
-        transform: translateY(-8px);
-        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
-        border-color: rgba(248, 199, 141, 0.3);
+      /* Adjust hover effect for touch devices */
+      @media (hover: hover) {
+        .product-card:hover {
+          transform: translateY(-8px);
+          box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+          border-color: rgba(248, 199, 141, 0.3);
+        }
+      }
+      
+      /* For mobile devices, reduce shadow size */
+      @media (max-width: 480px) {
+        .product-card:active {
+          transform: translateY(-4px);
+          box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
+        }
       }
       
       .product-image-container {
@@ -47,8 +66,10 @@
         padding: 1rem;
       }
       
-      .product-card:hover .product-image {
-        transform: scale(1.05);
+      @media (hover: hover) {
+        .product-card:hover .product-image {
+          transform: scale(1.05);
+        }
       }
       
       .product-overlay {
@@ -63,8 +84,17 @@
         padding-bottom: 1rem;
       }
       
-      .product-card:hover .product-overlay {
-        opacity: 1;
+      @media (hover: hover) {
+        .product-card:hover .product-overlay {
+          opacity: 1;
+        }
+      }
+      
+      /* For mobile devices, show overlay on tap */
+      @media (max-width: 480px) {
+        .product-card:active .product-overlay {
+          opacity: 1;
+        }
       }
       
       .product-badge {
@@ -79,6 +109,14 @@
         border-radius: 2rem;
         letter-spacing: 0.05rem;
         box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      }
+      
+      /* Make badges more visible on smaller screens */
+      @media (max-width: 480px) {
+        .product-badge {
+          font-size: 0.6rem;
+          padding: 0.2rem 0.6rem;
+        }
       }
       
       .product-badge.featured {
@@ -104,6 +142,13 @@
         position: relative;
       }
       
+      /* Adjust padding for smaller screens */
+      @media (max-width: 480px) {
+        .product-content {
+          padding: 1rem;
+        }
+      }
+      
       .product-category {
         font-size: 0.7rem;
         text-transform: uppercase;
@@ -125,8 +170,18 @@
         overflow: hidden;
       }
       
-      .product-card:hover .product-title {
-        color: #f8c78d;
+      /* Adjust font size for mobile */
+      @media (max-width: 480px) {
+        .product-title {
+          font-size: 0.9rem;
+          margin-top: 0.5rem;
+        }
+      }
+      
+      @media (hover: hover) {
+        .product-card:hover .product-title {
+          color: #f8c78d;
+        }
       }
       
       .product-footer {
@@ -146,11 +201,24 @@
         color: #2C2C2C;
       }
       
+      /* Adjust price size for mobile */
+      @media (max-width: 480px) {
+        .current-price {
+          font-size: 0.85rem;
+        }
+      }
+      
       .original-price {
         font-size: 0.75rem;
         text-decoration: line-through;
         color: rgba(44, 44, 44, 0.5);
         margin-left: 0.5rem;
+      }
+      
+      @media (max-width: 480px) {
+        .original-price {
+          font-size: 0.7rem;
+        }
       }
       
       .cart-button {
@@ -166,11 +234,21 @@
         border: 2px solid #2C2C2C;
       }
       
-      .cart-button:hover {
-        background-color: #f8c78d;
-        color: #2C2C2C;
-        transform: scale(1.1);
-        border-color: #f8c78d;
+      /* Make cart button more tappable on mobile */
+      @media (max-width: 480px) {
+        .cart-button {
+          width: 2.25rem;
+          height: 2.25rem;
+        }
+      }
+      
+      @media (hover: hover) {
+        .cart-button:hover {
+          background-color: #f8c78d;
+          color: #2C2C2C;
+          transform: scale(1.1);
+          border-color: #f8c78d;
+        }
       }
       
       .quick-view-button {
@@ -186,14 +264,28 @@
         letter-spacing: 0.05rem;
       }
       
-      .product-card:hover .quick-view-button {
-        transform: translateY(0);
-        opacity: 1;
+      /* Make quick view button always visible on mobile for better UX */
+      @media (max-width: 480px) {
+        .quick-view-button {
+          transform: translateY(0);
+          opacity: 0.9;
+          font-size: 0.65rem;
+          padding: 0.4rem 1rem;
+        }
       }
       
-      .quick-view-button:hover {
-        background-color: #f8c78d;
-        color: #2C2C2C;
+      @media (hover: hover) {
+        .product-card:hover .quick-view-button {
+          transform: translateY(0);
+          opacity: 1;
+        }
+      }
+      
+      @media (hover: hover) {
+        .quick-view-button:hover {
+          background-color: #f8c78d;
+          color: #2C2C2C;
+        }
       }
       
       /* Category Tags */
@@ -209,6 +301,12 @@
         border-radius: 2rem;
         font-size: 0.8rem;
         font-weight: 500;
+        
+        /* Make tags more compact on mobile */
+        @media (max-width: 480px) {
+          padding: 0.4rem 0.8rem;
+          font-size: 0.7rem;
+        }
         transition: all 0.2s ease;
         white-space: nowrap;
         font-family: 'Montserrat', sans-serif;
@@ -270,8 +368,8 @@
   <body class="bg-[#f8f7f5]">
     <%- include('../partials/user/header.ejs', { title: title }) %>
 
-    <section class="relative py-16 bg-[#f8f7f5]">
-      <div class="container mx-auto px-4">
+    <section class="relative py-12 md:py-16 bg-[#f8f7f5]">
+      <div class="container mx-auto px-4 sm:px-6">
         <div class="flex flex-col md:flex-row items-center gap-8">
           <% if (brand.brandImage && brand.brandImage[0]) { %>
             <div class="w-full md:w-1/4 flex justify-center">
@@ -320,12 +418,12 @@
       </div>
     </section>
 
-    <section class="py-12 bg-white">
-      <div class="container mx-auto px-4">
-        <div class="flex flex-col md:flex-row md:items-center justify-between mb-6 gap-4">
+    <section class="py-8 md:py-12 bg-white">
+      <div class="container mx-auto px-4 sm:px-6">
+        <div class="flex flex-col md:flex-row md:items-center justify-between mb-4 md:mb-6 gap-3 md:gap-4">
           <div>
-            <h4 class="text-[#f8c78d] text-xs tracking-widest uppercase mb-2 font-montserrat">Brand Collection</h4>
-            <h2 class="text-3xl section-heading text-[#2C2C2C]"><%= brand.name %></h2>
+            <h4 class="text-[#f8c78d] text-xs tracking-widest uppercase mb-1 md:mb-2 font-montserrat">Brand Collection</h4>
+            <h2 class="text-2xl md:text-3xl section-heading text-[#2C2C2C]"><%= brand.name %></h2>
           </div>
           
           <!-- Search Bar -->
@@ -391,7 +489,7 @@
 
         <% if (products.length > 0) { %>
           <!-- Product Grid -->
-          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6">
+          <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4 md:gap-6">
             <% products.forEach(product => { %>
               <div class="product-card">
                 <!-- Badge - Show either NEW or FEATURED, prioritizing NEW -->
@@ -465,7 +563,7 @@
           </div>
 
           <% if (totalPages > 1) { %>
-          <div class="mt-16 flex justify-center">
+          <div class="mt-8 sm:mt-12 md:mt-16 flex justify-center">
             <div class="inline-flex rounded-md shadow-sm">
               <% if (hasPreviousPage) { %>
                 <a href="/shop/brand/<%= brand._id %>?page=<%= previousPage %>&<%= new URLSearchParams(filters).toString() %>" 
@@ -505,7 +603,7 @@
           </div>
           <% } %>
         <% } else { %>
-          <div class="text-center py-12">
+          <div class="text-center py-8 md:py-12">
             <div class="max-w-md mx-auto">
               <svg class="w-16 h-16 mx-auto text-[#2C2C2C]/30 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
@@ -520,8 +618,8 @@
         <% } %>
       </div>
       
-      <!-- Filter Button -->
-      <button id="open-filter" class="filter-button fixed bottom-6 right-6 w-12 h-12 rounded-full bg-[#2C2C2C] text-white flex items-center justify-center shadow-lg z-40 hover:bg-[#f8c78d] hover:text-[#2C2C2C] transition-all">
+      <!-- Filter Button - Larger on mobile for better touch target -->
+      <button id="open-filter" class="filter-button fixed bottom-4 sm:bottom-6 right-4 sm:right-6 w-14 h-14 sm:w-12 sm:h-12 rounded-full bg-[#2C2C2C] text-white flex items-center justify-center shadow-lg z-40 hover:bg-[#f8c78d] hover:text-[#2C2C2C] transition-all">
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path>
         </svg>

@@ -17,10 +17,23 @@
       }
 
     .logo {
-    height: 85px; /* Adjust as needed */
-    width: auto;  /* Maintain aspect ratio */
-    max-width: 100%; /* Ensure it doesn't overflow its container */
+      height: 85px; /* Adjust as needed */
+      width: auto;  /* Maintain aspect ratio */
+      max-width: 100%; /* Ensure it doesn't overflow its container */
+    }
+    
+    /* Responsive logo sizing */
+    @media (max-width: 768px) {
+      .logo {
+        height: 65px;
       }
+    }
+    
+    @media (max-width: 480px) {
+      .logo {
+        height: 50px;
+      }
+    }
 
       .hero-gradient {
         background: linear-gradient(to right, rgba(248, 247, 245, 0.9) 40%, rgba(248, 247, 245, 0.5) 70%, rgba(248, 247, 245, 0.2) 100%);
@@ -49,6 +62,28 @@
         width: 80px;
         height: 3px;
         background-color: #f8c78d;
+      }
+      
+      /* Responsive heading sizes */
+      @media (max-width: 768px) {
+        .main-heading {
+          font-size: 3.5rem !important;
+        }
+        .main-heading::after {
+          width: 60px;
+          bottom: -10px;
+        }
+      }
+      
+      @media (max-width: 480px) {
+        .main-heading {
+          font-size: 2.75rem !important;
+        }
+        .main-heading::after {
+          width: 50px;
+          height: 2px;
+          bottom: -8px;
+        }
       }
 
       .tagline {
@@ -175,6 +210,26 @@
         width: 100%;
       }
       
+      /* Responsive section heading */
+      @media (max-width: 768px) {
+        .section-heading {
+          font-size: 1.75rem;
+        }
+        .section-heading::after {
+          width: 50px;
+        }
+      }
+      
+      @media (max-width: 480px) {
+        .section-heading {
+          font-size: 1.5rem;
+        }
+        .section-heading::after {
+          width: 40px;
+          height: 1.5px;
+        }
+      }
+      
       .hero-heading {
         font-family: 'Henny Penny', cursive;
         font-weight: 400;
@@ -233,6 +288,13 @@
         overflow: hidden;
         padding-top: 100%; /* 1:1 Aspect Ratio */
         background-color: rgba(248, 247, 245, 0.5);
+      }
+      
+      /* Ensure product images display properly on all devices */
+      @media (max-width: 480px) {
+        .product-image-container {
+          padding-top: 120%; /* Slightly taller on mobile for better visibility */
+        }
       }
       
       .product-image {
@@ -511,32 +573,32 @@
       <div class="accent-element accent-2"></div>
       <div class="accent-element accent-3"></div>
       
-      <div class="container mx-auto px-4 md:px-8 h-screen flex flex-col justify-center relative z-10">
+      <div class="container mx-auto px-4 md:px-8 min-h-screen flex flex-col justify-center relative z-10 py-16 md:py-0">
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
           
           <!-- Text Content -->
           <div class="content-wrapper max-w-xl">
             <span class="inline-block mb-4 py-1 px-3 bg-[#f8c78d]/20 rounded-full text-[#2C2C2C]/70 text-xs uppercase tracking-wider font-montserrat">Established 2023</span>
             
-            <h1 class="main-heading text-5xl sm:text-6xl md:text-7xl mb-8">
+            <h1 class="main-heading text-5xl sm:text-6xl md:text-7xl mb-6 md:mb-8">
               REVIVO
             </h1>
             
-            <p class="tagline text-lg sm:text-xl uppercase mb-6">
+            <p class="tagline text-base sm:text-lg md:text-xl uppercase mb-4 md:mb-6">
               Where Timeless Style Meets Modern Expression
             </p>
             
-            <p class="welcome-text mb-10 max-w-md">
+            <p class="welcome-text mb-6 md:mb-10 max-w-md text-sm sm:text-base">
                 Discover our curated collection of vintage treasures, 
                 each piece telling its own unique story of style and sophistication.
               </p>
             
-            <div class="flex flex-col sm:flex-row items-center gap-6">
-              <a href="/shop" class="cta-button py-3 px-8 text-white rounded-md text-sm font-medium tracking-wider">
+            <div class="flex flex-col sm:flex-row items-center gap-4 sm:gap-6">
+              <a href="/shop" class="cta-button py-2.5 sm:py-3 px-6 sm:px-8 text-white rounded-md text-xs sm:text-sm font-medium tracking-wider w-full sm:w-auto text-center">
                   Explore Collection
                 </a>
               
-              <div class="flex items-center gap-6 mt-4 sm:mt-0">
+              <div class="flex items-center gap-4 sm:gap-6 mt-4 sm:mt-0 justify-center sm:justify-start w-full">
                 <div class="flex items-center gap-2 text-sm text-[#2C2C2C]/70 font-montserrat">
                   <svg class="w-5 h-5 text-[#f8c78d]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
@@ -566,7 +628,7 @@
               </div>
         
         <!-- Scroll Indicator -->
-        <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex flex-col items-center animate-bounce opacity-60">
+        <div class="absolute bottom-4 sm:bottom-8 left-1/2 transform -translate-x-1/2 flex flex-col items-center animate-bounce opacity-60">
           <span class="text-xs uppercase tracking-widest text-[#2C2C2C]/60 mb-2 font-montserrat">Scroll</span>
           <svg class="w-6 h-6 text-[#2C2C2C]/60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
@@ -576,7 +638,7 @@
     </section>
     <!-- Hero Section End -->
 
-    <section class="relative py-16 overflow-hidden bg-[#2C2C2C] text-white">
+    <section class="relative py-10 sm:py-12 md:py-16 overflow-hidden bg-[#2C2C2C] text-white">
       <div class="absolute inset-0 bg-gradient-to-b from-[#2C2C2C]/90 to-[#1a1a1a]/90 backdrop-blur-sm"></div>
       <div class="absolute inset-0" style="background-image: url('/Images/images/OLD_PAPER_TEXTURE.jpg'); background-size: cover; opacity: 0.15;"></div>
       
@@ -584,21 +646,21 @@
       <div class="absolute bottom-0 right-0 w-96 h-96 bg-[#f8c78d]/10 rounded-full blur-3xl transform translate-x-1/2 translate-y-1/2"></div>
 
       <div class="container mx-auto px-4 max-w-6xl relative">
-        <div class="text-center mb-12">
-          <div class="flex items-center justify-center gap-4 mb-4">
-            <img src="/Images/logo.svg" alt="REVIVO Logo" class="logo">
-            <h2 class="text-4xl font-henny text-[#f8c78d]">Why Choose REVIVO?</h2>
+        <div class="text-center mb-8 md:mb-12">
+          <div class="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4 mb-4">
+            <img src="/Images/logo.svg" alt="REVIVO Logo" class="logo mb-2 sm:mb-0">
+            <h2 class="text-3xl sm:text-4xl font-henny text-[#f8c78d]">Why Choose REVIVO?</h2>
           </div>
-          <h3 class="text-xl text-[#ffffff]/80 font-medium tracking-wide">WHERE VINTAGE MEETS MODERN</h3>
+          <h3 class="text-lg sm:text-xl text-[#ffffff]/80 font-medium tracking-wide">WHERE VINTAGE MEETS MODERN</h3>
         </div>
 
         <div class="mb-12">
-          <p class="text-[#ffffff]/80 text-center max-w-3xl mx-auto text-lg leading-relaxed">
+          <p class="text-[#ffffff]/80 text-center max-w-3xl mx-auto text-sm sm:text-base md:text-lg leading-relaxed px-2 sm:px-4">
             AT REVIVO, WE OFFER A CURATED SELECTION OF PREMIUM VINTAGE FASHION, BLENDING CLASSIC ELEGANCE WITH A MODERN TWIST. EACH PIECE ADDS CHARACTER AND TIMELESS APPEAL TO YOUR WARDROBE.
           </p>
         </div>
 
-        <div class="grid md:grid-cols-3 gap-8 mt-12">
+        <div class="grid sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6 md:gap-8 mt-8 md:mt-12">
           <div class="p-6 rounded-lg bg-[#2C2C2C]/60 backdrop-blur-md border border-[#f8c78d]/20 shadow-sm transition-all duration-300 hover:shadow-lg hover:bg-[#2C2C2C]/70">
             <div class="flex items-center gap-4 mb-4">
               <svg class="w-8 h-8 text-[#f8c78d]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -639,12 +701,12 @@
       <div class="absolute bottom-0 left-0 w-full h-8 bg-[#f8f7f5] clip-path-wave"></div>
     </section>
 
-    <section class="relative py-16 overflow-hidden bg-[#f8f7f5]">
+    <section class="relative py-10 sm:py-12 md:py-16 overflow-hidden bg-[#f8f7f5]">
       <div class="container mx-auto px-4 max-w-7xl relative">
-        <div class="flex items-center justify-between mb-12">
-          <div class="flex items-center gap-4">
+        <div class="flex flex-col sm:flex-row items-center justify-between gap-4 mb-8 md:mb-12">
+          <div class="flex items-center gap-3 sm:gap-4">
             <img src="/Images/logo.svg" alt="REVIVO Logo" class="logo">
-            <h2 class="text-3xl font-henny text-[#2C2C2C]">New Arrivals</h2>
+            <h2 class="text-2xl sm:text-3xl font-henny text-[#2C2C2C]">New Arrivals</h2>
           </div>
           <a href="/new-arrivals" class="group flex items-center gap-2 text-[#2C2C2C] hover:text-[#f8c78d] transition-colors">
             <span class="text-sm uppercase tracking-wider font-montserrat">View All</span>
@@ -654,7 +716,7 @@
           </a>
         </div>
 
-<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+<div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-6">
   <% if (products && products.length > 0) { %>
     <% products.forEach(product => { %>
               <div class="product-card">
@@ -744,11 +806,11 @@
               </div>
     </section>
 
-<section class="relative py-16 overflow-hidden bg-white">
+<section class="relative py-10 sm:py-12 md:py-16 overflow-hidden bg-white">
   <div class="container mx-auto px-4 max-w-7xl relative">
-    <div class="text-center mb-12">
-      <h2 class="text-3xl font-henny text-[#2C2C2C] mb-4">Shop By Category</h2>
-      <p class="text-[#2C2C2C]/70 font-montserrat">Discover our curated vintage collections</p>
+    <div class="text-center mb-8 md:mb-12">
+      <h2 class="text-2xl sm:text-3xl font-henny text-[#2C2C2C] mb-2 sm:mb-4">Shop By Category</h2>
+      <p class="text-[#2C2C2C]/70 font-montserrat text-sm sm:text-base">Discover our curated vintage collections</p>
     </div>
 
     <% 
@@ -1119,11 +1181,11 @@
   </div>
 </section>
 
-<section class="py-16 bg-white">
+<section class="py-10 sm:py-12 md:py-16 bg-white">
   <div class="container mx-auto px-4">
-    <div class="text-center mb-12">
-      <h2 class="text-4xl font-henny text-[#2C2C2C] mb-4">Featured Vintage Finds</h2>
-      <p class="text-[#2C2C2C]/70 max-w-2xl mx-auto font-montserrat">Discover authentic vintage pieces from renowned brands and unique treasures with timeless character.</p>
+    <div class="text-center mb-8 md:mb-12">
+      <h2 class="text-2xl sm:text-3xl md:text-4xl font-henny text-[#2C2C2C] mb-2 sm:mb-4">Featured Vintage Finds</h2>
+      <p class="text-[#2C2C2C]/70 max-w-2xl mx-auto font-montserrat text-sm sm:text-base px-2">Discover authentic vintage pieces from renowned brands and unique treasures with timeless character.</p>
     </div>
     
     <% if (brands && brands.length > 4) { %>
@@ -1295,7 +1357,7 @@
   </div>
 </section>
 
-<section class="py-12 bg-[#f8f7f5]">
+<section class="py-8 sm:py-10 md:py-12 bg-[#f8f7f5]">
   <div class="container mx-auto px-4">
     <div class="text-center mb-8">
       <h2 class="text-3xl font-henny text-[#2C2C2C] mb-2">Heritage Collections</h2>
@@ -1355,14 +1417,14 @@
 
 </section>
 
-<section class="testimonials-section py-20 relative">
-  <div class="container mx-auto px-6 relative z-10">
-    <div class="text-center mb-16">
-      <h2 class="text-3xl font-henny text-[#f8c78d] mb-4">Vintage Enthusiasts Love Revivo</h2>
-      <p class="text-white/80 font-montserrat max-w-2xl mx-auto">Hear what our community of vintage lovers has to say about their Revivo experience</p>
+<section class="testimonials-section py-12 sm:py-16 md:py-20 relative">
+  <div class="container mx-auto px-4 sm:px-6 relative z-10">
+    <div class="text-center mb-8 sm:mb-12 md:mb-16">
+      <h2 class="text-2xl sm:text-3xl font-henny text-[#f8c78d] mb-2 sm:mb-4">Vintage Enthusiasts Love Revivo</h2>
+      <p class="text-white/80 font-montserrat max-w-2xl mx-auto text-sm sm:text-base px-2">Hear what our community of vintage lovers has to say about their Revivo experience</p>
     </div>
     
-    <div class="grid md:grid-cols-3 gap-8">
+    <div class="grid sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6 md:gap-8">
       <div class="testimonial-card p-8 rounded-lg">
         <div class="flex items-center gap-4 mb-4">
           <div class="w-12 h-12 rounded-full bg-[#f8c78d]/10 flex items-center justify-center text-[#f8c78d]">
@@ -1429,19 +1491,19 @@
   </div>
 </section>
 
-<section class="newsletter-section py-16">
-  <div class="container mx-auto px-6">
-    <div class="newsletter-container rounded-xl p-8 md:p-12 text-center">
-      <div class="inline-flex items-center gap-3 mb-6">
-        <img src="/Images/logo.svg" alt="Revivo Logo" class="logo">
-        <h2 class="text-2xl font-henny text-[#2C2C2C]">Join Our Vintage Community</h2>
+<section class="newsletter-section py-10 sm:py-12 md:py-16">
+  <div class="container mx-auto px-4 sm:px-6">
+    <div class="newsletter-container rounded-xl p-6 sm:p-8 md:p-12 text-center">
+      <div class="inline-flex flex-col sm:flex-row items-center gap-2 sm:gap-3 mb-4 sm:mb-6">
+        <img src="/Images/logo.svg" alt="Revivo Logo" class="logo mb-2 sm:mb-0">
+        <h2 class="text-xl sm:text-2xl font-henny text-[#2C2C2C]">Join Our Vintage Community</h2>
       </div>
-      <p class="text-[#2C2C2C]/80 mb-8 font-montserrat max-w-lg mx-auto">
+      <p class="text-[#2C2C2C]/80 mb-6 sm:mb-8 font-montserrat max-w-lg mx-auto text-sm sm:text-base px-2">
         Subscribe to receive exclusive early access to new arrivals, styling tips, and special offers for our vintage-loving community.
       </p>
-      <form class="newsletter-form flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
-        <input type="email" placeholder="Your email address" class="newsletter-input flex-grow px-4 py-3 rounded-sm focus:outline-none font-montserrat">
-        <button type="submit" class="newsletter-button px-6 py-3 bg-[#2C2C2C] text-white rounded-sm hover:bg-[#f8c78d] transition-colors font-montserrat uppercase text-sm">
+      <form class="newsletter-form flex flex-col sm:flex-row gap-3 sm:gap-4 max-w-md mx-auto">
+        <input type="email" placeholder="Your email address" class="newsletter-input flex-grow px-3 sm:px-4 py-2.5 sm:py-3 rounded-sm focus:outline-none font-montserrat text-sm">
+        <button type="submit" class="newsletter-button px-4 sm:px-6 py-2.5 sm:py-3 bg-[#2C2C2C] text-white rounded-sm hover:bg-[#f8c78d] transition-colors font-montserrat uppercase text-xs sm:text-sm">
           Subscribe
         </button>
       </form>

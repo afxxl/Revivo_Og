@@ -90,7 +90,6 @@ app.use(async (req, res, next) => {
     res.locals.user = null;
     res.locals.admin = null;
 
-    // Handle user session
     if (
       req.session.user &&
       req.path.startsWith("/") &&
@@ -112,7 +111,6 @@ app.use(async (req, res, next) => {
       }
     }
 
-    // Handle Passport user
     if (
       req.user &&
       req.path.startsWith("/") &&
@@ -135,7 +133,6 @@ app.use(async (req, res, next) => {
       }
     }
 
-    // Handle admin session
     if (req.session.admin && req.path.startsWith("/admin")) {
       const admin = await User.findById(req.session.admin);
       if (admin && admin.isAdmin) {
@@ -153,7 +150,6 @@ app.use(async (req, res, next) => {
 
     next();
   } catch (err) {
-    console.error("Session middleware error:", err);
     next(err);
   }
 });

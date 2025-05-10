@@ -14,6 +14,10 @@
             --secondary-color: #f8c78d;
             --accent-color: #d4af7a;
             --light-bg: #fcf9f2;
+            --mobile: 480px;
+            --tablet: 768px;
+            --laptop: 1024px;
+            --desktop: 1280px;
         }
         
         body {
@@ -29,7 +33,14 @@
         .wallet-container {
             max-width: 1000px;
             margin: 0 auto;
-            padding: 2rem;
+            padding: 1rem;
+            width: 100%;
+        }
+        
+        @media (min-width: 768px) {
+            .wallet-container {
+                padding: 2rem;
+            }
         }
         
         .section-title {
@@ -37,9 +48,15 @@
             font-weight: 600;
             position: relative;
             padding-bottom: 0.5rem;
-            margin-bottom: 2rem;
+            margin-bottom: 1.5rem;
             text-align: center;
             letter-spacing: 1px;
+        }
+        
+        @media (min-width: 768px) {
+            .section-title {
+                margin-bottom: 2rem;
+            }
         }
         
         .section-title::after {
@@ -58,15 +75,23 @@
             position: relative;
             background: linear-gradient(135deg, #2C2C2C, #1a1a1a);
             border-radius: 16px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
-            padding: 2.5rem;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+            padding: 1.5rem;
             color: white;
             overflow: hidden;
             transition: all 0.3s ease;
-            height: 220px;
+            height: 180px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
+        }
+        
+        @media (min-width: 768px) {
+            .wallet-card {
+                padding: 2.5rem;
+                height: 220px;
+                box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            }
         }
         
         .wallet-card:hover {
@@ -86,13 +111,23 @@
         
         .chip {
             position: absolute;
-            top: 25px;
-            right: 25px;
-            width: 50px;
-            height: 40px;
+            top: 15px;
+            right: 15px;
+            width: 40px;
+            height: 30px;
             background: linear-gradient(135deg, #f8c78d, #d4af7a);
-            border-radius: 8px;
+            border-radius: 6px;
             box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        @media (min-width: 768px) {
+            .chip {
+                top: 25px;
+                right: 25px;
+                width: 50px;
+                height: 40px;
+                border-radius: 8px;
+            }
         }
         
         .chip::before {
@@ -107,8 +142,15 @@
         
         .card-brand {
             font-family: 'Henny Penny', cursive;
-            font-size: 1.5rem;
-            letter-spacing: 2px;
+            font-size: 1.25rem;
+            letter-spacing: 1px;
+        }
+        
+        @media (min-width: 768px) {
+            .card-brand {
+                font-size: 1.5rem;
+                letter-spacing: 2px;
+            }
         }
         
         .card-label {
@@ -120,9 +162,16 @@
         }
         
         .balance-amount {
-            font-size: 2.5rem;
+            font-size: 1.75rem;
             font-weight: 600;
-            letter-spacing: 1px;
+            letter-spacing: 0.5px;
+        }
+        
+        @media (min-width: 768px) {
+            .balance-amount {
+                font-size: 2.5rem;
+                letter-spacing: 1px;
+            }
         }
         
         .card-footer {
@@ -140,17 +189,39 @@
         .transaction-tabs {
             display: flex;
             border-bottom: 1px solid rgba(44, 44, 44, 0.1);
-            margin-bottom: 1.5rem;
+            margin-bottom: 1rem;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+        }
+        
+        .transaction-tabs::-webkit-scrollbar {
+            display: none;
+        }
+        
+        @media (min-width: 768px) {
+            .transaction-tabs {
+                margin-bottom: 1.5rem;
+                overflow-x: visible;
+            }
         }
         
         .transaction-tab {
-            padding: 1rem 1.5rem;
-            font-size: 0.9rem;
+            padding: 0.75rem 1rem;
+            font-size: 0.8rem;
             font-weight: 500;
             color: #6b7280;
             border-bottom: 2px solid transparent;
             cursor: pointer;
             transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+        
+        @media (min-width: 768px) {
+            .transaction-tab {
+                padding: 1rem 1.5rem;
+                font-size: 0.9rem;
+            }
         }
         
         .transaction-tab.active {
@@ -168,22 +239,44 @@
         }
         
         .transaction-list {
-            max-height: 500px;
+            max-height: 350px;
             overflow-y: auto;
+        }
+        
+        @media (min-width: 768px) {
+            .transaction-list {
+                max-height: 500px;
+            }
         }
         
         .transaction-header {
             background: rgba(44, 44, 44, 0.05);
-            padding: 1rem 1.5rem;
+            padding: 0.75rem 1rem;
             display: flex;
-            justify-content: space-between;
+            flex-direction: column;
             border-bottom: 1px solid rgba(44, 44, 44, 0.1);
+            gap: 0.5rem;
+        }
+        
+        @media (min-width: 768px) {
+            .transaction-header {
+                padding: 1rem 1.5rem;
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: center;
+            }
         }
         
         .transaction-item {
-            padding: 1.25rem 1.5rem;
+            padding: 1rem;
             border-bottom: 1px solid rgba(44, 44, 44, 0.05);
             transition: all 0.3s ease;
+        }
+        
+        @media (min-width: 768px) {
+            .transaction-item {
+                padding: 1.25rem 1.5rem;
+            }
         }
         
         .transaction-item:hover {
@@ -192,7 +285,13 @@
         
         .transaction-amount {
             font-weight: 600;
-            font-size: 1.1rem;
+            font-size: 0.95rem;
+        }
+        
+        @media (min-width: 768px) {
+            .transaction-amount {
+                font-size: 1.1rem;
+            }
         }
         
         .credit {
@@ -223,9 +322,15 @@
         }
         
         .empty-transactions {
-            padding: 3rem;
+            padding: 2rem 1rem;
             text-align: center;
             color: #6b7280;
+        }
+        
+        @media (min-width: 768px) {
+            .empty-transactions {
+                padding: 3rem;
+            }
         }
         
         .empty-icon {
@@ -252,22 +357,32 @@
             background: rgba(0, 0, 0, 0.3);
         }
         
-        @media (max-width: 768px) {
-            .wallet-container {
-                padding: 1rem;
+        @media (max-width: 480px) {
+            .section-title {
+                font-size: 1.5rem !important;
+                margin-bottom: 1rem;
             }
             
-            .wallet-card {
-                padding: 1.5rem;
-                height: 180px;
+            .grid {
+                gap: 1rem !important;
             }
             
-            .balance-amount {
-                font-size: 2rem;
+            .card-name {
+                font-size: 0.85rem;
             }
             
-            .transaction-item {
-                padding: 1rem;
+            .status-badge {
+                padding: 0.2rem 0.5rem;
+                font-size: 0.65rem;
+            }
+            
+            .transaction-amount {
+                font-size: 0.9rem;
+            }
+            
+            .empty-icon svg {
+                width: 3rem;
+                height: 3rem;
             }
         }
     </style>
@@ -276,8 +391,8 @@
 <body>
     <%- include('../partials/user/header.ejs') %>
 
-    <div class="wallet-container py-12">
-        <h1 class="section-title text-3xl mb-8">Your Revivo Wallet</h1>
+    <div class="wallet-container py-6 sm:py-8 md:py-12">
+        <h1 class="section-title text-2xl sm:text-3xl mb-4 sm:mb-6 md:mb-8">Your Revivo Wallet</h1>
         
         <% 
         // Check for recent refunds (less than 24 hours old)
@@ -309,7 +424,7 @@
         </div>
         <% } %>
         
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-10">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 md:gap-8 mb-6 sm:mb-8 md:mb-10">
             <div class="md:col-span-2">
                 <div class="wallet-card">
                     <div class="card-pattern"></div>
@@ -334,13 +449,13 @@
                 </div>
             </div>
             
-            <div class="bg-white/90 rounded-2xl p-6 shadow-lg border border-gray-100">
-                <h3 class="font-medium text-lg mb-4">Wallet Overview</h3>
+            <div class="bg-white/90 rounded-2xl p-4 sm:p-5 md:p-6 shadow-lg border border-gray-100">
+                <h3 class="font-medium text-base sm:text-lg mb-3 sm:mb-4">Wallet Overview</h3>
                 
                 <div class="space-y-4">
                     <div>
                         <div class="text-sm text-gray-500 mb-1">Total Credits</div>
-                        <div class="font-medium text-xl text-green-600">
+                        <div class="font-medium text-lg sm:text-xl text-green-600">
                             +₹<%= wallet.transactions
                                 .filter(t => t.transactionType === 'credit')
                                 .reduce((sum, t) => sum + t.transactionAmount, 0)
@@ -350,7 +465,7 @@
                     
                     <div>
                         <div class="text-sm text-gray-500 mb-1">Total Debits</div>
-                        <div class="font-medium text-xl text-red-600">
+                        <div class="font-medium text-lg sm:text-xl text-red-600">
                             -₹<%= wallet.transactions
                                 .filter(t => t.transactionType === 'debit')
                                 .reduce((sum, t) => sum + t.transactionAmount, 0)
@@ -360,7 +475,7 @@
                     
                     <div class="pt-3 border-t">
                         <div class="text-sm text-gray-500 mb-1">Transactions</div>
-                        <div class="font-medium text-lg">
+                        <div class="font-medium text-base sm:text-lg">
                             <%= wallet.transactions.length %> total
                         </div>
                     </div>

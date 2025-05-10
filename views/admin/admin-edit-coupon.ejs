@@ -10,6 +10,13 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.18/dist/sweetalert2.all.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/luxon@2.3.1/build/global/luxon.min.js"></script>
     <style>
+        :root {
+            --mobile: 480px;
+            --tablet: 768px;
+            --laptop: 1024px;
+            --desktop: 1280px;
+        }
+        
         #sidebar {
             position: fixed;
             height: 100vh;
@@ -22,6 +29,64 @@
                 margin-left: 16rem; 
             }
         }
+        
+        .form-label {
+            font-size: 0.8rem;
+            margin-bottom: 0.25rem;
+        }
+        
+        @media (min-width: 480px) {
+            .form-label {
+                font-size: 0.875rem;
+                margin-bottom: 0.25rem;
+            }
+        }
+        
+        .form-input {
+            font-size: 0.875rem;
+            padding: 0.5rem 0.75rem;
+        }
+        
+        @media (min-width: 480px) {
+            .form-input {
+                font-size: 0.9rem;
+                padding: 0.5rem 0.75rem;
+            }
+        }
+        
+        .form-help-text {
+            font-size: 0.7rem;
+        }
+        
+        @media (min-width: 480px) {
+            .form-help-text {
+                font-size: 0.75rem;
+            }
+        }
+        
+        .stats-card {
+            padding: 0.5rem;
+            border-radius: 0.375rem;
+        }
+        
+        @media (min-width: 480px) {
+            .stats-card {
+                padding: 0.75rem;
+            }
+        }
+        
+        .form-button {
+            font-size: 0.8rem;
+            padding: 0.5rem 0.75rem;
+            border-radius: 0.375rem;
+        }
+        
+        @media (min-width: 480px) {
+            .form-button {
+                font-size: 0.875rem;
+                padding: 0.5rem 1rem;
+            }
+        }
     </style>
 </head>
 <body class="bg-gray-100">
@@ -29,36 +94,36 @@
     <%- include('../partials/admin/admin-header.ejs') %>
     <%- include('../partials/admin/admin-sidebar', {currentPage: 'coupons' }) %>
 
-    <div class="main-content flex-1 min-h-screen bg-gray-100 p-4 md:p-6 pt-24">
-        <div class="container mx-auto">
-            <div class="flex justify-between items-center mb-6">
-                <h1 class="text-2xl md:text-3xl font-semibold text-gray-800">Edit Coupon</h1>
-                <a href="/admin/coupons" class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded-lg shadow-md flex items-center">
+    <div class="main-content flex-1 min-h-screen bg-gray-100 p-3 sm:p-4 md:p-6 pt-16 sm:pt-20 md:pt-24 max-w-full">
+        <div class="container mx-auto px-0 sm:px-2">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-4 sm:mb-6">
+                <h1 class="text-xl sm:text-2xl md:text-3xl font-semibold text-gray-800">Edit Coupon</h1>
+                <a href="/admin/coupons" class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg shadow-md flex items-center text-sm sm:text-base">
                     <i class="fas fa-arrow-left mr-2"></i> Back to Coupons
                 </a>
             </div>
 
-            <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+            <div class="bg-white rounded-lg shadow-md p-3 sm:p-4 md:p-6 mb-4 sm:mb-6 md:mb-8">
                 <form id="editCouponForm">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 mb-4 sm:mb-6">
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1" for="code">Coupon Code</label>
+                            <label class="block text-sm font-medium text-gray-700 mb-1 form-label" for="code">Coupon Code</label>
                             <input
                                 type="text"
                                 id="code"
                                 name="code"
-                                class="w-full px-3 py-2 border border-gray-300 bg-gray-100 rounded-md focus:outline-none"
+                                class="w-full px-3 py-2 border border-gray-300 bg-gray-100 rounded-md focus:outline-none form-input"
                                 value="<%= coupon.code %>"
                                 disabled
                             >
-                            <p class="text-xs text-gray-500 mt-1">Coupon code cannot be changed</p>
+                            <p class="text-xs text-gray-500 mt-1 form-help-text">Coupon code cannot be changed</p>
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1" for="discountType">Discount Type</label>
                             <select
                                 id="discountType"
                                 name="discountType"
-                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 form-input"
                                 required
                             >
                                 <option value="percentage" <%= coupon.discountType === 'percentage' ? 'selected' : '' %>>Percentage</option>
@@ -67,7 +132,7 @@
                         </div>
                     </div>
 
-                    <div class="mb-6">
+                    <div class="mb-4 sm:mb-6">
                         <label class="block text-sm font-medium text-gray-700 mb-1" for="description">Description</label>
                         <textarea
                             id="description"
@@ -78,7 +143,7 @@
                         ><%= coupon.description %></textarea>
                     </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 mb-4 sm:mb-6">
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1" for="discountAmount">Discount Amount</label>
                             <input
@@ -87,7 +152,7 @@
                                 name="discountAmount"
                                 min="0"
                                 step="0.01"
-                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 form-input"
                                 value="<%= coupon.discountAmount %>"
                                 required
                             >
@@ -100,7 +165,7 @@
                                 name="minPurchase"
                                 min="0"
                                 step="0.01"
-                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 form-input"
                                 value="<%= coupon.minPurchase %>"
                             >
                         </div>
@@ -112,21 +177,21 @@
                                 name="maxDiscount"
                                 min="0"
                                 step="0.01"
-                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 form-input"
                                 value="<%= coupon.maxDiscount || '' %>"
                                 placeholder="Optional"
                             >
                         </div>
                     </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 mb-4 sm:mb-6">
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1" for="startDate">Start Date</label>
                             <input
                                 type="datetime-local"
                                 id="startDate"
                                 name="startDate"
-                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 form-input"
                                 required
                             >
                         </div>
@@ -136,7 +201,7 @@
                                 type="datetime-local"
                                 id="endDate"
                                 name="endDate"
-                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 form-input"
                                 required
                             >
                         </div>
@@ -147,31 +212,31 @@
                                 id="usageLimit"
                                 name="usageLimit"
                                 min="1"
-                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 form-input"
                                 value="<%= coupon.usageLimit %>"
                                 required
                             >
                         </div>
                     </div>
 
-                    <div class="bg-gray-50 p-4 rounded-md mb-6">
-                        <h3 class="text-md font-medium text-gray-700 mb-2">Coupon Statistics</h3>
-                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                            <div class="bg-white p-3 rounded-md shadow-sm">
-                                <p class="text-xs text-gray-500">Created</p>
-                                <p class="text-sm font-medium date-format"><%= coupon.createdAt %></p>
+                    <div class="bg-gray-50 p-3 sm:p-4 rounded-md mb-4 sm:mb-6">
+                        <h3 class="text-sm sm:text-md font-medium text-gray-700 mb-2">Coupon Statistics</h3>
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-2 sm:gap-4">
+                            <div class="bg-white p-2 sm:p-3 rounded-md shadow-sm stats-card">
+                                <p class="text-xs text-gray-500 form-help-text">Created</p>
+                                <p class="text-xs sm:text-sm font-medium date-format"><%= coupon.createdAt %></p>
                             </div>
-                            <div class="bg-white p-3 rounded-md shadow-sm">
-                                <p class="text-xs text-gray-500">Last Updated</p>
-                                <p class="text-sm font-medium date-format"><%= coupon.updatedAt %></p>
+                            <div class="bg-white p-2 sm:p-3 rounded-md shadow-sm stats-card">
+                                <p class="text-xs text-gray-500 form-help-text">Last Updated</p>
+                                <p class="text-xs sm:text-sm font-medium date-format"><%= coupon.updatedAt %></p>
                             </div>
-                            <div class="bg-white p-3 rounded-md shadow-sm">
-                                <p class="text-xs text-gray-500">Usage</p>
-                                <p class="text-sm font-medium"><%= coupon.usedCount %> / <%= coupon.usageLimit %></p>
+                            <div class="bg-white p-2 sm:p-3 rounded-md shadow-sm stats-card">
+                                <p class="text-xs text-gray-500 form-help-text">Usage</p>
+                                <p class="text-xs sm:text-sm font-medium"><%= coupon.usedCount %> / <%= coupon.usageLimit %></p>
                             </div>
-                            <div class="bg-white p-3 rounded-md shadow-sm">
-                                <p class="text-xs text-gray-500">Status</p>
-                                <p class="text-sm font-medium flex items-center">
+                            <div class="bg-white p-2 sm:p-3 rounded-md shadow-sm stats-card">
+                                <p class="text-xs text-gray-500 form-help-text">Status</p>
+                                <p class="text-xs sm:text-sm font-medium flex items-center">
                                     <span class="inline-block w-2 h-2 rounded-full mr-1 <%= coupon.isActive ? 'bg-green-500' : 'bg-red-500' %>"></span>
                                     <%= coupon.isActive ? 'Active' : 'Inactive' %>
                                 </p>
@@ -179,13 +244,13 @@
                         </div>
                     </div>
                     
-                    <div class="flex justify-end space-x-3 pt-4 border-t">
-                        <a href="/admin/coupons" class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                    <div class="flex flex-wrap justify-end gap-2 sm:gap-3 pt-4 border-t">
+                        <a href="/admin/coupons" class="px-3 py-1.5 sm:px-4 sm:py-2 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-50 text-sm sm:text-base form-button">
                             Cancel
                         </a>
                         <button
                             type="submit"
-                            class="px-4 py-2 bg-[#2C2C2C] text-white rounded-md hover:bg-gray-800"
+                            class="px-3 py-1.5 sm:px-4 sm:py-2 bg-[#2C2C2C] text-white rounded-md hover:bg-gray-800 text-sm sm:text-base form-button"
                         >
                             Update Coupon
                         </button>

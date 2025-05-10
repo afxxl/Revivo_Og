@@ -1529,8 +1529,6 @@ const requestReturn = async (req, res) => {
     const orderId = req.params.orderId;
     const userId = req.session.user;
 
-    console.log("Return request received:", { orderId, userId, reason });
-
     const order = await Order.findOne({ orderId, user: userId });
 
     if (!order) {
@@ -1540,8 +1538,6 @@ const requestReturn = async (req, res) => {
         message: "Order not found",
       });
     }
-
-    console.log("Current order status:", order.status);
 
     if (order.status !== "Delivered") {
       console.log("Invalid status for return:", order.status);
@@ -1714,294 +1710,294 @@ const generateInvoice = async (req, res) => {
       align: "right",
     });
 
-    doc.moveDown(0.3);
+    doc.movedown(0.3);
 
     doc.text("support@revivo.com | +91 9876543210", {
-      width: colWidth,
+      width: colwidth,
       align: "right",
     });
 
-    doc.moveDown(2);
+    doc.movedown(2);
 
     doc
-      .strokeColor(lightGray)
-      .lineWidth(1)
+      .strokecolor(lightgray)
+      .linewidth(1)
       .rect(50, doc.y, doc.page.width - 100, 120)
       .stroke();
 
     doc
-      .fontSize(12)
-      .fillColor(primaryColor)
-      .font("Helvetica-Bold")
-      .text("CUSTOMER", 70, doc.y + 15);
+      .fontsize(12)
+      .fillcolor(primarycolor)
+      .font("helvetica-bold")
+      .text("customer", 70, doc.y + 15);
 
-    doc.moveDown(0.5);
-
-    doc
-      .fontSize(10)
-      .fillColor(textColor)
-      .font("Helvetica-Bold")
-      .text(`${order.user.name || "Customer"}`, 70);
-
-    doc.moveDown(0.3);
+    doc.movedown(0.5);
 
     doc
-      .font("Helvetica")
-      .text(`Email: ${order.user.email || "Not available"}`, 70);
+      .fontsize(10)
+      .fillcolor(textcolor)
+      .font("helvetica-bold")
+      .text(`${order.user.name || "customer"}`, 70);
 
-    doc.moveDown(0.3);
-
-    doc.text(`Phone: ${order.user.phone || "Not available"}`, 70);
+    doc.movedown(0.3);
 
     doc
-      .fontSize(12)
-      .fillColor(primaryColor)
-      .font("Helvetica-Bold")
-      .text("SHIPPING ADDRESS", doc.page.width / 2, doc.y - 65);
+      .font("helvetica")
+      .text(`email: ${order.user.email || "not available"}`, 70);
 
-    doc.moveDown(0.5);
+    doc.movedown(0.3);
 
-    if (order.addressDetails) {
+    doc.text(`phone: ${order.user.phone || "not available"}`, 70);
+
+    doc
+      .fontsize(12)
+      .fillcolor(primarycolor)
+      .font("helvetica-bold")
+      .text("shipping address", doc.page.width / 2, doc.y - 65);
+
+    doc.movedown(0.5);
+
+    if (order.addressdetails) {
       doc
-        .fontSize(10)
-        .fillColor(textColor)
-        .font("Helvetica-Bold")
-        .text(`${order.addressDetails.name}`, doc.page.width / 2);
+        .fontsize(10)
+        .fillcolor(textcolor)
+        .font("helvetica-bold")
+        .text(`${order.addressdetails.name}`, doc.page.width / 2);
 
-      doc.moveDown(0.3);
+      doc.movedown(0.3);
 
       doc
-        .font("Helvetica")
-        .text(`${order.addressDetails.address}`, doc.page.width / 2);
+        .font("helvetica")
+        .text(`${order.addressdetails.address}`, doc.page.width / 2);
 
-      doc.moveDown(0.3);
+      doc.movedown(0.3);
 
       doc.text(
-        `${order.addressDetails.city}, ${order.addressDetails.state} - ${order.addressDetails.pincode}`,
+        `${order.addressdetails.city}, ${order.addressdetails.state} - ${order.addressdetails.pincode}`,
         doc.page.width / 2,
       );
 
-      doc.moveDown(0.3);
+      doc.movedown(0.3);
 
-      doc.text(`Phone: ${order.addressDetails.phone}`, doc.page.width / 2);
+      doc.text(`phone: ${order.addressdetails.phone}`, doc.page.width / 2);
     } else if (order.address) {
       doc
-        .fontSize(10)
-        .fillColor(textColor)
-        .font("Helvetica-Bold")
+        .fontsize(10)
+        .fillcolor(textcolor)
+        .font("helvetica-bold")
         .text(`${order.address.name}`, doc.page.width / 2);
 
-      doc.moveDown(0.3);
+      doc.movedown(0.3);
 
       doc
-        .font("Helvetica")
+        .font("helvetica")
         .text(`${order.address.address}`, doc.page.width / 2);
 
-      doc.moveDown(0.3);
+      doc.movedown(0.3);
 
       doc.text(
         `${order.address.city}, ${order.address.state} - ${order.address.pincode}`,
         doc.page.width / 2,
       );
 
-      doc.moveDown(0.3);
+      doc.movedown(0.3);
 
-      doc.text(`Phone: ${order.address.phone}`, doc.page.width / 2);
+      doc.text(`phone: ${order.address.phone}`, doc.page.width / 2);
     } else {
       doc
-        .fontSize(10)
-        .fillColor(textColor)
-        .font("Helvetica-Bold")
-        .text(`${order.user.name || "Customer"}`, doc.page.width / 2);
+        .fontsize(10)
+        .fillcolor(textcolor)
+        .font("helvetica-bold")
+        .text(`${order.user.name || "customer"}`, doc.page.width / 2);
 
-      doc.moveDown(0.3);
+      doc.movedown(0.3);
 
       doc
-        .font("Helvetica")
-        .text(`Address information not available`, doc.page.width / 2);
+        .font("helvetica")
+        .text(`address information not available`, doc.page.width / 2);
     }
 
-    doc.moveDown(3);
+    doc.movedown(3);
 
     doc
-      .fontSize(14)
-      .fillColor(primaryColor)
-      .font("Helvetica-Bold")
-      .text("ORDER ITEMS", 50);
+      .fontsize(14)
+      .fillcolor(primarycolor)
+      .font("helvetica-bold")
+      .text("order items", 50);
 
-    doc.moveDown(1);
+    doc.movedown(1);
 
-    const tableTop = doc.y;
-    doc.rect(50, tableTop, doc.page.width - 100, 25).fill(primaryColor);
+    const tabletop = doc.y;
+    doc.rect(50, tabletop, doc.page.width - 100, 25).fill(primarycolor);
 
     doc
-      .fillColor("#FFFFFF")
-      .fontSize(10)
-      .font("Helvetica-Bold")
-      .text("PRODUCT", 70, tableTop + 8)
-      .text("QTY", 300, tableTop + 8, { width: 40, align: "center" })
-      .text("PRICE", 370, tableTop + 8, { width: 70, align: "right" })
-      .text("TOTAL", 470, tableTop + 8, { width: 70, align: "right" });
+      .fillcolor("#ffffff")
+      .fontsize(10)
+      .font("helvetica-bold")
+      .text("product", 70, tabletop + 8)
+      .text("qty", 300, tabletop + 8, { width: 40, align: "center" })
+      .text("price", 370, tabletop + 8, { width: 70, align: "right" })
+      .text("total", 470, tabletop + 8, { width: 70, align: "right" });
 
-    let tableRowY = tableTop + 30;
-    let alternateRow = false;
+    let tablerowy = tabletop + 30;
+    let alternaterow = false;
 
-    order.orderItems.forEach((item, i) => {
-      if (alternateRow) {
-        doc.rect(50, tableRowY - 5, doc.page.width - 100, 30).fill("#f9f9f9");
+    order.orderitems.foreach((item, i) => {
+      if (alternaterow) {
+        doc.rect(50, tablerowy - 5, doc.page.width - 100, 30).fill("#f9f9f9");
       }
-      alternateRow = !alternateRow;
+      alternaterow = !alternaterow;
 
       doc
-        .fillColor(textColor)
-        .fontSize(10)
-        .font("Helvetica")
-        .text(item.product.productName, 70, tableRowY, { width: 220 });
+        .fillcolor(textcolor)
+        .fontsize(10)
+        .font("helvetica")
+        .text(item.product.productname, 70, tablerowy, { width: 220 });
 
-      doc.text(item.quantity.toString(), 300, tableRowY, {
+      doc.text(item.quantity.tostring(), 300, tablerowy, {
         width: 40,
         align: "center",
       });
-      doc.text(`₹${item.price.toFixed(2)}`, 370, tableRowY, {
+      doc.text(`₹${item.price.tofixed(2)}`, 370, tablerowy, {
         width: 70,
         align: "right",
       });
-      doc.text(`₹${(item.price * item.quantity).toFixed(2)}`, 470, tableRowY, {
+      doc.text(`₹${(item.price * item.quantity).tofixed(2)}`, 470, tablerowy, {
         width: 70,
         align: "right",
       });
 
-      tableRowY += 30;
+      tablerowy += 30;
     });
 
     doc
-      .strokeColor(lightGray)
-      .lineWidth(1)
-      .moveTo(50, tableRowY + 5)
-      .lineTo(doc.page.width - 50, tableRowY + 5)
+      .strokecolor(lightgray)
+      .linewidth(1)
+      .moveto(50, tablerowy + 5)
+      .lineto(doc.page.width - 50, tablerowy + 5)
       .stroke();
 
-    doc.moveDown(1.5);
+    doc.movedown(1.5);
 
-    const summaryX = 350;
-    const summaryWidth = 170;
+    const summaryx = 350;
+    const summarywidth = 170;
 
     doc
-      .strokeColor(lightGray)
-      .lineWidth(1)
-      .rect(summaryX - 10, doc.y - 5, summaryWidth + 20, 140)
+      .strokecolor(lightgray)
+      .linewidth(1)
+      .rect(summaryx - 10, doc.y - 5, summarywidth + 20, 140)
       .stroke();
 
-    const summaryStartY = doc.y + 10;
+    const summarystarty = doc.y + 10;
 
     doc
-      .fillColor(primaryColor)
-      .font("Helvetica-Bold")
-      .fontSize(12)
-      .text("ORDER SUMMARY", summaryX + 10, summaryStartY, {
-        width: summaryWidth,
+      .fillcolor(primarycolor)
+      .font("helvetica-bold")
+      .fontsize(12)
+      .text("order summary", summaryx + 10, summarystarty, {
+        width: summarywidth,
       });
 
-    doc.moveDown(1);
+    doc.movedown(1);
 
     doc
-      .fontSize(10)
-      .fillColor(textColor)
-      .font("Helvetica")
-      .text("Subtotal:", summaryX + 10, doc.y, { width: 80 })
-      .text(`₹${order.totalPrice.toFixed(2)}`, summaryX + 90, doc.y - 12, {
+      .fontsize(10)
+      .fillcolor(textcolor)
+      .font("helvetica")
+      .text("subtotal:", summaryx + 10, doc.y, { width: 80 })
+      .text(`₹${order.totalprice.tofixed(2)}`, summaryx + 90, doc.y - 12, {
         width: 70,
         align: "right",
       });
 
-    doc.moveDown(0.7);
+    doc.movedown(0.7);
 
     doc
-      .text("Shipping:", summaryX + 10, doc.y, { width: 80 })
-      .text(`₹${order.shipping.toFixed(2)}`, summaryX + 90, doc.y - 12, {
+      .text("shipping:", summaryx + 10, doc.y, { width: 80 })
+      .text(`₹${order.shipping.tofixed(2)}`, summaryx + 90, doc.y - 12, {
         width: 70,
         align: "right",
       });
 
     if (order.discount > 0) {
-      doc.moveDown(0.7);
+      doc.movedown(0.7);
       doc
-        .fillColor("#48bb78")
-        .text("Discount:", summaryX + 10, doc.y, { width: 80 })
-        .text(`-₹${order.discount.toFixed(2)}`, summaryX + 90, doc.y - 12, {
+        .fillcolor("#48bb78")
+        .text("discount:", summaryx + 10, doc.y, { width: 80 })
+        .text(`-₹${order.discount.tofixed(2)}`, summaryx + 90, doc.y - 12, {
           width: 70,
           align: "right",
         });
     }
 
-    doc.moveDown(0.7);
+    doc.movedown(0.7);
     doc
-      .strokeColor(lightGray)
-      .lineWidth(1)
-      .moveTo(summaryX, doc.y)
-      .lineTo(summaryX + summaryWidth, doc.y)
+      .strokecolor(lightgray)
+      .linewidth(1)
+      .moveto(summaryx, doc.y)
+      .lineto(summaryx + summarywidth, doc.y)
       .stroke();
 
-    doc.moveDown(0.7);
+    doc.movedown(0.7);
 
     doc
-      .strokeColor(primaryColor)
-      .lineWidth(1)
-      .rect(summaryX, doc.y - 5, summaryWidth, 30)
-      .fill(primaryColor);
+      .strokecolor(primarycolor)
+      .linewidth(1)
+      .rect(summaryx, doc.y - 5, summarywidth, 30)
+      .fill(primarycolor);
 
-    const totalTextY = doc.y + 7;
+    const totaltexty = doc.y + 7;
 
-    doc.fillColor("#FFFFFF").font("Helvetica-Bold").fontSize(12);
+    doc.fillcolor("#ffffff").font("helvetica-bold").fontsize(12);
 
-    doc.text("TOTAL:", summaryX + 10, totalTextY, { continued: true });
+    doc.text("total:", summaryx + 10, totaltexty, { continued: true });
 
-    doc.text(`₹${order.finalAmount.toFixed(2)}`, {
+    doc.text(`₹${order.finalamount.tofixed(2)}`, {
       align: "right",
-      width: summaryWidth - 20,
+      width: summarywidth - 20,
     });
 
-    doc.moveDown(3);
+    doc.movedown(3);
 
-    const footerY = doc.page.height - 80;
+    const footery = doc.page.height - 80;
 
     doc
-      .strokeColor(secondaryColor)
-      .lineWidth(2)
-      .moveTo(50, footerY)
-      .lineTo(doc.page.width - 50, footerY)
+      .strokecolor(secondarycolor)
+      .linewidth(2)
+      .moveto(50, footery)
+      .lineto(doc.page.width - 50, footery)
       .stroke();
 
     doc
-      .fontSize(10)
-      .fillColor(primaryColor)
-      .font("Helvetica-Bold")
-      .text("Thank you for shopping with REVIVO!", 50, footerY + 15, {
+      .fontsize(10)
+      .fillcolor(primarycolor)
+      .font("helvetica-bold")
+      .text("thank you for shopping with revivo!", 50, footery + 15, {
         align: "center",
       });
 
     doc
-      .fontSize(8)
-      .fillColor(textColor)
-      .font("Helvetica")
+      .fontsize(8)
+      .fillcolor(textcolor)
+      .font("helvetica")
       .text(
-        "For any questions or concerns regarding this order, please contact our customer support.",
+        "for any questions or concerns regarding this order, please contact our customer support.",
         { align: "center" },
       );
 
     doc
-      .fontSize(8)
-      .fillColor(primaryColor)
+      .fontsize(8)
+      .fillcolor(primarycolor)
       .text("www.revivo.com | support@revivo.com | +91 9876543210", {
         align: "center",
       });
 
     doc.end();
   } catch (err) {
-    console.error("Error generating invoice:", err);
+    console.error("error generating invoice:", err);
     res
       .status(500)
-      .json({ success: false, message: "Failed to generate invoice" });
+      .json({ success: false, message: "failed to generate invoice" });
   }
 };
 
@@ -2138,7 +2134,6 @@ const applyCoupon = async (req, res) => {
       const quantity = parseInt(item.quantity, 10) || 0;
       return sum + quantity;
     }, 0);
-    console.log("Total quantity when applying coupon:", totalQuantity);
 
     const shipping =
       subtotal > 0
@@ -2146,8 +2141,6 @@ const applyCoupon = async (req, res) => {
           ? 0
           : Math.max(40, 40 + Math.floor(totalQuantity / 3) * 10)
         : 0;
-
-    console.log("Calculated shipping charge:", shipping);
 
     let discountAmount = 0;
     if (coupon.discountType === "percentage") {

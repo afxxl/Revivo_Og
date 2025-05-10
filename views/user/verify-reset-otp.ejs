@@ -8,6 +8,13 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
+      :root {
+        --mobile: 480px;
+        --tablet: 768px;
+        --laptop: 1024px;
+        --desktop: 1280px;
+      }
+      
       body {
         background-image: url("/Images/images/OLD_PAPER_TEXTURE.jpg");
         background-size: cover;
@@ -27,6 +34,16 @@
         background: transparent;
         font-size: 1.2rem;
         transition: all 0.3s;
+      }
+      
+      @media (max-width: 480px) {
+        .otp-input {
+          width: 32px;
+          height: 32px;
+          padding: 4px;
+          margin: 0 3px;
+          font-size: 1rem;
+        }
       }
 
       .otp-input:focus {
@@ -50,22 +67,43 @@
         border-color: rgba(44, 44, 44, 0.3);
         color: rgba(44, 44, 44, 0.5);
       }
+      
+      /* Responsive styles */
+      @media (max-width: 768px) {
+        .min-h-screen {
+          padding-top: 2rem;
+          padding-bottom: 2rem;
+        }
+      }
+      
+      @media (max-width: 480px) {
+        input, button[type="submit"] {
+          font-size: 0.9rem;
+        }
+      }
+      
+      /* Touch device optimizations */
+      @media (hover: none) {
+        button:active {
+          transform: scale(0.98);
+        }
+      }
     </style>
   </head>
   <body>
     <%-include("../../views/partials/user/header")%>
 
-    <div class="min-h-screen flex items-center justify-center p-4 mt-20">
-      <div class="max-w-md w-full backdrop-blur-sm bg-white/30 rounded-lg p-8 space-y-6 shadow-lg">
+    <div class="min-h-screen flex items-center justify-center px-4 py-8 sm:p-4 mt-16 sm:mt-20">
+      <div class="max-w-md w-full backdrop-blur-sm bg-white/30 rounded-lg p-4 sm:p-6 md:p-8 space-y-4 sm:space-y-6 shadow-lg">
         <div class="text-center space-y-2">
-          <h1 class="text-3xl font-henny text-[#2C2C2C]">Verify OTP</h1>
-          <p class="text-sm text-[#2C2C2C]/70">Enter the verification code sent to your email</p>
+          <h1 class="text-2xl sm:text-3xl font-henny text-[#2C2C2C]">Verify OTP</h1>
+          <p class="text-xs sm:text-sm text-[#2C2C2C]/70">Enter the verification code sent to your email</p>
         </div>
 
-        <form id="otpForm" class="space-y-6" action="/verifyResetOtp" method="POST">
+        <form id="otpForm" class="space-y-4 sm:space-y-6" action="/verifyResetOtp" method="POST">
           <input type="hidden" name="otp" id="otpHidden">
 
-          <div class="flex justify-center space-x-2">
+          <div class="flex justify-center space-x-1 sm:space-x-2">
             <input type="text" class="otp-input" maxlength="1" pattern="[0-9]" inputmode="numeric">
             <input type="text" class="otp-input" maxlength="1" pattern="[0-9]" inputmode="numeric">
             <input type="text" class="otp-input" maxlength="1" pattern="[0-9]" inputmode="numeric">
@@ -74,20 +112,20 @@
             <input type="text" class="otp-input" maxlength="1" pattern="[0-9]" inputmode="numeric">
           </div>
 
-          <div class="text-center space-y-2">
-            <p class="text-sm text-[#2C2C2C]/70">Time remaining: <span id="timer" class="font-medium text-[#2C2C2C]">30</span>s</p>
-            <a href="#" id="resendLink" class="text-[#2C2C2C] hover:text-[#1a1a1a] text-sm hidden">Resend OTP</a>
+          <div class="text-center space-y-1 sm:space-y-2">
+            <p class="text-xs sm:text-sm text-[#2C2C2C]/70">Time remaining: <span id="timer" class="font-medium text-[#2C2C2C]">30</span>s</p>
+            <a href="#" id="resendLink" class="text-[#2C2C2C] hover:text-[#1a1a1a] text-xs sm:text-sm hidden">Resend OTP</a>
           </div>
 
           <%if(typeof message !== 'undefined' && message){%>
-            <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded-md">
+            <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-3 sm:p-4 rounded-md text-xs sm:text-sm">
               <%=message%>
             </div>
           <%}%>
 
           <button
             type="submit"
-            class="w-full bg-[#2C2C2C] text-white py-3 rounded-md hover:bg-[#1a1a1a] transition-colors font-medium"
+            class="w-full bg-[#2C2C2C] text-white py-2.5 sm:py-3 rounded-md hover:bg-[#1a1a1a] transition-colors font-medium text-sm sm:text-base"
           >
             Verify OTP
           </button>

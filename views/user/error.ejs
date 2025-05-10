@@ -1,36 +1,65 @@
 <!doctype html>
 <html lang="en">
   <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Error - REVIVO</title>
     <link href="/css/styles.css" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Henny+Penny&family=Playfair+Display:wght@400;500;600&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
+    
+    <style>
+      /* Responsive styles */
+      @media (max-width: 640px) {
+        .error-container {
+          padding: 1.5rem;
+        }
+        
+        .error-icon svg {
+          width: 3.5rem;
+          height: 3.5rem;
+        }
+        
+        .error-heading {
+          font-size: 1.5rem;
+        }
+        
+        .error-message {
+          font-size: 0.9rem;
+        }
+        
+        .error-button {
+          width: 100%;
+          padding: 0.75rem 1rem;
+        }
+      }
+    </style>
   </head>
 
   <body class="bg-[#f8f7f5]">
     <%- include('../partials/user/header.ejs') %>
 
-    <div class="container mx-auto px-4 py-12 max-w-4xl">
-      <div class="flex items-center gap-3 mb-8">
-        <a href="/" class="text-[#2C2C2C]/60 hover:text-[#2C2C2C] transition-colors font-montserrat text-sm">Home</a>
+    <div class="container mx-auto px-4 sm:px-6 py-8 md:py-12 max-w-4xl min-h-[60vh] flex flex-col justify-center">
+      <div class="flex items-center gap-3 mb-6 md:mb-8">
+        <a href="/" class="text-[#2C2C2C]/60 hover:text-[#2C2C2C] transition-colors font-montserrat text-xs sm:text-sm">Home</a>
         <span class="text-[#2C2C2C]/40">/</span>
-        <span class="text-[#2C2C2C] font-montserrat text-sm">Error</span>
+        <span class="text-[#2C2C2C] font-montserrat text-xs sm:text-sm">Error</span>
       </div>
 
-      <div class="bg-white rounded-lg shadow-sm p-8 text-center">
-        <div class="text-red-500 mb-4">
-          <svg class="w-16 h-16 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <div class="bg-white rounded-lg shadow-sm p-6 md:p-8 text-center error-container">
+        <div class="text-red-500 mb-4 error-icon">
+          <svg class="w-12 h-12 md:w-16 md:h-16 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
           </svg>
         </div>
         
-        <h1 class="text-3xl font-playfair mb-4 text-[#2C2C2C]">Something went wrong</h1>
+        <h1 class="text-2xl md:text-3xl font-playfair mb-3 md:mb-4 text-[#2C2C2C] error-heading">Something went wrong</h1>
         
-        <p class="text-[#2C2C2C]/80 font-montserrat mb-6"><%= message || "We encountered an unexpected error. Please try again later." %></p>
+        <p class="text-[#2C2C2C]/80 font-montserrat mb-6 text-sm md:text-base error-message"><%= message || "We encountered an unexpected error. Please try again later." %></p>
         
-        <div class="mt-8">
-          <a href="/" class="inline-block px-6 py-3 bg-[#2C2C2C] text-white rounded-sm hover:bg-[#1a1a1a] transition-colors font-montserrat">
+        <div class="mt-6 md:mt-8">
+          <a href="/" class="inline-block px-4 sm:px-6 py-2.5 sm:py-3 bg-[#2C2C2C] text-white rounded-sm hover:bg-[#1a1a1a] transition-colors font-montserrat text-sm md:text-base error-button">
             Return to Homepage
           </a>
         </div>

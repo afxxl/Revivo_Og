@@ -19,6 +19,12 @@
         --success-color: #48bb78;
         --danger-color: #e53e3e;
         --warning-color: #f6ad55;
+        
+        /* Responsive breakpoints */
+        --mobile: 480px;
+        --tablet: 768px;
+        --laptop: 1024px;
+        --desktop: 1280px;
       }
       
       body {
@@ -34,6 +40,8 @@
       .profile-container {
         max-width: 1200px;
         margin: 0 auto;
+        width: 100%;
+        overflow-x: hidden;
       }
       
       .profile-sidebar {
@@ -46,6 +54,25 @@
         transition: all 0.3s ease;
       }
       
+      @media (max-width: 768px) {
+        .profile-sidebar {
+          position: fixed;
+          top: 0;
+          left: 0;
+          height: 100vh;
+          width: 85%;
+          max-width: 320px;
+          z-index: 40;
+          transform: translateX(-100%);
+          overflow-y: auto;
+          padding-bottom: 6rem;
+        }
+        
+        .profile-sidebar.active {
+          transform: translateX(0);
+        }
+      }
+      
       .profile-content {
         background: rgba(255, 255, 255, 0.85);
         border-radius: 16px;
@@ -53,6 +80,19 @@
         backdrop-filter: blur(10px);
         border: 1px solid rgba(255, 255, 255, 0.2);
         transition: all 0.3s ease;
+        width: 100%;
+      }
+      
+      @media (max-width: 768px) {
+        .profile-content {
+          padding: 1rem !important;
+        }
+      }
+      
+      @media (max-width: 480px) {
+        .profile-content {
+          padding: 0.75rem !important;
+        }
       }
       
       .profile-image-container {
@@ -64,6 +104,13 @@
         border: 3px solid white;
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         margin: 0 auto;
+      }
+      
+      @media (max-width: 480px) {
+        .profile-image-container {
+          width: 100px;
+          height: 100px;
+        }
       }
       
       .profile-image {
@@ -131,6 +178,14 @@
         margin-bottom: 1.5rem;
       }
       
+      @media (max-width: 480px) {
+        .section-title {
+          padding-bottom: 0.5rem;
+          margin-bottom: 1rem;
+          font-size: 1.25rem !important;
+        }
+      }
+      
       .section-title::after {
         content: '';
         position: absolute;
@@ -149,6 +204,13 @@
         border-radius: 8px;
         transition: all 0.3s ease;
         background-color: rgba(255, 255, 255, 0.7);
+      }
+      
+      @media (max-width: 480px) {
+        .form-input {
+          padding: 0.625rem 0.875rem;
+          font-size: 0.875rem;
+        }
       }
       
       .form-input:focus {
@@ -180,6 +242,13 @@
         cursor: pointer;
       }
       
+      @media (max-width: 480px) {
+        .btn-primary {
+          padding: 0.5rem 1rem;
+          font-size: 0.875rem;
+        }
+      }
+      
       .btn-primary:hover {
         background-color: #1a1a1a;
         transform: translateY(-2px);
@@ -198,6 +267,13 @@
         align-items: center;
         gap: 0.5rem;
         cursor: pointer;
+      }
+      
+      @media (max-width: 480px) {
+        .btn-secondary {
+          padding: 0.5rem 1rem;
+          font-size: 0.875rem;
+        }
       }
       
       .btn-secondary:hover {
@@ -219,6 +295,13 @@
         cursor: pointer;
       }
       
+      @media (max-width: 480px) {
+        .btn-danger {
+          padding: 0.5rem 1rem;
+          font-size: 0.875rem;
+        }
+      }
+      
       .btn-danger:hover {
         background-color: var(--danger-color);
         color: white;
@@ -233,6 +316,12 @@
         transition: all 0.3s ease;
         position: relative;
         background-color: white;
+      }
+      
+      @media (max-width: 480px) {
+        .address-card {
+          padding: 1rem;
+        }
       }
       
       .address-card:hover {
@@ -264,6 +353,12 @@
         padding: 1rem;
       }
       
+      @media (max-width: 480px) {
+        .modal-container {
+          padding: 0.5rem;
+        }
+      }
+      
       .modal-content {
         background-color: white;
         border-radius: 16px;
@@ -281,10 +376,23 @@
         border-bottom: 1px solid rgba(44, 44, 44, 0.1);
       }
       
+      @media (max-width: 480px) {
+        .modal-header {
+          padding: 1rem 1.25rem;
+        }
+      }
+      
       .modal-body {
         padding: 1.5rem;
         max-height: 70vh;
         overflow-y: auto;
+      }
+      
+      @media (max-width: 480px) {
+        .modal-body {
+          padding: 1rem;
+          max-height: 60vh;
+        }
       }
       
       .modal-footer {
@@ -293,6 +401,13 @@
         justify-content: flex-end;
         gap: 0.75rem;
         border-top: 1px solid rgba(44, 44, 44, 0.1);
+      }
+      
+      @media (max-width: 480px) {
+        .modal-footer {
+          padding: 0.75rem 1rem;
+          gap: 0.5rem;
+        }
       }
       
       .toast {
@@ -310,6 +425,16 @@
         transform: translateY(0);
         opacity: 1;
         transition: all 0.3s ease;
+      }
+      
+      @media (max-width: 480px) {
+        .toast {
+          bottom: 1rem;
+          right: 1rem;
+          left: 1rem;
+          padding: 0.75rem 1rem;
+          font-size: 0.875rem;
+        }
       }
       
       .toast.success {
@@ -389,6 +514,7 @@
         opacity: 0;
         transform: translateY(10px);
         transition: all 0.3s ease;
+        width: 100%;
       }
       
       .tab-content:not(.hidden) {
@@ -398,6 +524,107 @@
       
       .info-row {
         margin-bottom: 1.25rem;
+      }
+      
+      @media (max-width: 480px) {
+        .info-row {
+          margin-bottom: 1rem;
+        }
+      }
+      
+      /* Mobile menu styles */
+      .burger-menu {
+        width: 30px;
+        height: 24px;
+        position: relative;
+        cursor: pointer;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+      }
+      
+      .burger-menu span,
+      .burger-menu::before,
+      .burger-menu::after {
+        content: '';
+        display: block;
+        height: 3px;
+        width: 100%;
+        background-color: var(--primary-color);
+        border-radius: 3px;
+        transition: all 0.3s ease;
+      }
+      
+      .burger-menu::before {
+        transform-origin: 0 0;
+      }
+      
+      .burger-menu::after {
+        transform-origin: 0 100%;
+      }
+      
+      .close-sidebar {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background-color: rgba(44, 44, 44, 0.05);
+        color: var(--primary-color);
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+      
+      .close-sidebar:hover {
+        background-color: rgba(44, 44, 44, 0.1);
+      }
+      
+      .sidebar-overlay {
+        position: fixed;
+        inset: 0;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 30;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s ease;
+      }
+      
+      .sidebar-overlay.active {
+        opacity: 1;
+        pointer-events: auto;
+      }
+      
+      /* Touch device optimizations */
+      @media (hover: none) {
+        .profile-tab:hover {
+          transform: none;
+        }
+        
+        .address-card:hover {
+          transform: none;
+          box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+        }
+        
+        .btn-primary:active,
+        .btn-secondary:active,
+        .btn-danger:active {
+          transform: scale(0.98);
+        }
+      }
+      
+      /* Responsive grid for address cards */
+      .address-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 1.5rem;
+      }
+      
+      @media (max-width: 640px) {
+        .address-grid {
+          grid-template-columns: 1fr;
+          gap: 1rem;
+        }
       }
       
       .info-label {
@@ -600,7 +827,7 @@
   <body>
     <%- include('../partials/user/header.ejs') %>
 
-    <div class="container mx-auto px-2 sm:px-4 py-6 sm:py-12 profile-container">
+    <div class="container mx-auto px-4 py-6 sm:py-12 profile-container">
       <div class="mb-4 md:hidden">
         <div class="flex items-center justify-between">
           <div class="burger-menu" id="burgerMenu">
@@ -608,12 +835,11 @@
             <span></span>
             <span></span>
           </div>
-          <h2 class="text-xl font-bold font-playfair" id="mobilePageTitle">Profile Details</h2>
-          <div class="w-[30px]"></div>
+          <h1 class="text-xl font-playfair">My Account</h1>
+          <div class="w-6"></div>
         </div>
       </div>
-
-      <div class="sidebar-overlay" id="sidebarOverlay"></div>
+      <div id="sidebarOverlay" class="sidebar-overlay"></div>
       
       <div class="flex flex-col md:flex-row gap-8">
         <!-- Sidebar -->
@@ -820,7 +1046,7 @@
                   </div>
                 <% }); %>
               <% } else { %>
-                <div class="col-span-full text-center py-12 bg-white/50 rounded-lg border border-dashed border-[#2C2C2C]/20">
+                <div class="col-span-1 sm:col-span-2 text-center py-12 bg-white/50 rounded-lg border border-dashed border-[#2C2C2C]/20">
                   <i class="fas fa-map-marker-alt text-4xl text-[#2C2C2C]/30 mb-4"></i>
                   <p class="text-[#2C2C2C]/70 mb-6">You haven't added any addresses yet.</p>
                   <button 
@@ -839,7 +1065,7 @@
             <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 sm:mb-8 gap-4">
               <h2 class="section-title text-xl sm:text-2xl font-playfair">Order History</h2>
               
-              <div class="flex items-center gap-2 w-full md:w-96">
+              <div class="flex items-center gap-2 w-full md:w-96 max-w-full">
                 <form id="ordersSearchForm" class="flex-1 flex items-center">
                   <div class="relative flex-1">
                     <input 
@@ -963,7 +1189,7 @@
                 <div class="md:hidden space-y-4">
                   <% user.orders.forEach(order => { %>
                     <div class="bg-white rounded-lg overflow-hidden border border-[#2C2C2C]/10 p-3 sm:p-4">
-                      <div class="flex justify-between items-start mb-3 sm:mb-4">
+                      <div class="flex flex-wrap justify-between items-center mb-3 sm:mb-4 gap-2">
                         <span class="text-xs sm:text-sm font-mono text-[#2C2C2C]/70 break-all">
                           #<%= order.orderId %>
                         </span>
@@ -999,7 +1225,7 @@
                         <% } %>
                       </div>
   
-                      <div class="grid grid-cols-2 gap-x-2 gap-y-1 text-xs sm:text-sm mb-3 sm:mb-4">
+                      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div class="text-[#2C2C2C]/70">Order Date:</div>
                         <div>
                           <%= order.createdOn.toLocaleDateString('en-US', { 

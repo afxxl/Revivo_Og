@@ -43,26 +43,56 @@
       .animate-fade-out {
         animation: fadeOut 0.3s ease-out;
       }
+      
+      /* Responsive styles */
+      @media (max-width: 640px) {
+        .login-container {
+          width: 100%;
+          padding: 1.5rem;
+          margin: 0 1rem;
+        }
+        
+        .login-title {
+          font-size: 1.75rem;
+          margin-bottom: 1.5rem;
+        }
+        
+        .login-input {
+          padding: 0.75rem;
+        }
+        
+        .login-button {
+          padding: 0.75rem;
+        }
+        
+        .login-divider {
+          margin: 1.5rem 0;
+        }
+        
+        .login-social {
+          padding: 0.75rem;
+        }
+      }
     </style>
   </head>
   <body>
     <%-include("../../views/partials/user/header")%>
 
-    <div class="min-h-screen flex items-center justify-center p-4 mt-20">
-      <div class="max-w-md w-full backdrop-blur-sm bg-white/30 rounded-lg p-8 space-y-6 shadow-lg">
-        <h1 class="text-3xl font-henny text-center text-[#2C2C2C] mb-8">
+    <div class="min-h-screen flex items-center justify-center p-4 mt-16 sm:mt-20">
+      <div class="max-w-md w-full backdrop-blur-sm bg-white/30 rounded-lg p-4 sm:p-6 md:p-8 space-y-4 sm:space-y-6 shadow-lg login-container">
+        <h1 class="text-2xl sm:text-3xl font-henny text-center text-[#2C2C2C] mb-6 sm:mb-8 login-title">
           Login
         </h1>
 
-        <form id="loginform" class="space-y-6" action="/login" method="POST">
-          <div class="space-y-4">
+        <form id="loginform" class="space-y-4 sm:space-y-6" action="/login" method="POST">
+          <div class="space-y-3 sm:space-y-4">
             <div class="input-group">
               <input
                 type="email"
                 id="email"
                 name="email"
                 placeholder="Email"
-                class="w-full p-3 border-b-2 border-[#2C2C2C]/50 bg-transparent focus:outline-none focus:border-[#2C2C2C] transition-colors"
+                class="w-full p-2 sm:p-3 border-b-2 border-[#2C2C2C]/50 bg-transparent focus:outline-none focus:border-[#2C2C2C] transition-colors login-input"
               />
               <div id="error1" class="error-message"></div>
             </div>
@@ -73,10 +103,10 @@
                 id="password"
                 name="password"
                 placeholder="Password"
-                class="w-full p-3 border-b-2 border-[#2C2C2C]/50 bg-transparent focus:outline-none focus:border-[#2C2C2C] transition-colors"
+                class="w-full p-2 sm:p-3 border-b-2 border-[#2C2C2C]/50 bg-transparent focus:outline-none focus:border-[#2C2C2C] transition-colors login-input"
               />
 
-              <button type="button" class="absolute right-3 top-3 text-gray-400">
+              <button type="button" class="absolute right-2 sm:right-3 top-2 sm:top-3 text-gray-400">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   class="h-6 w-6"
@@ -103,7 +133,7 @@
 
             </div>
             <%if(typeof message !== 'undefined' && message){%>
-            <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded-md flex items-center justify-between animate-fade-in">
+            <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-3 sm:p-4 rounded-md flex items-center justify-between animate-fade-in text-sm sm:text-base">
                 <div class="flex items-center">
                     <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
                         <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
@@ -126,32 +156,32 @@
 
             <button
               type="submit"
-              class="w-full bg-[#2C2C2C] text-white py-3 rounded-md hover:bg-[#1a1a1a] transition-colors font-medium"
+              class="w-full bg-[#2C2C2C] text-white py-2.5 sm:py-3 rounded-md hover:bg-[#1a1a1a] transition-colors font-medium text-sm sm:text-base login-button"
             >
               Login
             </button>
           </div>
         </form>
 
-        <div class="relative my-8">
+        <div class="relative my-6 sm:my-8 login-divider">
           <div class="absolute inset-0 flex items-center">
             <div class="w-full border-t border-[#2C2C2C]/30"></div>
           </div>
-          <div class="relative flex justify-center text-sm">
-            <span class="px-4 bg-transparent text-[#2C2C2C]/70">Or continue with</span>
+          <div class="relative flex justify-center text-xs sm:text-sm">
+            <span class="px-3 sm:px-4 bg-transparent text-[#2C2C2C]/70">Or continue with</span>
           </div>
         </div>
 
-        <a href="/auth/google" class="w-full flex items-center justify-center gap-3 border-2 border-[#2C2C2C] p-3 rounded-md hover:bg-[#2C2C2C]/10 transition-colors">
+        <a href="/auth/google" class="w-full flex items-center justify-center gap-2 sm:gap-3 border-2 border-[#2C2C2C] p-2.5 sm:p-3 rounded-md hover:bg-[#2C2C2C]/10 transition-colors login-social">
           <img
             src="https://www.svgrepo.com/show/475656/google-color.svg"
             alt="Google logo"
             class="h-5 w-5"
           />
-          <span class="text-[#2C2C2C]">Sign in with Google</span>
+          <span class="text-[#2C2C2C] text-sm sm:text-base">Sign in with Google</span>
         </a>
 
-        <p class="text-center text-sm text-[#2C2C2C]/70 mt-6">
+        <p class="text-center text-xs sm:text-sm text-[#2C2C2C]/70 mt-4 sm:mt-6">
           Don't have an account?
           <a href="/signup" class="text-[#2C2C2C] hover:underline font-medium">Create Account</a>
         </p>

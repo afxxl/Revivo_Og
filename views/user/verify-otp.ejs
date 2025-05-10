@@ -8,6 +8,13 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
+      :root {
+        --mobile: 480px;
+        --tablet: 768px;
+        --laptop: 1024px;
+        --desktop: 1280px;
+      }
+      
       body {
         background-image: url("/Images/images/OLD_PAPER_TEXTURE.jpg");
         background-size: cover;
@@ -15,76 +22,90 @@
         background-repeat: no-repeat;
         background-attachment: fixed;
       }
+      
+      /* Responsive styles */
+      @media (max-width: 480px) {
+        input, button[type="submit"] {
+          font-size: 0.9rem;
+        }
+      }
+      
+      /* Touch device optimizations */
+      @media (hover: none) {
+        button:active {
+          transform: scale(0.98);
+        }
+      }
     </style>
   </head>
   <body>
     <%-include("../../views/partials/user/header")%>
-    <div class="min-h-screen flex items-center justify-center bg-transparent">
+    <div class="min-h-screen flex items-center justify-center bg-transparent px-4 py-8">
       <div
-        class="max-w-md w-full p-6 bg-white/60 backdrop-blur-sm rounded-lg shadow-lg"
+        class="max-w-md w-full p-4 sm:p-6 bg-white/60 backdrop-blur-sm rounded-lg shadow-lg"
       >
-        <div class="text-center mb-8">
-          <h2 class="text-2xl font-henny mb-2 text-[#2C2C2C]">Enter OTP</h2>
-          <p class="text-[#2C2C2C]/70 text-sm">
+        <div class="text-center mb-6 sm:mb-8">
+          <h2 class="text-xl sm:text-2xl font-henny mb-2 text-[#2C2C2C]">Enter OTP</h2>
+          <p class="text-[#2C2C2C]/70 text-xs sm:text-sm">
             Please enter the OTP sent to your registered email id
           </p>
         </div>
 
-        <form onsubmit="return validateOTPForm()" class="space-y-6">
+        <form onsubmit="return validateOTPForm()" class="space-y-4 sm:space-y-6">
           <input type="hidden" name="otp" id="finalOtp" />
-          <div class="flex justify-center space-x-4">
+          <div class="flex justify-center space-x-2 sm:space-x-4">
             <input
               type="text"
               maxlength="1"
-              class="w-12 h-12 text-center border-b-2 border-[#2C2C2C] bg-transparent focus:outline-none focus:border-[#1a1a1a] text-xl"
+              class="w-9 h-9 sm:w-12 sm:h-12 text-center border-b-2 border-[#2C2C2C] bg-transparent focus:outline-none focus:border-[#1a1a1a] text-lg sm:text-xl"
               required
             />
             <input
               type="text"
               maxlength="1"
-              class="w-12 h-12 text-center border-b-2 border-[#2C2C2C] bg-transparent focus:outline-none focus:border-[#1a1a1a] text-xl"
+              class="w-9 h-9 sm:w-12 sm:h-12 text-center border-b-2 border-[#2C2C2C] bg-transparent focus:outline-none focus:border-[#1a1a1a] text-lg sm:text-xl"
               required
             />
             <input
               type="text"
               maxlength="1"
-              class="w-12 h-12 text-center border-b-2 border-[#2C2C2C] bg-transparent focus:outline-none focus:border-[#1a1a1a] text-xl"
+              class="w-9 h-9 sm:w-12 sm:h-12 text-center border-b-2 border-[#2C2C2C] bg-transparent focus:outline-none focus:border-[#1a1a1a] text-lg sm:text-xl"
               required
             />
             <input
               type="text"
               maxlength="1"
-              class="w-12 h-12 text-center border-b-2 border-[#2C2C2C] bg-transparent focus:outline-none focus:border-[#1a1a1a] text-xl"
+              class="w-9 h-9 sm:w-12 sm:h-12 text-center border-b-2 border-[#2C2C2C] bg-transparent focus:outline-none focus:border-[#1a1a1a] text-lg sm:text-xl"
               required
             />
             <input
               type="text"
               maxlength="1"
-              class="w-12 h-12 text-center border-b-2 border-[#2C2C2C] bg-transparent focus:outline-none focus:border-[#1a1a1a] text-xl"
+              class="w-9 h-9 sm:w-12 sm:h-12 text-center border-b-2 border-[#2C2C2C] bg-transparent focus:outline-none focus:border-[#1a1a1a] text-lg sm:text-xl"
               required
             />
             <input
               type="text"
               maxlength="1"
-              class="w-12 h-12 text-center border-b-2 border-[#2C2C2C] bg-transparent focus:outline-none focus:border-[#1a1a1a] text-xl"
+              class="w-9 h-9 sm:w-12 sm:h-12 text-center border-b-2 border-[#2C2C2C] bg-transparent focus:outline-none focus:border-[#1a1a1a] text-lg sm:text-xl"
               required
             />
           </div>
 
-          <div class="text-center text-sm text-[#2C2C2C]/70">
+          <div class="text-center text-xs sm:text-sm text-[#2C2C2C]/70">
             <span id="timer">00:30</span>
           </div>
 
           <button
             type="submit"
-            class="w-full bg-[#2C2C2C] text-white py-2 rounded-md hover:bg-[#1a1a1a] transition-colors"
+            class="w-full bg-[#2C2C2C] text-white py-2 rounded-md hover:bg-[#1a1a1a] transition-colors text-sm sm:text-base"
           >
             Verify Code
           </button>
         </form>
 
-        <div class="text-center mt-4">
-          <p class="text-sm text-[#2C2C2C]/70">
+        <div class="text-center mt-3 sm:mt-4">
+          <p class="text-xs sm:text-sm text-[#2C2C2C]/70">
             Haven't got the otp yet?
             <a
               href="#"
