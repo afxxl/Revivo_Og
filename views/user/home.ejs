@@ -1496,17 +1496,18 @@
     <div class="newsletter-container rounded-xl p-6 sm:p-8 md:p-12 text-center">
       <div class="inline-flex flex-col sm:flex-row items-center gap-2 sm:gap-3 mb-4 sm:mb-6">
         <img src="/Images/logo.svg" alt="Revivo Logo" class="logo mb-2 sm:mb-0">
-        <h2 class="text-xl sm:text-2xl font-henny text-[#2C2C2C]">Join Our Vintage Community</h2>
+        <h2 class="text-2xl sm:text-3xl font-henny text-[#2C2C2C]">Join Our Vintage Community</h2>
       </div>
       <p class="text-[#2C2C2C]/80 mb-6 sm:mb-8 font-montserrat max-w-lg mx-auto text-sm sm:text-base px-2">
         Subscribe to receive exclusive early access to new arrivals, styling tips, and special offers for our vintage-loving community.
       </p>
-      <form class="newsletter-form flex flex-col sm:flex-row gap-3 sm:gap-4 max-w-md mx-auto">
-        <input type="email" placeholder="Your email address" class="newsletter-input flex-grow px-3 sm:px-4 py-2.5 sm:py-3 rounded-sm focus:outline-none font-montserrat text-sm">
-        <button type="submit" class="newsletter-button px-4 sm:px-6 py-2.5 sm:py-3 bg-[#2C2C2C] text-white rounded-sm hover:bg-[#f8c78d] transition-colors font-montserrat uppercase text-xs sm:text-sm">
+      <form id="newsletter-form" class="newsletter-form flex flex-col sm:flex-row gap-3 sm:gap-4 max-w-md mx-auto">
+        <input type="email" id="newsletter-email" placeholder="Your email address" class="newsletter-input flex-grow px-3 sm:px-4 py-2.5 sm:py-3 rounded-sm focus:outline-none font-montserrat text-sm" required>
+        <button type="submit" id="newsletter-submit" class="newsletter-button px-4 sm:px-6 py-2.5 sm:py-3 bg-[#2C2C2C] text-white rounded-sm hover:bg-[#f8c78d] transition-colors font-montserrat uppercase text-xs sm:text-sm">
           Subscribe
         </button>
       </form>
+      <div id="newsletter-message" class="hidden mt-4 font-montserrat text-sm"></div>
       <p class="text-xs text-[#2C2C2C]/50 mt-4 font-montserrat">
         We respect your privacy. Unsubscribe at any time.
       </p>
@@ -1517,6 +1518,59 @@
 <%- include('../partials/user/footer.ejs') %>
 
 <script>
+  // Newsletter subscription
+  document.addEventListener('DOMContentLoaded', function() {
+    const newsletterForm = document.getElementById('newsletter-form');
+    const newsletterEmail = document.getElementById('newsletter-email');
+    const newsletterSubmit = document.getElementById('newsletter-submit');
+    const newsletterMessage = document.getElementById('newsletter-message');
+
+    if (newsletterForm) {
+      newsletterForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        // Disable button and show loading state
+        newsletterSubmit.disabled = true;
+        newsletterSubmit.innerHTML = '<span class="inline-block animate-spin mr-2">↻</span> Subscribing...';
+        
+        const email = newsletterEmail.value.trim();
+        
+        try {
+          const response = await fetch('/subscribe-newsletter', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ email }),
+          });
+          
+          const data = await response.json();
+          
+          // Display message
+          newsletterMessage.classList.remove('hidden', 'text-red-500', 'text-green-600');
+          
+          if (data.success) {
+            newsletterMessage.classList.add('text-green-600');
+            newsletterMessage.textContent = 'Thank you for joining our vintage community! Check your email for confirmation.';
+            newsletterEmail.value = '';
+          } else {
+            newsletterMessage.classList.add('text-red-500');
+            newsletterMessage.textContent = data.message || 'Failed to subscribe. Please try again.';
+          }
+        } catch (error) {
+          console.error('Error subscribing to newsletter:', error);
+          newsletterMessage.classList.remove('hidden');
+          newsletterMessage.classList.add('text-red-500');
+          newsletterMessage.textContent = 'An error occurred. Please try again later.';
+        } finally {
+          // Reset button state
+          newsletterSubmit.disabled = false;
+          newsletterSubmit.innerHTML = 'Subscribe';
+        }
+      });
+    }
+  });
+
   async function addToCart(productId) {
     try {
       const response = await fetch('/add-to-cart', {

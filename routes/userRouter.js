@@ -5,6 +5,7 @@ const shopController = require("../controllers/user/shopController.js");
 const passport = require("passport");
 const featuredController = require("../controllers/user/featuredController.js");
 const newArrivalsController = require("../controllers/user/newArrivalsController.js");
+const footerController = require("../controllers/user/footerController.js");
 const { userAuth, adminAuth } = require("../middlewares/auth");
 const { uploadProfile } = require("../helpers/multer.js");
 const getCartCount = require("../middlewares/cartCount.js");
@@ -247,5 +248,21 @@ router.get("/wallet", userAuth, walletController.getWalletPage);
 
 // Referral routes
 router.get("/api/referral-stats", userAuth, userController.getReferralStats);
+
+// Newsletter subscription
+router.post("/subscribe-newsletter", userController.subscribeNewsletter);
+
+// Footer pages - About section
+router.get("/about", footerController.loadAboutPage);
+router.get("/sustainability", footerController.loadSustainabilityPage);
+router.get("/careers", footerController.loadCareersPage);
+router.get("/press", footerController.loadPressPage);
+
+// Footer pages - Help section
+router.get("/contact", footerController.loadContactPage);
+router.post("/submit-contact", userController.handleContactForm);
+router.get("/shipping", footerController.loadShippingPage);
+router.get("/faq", footerController.loadFaqPage);
+router.get("/size-guide", footerController.loadSizeGuidePage);
 
 module.exports = router;

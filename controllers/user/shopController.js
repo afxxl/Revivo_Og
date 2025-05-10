@@ -1399,17 +1399,10 @@ const cancelOrder = async (req, res) => {
     ) {
       if (order.paymentMethod === "RAZORPAY") {
         const payment = await Payment.findOne({ orderId: order._id });
-        console.log(
-          `Processing refund for order: ${order.orderId}, userId: ${userId}, amount: ${order.finalAmount}`,
-        );
 
         if (payment && payment.razorpay && payment.razorpay.paymentId) {
           try {
             if (razorpay) {
-              console.log(
-                `Initiating Razorpay refund for payment: ${payment.razorpay.paymentId}`,
-              );
-
               try {
                 const razorpayRefund = await razorpay.payments.refund(
                   payment.razorpay.paymentId,
@@ -1421,22 +1414,17 @@ const cancelOrder = async (req, res) => {
                     },
                   },
                 );
-
-                console.log("Razorpay refund created:", razorpayRefund);
               } catch (razorpayError) {
                 console.error("Error with Razorpay API:", razorpayError);
               }
 
               const userIdStr = userId.toString();
-              console.log(`Adding refund to wallet for user: ${userIdStr}`);
 
               const refundResult = await processWalletRefund(
                 userIdStr,
                 order.finalAmount,
                 `Refund for cancelled Razorpay order #${order.orderId}`,
               );
-
-              console.log("Wallet refund result:", refundResult);
 
               payment.status = "Refunded";
               payment.refund = {
@@ -1446,15 +1434,11 @@ const cancelOrder = async (req, res) => {
               };
               await payment.save();
             } else {
-              console.log(
-                "Razorpay not initialized, adding to wallet directly",
-              );
               const refundResult = await processWalletRefund(
                 userId.toString(),
                 order.finalAmount,
                 `Refund for cancelled Razorpay order #${order.orderId}`,
               );
-              console.log("Wallet refund result:", refundResult);
             }
           } catch (refundError) {
             console.error("Error processing Razorpay refund:", refundError);
@@ -1558,7 +1542,6 @@ const requestReturn = async (req, res) => {
 
     await order.save();
 
-    console.log("Return request processed successfully");
     res.json({
       success: true,
       message: "Return request submitted for admin approval",

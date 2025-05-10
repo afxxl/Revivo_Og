@@ -1555,6 +1555,187 @@ const checkSession = async (req, res) => {
   }
 };
 
+const subscribeNewsletter = async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    if (!email) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Email is required" });
+    }
+
+    // Check if email format is valid
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Invalid email format" });
+    }
+
+    // Create transporter
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      port: 587,
+      secure: false,
+      requireTLS: true,
+      auth: {
+        user: process.env.NODEMAILER_EMAIL,
+        pass: process.env.NODEMAILER_PASSWORD,
+      },
+    });
+
+    // Send welcome email
+    const info = await transporter.sendMail({
+      from: process.env.NODEMAILER_EMAIL,
+      to: email,
+      subject: "Welcome to REVIVO Vintage Community!",
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e0dcd4; border-radius: 5px;">
+          <h2 style="color: #2C2C2C; text-align: center;">Welcome to Our Vintage Community!</h2>
+          <p style="color: #2C2C2C; line-height: 1.6;">Thank you for subscribing to the REVIVO newsletter. We're excited to have you join our community of vintage enthusiasts!</p>
+          <p style="color: #2C2C2C; line-height: 1.6;">You'll now receive:</p>
+          <ul style="color: #2C2C2C; line-height: 1.6;">
+            <li>Early access to new arrivals</li>
+            <li>Exclusive vintage styling tips</li>
+            <li>Special offers and promotions</li>
+            <li>Invitations to community events</li>
+          </ul>
+          <p style="color: #2C2C2C; line-height: 1.6;">Stay tuned for our next newsletter!</p>
+          <div style="text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid #e0dcd4;">
+            <p style="color: #2C2C2C; font-size: 12px;">© 2024 REVIVO. All rights reserved.</p>
+            <p style="color: #2C2C2C; font-size: 12px;">You can unsubscribe at any time by clicking the unsubscribe link in our emails.</p>
+          </div>
+        </div>
+      `,
+    });
+
+    if (info.accepted.length > 0) {
+      return res
+        .status(200)
+        .json({
+          success: true,
+          message: "Successfully subscribed to newsletter!",
+        });
+    } else {
+      return res
+        .status(500)
+        .json({ success: false, message: "Failed to send confirmation email" });
+    }
+  } catch (error) {
+    console.error("Error subscribing to newsletter:", error);
+    return res
+      .status(500)
+      .json({
+        success: false,
+        message: "An error occurred while processing your request",
+      });
+  }
+};
+
+const handleContactForm = async (req, res) => {
+  try {
+    const { name, email, subject, message } = req.body;
+
+    if (!name || !email || !subject || !message) {
+      return res
+        .status(400)
+        .json({ success: false, message: "All fields are required" });
+    }
+
+    // Check if email format is valid
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Invalid email format" });
+    }
+
+    // Create transporter
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      port: 587,
+      secure: false,
+      requireTLS: true,
+      auth: {
+        user: process.env.NODEMAILER_EMAIL,
+        pass: process.env.NODEMAILER_PASSWORD,
+      },
+    });
+
+    // Send email to admin
+    const adminInfo = await transporter.sendMail({
+      from: process.env.NODEMAILER_EMAIL,
+      to: process.env.NODEMAILER_EMAIL, // Send to admin email
+      subject: `New Contact Form Submission: ${subject}`,
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e0dcd4; border-radius: 5px;">
+          <h2 style="color: #2C2C2C; text-align: center;">New Contact Form Submission</h2>
+          <p style="color: #2C2C2C; line-height: 1.6;"><strong>Name:</strong> ${name}</p>
+          <p style="color: #2C2C2C; line-height: 1.6;"><strong>Email:</strong> ${email}</p>
+          <p style="color: #2C2C2C; line-height: 1.6;"><strong>Subject:</strong> ${subject}</p>
+          <p style="color: #2C2C2C; line-height: 1.6;"><strong>Message:</strong></p>
+          <div style="background-color: #f8f7f5; padding: 15px; border-radius: 5px; margin-bottom: 20px;">
+            <p style="color: #2C2C2C; line-height: 1.6;">${message}</p>
+          </div>
+          <div style="text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid #e0dcd4;">
+            <p style="color: #2C2C2C; font-size: 12px;">© 2024 REVIVO. All rights reserved.</p>
+          </div>
+        </div>
+      `,
+    });
+
+    // Send confirmation email to user
+    const userInfo = await transporter.sendMail({
+      from: process.env.NODEMAILER_EMAIL,
+      to: email,
+      subject: "Thank you for contacting REVIVO",
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e0dcd4; border-radius: 5px;">
+          <h2 style="color: #2C2C2C; text-align: center;">Thank You for Contacting Us!</h2>
+          <p style="color: #2C2C2C; line-height: 1.6;">Dear ${name},</p>
+          <p style="color: #2C2C2C; line-height: 1.6;">Thank you for reaching out to REVIVO. We have received your message regarding "${subject}" and will get back to you as soon as possible.</p>
+          <p style="color: #2C2C2C; line-height: 1.6;">For your reference, here's a copy of your message:</p>
+          <div style="background-color: #f8f7f5; padding: 15px; border-radius: 5px; margin-bottom: 20px;">
+            <p style="color: #2C2C2C; line-height: 1.6;">${message}</p>
+          </div>
+          <p style="color: #2C2C2C; line-height: 1.6;">If you have any additional questions or information to provide, please don't hesitate to reply to this email.</p>
+          <p style="color: #2C2C2C; line-height: 1.6;">Warm regards,</p>
+          <p style="color: #2C2C2C; line-height: 1.6;">The REVIVO Team</p>
+          <div style="text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid #e0dcd4;">
+            <p style="color: #2C2C2C; font-size: 12px;">© 2024 REVIVO. All rights reserved.</p>
+            <p style="color: #2C2C2C; font-size: 12px;">You can unsubscribe from our emails at any time by clicking the unsubscribe link in our emails.</p>
+          </div>
+        </div>
+      `,
+    });
+
+    if (adminInfo.accepted.length > 0 && userInfo.accepted.length > 0) {
+      return res
+        .status(200)
+        .json({
+          success: true,
+          message: "Your message has been sent successfully!",
+        });
+    } else {
+      return res
+        .status(500)
+        .json({
+          success: false,
+          message: "Failed to send message. Please try again later.",
+        });
+    }
+  } catch (error) {
+    console.error("Error handling contact form:", error);
+    return res
+      .status(500)
+      .json({
+        success: false,
+        message: "An error occurred while processing your request",
+      });
+  }
+};
+
 module.exports = {
   loadHomepage,
   pageNotFound,
@@ -1588,4 +1769,6 @@ module.exports = {
   sendPasswordChangeOtp,
   getReferralStats,
   checkSession,
+  subscribeNewsletter,
+  handleContactForm,
 };

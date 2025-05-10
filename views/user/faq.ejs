@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FAQ | REVIVO</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body>
+<%- include('../partials/user/header') %>
+
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16 lg:py-20">
+  <div class="max-w-4xl mx-auto">
+    <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold text-center mb-8 md:mb-12 text-[#2C2C2C]">Frequently Asked Questions</h1>
+    
+    <div class="mb-12 md:mb-16">
+      <div class="bg-gray-50 p-8 rounded-lg shadow-sm mb-8">
+        <p class="text-gray-700 mb-6 leading-relaxed">
+          We've compiled answers to the most common questions about REVIVO products, orders, shipping, returns, and more. If you can't find the information you're looking for, please don't hesitate to <a href="/contact" class="text-[#2C2C2C] underline">contact our customer service team</a>.
+        </p>
+        
+        <div class="relative">
+          <input type="text" id="faq-search" placeholder="Search FAQs..." class="w-full px-4 py-3 pl-12 border border-gray-300 rounded-md focus:ring-[#2C2C2C] focus:border-[#2C2C2C] outline-none transition">
+          <svg class="w-5 h-5 text-gray-400 absolute left-4 top-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+          </svg>
+        </div>
+      </div>
+      
+      <div class="space-y-8">
+        <!-- Orders & Shipping Section -->
+        <div>
+          <h2 class="text-2xl font-semibold mb-4 text-[#2C2C2C] flex items-center">
+            <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
+            </svg>
+            Orders & Shipping
+          </h2>
+          
+          <div class="space-y-4">
+            <div class="border border-gray-200 rounded-lg overflow-hidden">
+              <button class="flex justify-between items-center w-full px-6 py-4 text-left bg-white hover:bg-gray-50 transition-colors">
+                <span class="font-medium text-[#2C2C2C]">How do I track my order?</span>
+                <svg class="w-5 h-5 text-[#2C2C2C]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                </svg>
+              </button>
+              <div class="px-6 py-4 bg-gray-50 border-t border-gray-200">
+                <p class="text-gray-700">
+                  You can track your order by logging into your account and visiting the "Orders" section. Alternatively, you can use the tracking number provided in your shipping confirmation email to track your package directly on the carrier's website.
+                </p>
+              </div>
+            </div>
+            
+            <div class="border border-gray-200 rounded-lg overflow-hidden">
+              <button class="flex justify-between items-center w-full px-6 py-4 text-left bg-white hover:bg-gray-50 transition-colors">
+                <span class="font-medium text-[#2C2C2C]">How long will it take to receive my order?</span>
+                <svg class="w-5 h-5 text-[#2C2C2C]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                </svg>
+              </button>
+              <div class="px-6 py-4 bg-gray-50 border-t border-gray-200">
+                <p class="text-gray-700">
+                  Orders typically process within 1-2 business days. Delivery times depend on your chosen shipping method:
+                </p>
+                <ul class="list-disc pl-5 mt-2 text-gray-700 space-y-1">
+                  <li>Standard Shipping: 3-5 business days</li>
+                  <li>Express Shipping: 1-2 business days</li>
+                  <li>Next Day Delivery: Next business day (for orders placed before 12pm EST)</li>
+                  <li>International Shipping: 7-14 business days</li>
+                </ul>
+              </div>
+            </div>
+            
+            <div class="border border-gray-200 rounded-lg overflow-hidden">
+              <button class="flex justify-between items-center w-full px-6 py-4 text-left bg-white hover:bg-gray-50 transition-colors">
+                <span class="font-medium text-[#2C2C2C]">Can I change or cancel my order?</span>
+                <svg class="w-5 h-5 text-[#2C2C2C]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                </svg>
+              </button>
+              <div class="px-6 py-4 bg-gray-50 border-t border-gray-200">
+                <p class="text-gray-700">
+                  You can modify or cancel your order within 1 hour of placing it by contacting our customer service team. After this window, we begin processing orders and cannot guarantee changes or cancellations. If your order has already shipped, you'll need to follow our return process.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Returns & Exchanges Section -->
+        <div>
+          <h2 class="text-2xl font-semibold mb-4 text-[#2C2C2C] flex items-center">
+            <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 15v-1a4 4 0 00-4-4H8m0 0l3 3m-3-3l3-3m9 14V5a2 2 0 00-2-2H6a2 2 0 00-2 2v16l4-2 4 2 4-2 4 2z"></path>
+            </svg>
+            Returns & Exchanges
+          </h2>
+          
+          <div class="space-y-4">
+            <div class="border border-gray-200 rounded-lg overflow-hidden">
+              <button class="flex justify-between items-center w-full px-6 py-4 text-left bg-white hover:bg-gray-50 transition-colors">
+                <span class="font-medium text-[#2C2C2C]">What is your return policy?</span>
+                <svg class="w-5 h-5 text-[#2C2C2C]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                </svg>
+              </button>
+              <div class="px-6 py-4 bg-gray-50 border-t border-gray-200">
+                <p class="text-gray-700">
+                  We accept returns within 30 days of delivery. Items must be unworn, unwashed, and in their original condition with all tags attached. Sale items marked as "Final Sale" cannot be returned or exchanged. For more details, please visit our <a href="/shipping" class="text-[#2C2C2C] underline">Shipping & Returns</a> page.
+                </p>
+              </div>
+            </div>
+            
+            <div class="border border-gray-200 rounded-lg overflow-hidden">
+              <button class="flex justify-between items-center w-full px-6 py-4 text-left bg-white hover:bg-gray-50 transition-colors">
+                <span class="font-medium text-[#2C2C2C]">How do I return an item?</span>
+                <svg class="w-5 h-5 text-[#2C2C2C]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                </svg>
+              </button>
+              <div class="px-6 py-4 bg-gray-50 border-t border-gray-200">
+                <p class="text-gray-700">
+                  To return an item, log into your account, navigate to your order history, and select the order containing the item(s) you wish to return. Follow the prompts to initiate your return and generate a return shipping label. Package your return securely with the return form included in your original shipment, attach the return shipping label, and drop off your package at an authorized shipping location.
+                </p>
+              </div>
+            </div>
+            
+            <div class="border border-gray-200 rounded-lg overflow-hidden">
+              <button class="flex justify-between items-center w-full px-6 py-4 text-left bg-white hover:bg-gray-50 transition-colors">
+                <span class="font-medium text-[#2C2C2C]">When will I receive my refund?</span>
+                <svg class="w-5 h-5 text-[#2C2C2C]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                </svg>
+              </button>
+              <div class="px-6 py-4 bg-gray-50 border-t border-gray-200">
+                <p class="text-gray-700">
+                  Once we receive and inspect your return, we'll process your refund within 3-5 business days. Refunds will be issued to the original payment method used for the purchase. Please allow an additional 2-7 business days for the refund to appear in your account, depending on your financial institution.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Products & Sizing Section -->
+        <div>
+          <h2 class="text-2xl font-semibold mb-4 text-[#2C2C2C] flex items-center">
+            <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"></path>
+            </svg>
+            Products & Sizing
+          </h2>
+          
+          <div class="space-y-4">
+            <div class="border border-gray-200 rounded-lg overflow-hidden">
+              <button class="flex justify-between items-center w-full px-6 py-4 text-left bg-white hover:bg-gray-50 transition-colors">
+                <span class="font-medium text-[#2C2C2C]">How do I find my size?</span>
+                <svg class="w-5 h-5 text-[#2C2C2C]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                </svg>
+              </button>
+              <div class="px-6 py-4 bg-gray-50 border-t border-gray-200">
+                <p class="text-gray-700">
+                  You can find detailed sizing information on our <a href="/size-guide" class="text-[#2C2C2C] underline">Size Guide</a> page. Each product page also includes specific sizing details for that item. We recommend measuring yourself and comparing your measurements to our size charts for the best fit.
+                </p>
+              </div>
+            </div>
+            
+            <div class="border border-gray-200 rounded-lg overflow-hidden">
+              <button class="flex justify-between items-center w-full px-6 py-4 text-left bg-white hover:bg-gray-50 transition-colors">
+                <span class="font-medium text-[#2C2C2C]">How should I care for my REVIVO products?</span>
+                <svg class="w-5 h-5 text-[#2C2C2C]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                </svg>
+              </button>
+              <div class="px-6 py-4 bg-gray-50 border-t border-gray-200">
+                <p class="text-gray-700">
+                  Care instructions vary by product and material. You can find specific care instructions on the product page and on the care label attached to each item. Generally, we recommend washing in cold water, avoiding bleach, and air drying when possible to extend the life of your garments and reduce environmental impact.
+                </p>
+              </div>
+            </div>
+            
+            <div class="border border-gray-200 rounded-lg overflow-hidden">
+              <button class="flex justify-between items-center w-full px-6 py-4 text-left bg-white hover:bg-gray-50 transition-colors">
+                <span class="font-medium text-[#2C2C2C]">Are your products sustainable?</span>
+                <svg class="w-5 h-5 text-[#2C2C2C]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                </svg>
+              </button>
+              <div class="px-6 py-4 bg-gray-50 border-t border-gray-200">
+                <p class="text-gray-700">
+                  Sustainability is a core value at REVIVO. We're committed to using environmentally responsible materials and ethical production methods. Currently, 65% of our materials come from sustainable sources, and we're working toward increasing this percentage. You can learn more about our sustainability practices on our <a href="/sustainability" class="text-[#2C2C2C] underline">Sustainability</a> page.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Account & Payment Section -->
+        <div>
+          <h2 class="text-2xl font-semibold mb-4 text-[#2C2C2C] flex items-center">
+            <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+            </svg>
+            Account & Payment
+          </h2>
+          
+          <div class="space-y-4">
+            <div class="border border-gray-200 rounded-lg overflow-hidden">
+              <button class="flex justify-between items-center w-full px-6 py-4 text-left bg-white hover:bg-gray-50 transition-colors">
+                <span class="font-medium text-[#2C2C2C]">How do I create an account?</span>
+                <svg class="w-5 h-5 text-[#2C2C2C]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                </svg>
+              </button>
+              <div class="px-6 py-4 bg-gray-50 border-t border-gray-200">
+                <p class="text-gray-700">
+                  You can create an account by clicking the "Account" icon in the top right corner of our website and selecting "Sign Up." You'll need to provide your email address and create a password. Alternatively, you can create an account during the checkout process.
+                </p>
+              </div>
+            </div>
+            
+            <div class="border border-gray-200 rounded-lg overflow-hidden">
+              <button class="flex justify-between items-center w-full px-6 py-4 text-left bg-white hover:bg-gray-50 transition-colors">
+                <span class="font-medium text-[#2C2C2C]">What payment methods do you accept?</span>
+                <svg class="w-5 h-5 text-[#2C2C2C]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                </svg>
+              </button>
+              <div class="px-6 py-4 bg-gray-50 border-t border-gray-200">
+                <p class="text-gray-700">
+                  We accept the following payment methods:
+                </p>
+                <ul class="list-disc pl-5 mt-2 text-gray-700 space-y-1">
+                  <li>Credit/Debit Cards (Visa, Mastercard, American Express, Discover)</li>
+                  <li>PayPal</li>
+                  <li>Apple Pay</li>
+                  <li>Google Pay</li>
+                  <li>Shop Pay</li>
+                </ul>
+              </div>
+            </div>
+            
+            <div class="border border-gray-200 rounded-lg overflow-hidden">
+              <button class="flex justify-between items-center w-full px-6 py-4 text-left bg-white hover:bg-gray-50 transition-colors">
+                <span class="font-medium text-[#2C2C2C]">I forgot my password. How do I reset it?</span>
+                <svg class="w-5 h-5 text-[#2C2C2C]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                </svg>
+              </button>
+              <div class="px-6 py-4 bg-gray-50 border-t border-gray-200">
+                <p class="text-gray-700">
+                  To reset your password, click the "Account" icon in the top right corner and select "Login." Then click "Forgot Password?" and enter the email address associated with your account. We'll send you an email with instructions to reset your password.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="text-center">
+      <h2 class="text-2xl font-semibold mb-6 text-[#2C2C2C]">Still Have Questions?</h2>
+      <p class="text-gray-700 mb-8 max-w-2xl mx-auto leading-relaxed">
+        If you couldn't find the answer you were looking for, our customer service team is here to help.
+      </p>
+      
+      <div class="flex flex-wrap justify-center gap-4">
+        <a href="/contact" class="bg-[#2C2C2C] text-white px-6 py-3 rounded-md hover:bg-black transition duration-300">Contact Us</a>
+        <a href="/shipping" class="border border-[#2C2C2C] text-[#2C2C2C] px-6 py-3 rounded-md hover:bg-gray-100 transition duration-300">Shipping & Returns</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('faq-search');
+    const faqButtons = document.querySelectorAll('.border.border-gray-200 button');
+    const faqContents = document.querySelectorAll('.border.border-gray-200 div[class*="px-6 py-4 bg-gray-50"]');
+    
+    // Toggle FAQ answers
+    faqButtons.forEach((button, index) => {
+      button.addEventListener('click', () => {
+        faqContents[index].classList.toggle('hidden');
+        const svg = button.querySelector('svg');
+        if (faqContents[index].classList.contains('hidden')) {
+          svg.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>';
+        } else {
+          svg.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"></path>';
+        }
+      });
+    });
+    
+    // Search functionality
+    searchInput.addEventListener('input', function() {
+      const searchTerm = this.value.toLowerCase();
+      
+      faqButtons.forEach((button, index) => {
+        const questionText = button.querySelector('span').textContent.toLowerCase();
+        const answerText = faqContents[index].textContent.toLowerCase();
+        const faqItem = button.closest('.border.border-gray-200');
+        
+        if (questionText.includes(searchTerm) || answerText.includes(searchTerm)) {
+          faqItem.style.display = 'block';
+        } else {
+          faqItem.style.display = 'none';
+        }
+      });
+    });
+    
+    // Initially hide all answers
+    faqContents.forEach(content => {
+      content.classList.add('hidden');
+    });
+  });
+</script>
+
+<%- include('../partials/user/footer') %>
+</body>
+</html>
