@@ -541,13 +541,36 @@
       });
 
       function changeMainImage(src, element) {
-        document.getElementById('mainProductImage').src = src;
+        const mainImage = document.getElementById('mainProductImage');
         
+        // Force image reload by adding a timestamp query parameter
+        // This helps with mobile browsers that might cache the image
+        const timestamp = new Date().getTime();
+        const newSrc = src.includes('?') ? 
+          src.split('?')[0] + '?t=' + timestamp : 
+          src + '?t=' + timestamp;
+        
+        mainImage.src = newSrc;
+        
+        // Reset any zoom or transform that might be applied
+        mainImage.style.transform = 'scale(1)';
+        
+        // Remove active class from all thumbnails
         document.querySelectorAll('.product-gallery-thumbnail').forEach(thumb => {
           thumb.classList.remove('active');
         });
         
+        // Add active class to the clicked thumbnail
         element.classList.add('active');
+        
+        // For mobile devices, add a small delay to ensure the image loads
+        if (window.innerWidth <= 768) {
+          // Briefly hide and show the image to force redraw on mobile
+          mainImage.style.opacity = '0.1';
+          setTimeout(() => {
+            mainImage.style.opacity = '1';
+          }, 50);
+        }
       }
 
       function increaseQuantity() {

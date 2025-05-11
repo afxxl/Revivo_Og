@@ -1,0 +1,1170 @@
+Starting image optimization...
+Sharp is already installed.
+Processing directory: /home/afsal/Project1/public/uploads
+Found 134 files in /home/afsal/Project1/public/uploads
+Created backup: /home/afsal/Project1/public/uploads/brand-images/brand-1743826281712-681323230.jpg.backup
+Created backup: /home/afsal/Project1/public/uploads/brand-images/brand-1743826399705-332674868.jpg.backup
+Created backup: /home/afsal/Project1/public/uploads/brand-images/brand-1743826413927-662609946.jpg.backup
+Created backup: /home/afsal/Project1/public/uploads/brand-images/brand-1743826440440-260565489.jpg.backup
+Created backup: /home/afsal/Project1/public/uploads/brand-images/brand-1744000522153-286986130.jpg.backup
+Created backup: /home/afsal/Project1/public/uploads/brand-images/brand-1744002321103-346403068.png.backup
+Created backup: /home/afsal/Project1/public/uploads/brand-images/brand-1744003597966-820148915.png.backup
+Created backup: /home/afsal/Project1/public/uploads/brand-images/brand-1744003755763-698675779.png.backup
+Created backup: /home/afsal/Project1/public/uploads/brand-images/brand-1744004338006-131439717.jpg.backup
+Created backup: /home/afsal/Project1/public/uploads/brand-images/brand-1744004343321-49428537.jpg.backup
+Skipping /home/afsal/Project1/public/uploads/brand-images/brand-1743826281712-681323230.jpg (already small enough: 500px)
+Skipping /home/afsal/Project1/public/uploads/brand-images/brand-1743826399705-332674868.jpg (already small enough: 500px)
+Skipping /home/afsal/Project1/public/uploads/brand-images/brand-1743826413927-662609946.jpg (already small enough: 500px)
+Skipping /home/afsal/Project1/public/uploads/brand-images/brand-1743826440440-260565489.jpg (already small enough: 500px)
+Skipping /home/afsal/Project1/public/uploads/brand-images/brand-1744000522153-286986130.jpg (already small enough: 500px)
+Skipping /home/afsal/Project1/public/uploads/brand-images/brand-1744002321103-346403068.png (already small enough: 1000px)
+Skipping /home/afsal/Project1/public/uploads/brand-images/brand-1744003755763-698675779.png (already small enough: 1000px)
+Optimized: /home/afsal/Project1/public/uploads/brand-images/brand-1744004338006-131439717.jpg
+  Original: 228.91 KB
+  Optimized: 11.95 KB
+  Savings: 94.78%
+Optimized: /home/afsal/Project1/public/uploads/brand-images/brand-1744004343321-49428537.jpg
+  Original: 228.91 KB
+  Optimized: 11.95 KB
+  Savings: 94.78%
+Optimized: /home/afsal/Project1/public/uploads/brand-images/brand-1744003597966-820148915.png
+  Original: 37.44 KB
+  Optimized: 9.65 KB
+  Savings: 74.24%
+Processed batch 1/14
+Created backup: /home/afsal/Project1/public/uploads/brand-images/brand-1745229396056-714407157.jpg.backup
+Created backup: /home/afsal/Project1/public/uploads/brand-images/brand-1745229411755-141947267.jpg.backup
+Created backup: /home/afsal/Project1/public/uploads/brand-images/brand-1745229429474-296335918.jpg.backup
+Created backup: /home/afsal/Project1/public/uploads/category-images/category-1743973287462-202094803.png.backup
+Created backup: /home/afsal/Project1/public/uploads/category-images/category-1743973580330-43058792.png.backup
+Created backup: /home/afsal/Project1/public/uploads/category-images/category-1743974678680-243321582.png.backup
+Created backup: /home/afsal/Project1/public/uploads/category-images/category-1743975106673-893272467.jpg.backup
+Created backup: /home/afsal/Project1/public/uploads/category-images/category-1743975314359-223749065.jpeg.backup
+Created backup: /home/afsal/Project1/public/uploads/category-images/category-1743975450348-454402219.jpg.backup
+Created backup: /home/afsal/Project1/public/uploads/category-images/category-1743975479422-877402185.jpg.backup
+Skipping /home/afsal/Project1/public/uploads/brand-images/brand-1745229396056-714407157.jpg (already small enough: 736px)
+Skipping /home/afsal/Project1/public/uploads/brand-images/brand-1745229411755-141947267.jpg (already small enough: 736px)
+Skipping /home/afsal/Project1/public/uploads/category-images/category-1743973287462-202094803.png (already small enough: 447px)
+Skipping /home/afsal/Project1/public/uploads/category-images/category-1743973580330-43058792.png (already small enough: 457px)
+Skipping /home/afsal/Project1/public/uploads/category-images/category-1743974678680-243321582.png (already small enough: 478px)
+Optimized: /home/afsal/Project1/public/uploads/brand-images/brand-1745229429474-296335918.jpg
+  Original: 50.19 KB
+  Optimized: 35.87 KB
+  Savings: 28.52%
+Optimized: /home/afsal/Project1/public/uploads/category-images/category-1743975450348-454402219.jpg
+  Original: 2680.99 KB
+  Optimized: 490.82 KB
+  Savings: 81.69%
+Optimized: /home/afsal/Project1/public/uploads/category-images/category-1743975314359-223749065.jpeg
+  Original: 4678.85 KB
+  Optimized: 404.20 KB
+  Savings: 91.36%
+Optimized: /home/afsal/Project1/public/uploads/category-images/category-1743975479422-877402185.jpg
+  Original: 2160.33 KB
+  Optimized: 158.79 KB
+  Savings: 92.65%
+Optimized: /home/afsal/Project1/public/uploads/category-images/category-1743975106673-893272467.jpg
+  Original: 3717.80 KB
+  Optimized: 326.68 KB
+  Savings: 91.21%
+Processed batch 2/14
+Created backup: /home/afsal/Project1/public/uploads/category-images/category-1743975511984-478313200.jpg.backup
+Created backup: /home/afsal/Project1/public/uploads/category-images/category-1743975550693-708746932.jpg.backup
+Created backup: /home/afsal/Project1/public/uploads/category-images/category-1743975724358-600316000.jpeg.backup
+Created backup: /home/afsal/Project1/public/uploads/category-images/category-1744027765238-917029032.jpg.backup
+Created backup: /home/afsal/Project1/public/uploads/category-images/category-1745214240390-606402042.jpg.backup
+Created backup: /home/afsal/Project1/public/uploads/category-images/category-1745219369998-590087926.jpg.backup
+Created backup: /home/afsal/Project1/public/uploads/category-images/category-1745225157173-14116346.jpg.backup
+Created backup: /home/afsal/Project1/public/uploads/category-images/category-1745225193753-321209453.jpg.backup
+Created backup: /home/afsal/Project1/public/uploads/category-images/category-1745225208744-754748769.jpg.backup
+Created backup: /home/afsal/Project1/public/uploads/category-images/category-1745225226858-866887010.jpg.backup
+Skipping /home/afsal/Project1/public/uploads/category-images/category-1743975511984-478313200.jpg (already small enough: 736px)
+Skipping /home/afsal/Project1/public/uploads/category-images/category-1744027765238-917029032.jpg (already small enough: 736px)
+Skipping /home/afsal/Project1/public/uploads/category-images/category-1745225157173-14116346.jpg (already small enough: 736px)
+Skipping /home/afsal/Project1/public/uploads/category-images/category-1745214240390-606402042.jpg (already small enough: 736px)
+Skipping /home/afsal/Project1/public/uploads/category-images/category-1745225193753-321209453.jpg (already small enough: 736px)
+Skipping /home/afsal/Project1/public/uploads/category-images/category-1745219369998-590087926.jpg (already small enough: 736px)
+Skipping /home/afsal/Project1/public/uploads/category-images/category-1745225208744-754748769.jpg (already small enough: 736px)
+Optimized: /home/afsal/Project1/public/uploads/category-images/category-1745225226858-866887010.jpg
+  Original: 50.19 KB
+  Optimized: 35.87 KB
+  Savings: 28.52%
+Optimized: /home/afsal/Project1/public/uploads/category-images/category-1743975724358-600316000.jpeg
+  Original: 1770.23 KB
+  Optimized: 116.36 KB
+  Savings: 93.43%
+Optimized: /home/afsal/Project1/public/uploads/category-images/category-1743975550693-708746932.jpg
+  Original: 3717.80 KB
+  Optimized: 326.68 KB
+  Savings: 91.21%
+Processed batch 3/14
+Created backup: /home/afsal/Project1/public/uploads/category-images/category-1745225257200-285297911.jpg.backup
+Created backup: /home/afsal/Project1/public/uploads/category-images/category-1745225261562-410872935.jpg.backup
+Created backup: /home/afsal/Project1/public/uploads/category-images/category-1745236640174-832867218.jpg.backup
+Created backup: /home/afsal/Project1/public/uploads/category-images/category-1745236667284-555388828.jpg.backup
+Created backup: /home/afsal/Project1/public/uploads/category-images/category-1745236682321-115217480.jpg.backup
+Created backup: /home/afsal/Project1/public/uploads/category-images/category-1745821495964-498602860.png.backup
+Created backup: /home/afsal/Project1/public/uploads/product-images/product-1743837676903-203809701.jpg.backup
+Created backup: /home/afsal/Project1/public/uploads/product-images/product-1743837676907-332868427.jpg.backup
+Created backup: /home/afsal/Project1/public/uploads/product-images/product-1743837676908-137148649.jpg.backup
+Created backup: /home/afsal/Project1/public/uploads/product-images/product-1743846885427-168616360.jpg.backup
+Skipping /home/afsal/Project1/public/uploads/category-images/category-1745225257200-285297911.jpg (already small enough: 736px)
+Skipping /home/afsal/Project1/public/uploads/category-images/category-1745225261562-410872935.jpg (already small enough: 736px)
+Skipping /home/afsal/Project1/public/uploads/category-images/category-1745236640174-832867218.jpg (already small enough: 736px)
+Skipping /home/afsal/Project1/public/uploads/category-images/category-1745236667284-555388828.jpg (already small enough: 736px)
+Skipping /home/afsal/Project1/public/uploads/product-images/product-1743837676903-203809701.jpg (already small enough: 800px)
+Skipping /home/afsal/Project1/public/uploads/category-images/category-1745821495964-498602860.png (already small enough: 478px)
+Skipping /home/afsal/Project1/public/uploads/product-images/product-1743837676907-332868427.jpg (already small enough: 800px)
+Skipping /home/afsal/Project1/public/uploads/product-images/product-1743837676908-137148649.jpg (already small enough: 800px)
+Optimized: /home/afsal/Project1/public/uploads/category-images/category-1745236682321-115217480.jpg
+  Original: 50.19 KB
+  Optimized: 35.87 KB
+  Savings: 28.52%
+Optimized: /home/afsal/Project1/public/uploads/product-images/product-1743846885427-168616360.jpg
+  Original: 50.19 KB
+  Optimized: 35.87 KB
+  Savings: 28.52%
+Processed batch 4/14
+Created backup: /home/afsal/Project1/public/uploads/product-images/product-1743854292904-184256564.jpg.backup
+Created backup: /home/afsal/Project1/public/uploads/product-images/product-1744016574995-928606411.png.backup
+Created backup: /home/afsal/Project1/public/uploads/product-images/product-1744016574997-614824823.png.backup
+Created backup: /home/afsal/Project1/public/uploads/product-images/product-1744017081530-535176923.png.backup
+Created backup: /home/afsal/Project1/public/uploads/product-images/product-1744017081530-668860614.png.backup
+Created backup: /home/afsal/Project1/public/uploads/product-images/product-1744017081531-415817175.png.backup
+Created backup: /home/afsal/Project1/public/uploads/product-images/product-1744017206913-247092588.png.backup
+Created backup: /home/afsal/Project1/public/uploads/product-images/product-1744017206914-886803116.png.backup
+Created backup: /home/afsal/Project1/public/uploads/product-images/product-1744017206915-357606474.png.backup
+Created backup: /home/afsal/Project1/public/uploads/product-images/product-1744017320800-525923639.png.backup
+Skipping /home/afsal/Project1/public/uploads/product-images/product-1744016574995-928606411.png (already small enough: 1000px)
+Skipping /home/afsal/Project1/public/uploads/product-images/product-1744016574997-614824823.png (already small enough: 1000px)
+Skipping /home/afsal/Project1/public/uploads/product-images/product-1744017081530-535176923.png (already small enough: 1000px)
+Skipping /home/afsal/Project1/public/uploads/product-images/product-1744017206913-247092588.png (already small enough: 1000px)
+Skipping /home/afsal/Project1/public/uploads/product-images/product-1744017206914-886803116.png (already small enough: 1000px)
+Skipping /home/afsal/Project1/public/uploads/product-images/product-1744017320800-525923639.png (already small enough: 1000px)
+Skipping /home/afsal/Project1/public/uploads/product-images/product-1744017081530-668860614.png (already small enough: 1000px)
+Skipping /home/afsal/Project1/public/uploads/product-images/product-1744017081531-415817175.png (already small enough: 1000px)
+Skipping /home/afsal/Project1/public/uploads/product-images/product-1744017206915-357606474.png (already small enough: 1000px)
+Optimized: /home/afsal/Project1/public/uploads/product-images/product-1743854292904-184256564.jpg
+  Original: 50.19 KB
+  Optimized: 35.87 KB
+  Savings: 28.52%
+Processed batch 5/14
+Created backup: /home/afsal/Project1/public/uploads/product-images/product-1744017320801-727601815.png.backup
+Created backup: /home/afsal/Project1/public/uploads/product-images/product-1744017320803-781532163.png.backup
+Created backup: /home/afsal/Project1/public/uploads/product-images/product-1744017468736-468415025.png.backup
+Created backup: /home/afsal/Project1/public/uploads/product-images/product-1744017468737-533205654.png.backup
+Created backup: /home/afsal/Project1/public/uploads/product-images/product-1744017468737-860308664.png.backup
+Created backup: /home/afsal/Project1/public/uploads/product-images/product-1744017746662-482081905.png.backup
+Created backup: /home/afsal/Project1/public/uploads/product-images/product-1744017746663-896502682.png.backup
+Created backup: /home/afsal/Project1/public/uploads/product-images/product-1744017746664-75738138.png.backup
+Created backup: /home/afsal/Project1/public/uploads/product-images/product-1744017911940-190055105.png.backup
+Created backup: /home/afsal/Project1/public/uploads/product-images/product-1744017911941-357746061.png.backup
+Skipping /home/afsal/Project1/public/uploads/product-images/product-1744017320801-727601815.png (already small enough: 1000px)
+Skipping /home/afsal/Project1/public/uploads/product-images/product-1744017320803-781532163.png (already small enough: 1000px)
+Skipping /home/afsal/Project1/public/uploads/product-images/product-1744017468736-468415025.png (already small enough: 1000px)
+Skipping /home/afsal/Project1/public/uploads/product-images/product-1744017468737-533205654.png (already small enough: 1000px)
+Skipping /home/afsal/Project1/public/uploads/product-images/product-1744017468737-860308664.png (already small enough: 1000px)
+Skipping /home/afsal/Project1/public/uploads/product-images/product-1744017746663-896502682.png (already small enough: 1000px)
+Skipping /home/afsal/Project1/public/uploads/product-images/product-1744017746662-482081905.png (already small enough: 1000px)
+Skipping /home/afsal/Project1/public/uploads/product-images/product-1744017911940-190055105.png (already small enough: 1000px)
+Skipping /home/afsal/Project1/public/uploads/product-images/product-1744017746664-75738138.png (already small enough: 1000px)
+Skipping /home/afsal/Project1/public/uploads/product-images/product-1744017911941-357746061.png (already small enough: 1000px)
+Processed batch 6/14
+Created backup: /home/afsal/Project1/public/uploads/product-images/product-1744017911943-155803955.png.backup
+Created backup: /home/afsal/Project1/public/uploads/product-images/product-1744017979574-542747136.png.backup
+Created backup: /home/afsal/Project1/public/uploads/product-images/product-1744017979574-807212042.png.backup
+Created backup: /home/afsal/Project1/public/uploads/product-images/product-1744017979575-864066076.png.backup
+Created backup: /home/afsal/Project1/public/uploads/product-images/product-1744018082237-328760419.png.backup
+Created backup: /home/afsal/Project1/public/uploads/product-images/product-1744018082237-684891003.png.backup
+Created backup: /home/afsal/Project1/public/uploads/product-images/product-1744018082238-156613568.png.backup
+Created backup: /home/afsal/Project1/public/uploads/product-images/product-1744018195582-443362947.png.backup
+Created backup: /home/afsal/Project1/public/uploads/product-images/product-1744018195582-613285395.png.backup
+Created backup: /home/afsal/Project1/public/uploads/product-images/product-1744018195583-580363210.png.backup
+Skipping /home/afsal/Project1/public/uploads/product-images/product-1744017979574-542747136.png (already small enough: 1000px)
+Skipping /home/afsal/Project1/public/uploads/product-images/product-1744017911943-155803955.png (already small enough: 1000px)
+Skipping /home/afsal/Project1/public/uploads/product-images/product-1744017979574-807212042.png (already small enough: 1000px)
+Skipping /home/afsal/Project1/public/uploads/product-images/product-1744017979575-864066076.png (already small enough: 1000px)
+Skipping /home/afsal/Project1/public/uploads/product-images/product-1744018082237-328760419.png (already small enough: 1000px)
+Skipping /home/afsal/Project1/public/uploads/product-images/product-1744018082237-684891003.png (already small enough: 1000px)
+Skipping /home/afsal/Project1/public/uploads/product-images/product-1744018195582-443362947.png (already small enough: 1000px)
+Skipping /home/afsal/Project1/public/uploads/product-images/product-1744018195583-580363210.png (already small enough: 1000px)
+Skipping /home/afsal/Project1/public/uploads/product-images/product-1744018082238-156613568.png (already small enough: 1000px)
+Skipping /home/afsal/Project1/public/uploads/product-images/product-1744018195582-613285395.png (already small enough: 1000px)
+Processed batch 7/14
+Created backup: /home/afsal/Project1/public/uploads/product-images/product-1744018299608-328669513.png.backup
+Created backup: /home/afsal/Project1/public/uploads/product-images/product-1744018299608-453177987.png.backup
+Created backup: /home/afsal/Project1/public/uploads/product-images/product-1744018299609-829205150.png.backup
+Created backup: /home/afsal/Project1/public/uploads/product-images/product-1744018408064-160504789.png.backup
+Created backup: /home/afsal/Project1/public/uploads/product-images/product-1744018408064-236505120.png.backup
+Created backup: /home/afsal/Project1/public/uploads/product-images/product-1744018408064-840650111.png.backup
+Created backup: /home/afsal/Project1/public/uploads/product-images/product-1744018506811-15379849.png.backup
+Created backup: /home/afsal/Project1/public/uploads/product-images/product-1744018506811-226971479.png.backup
+Created backup: /home/afsal/Project1/public/uploads/product-images/product-1744018506811-736926399.png.backup
+Created backup: /home/afsal/Project1/public/uploads/product-images/product-1744018638670-646453274.png.backup
+Skipping /home/afsal/Project1/public/uploads/product-images/product-1744018299608-328669513.png (already small enough: 1000px)
+Skipping /home/afsal/Project1/public/uploads/product-images/product-1744018299608-453177987.png (already small enough: 1000px)
+Skipping /home/afsal/Project1/public/uploads/product-images/product-1744018299609-829205150.png (already small enough: 1000px)
+Skipping /home/afsal/Project1/public/uploads/product-images/product-1744018408064-160504789.png (already small enough: 1000px)
+Skipping /home/afsal/Project1/public/uploads/product-images/product-1744018408064-236505120.png (already small enough: 1000px)
+Skipping /home/afsal/Project1/public/uploads/product-images/product-1744018408064-840650111.png (already small enough: 1000px)
+Skipping /home/afsal/Project1/public/uploads/product-images/product-1744018506811-15379849.png (already small enough: 1000px)
+Skipping /home/afsal/Project1/public/uploads/product-images/product-1744018506811-226971479.png (already small enough: 1000px)
+Skipping /home/afsal/Project1/public/uploads/product-images/product-1744018638670-646453274.png (already small enough: 1000px)
+Skipping /home/afsal/Project1/public/uploads/product-images/product-1744018506811-736926399.png (already small enough: 1000px)
+Processed batch 8/14
+Created backup: /home/afsal/Project1/public/uploads/product-images/product-1744018638671-533783219.png.backup
+Created backup: /home/afsal/Project1/public/uploads/product-images/product-1744018638672-137610442.png.backup
+Created backup: /home/afsal/Project1/public/uploads/product-images/product-1744018794249-611291574.png.backup
+Created backup: /home/afsal/Project1/public/uploads/product-images/product-1744018794249-856026940.png.backup
+Created backup: /home/afsal/Project1/public/uploads/product-images/product-1744018794250-784847326.png.backup
+Created backup: /home/afsal/Project1/public/uploads/product-images/product-1744018961179-118569170.png.backup
+Created backup: /home/afsal/Project1/public/uploads/product-images/product-1744018961179-35531267.png.backup
+Created backup: /home/afsal/Project1/public/uploads/product-images/product-1744018961180-439013291.png.backup
+Created backup: /home/afsal/Project1/public/uploads/product-images/product-1744019046213-821466406.png.backup
+Created backup: /home/afsal/Project1/public/uploads/product-images/product-1744019046215-451753356.png.backup
+Skipping /home/afsal/Project1/public/uploads/product-images/product-1744018638671-533783219.png (already small enough: 1000px)
+Skipping /home/afsal/Project1/public/uploads/product-images/product-1744018638672-137610442.png (already small enough: 1000px)
+Skipping /home/afsal/Project1/public/uploads/product-images/product-1744018794249-611291574.png (already small enough: 1000px)
+Skipping /home/afsal/Project1/public/uploads/product-images/product-1744018794249-856026940.png (already small enough: 1000px)
+Skipping /home/afsal/Project1/public/uploads/product-images/product-1744018794250-784847326.png (already small enough: 1000px)
+Skipping /home/afsal/Project1/public/uploads/product-images/product-1744018961180-439013291.png (already small enough: 1000px)
+Skipping /home/afsal/Project1/public/uploads/product-images/product-1744018961179-35531267.png (already small enough: 1000px)
+Skipping /home/afsal/Project1/public/uploads/product-images/product-1744018961179-118569170.png (already small enough: 1000px)
+Skipping /home/afsal/Project1/public/uploads/product-images/product-1744019046213-821466406.png (already small enough: 1000px)
+Skipping /home/afsal/Project1/public/uploads/product-images/product-1744019046215-451753356.png (already small enough: 1000px)
+Processed batch 9/14
+Created backup: /home/afsal/Project1/public/uploads/product-images/product-1744019046216-207297633.png.backup
+Created backup: /home/afsal/Project1/public/uploads/product-images/product-1744019416396-660618478.png.backup
+Created backup: /home/afsal/Project1/public/uploads/product-images/product-1744019416397-883649960.png.backup
+Created backup: /home/afsal/Project1/public/uploads/product-images/product-1744019416398-411689417.png.backup
+Created backup: /home/afsal/Project1/public/uploads/product-images/product-1744019485758-776581342.png.backup
+Created backup: /home/afsal/Project1/public/uploads/product-images/product-1744019485758-856107868.png.backup
+Created backup: /home/afsal/Project1/public/uploads/product-images/product-1744019485759-648013201.png.backup
+Created backup: /home/afsal/Project1/public/uploads/product-images/product-1744019607230-42660114.png.backup
+Created backup: /home/afsal/Project1/public/uploads/product-images/product-1744019607231-483444753.png.backup
+Created backup: /home/afsal/Project1/public/uploads/product-images/product-1744019607232-207800182.png.backup
+Skipping /home/afsal/Project1/public/uploads/product-images/product-1744019046216-207297633.png (already small enough: 1000px)
+Skipping /home/afsal/Project1/public/uploads/product-images/product-1744019416396-660618478.png (already small enough: 1000px)
+Skipping /home/afsal/Project1/public/uploads/product-images/product-1744019416397-883649960.png (already small enough: 1000px)
+Skipping /home/afsal/Project1/public/uploads/product-images/product-1744019485758-776581342.png (already small enough: 1000px)
+Skipping /home/afsal/Project1/public/uploads/product-images/product-1744019416398-411689417.png (already small enough: 1000px)
+Skipping /home/afsal/Project1/public/uploads/product-images/product-1744019485759-648013201.png (already small enough: 1000px)
+Skipping /home/afsal/Project1/public/uploads/product-images/product-1744019485758-856107868.png (already small enough: 1000px)
+Skipping /home/afsal/Project1/public/uploads/product-images/product-1744019607230-42660114.png (already small enough: 1000px)
+Skipping /home/afsal/Project1/public/uploads/product-images/product-1744019607231-483444753.png (already small enough: 1000px)
+Skipping /home/afsal/Project1/public/uploads/product-images/product-1744019607232-207800182.png (already small enough: 1000px)
+Processed batch 10/14
+Created backup: /home/afsal/Project1/public/uploads/product-images/product-1744019829677-311807340.png.backup
+Created backup: /home/afsal/Project1/public/uploads/product-images/product-1744019829677-964484420.png.backup
+Created backup: /home/afsal/Project1/public/uploads/product-images/product-1744019829678-948700583.png.backup
+Created backup: /home/afsal/Project1/public/uploads/product-images/product-1744019986854-343114104.png.backup
+Created backup: /home/afsal/Project1/public/uploads/product-images/product-1744019986854-4386426.png.backup
+Created backup: /home/afsal/Project1/public/uploads/product-images/product-1744019986855-190928268.png.backup
+Created backup: /home/afsal/Project1/public/uploads/product-images/product-1744791449356-346425485.png.backup
+Created backup: /home/afsal/Project1/public/uploads/product-images/product-1744791449363-570409618.png.backup
+Created backup: /home/afsal/Project1/public/uploads/product-images/product-1744791499921-771173054.png.backup
+Created backup: /home/afsal/Project1/public/uploads/product-images/product-1745141651686-471587127.png.backup
+Skipping /home/afsal/Project1/public/uploads/product-images/product-1744019829677-964484420.png (already small enough: 1000px)
+Skipping /home/afsal/Project1/public/uploads/product-images/product-1744019829677-311807340.png (already small enough: 1000px)
+Skipping /home/afsal/Project1/public/uploads/product-images/product-1744019986854-343114104.png (already small enough: 1000px)
+Skipping /home/afsal/Project1/public/uploads/product-images/product-1744019829678-948700583.png (already small enough: 1000px)
+Skipping /home/afsal/Project1/public/uploads/product-images/product-1744791449356-346425485.png (already small enough: 478px)
+Skipping /home/afsal/Project1/public/uploads/product-images/product-1744019986855-190928268.png (already small enough: 1000px)
+Skipping /home/afsal/Project1/public/uploads/product-images/product-1744791449363-570409618.png (already small enough: 478px)
+Skipping /home/afsal/Project1/public/uploads/product-images/product-1744019986854-4386426.png (already small enough: 1000px)
+Skipping /home/afsal/Project1/public/uploads/product-images/product-1744791499921-771173054.png (already small enough: 1000px)
+Skipping /home/afsal/Project1/public/uploads/product-images/product-1745141651686-471587127.png (already small enough: 1000px)
+Processed batch 11/14
+Created backup: /home/afsal/Project1/public/uploads/product-images/product-1745214698919-604148115.png.backup
+Created backup: /home/afsal/Project1/public/uploads/product-images/product-1745214698919-967694055.png.backup
+Created backup: /home/afsal/Project1/public/uploads/product-images/product-1745217905919-3456405.png.backup
+Created backup: /home/afsal/Project1/public/uploads/product-images/product-1745217905920-875794349.png.backup
+Created backup: /home/afsal/Project1/public/uploads/product-images/product-1745217905921-81888074.png.backup
+Created backup: /home/afsal/Project1/public/uploads/product-images/product-1745218257768-448352280.png.backup
+Created backup: /home/afsal/Project1/public/uploads/product-images/product-1745299447469-692249082.png.backup
+Created backup: /home/afsal/Project1/public/uploads/product-images/product-1745299447470-257197727.png.backup
+Created backup: /home/afsal/Project1/public/uploads/product-images/product-1745299447471-535155114.png.backup
+Created backup: /home/afsal/Project1/public/uploads/product-images/product-1745741942719-430552205.png.backup
+Skipping /home/afsal/Project1/public/uploads/product-images/product-1745214698919-967694055.png (already small enough: 1000px)
+Skipping /home/afsal/Project1/public/uploads/product-images/product-1745214698919-604148115.png (already small enough: 1000px)
+Skipping /home/afsal/Project1/public/uploads/product-images/product-1745217905919-3456405.png (already small enough: 1000px)
+Skipping /home/afsal/Project1/public/uploads/product-images/product-1745217905920-875794349.png (already small enough: 1000px)
+Skipping /home/afsal/Project1/public/uploads/product-images/product-1745217905921-81888074.png (already small enough: 1000px)
+Skipping /home/afsal/Project1/public/uploads/product-images/product-1745299447469-692249082.png (already small enough: 1000px)
+Skipping /home/afsal/Project1/public/uploads/product-images/product-1745218257768-448352280.png (already small enough: 1000px)
+Skipping /home/afsal/Project1/public/uploads/product-images/product-1745299447470-257197727.png (already small enough: 1000px)
+Skipping /home/afsal/Project1/public/uploads/product-images/product-1745741942719-430552205.png (already small enough: 1000px)
+Skipping /home/afsal/Project1/public/uploads/product-images/product-1745299447471-535155114.png (already small enough: 1000px)
+Processed batch 12/14
+Created backup: /home/afsal/Project1/public/uploads/product-images/product-1745741942720-384514723.png.backup
+Created backup: /home/afsal/Project1/public/uploads/product-images/product-1745741942722-527240341.png.backup
+Created backup: /home/afsal/Project1/public/uploads/product-images/product-1745742121696-797710294.png.backup
+Created backup: /home/afsal/Project1/public/uploads/product-images/product-1745742121698-282162814.png.backup
+Created backup: /home/afsal/Project1/public/uploads/product-images/product-1745742121699-305740093.png.backup
+Created backup: /home/afsal/Project1/public/uploads/profile-images/profile-1744285860374_211677942.jpg.backup
+Created backup: /home/afsal/Project1/public/uploads/profile-images/profile-1744285995022_266415929.jpg.backup
+Created backup: /home/afsal/Project1/public/uploads/profile-images/profile-1744478798648_147247046.jpg.backup
+Created backup: /home/afsal/Project1/public/uploads/profile-images/profile-1744571586284_216306707.jpg.backup
+Created backup: /home/afsal/Project1/public/uploads/profile-images/profile-1744571758210_475825373.jpg.backup
+Skipping /home/afsal/Project1/public/uploads/product-images/product-1745741942720-384514723.png (already small enough: 1000px)
+Skipping /home/afsal/Project1/public/uploads/product-images/product-1745741942722-527240341.png (already small enough: 1000px)
+Skipping /home/afsal/Project1/public/uploads/product-images/product-1745742121699-305740093.png (already small enough: 1000px)
+Skipping /home/afsal/Project1/public/uploads/profile-images/profile-1744285860374_211677942.jpg (already small enough: 500px)
+Skipping /home/afsal/Project1/public/uploads/product-images/product-1745742121696-797710294.png (already small enough: 1000px)
+Skipping /home/afsal/Project1/public/uploads/product-images/product-1745742121698-282162814.png (already small enough: 1000px)
+Skipping /home/afsal/Project1/public/uploads/profile-images/profile-1744285995022_266415929.jpg (already small enough: 500px)
+Skipping /home/afsal/Project1/public/uploads/profile-images/profile-1744478798648_147247046.jpg (already small enough: 500px)
+Skipping /home/afsal/Project1/public/uploads/profile-images/profile-1744571758210_475825373.jpg (already small enough: 500px)
+Skipping /home/afsal/Project1/public/uploads/profile-images/profile-1744571586284_216306707.jpg (already small enough: 500px)
+Processed batch 13/14
+Created backup: /home/afsal/Project1/public/uploads/profile-images/profile-1745074622680_595639680.jpg.backup
+Created backup: /home/afsal/Project1/public/uploads/profile-images/profile-1745147984976_793354418.jpg.backup
+Created backup: /home/afsal/Project1/public/uploads/profile-images/profile-1745329439384_641883884.jpg.backup
+Created backup: /home/afsal/Project1/public/uploads/profile-images/profile-1746467299146_168792634.jpg.backup
+Skipping /home/afsal/Project1/public/uploads/profile-images/profile-1745074622680_595639680.jpg (already small enough: 500px)
+Skipping /home/afsal/Project1/public/uploads/profile-images/profile-1745147984976_793354418.jpg (already small enough: 500px)
+Skipping /home/afsal/Project1/public/uploads/profile-images/profile-1745329439384_641883884.jpg (already small enough: 500px)
+Skipping /home/afsal/Project1/public/uploads/profile-images/profile-1746467299146_168792634.jpg (already small enough: 500px)
+Processed batch 14/14
+Processing directory: /home/afsal/Project1/public/Images
+Found 368 files in /home/afsal/Project1/public/Images
+Created backup: /home/afsal/Project1/public/Images/512bEOkkJUL.jpg.backup
+Created backup: /home/afsal/Project1/public/Images/Accessories/512bEOkkJUL-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/Accessories/Screenshot_2025-03-21_at_19-24-33_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/Accessories/Screenshot_2025-03-21_at_19-25-16_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/Accessories/Screenshot_2025-03-21_at_19-25-57_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/Accessories/Screenshot_2025-03-21_at_19-26-23_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/Accessories/Screenshot_2025-03-21_at_19-26-51_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/Accessories/Screenshot_2025-03-21_at_19-27-16_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/Accessories/Screenshot_2025-03-22_at_12-20-14_Instagram-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/Accessories/Screenshot_2025-03-22_at_12-21-23_Instagram-removebg-preview.png.backup
+Skipping /home/afsal/Project1/public/Images/Accessories/512bEOkkJUL-removebg-preview.png (already small enough: 500px)
+Skipping /home/afsal/Project1/public/Images/Accessories/Screenshot_2025-03-21_at_19-24-33_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png (already small enough: 447px)
+Skipping /home/afsal/Project1/public/Images/Accessories/Screenshot_2025-03-21_at_19-25-16_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png (already small enough: 456px)
+Skipping /home/afsal/Project1/public/Images/Accessories/Screenshot_2025-03-21_at_19-25-57_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png (already small enough: 466px)
+Skipping /home/afsal/Project1/public/Images/Accessories/Screenshot_2025-03-21_at_19-26-23_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png (already small enough: 453px)
+Skipping /home/afsal/Project1/public/Images/Accessories/Screenshot_2025-03-21_at_19-26-51_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png (already small enough: 453px)
+Skipping /home/afsal/Project1/public/Images/Accessories/Screenshot_2025-03-21_at_19-27-16_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png (already small enough: 448px)
+Skipping /home/afsal/Project1/public/Images/Accessories/Screenshot_2025-03-22_at_12-21-23_Instagram-removebg-preview.png (already small enough: 478px)
+Skipping /home/afsal/Project1/public/Images/Accessories/Screenshot_2025-03-22_at_12-20-14_Instagram-removebg-preview.png (already small enough: 478px)
+Optimized: /home/afsal/Project1/public/Images/512bEOkkJUL.jpg
+  Original: 50.19 KB
+  Optimized: 35.87 KB
+  Savings: 28.52%
+Processed batch 1/37
+Created backup: /home/afsal/Project1/public/Images/Accessories/Screenshot_2025-03-22_at_12-21-50_Instagram-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/Adidas/Screenshot_2025-03-24_at_09-45-02_adidas_vintage___Instagram-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/Adidas/Screenshot_2025-03-24_at_09-45-36_adidas_vintage___Instagram-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/Adidas/Screenshot_2025-03-24_at_09-45-56_adidas_vintage___Instagram-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/Adidas/Screenshot_2025-03-24_at_09-46-35_adidas_vintage___Instagram-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/Adidas/Screenshot_2025-03-24_at_09-47-05_adidas_vintage___Instagram-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/Adidas/Screenshot_2025-03-24_at_09-47-29_adidas_vintage___Instagram-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/Adidas/Screenshot_2025-03-24_at_09-47-57_adidas_vintage___Instagram-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/Adidas/Screenshot_2025-03-24_at_09-48-28_adidas_vintage___Instagram-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/Adidas/Screenshot_2025-03-24_at_09-48-58_adidas_vintage___Instagram-removebg-preview.png.backup
+Skipping /home/afsal/Project1/public/Images/Accessories/Screenshot_2025-03-22_at_12-21-50_Instagram-removebg-preview.png (already small enough: 478px)
+Skipping /home/afsal/Project1/public/Images/Adidas/Screenshot_2025-03-24_at_09-45-02_adidas_vintage___Instagram-removebg-preview.png (already small enough: 478px)
+Skipping /home/afsal/Project1/public/Images/Adidas/Screenshot_2025-03-24_at_09-45-36_adidas_vintage___Instagram-removebg-preview.png (already small enough: 478px)
+Skipping /home/afsal/Project1/public/Images/Adidas/Screenshot_2025-03-24_at_09-46-35_adidas_vintage___Instagram-removebg-preview.png (already small enough: 478px)
+Skipping /home/afsal/Project1/public/Images/Adidas/Screenshot_2025-03-24_at_09-47-05_adidas_vintage___Instagram-removebg-preview.png (already small enough: 447px)
+Skipping /home/afsal/Project1/public/Images/Adidas/Screenshot_2025-03-24_at_09-45-56_adidas_vintage___Instagram-removebg-preview.png (already small enough: 478px)
+Skipping /home/afsal/Project1/public/Images/Adidas/Screenshot_2025-03-24_at_09-47-29_adidas_vintage___Instagram-removebg-preview.png (already small enough: 478px)
+Skipping /home/afsal/Project1/public/Images/Adidas/Screenshot_2025-03-24_at_09-47-57_adidas_vintage___Instagram-removebg-preview.png (already small enough: 478px)
+Skipping /home/afsal/Project1/public/Images/Adidas/Screenshot_2025-03-24_at_09-48-28_adidas_vintage___Instagram-removebg-preview.png (already small enough: 447px)
+Skipping /home/afsal/Project1/public/Images/Adidas/Screenshot_2025-03-24_at_09-48-58_adidas_vintage___Instagram-removebg-preview.png (already small enough: 478px)
+Processed batch 2/37
+Created backup: /home/afsal/Project1/public/Images/Denim/Screenshot_2025-03-22_at_16-45-14_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/Denim/Screenshot_2025-03-22_at_16-45-32_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/Denim/Screenshot_2025-03-22_at_16-45-48_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/Denim/Screenshot_2025-03-22_at_16-46-07_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/Denim/Screenshot_2025-03-22_at_16-47-28_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/Denim/Screenshot_2025-03-22_at_16-52-27_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/Denim/Screenshot_2025-03-22_at_16-52-59_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/Denim/Screenshot_2025-03-22_at_16-53-22_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/Denim/Screenshot_2025-03-22_at_16-55-48_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/Denim/Screenshot_2025-03-22_at_16-56-11_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png.backup
+Skipping /home/afsal/Project1/public/Images/Denim/Screenshot_2025-03-22_at_16-45-14_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png (already small enough: 471px)
+Skipping /home/afsal/Project1/public/Images/Denim/Screenshot_2025-03-22_at_16-45-32_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png (already small enough: 473px)
+Skipping /home/afsal/Project1/public/Images/Denim/Screenshot_2025-03-22_at_16-45-48_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png (already small enough: 461px)
+Skipping /home/afsal/Project1/public/Images/Denim/Screenshot_2025-03-22_at_16-46-07_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png (already small enough: 457px)
+Skipping /home/afsal/Project1/public/Images/Denim/Screenshot_2025-03-22_at_16-47-28_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png (already small enough: 447px)
+Skipping /home/afsal/Project1/public/Images/Denim/Screenshot_2025-03-22_at_16-52-27_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png (already small enough: 451px)
+Skipping /home/afsal/Project1/public/Images/Denim/Screenshot_2025-03-22_at_16-52-59_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png (already small enough: 447px)
+Skipping /home/afsal/Project1/public/Images/Denim/Screenshot_2025-03-22_at_16-53-22_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png (already small enough: 453px)
+Skipping /home/afsal/Project1/public/Images/Denim/Screenshot_2025-03-22_at_16-56-11_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png (already small enough: 447px)
+Skipping /home/afsal/Project1/public/Images/Denim/Screenshot_2025-03-22_at_16-55-48_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png (already small enough: 451px)
+Processed batch 3/37
+Created backup: /home/afsal/Project1/public/Images/Jackets/Screenshot_2025-03-22_at_17-07-18_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/Jackets/Screenshot_2025-03-22_at_17-07-58_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/Jackets/Screenshot_2025-03-22_at_17-08-21_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/Jackets/Screenshot_2025-03-22_at_17-08-43_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/Jackets/Screenshot_2025-03-22_at_17-09-10_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/Jackets/Screenshot_2025-03-22_at_17-09-29_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/Jackets/Screenshot_2025-03-22_at_17-09-54_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/Jackets/Screenshot_2025-03-22_at_17-10-22_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/Jackets/Screenshot_2025-03-22_at_17-10-47_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/Levi's/Screenshot_2025-03-24_at_10-00-32_Levi_s_vintage___Instagram-removebg-preview.png.backup
+Skipping /home/afsal/Project1/public/Images/Jackets/Screenshot_2025-03-22_at_17-07-18_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png (already small enough: 449px)
+Skipping /home/afsal/Project1/public/Images/Jackets/Screenshot_2025-03-22_at_17-07-58_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png (already small enough: 447px)
+Skipping /home/afsal/Project1/public/Images/Jackets/Screenshot_2025-03-22_at_17-08-21_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png (already small enough: 447px)
+Skipping /home/afsal/Project1/public/Images/Jackets/Screenshot_2025-03-22_at_17-08-43_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png (already small enough: 453px)
+Skipping /home/afsal/Project1/public/Images/Jackets/Screenshot_2025-03-22_at_17-09-10_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png (already small enough: 455px)
+Skipping /home/afsal/Project1/public/Images/Jackets/Screenshot_2025-03-22_at_17-09-29_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png (already small enough: 447px)
+Skipping /home/afsal/Project1/public/Images/Jackets/Screenshot_2025-03-22_at_17-09-54_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png (already small enough: 447px)
+Skipping /home/afsal/Project1/public/Images/Levi's/Screenshot_2025-03-24_at_10-00-32_Levi_s_vintage___Instagram-removebg-preview.png (already small enough: 478px)
+Skipping /home/afsal/Project1/public/Images/Jackets/Screenshot_2025-03-22_at_17-10-47_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png (already small enough: 458px)
+Skipping /home/afsal/Project1/public/Images/Jackets/Screenshot_2025-03-22_at_17-10-22_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png (already small enough: 447px)
+Processed batch 4/37
+Created backup: /home/afsal/Project1/public/Images/Levi's/Screenshot_2025-03-24_at_10-02-54_Levi_s_vintage___Instagram-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/Levi's/Screenshot_2025-03-24_at_10-03-39_Levi_s_vintage___Instagram-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/Levi's/Screenshot_2025-03-24_at_10-04-00_Levi_s_vintage___Instagram-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/Levi's/Screenshot_2025-03-24_at_10-04-44_Levi_s_vintage___Instagram-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/Levi's/Screenshot_2025-03-24_at_10-05-48_Levi_s_vintage___Instagram-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/Levi's/Screenshot_2025-03-24_at_10-06-18_Levi_s_vintage___Instagram-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/Levi's/Screenshot_2025-03-24_at_10-07-04_Levi_s_vintage___Instagram-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/Levi's/Screenshot_2025-03-24_at_10-07-43_Levi_s_vintage___Instagram-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/Models/Richard_Gere_s_80s_fashion-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/Models/image-removebg-preview.png.backup
+Skipping /home/afsal/Project1/public/Images/Levi's/Screenshot_2025-03-24_at_10-02-54_Levi_s_vintage___Instagram-removebg-preview.png (already small enough: 447px)
+Skipping /home/afsal/Project1/public/Images/Levi's/Screenshot_2025-03-24_at_10-03-39_Levi_s_vintage___Instagram-removebg-preview.png (already small enough: 447px)
+Skipping /home/afsal/Project1/public/Images/Levi's/Screenshot_2025-03-24_at_10-04-00_Levi_s_vintage___Instagram-removebg-preview.png (already small enough: 447px)
+Skipping /home/afsal/Project1/public/Images/Levi's/Screenshot_2025-03-24_at_10-04-44_Levi_s_vintage___Instagram-removebg-preview.png (already small enough: 447px)
+Skipping /home/afsal/Project1/public/Images/Levi's/Screenshot_2025-03-24_at_10-05-48_Levi_s_vintage___Instagram-removebg-preview.png (already small enough: 447px)
+Skipping /home/afsal/Project1/public/Images/Levi's/Screenshot_2025-03-24_at_10-06-18_Levi_s_vintage___Instagram-removebg-preview.png (already small enough: 478px)
+Skipping /home/afsal/Project1/public/Images/Levi's/Screenshot_2025-03-24_at_10-07-04_Levi_s_vintage___Instagram-removebg-preview.png (already small enough: 447px)
+Skipping /home/afsal/Project1/public/Images/Levi's/Screenshot_2025-03-24_at_10-07-43_Levi_s_vintage___Instagram-removebg-preview.png (already small enough: 478px)
+Skipping /home/afsal/Project1/public/Images/Models/Richard_Gere_s_80s_fashion-removebg-preview.png (already small enough: 387px)
+Skipping /home/afsal/Project1/public/Images/Models/image-removebg-preview.png (already small enough: 408px)
+Processed batch 5/37
+Created backup: /home/afsal/Project1/public/Images/Models/x9F2ccsm-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/Nike/Screenshot_2025-03-24_at_09-23-29_Instagram-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/Nike/Screenshot_2025-03-24_at_09-24-52_Instagram-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/Nike/Screenshot_2025-03-24_at_09-25-28_Instagram-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/Nike/Screenshot_2025-03-24_at_09-25-58_Instagram-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/Nike/Screenshot_2025-03-24_at_09-26-26_Instagram-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/Nike/Screenshot_2025-03-24_at_09-26-59_Instagram-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/Nike/Screenshot_2025-03-24_at_09-27-35_Instagram-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/Nike/Screenshot_2025-03-24_at_09-28-12_Instagram-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/Nike/Screenshot_2025-03-24_at_09-28-51_Instagram-removebg-preview.png.backup
+Skipping /home/afsal/Project1/public/Images/Models/x9F2ccsm-removebg-preview.png (already small enough: 398px)
+Skipping /home/afsal/Project1/public/Images/Nike/Screenshot_2025-03-24_at_09-23-29_Instagram-removebg-preview.png (already small enough: 447px)
+Skipping /home/afsal/Project1/public/Images/Nike/Screenshot_2025-03-24_at_09-25-28_Instagram-removebg-preview.png (already small enough: 447px)
+Skipping /home/afsal/Project1/public/Images/Nike/Screenshot_2025-03-24_at_09-24-52_Instagram-removebg-preview.png (already small enough: 447px)
+Skipping /home/afsal/Project1/public/Images/Nike/Screenshot_2025-03-24_at_09-26-59_Instagram-removebg-preview.png (already small enough: 478px)
+Skipping /home/afsal/Project1/public/Images/Nike/Screenshot_2025-03-24_at_09-25-58_Instagram-removebg-preview.png (already small enough: 447px)
+Skipping /home/afsal/Project1/public/Images/Nike/Screenshot_2025-03-24_at_09-27-35_Instagram-removebg-preview.png (already small enough: 447px)
+Skipping /home/afsal/Project1/public/Images/Nike/Screenshot_2025-03-24_at_09-26-26_Instagram-removebg-preview.png (already small enough: 447px)
+Skipping /home/afsal/Project1/public/Images/Nike/Screenshot_2025-03-24_at_09-28-12_Instagram-removebg-preview.png (already small enough: 478px)
+Skipping /home/afsal/Project1/public/Images/Nike/Screenshot_2025-03-24_at_09-28-51_Instagram-removebg-preview.png (already small enough: 478px)
+Processed batch 6/37
+Created backup: /home/afsal/Project1/public/Images/Prime Layers/Screenshot_2025-03-23_at_12-21-18_Instagram-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/Prime Layers/Screenshot_2025-03-23_at_12-22-01_Instagram-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/Prime Layers/Screenshot_2025-03-23_at_12-22-49_Instagram-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/Prime Layers/Screenshot_2025-03-23_at_12-24-47_Instagram-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/Prime Layers/Screenshot_2025-03-23_at_12-25-08_Instagram-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/Prime Layers/Screenshot_2025-03-23_at_12-25-33_Instagram-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/Prime Layers/Screenshot_2025-03-23_at_12-25-52_Instagram-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/Prime Layers/Screenshot_2025-03-23_at_12-26-30_Instagram-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/Prime Layers/Screenshot_2025-03-23_at_12-26-53_Instagram-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/Prime Layers/primelayers-removebg-preview.png.backup
+Skipping /home/afsal/Project1/public/Images/Prime Layers/Screenshot_2025-03-23_at_12-21-18_Instagram-removebg-preview.png (already small enough: 478px)
+Skipping /home/afsal/Project1/public/Images/Prime Layers/Screenshot_2025-03-23_at_12-22-01_Instagram-removebg-preview.png (already small enough: 478px)
+Skipping /home/afsal/Project1/public/Images/Prime Layers/Screenshot_2025-03-23_at_12-22-49_Instagram-removebg-preview.png (already small enough: 447px)
+Skipping /home/afsal/Project1/public/Images/Prime Layers/Screenshot_2025-03-23_at_12-25-08_Instagram-removebg-preview.png (already small enough: 478px)
+Skipping /home/afsal/Project1/public/Images/Prime Layers/Screenshot_2025-03-23_at_12-24-47_Instagram-removebg-preview.png (already small enough: 478px)
+Skipping /home/afsal/Project1/public/Images/Prime Layers/Screenshot_2025-03-23_at_12-25-52_Instagram-removebg-preview.png (already small enough: 478px)
+Skipping /home/afsal/Project1/public/Images/Prime Layers/Screenshot_2025-03-23_at_12-25-33_Instagram-removebg-preview.png (already small enough: 478px)
+Skipping /home/afsal/Project1/public/Images/Prime Layers/primelayers-removebg-preview.png (already small enough: 447px)
+Skipping /home/afsal/Project1/public/Images/Prime Layers/Screenshot_2025-03-23_at_12-26-53_Instagram-removebg-preview.png (already small enough: 478px)
+Skipping /home/afsal/Project1/public/Images/Prime Layers/Screenshot_2025-03-23_at_12-26-30_Instagram-removebg-preview.png (already small enough: 478px)
+Processed batch 7/37
+Created backup: /home/afsal/Project1/public/Images/Ralf Lauren/Screenshot_2025-03-24_at_09-54-28_ralf_lauren_vintage___Instagram-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/Ralf Lauren/Screenshot_2025-03-24_at_09-54-54_ralf_lauren_vintage___Instagram-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/Ralf Lauren/Screenshot_2025-03-24_at_09-55-28_ralf_lauren_vintage___Instagram-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/Ralf Lauren/Screenshot_2025-03-24_at_09-56-21_ralf_lauren_vintage___Instagram-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/Ralf Lauren/Screenshot_2025-03-24_at_09-57-01_ralf_lauren_vintage___Instagram-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/Ralf Lauren/Screenshot_2025-03-24_at_09-57-23_ralf_lauren_vintage___Instagram-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/Ralf Lauren/Screenshot_2025-03-24_at_09-57-43_ralf_lauren_vintage___Instagram-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/Ralf Lauren/Screenshot_2025-03-24_at_09-58-31_ralf_lauren_vintage___Instagram-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/Ralf Lauren/Screenshot_2025-03-24_at_09-58-55_ralf_lauren_vintage___Instagram-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/Shirts/Screenshot_2025-03-22_at_16-38-59_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png.backup
+Skipping /home/afsal/Project1/public/Images/Ralf Lauren/Screenshot_2025-03-24_at_09-54-28_ralf_lauren_vintage___Instagram-removebg-preview.png (already small enough: 478px)
+Skipping /home/afsal/Project1/public/Images/Ralf Lauren/Screenshot_2025-03-24_at_09-55-28_ralf_lauren_vintage___Instagram-removebg-preview.png (already small enough: 447px)
+Skipping /home/afsal/Project1/public/Images/Ralf Lauren/Screenshot_2025-03-24_at_09-56-21_ralf_lauren_vintage___Instagram-removebg-preview.png (already small enough: 447px)
+Skipping /home/afsal/Project1/public/Images/Ralf Lauren/Screenshot_2025-03-24_at_09-57-01_ralf_lauren_vintage___Instagram-removebg-preview.png (already small enough: 478px)
+Skipping /home/afsal/Project1/public/Images/Ralf Lauren/Screenshot_2025-03-24_at_09-54-54_ralf_lauren_vintage___Instagram-removebg-preview.png (already small enough: 478px)
+Skipping /home/afsal/Project1/public/Images/Ralf Lauren/Screenshot_2025-03-24_at_09-57-43_ralf_lauren_vintage___Instagram-removebg-preview.png (already small enough: 447px)
+Skipping /home/afsal/Project1/public/Images/Ralf Lauren/Screenshot_2025-03-24_at_09-58-55_ralf_lauren_vintage___Instagram-removebg-preview.png (already small enough: 478px)
+Skipping /home/afsal/Project1/public/Images/Ralf Lauren/Screenshot_2025-03-24_at_09-58-31_ralf_lauren_vintage___Instagram-removebg-preview.png (already small enough: 447px)
+Skipping /home/afsal/Project1/public/Images/Ralf Lauren/Screenshot_2025-03-24_at_09-57-23_ralf_lauren_vintage___Instagram-removebg-preview.png (already small enough: 478px)
+Skipping /home/afsal/Project1/public/Images/Shirts/Screenshot_2025-03-22_at_16-38-59_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png (already small enough: 447px)
+Processed batch 8/37
+Created backup: /home/afsal/Project1/public/Images/Shirts/Screenshot_2025-03-22_at_16-39-20_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/Shirts/Screenshot_2025-03-22_at_16-40-10_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/Shirts/Screenshot_2025-03-22_at_16-40-30_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/Shirts/Screenshot_2025-03-22_at_16-40-45_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/Shirts/Screenshot_2025-03-22_at_16-41-16_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/Shirts/Screenshot_2025-03-22_at_16-41-51_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/Shirts/Screenshot_2025-03-22_at_16-42-48_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/Shirts/Screenshot_2025-03-22_at_16-43-18_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/Shirts/Screenshot_2025-03-22_at_16-43-52_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/Timeless.jpg.backup
+Skipping /home/afsal/Project1/public/Images/Shirts/Screenshot_2025-03-22_at_16-39-20_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png (already small enough: 447px)
+Skipping /home/afsal/Project1/public/Images/Shirts/Screenshot_2025-03-22_at_16-40-45_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png (already small enough: 447px)
+Skipping /home/afsal/Project1/public/Images/Shirts/Screenshot_2025-03-22_at_16-41-51_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png (already small enough: 459px)
+Skipping /home/afsal/Project1/public/Images/Shirts/Screenshot_2025-03-22_at_16-40-30_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png (already small enough: 457px)
+Skipping /home/afsal/Project1/public/Images/Shirts/Screenshot_2025-03-22_at_16-40-10_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png (already small enough: 451px)
+Skipping /home/afsal/Project1/public/Images/Shirts/Screenshot_2025-03-22_at_16-42-48_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png (already small enough: 456px)
+Skipping /home/afsal/Project1/public/Images/Shirts/Screenshot_2025-03-22_at_16-41-16_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png (already small enough: 451px)
+Skipping /home/afsal/Project1/public/Images/Shirts/Screenshot_2025-03-22_at_16-43-52_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png (already small enough: 447px)
+Skipping /home/afsal/Project1/public/Images/Timeless.jpg (already small enough: 736px)
+Skipping /home/afsal/Project1/public/Images/Shirts/Screenshot_2025-03-22_at_16-43-18_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png (already small enough: 447px)
+Processed batch 9/37
+Created backup: /home/afsal/Project1/public/Images/Vintage Athletics/Screenshot_2025-03-23_at_12-41-38_Instagram-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/Vintage Athletics/Screenshot_2025-03-23_at_12-43-01_Instagram-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/Vintage Athletics/Screenshot_2025-03-23_at_12-43-25_Instagram-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/Vintage Athletics/Screenshot_2025-03-23_at_12-43-53_Instagram-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/Vintage Athletics/Screenshot_2025-03-23_at_12-44-13_Instagram-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/Vintage Athletics/Screenshot_2025-03-23_at_12-44-39_Instagram-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/Vintage Athletics/Screenshot_2025-03-23_at_12-45-39_Instagram-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/Vintage Athletics/Screenshot_2025-03-23_at_12-46-06_Instagram-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/Vintage Athletics/Screenshot_2025-03-23_at_12-46-29_Instagram-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/Vintage Athletics/_90s__early2000sfashion__collageaesthetic__basketball__2000s__2000snostalgia__explore__vintageclothing_-removebg-preview.png.backup
+Skipping /home/afsal/Project1/public/Images/Vintage Athletics/Screenshot_2025-03-23_at_12-43-25_Instagram-removebg-preview.png (already small enough: 478px)
+Skipping /home/afsal/Project1/public/Images/Vintage Athletics/Screenshot_2025-03-23_at_12-43-01_Instagram-removebg-preview.png (already small enough: 478px)
+Skipping /home/afsal/Project1/public/Images/Vintage Athletics/Screenshot_2025-03-23_at_12-41-38_Instagram-removebg-preview.png (already small enough: 478px)
+Skipping /home/afsal/Project1/public/Images/Vintage Athletics/Screenshot_2025-03-23_at_12-43-53_Instagram-removebg-preview.png (already small enough: 478px)
+Skipping /home/afsal/Project1/public/Images/Vintage Athletics/Screenshot_2025-03-23_at_12-46-06_Instagram-removebg-preview.png (already small enough: 478px)
+Skipping /home/afsal/Project1/public/Images/Vintage Athletics/Screenshot_2025-03-23_at_12-44-39_Instagram-removebg-preview.png (already small enough: 478px)
+Skipping /home/afsal/Project1/public/Images/Vintage Athletics/Screenshot_2025-03-23_at_12-44-13_Instagram-removebg-preview.png (already small enough: 478px)
+Skipping /home/afsal/Project1/public/Images/Vintage Athletics/Screenshot_2025-03-23_at_12-45-39_Instagram-removebg-preview.png (already small enough: 478px)
+Skipping /home/afsal/Project1/public/Images/Vintage Athletics/_90s__early2000sfashion__collageaesthetic__basketball__2000s__2000snostalgia__explore__vintageclothing_-removebg-preview.png (already small enough: 408px)
+Skipping /home/afsal/Project1/public/Images/Vintage Athletics/Screenshot_2025-03-23_at_12-46-29_Instagram-removebg-preview.png (already small enough: 478px)
+Processed batch 10/37
+Created backup: /home/afsal/Project1/public/Images/Y2k.jpg.backup
+Created backup: /home/afsal/Project1/public/Images/about-craftsmanship.jpg.backup
+Created backup: /home/afsal/Project1/public/Images/about-hero.jpg.backup
+Created backup: /home/afsal/Project1/public/Images/about-philosophy.jpg.backup
+Created backup: /home/afsal/Project1/public/Images/brands/001-nike-logos-swoosh-black.jpg.backup
+Created backup: /home/afsal/Project1/public/Images/brands/58133-logo-adidas-free-download-image.png.backup
+Created backup: /home/afsal/Project1/public/Images/brands/Levi's New.png.backup
+Created backup: /home/afsal/Project1/public/Images/brands/af3ad87a07dabf14465c33dcd0a4c2ac.png.backup
+Created backup: /home/afsal/Project1/public/Images/categories/accessories(1).jpeg.backup
+Created backup: /home/afsal/Project1/public/Images/categories/accessories.jpeg.backup
+Skipping /home/afsal/Project1/public/Images/Y2k.jpg (already small enough: 736px)
+Skipping /home/afsal/Project1/public/Images/brands/58133-logo-adidas-free-download-image.png (already small enough: 1000px)
+Skipping /home/afsal/Project1/public/Images/brands/af3ad87a07dabf14465c33dcd0a4c2ac.png (already small enough: 700px)
+Optimized: /home/afsal/Project1/public/Images/brands/001-nike-logos-swoosh-black.jpg
+  Original: 228.91 KB
+  Optimized: 11.95 KB
+  Savings: 94.78%
+Optimized: /home/afsal/Project1/public/Images/brands/Levi's New.png
+  Original: 37.44 KB
+  Optimized: 9.65 KB
+  Savings: 74.24%
+Optimized: /home/afsal/Project1/public/Images/categories/accessories.jpeg
+  Original: 6478.48 KB
+  Optimized: 113.93 KB
+  Savings: 98.24%
+Optimized: /home/afsal/Project1/public/Images/about-craftsmanship.jpg
+  Original: 2712.61 KB
+  Optimized: 115.19 KB
+  Savings: 95.75%
+Optimized: /home/afsal/Project1/public/Images/about-philosophy.jpg
+  Original: 4012.27 KB
+  Optimized: 140.46 KB
+  Savings: 96.50%
+Optimized: /home/afsal/Project1/public/Images/about-hero.jpg
+  Original: 4732.52 KB
+  Optimized: 103.21 KB
+  Savings: 97.82%
+Optimized: /home/afsal/Project1/public/Images/categories/accessories(1).jpeg
+  Original: 1770.23 KB
+  Optimized: 116.36 KB
+  Savings: 93.43%
+Processed batch 11/37
+Created backup: /home/afsal/Project1/public/Images/categories/accessories.jpg.backup
+Created backup: /home/afsal/Project1/public/Images/categories/jackets.jpg.backup
+Created backup: /home/afsal/Project1/public/Images/categories/shirts(1).jpg.backup
+Created backup: /home/afsal/Project1/public/Images/categories/shirts.jpg.backup
+Created backup: /home/afsal/Project1/public/Images/categories/sportswear.jpg.backup
+Created backup: /home/afsal/Project1/public/Images/categories/tees.jpg.backup
+Created backup: /home/afsal/Project1/public/Images/categories/trousers-min.jpeg.backup
+Created backup: /home/afsal/Project1/public/Images/categories/trousers.jpeg.backup
+Created backup: /home/afsal/Project1/public/Images/categories/trousers.jpg.backup
+Created backup: /home/afsal/Project1/public/Images/collections/prime-layers.png.backup
+Skipping /home/afsal/Project1/public/Images/categories/tees.jpg (already small enough: 736px)
+Skipping /home/afsal/Project1/public/Images/collections/prime-layers.png (already small enough: 447px)
+Optimized: /home/afsal/Project1/public/Images/categories/shirts(1).jpg
+  Original: 2680.99 KB
+  Optimized: 490.82 KB
+  Savings: 81.69%
+Optimized: /home/afsal/Project1/public/Images/categories/sportswear.jpg
+  Original: 2160.33 KB
+  Optimized: 158.79 KB
+  Savings: 92.65%
+Optimized: /home/afsal/Project1/public/Images/categories/accessories.jpg
+  Original: 6239.38 KB
+  Optimized: 113.76 KB
+  Savings: 98.18%
+Optimized: /home/afsal/Project1/public/Images/categories/trousers-min.jpeg
+  Original: 4678.85 KB
+  Optimized: 404.20 KB
+  Savings: 91.36%
+Optimized: /home/afsal/Project1/public/Images/categories/trousers.jpeg
+  Original: 10634.78 KB
+  Optimized: 407.07 KB
+  Savings: 96.17%
+Optimized: /home/afsal/Project1/public/Images/categories/jackets.jpg
+  Original: 3717.80 KB
+  Optimized: 326.68 KB
+  Savings: 91.21%
+Optimized: /home/afsal/Project1/public/Images/categories/shirts.jpg
+  Original: 8228.21 KB
+  Optimized: 487.15 KB
+  Savings: 94.08%
+Optimized: /home/afsal/Project1/public/Images/categories/trousers.jpg
+  Original: 10100.36 KB
+  Optimized: 407.57 KB
+  Savings: 95.96%
+Processed batch 12/37
+Created backup: /home/afsal/Project1/public/Images/collections/vintage-athletics.png.backup
+Created backup: /home/afsal/Project1/public/Images/collections/y2k-essentials.png.backup
+Created backup: /home/afsal/Project1/public/Images/color_6.webp.backup
+Created backup: /home/afsal/Project1/public/Images/default-profile.jpg.backup
+Created backup: /home/afsal/Project1/public/Images/images/AnotherHome.jpg.backup
+Created backup: /home/afsal/Project1/public/Images/images/Domno Vintage.jpg.backup
+Created backup: /home/afsal/Project1/public/Images/images/Follow for more outfit ideas and inspiration !(1).jpg.backup
+Created backup: /home/afsal/Project1/public/Images/images/Jackson Irvine on Ireland 95-96.jpg.backup
+Created backup: /home/afsal/Project1/public/Images/images/Kit Blake _ Summer holiday inspiration_ _ Instagram.jpg.backup
+Skipping /home/afsal/Project1/public/Images/collections/vintage-athletics.png (already small enough: 408px)
+Skipping /home/afsal/Project1/public/Images/collections/y2k-essentials.png (already small enough: 447px)
+Skipping /home/afsal/Project1/public/Images/color_6.webp (already small enough: 800px)
+Skipping /home/afsal/Project1/public/Images/images/AnotherHome.jpg (already small enough: 634px)
+Skipping /home/afsal/Project1/public/Images/default-profile.jpg (already small enough: 340px)
+Skipping /home/afsal/Project1/public/Images/images/Follow for more outfit ideas and inspiration !(1).jpg (already small enough: 676px)
+Skipping /home/afsal/Project1/public/Images/images/Jackson Irvine on Ireland 95-96.jpg (already small enough: 736px)
+Skipping /home/afsal/Project1/public/Images/images/Domno Vintage.jpg (already small enough: 736px)
+Skipping /home/afsal/Project1/public/Images/images/Kit Blake _ Summer holiday inspiration_ _ Instagram.jpg (already small enough: 736px)
+Processed batch 13/37
+Created backup: /home/afsal/Project1/public/Images/images/ModelHome.jpg.backup
+Created backup: /home/afsal/Project1/public/Images/images/N8rEEt8o.jpg.backup
+Created backup: /home/afsal/Project1/public/Images/images/OLD_PAPER_TEXTURE.jpg.backup
+Created backup: /home/afsal/Project1/public/Images/images/Pair BlokeCore Outfit With Vintage Ac Milan Football Jersey.jpg.backup
+Created backup: /home/afsal/Project1/public/Images/images/Richard Gere's 80s fashion.jpg.backup
+Created backup: /home/afsal/Project1/public/Images/images/Screenshot 2025-03-19 at 20-44-13 Instagram.png.backup
+Created backup: /home/afsal/Project1/public/Images/images/Screenshot 2025-03-19 at 20-44-27 Instagram.png.backup
+Created backup: /home/afsal/Project1/public/Images/images/Screenshot 2025-03-19 at 20-44-44 Instagram.png.backup
+Created backup: /home/afsal/Project1/public/Images/images/Screenshot 2025-03-19 at 20-45-00 Instagram.png.backup
+Created backup: /home/afsal/Project1/public/Images/images/Screenshot 2025-03-19 at 20-45-09 Instagram.png.backup
+Skipping /home/afsal/Project1/public/Images/images/N8rEEt8o.jpg (already small enough: 736px)
+Skipping /home/afsal/Project1/public/Images/images/Pair BlokeCore Outfit With Vintage Ac Milan Football Jersey.jpg (already small enough: 736px)
+Skipping /home/afsal/Project1/public/Images/images/Screenshot 2025-03-19 at 20-44-44 Instagram.png (already small enough: 1144px)
+Skipping /home/afsal/Project1/public/Images/images/Richard Gere's 80s fashion.jpg (already small enough: 525px)
+Skipping /home/afsal/Project1/public/Images/images/Screenshot 2025-03-19 at 20-44-13 Instagram.png (already small enough: 1160px)
+Skipping /home/afsal/Project1/public/Images/images/Screenshot 2025-03-19 at 20-45-00 Instagram.png (already small enough: 1176px)
+Skipping /home/afsal/Project1/public/Images/images/Screenshot 2025-03-19 at 20-44-27 Instagram.png (already small enough: 1156px)
+Skipping /home/afsal/Project1/public/Images/images/Screenshot 2025-03-19 at 20-45-09 Instagram.png (already small enough: 1144px)
+Optimized: /home/afsal/Project1/public/Images/images/OLD_PAPER_TEXTURE.jpg
+  Original: 302.38 KB
+  Optimized: 29.74 KB
+  Savings: 90.16%
+Optimized: /home/afsal/Project1/public/Images/images/ModelHome.jpg
+  Original: 1104.62 KB
+  Optimized: 92.33 KB
+  Savings: 91.64%
+Processed batch 14/37
+Created backup: /home/afsal/Project1/public/Images/images/Screenshot 2025-03-19 at 20-45-25 Instagram.png.backup
+Created backup: /home/afsal/Project1/public/Images/images/Screenshot 2025-03-19 at 20-45-39 Instagram.png.backup
+Created backup: /home/afsal/Project1/public/Images/images/Screenshot 2025-03-19 at 20-45-48 Instagram.png.backup
+Created backup: /home/afsal/Project1/public/Images/images/Screenshot 2025-03-19 at 20-45-58 Instagram.png.backup
+Created backup: /home/afsal/Project1/public/Images/images/Screenshot 2025-03-19 at 20-46-09 Instagram.png.backup
+Created backup: /home/afsal/Project1/public/Images/images/Screenshot 2025-03-19 at 20-46-27 Instagram.png.backup
+Created backup: /home/afsal/Project1/public/Images/images/Screenshot 2025-03-19 at 20-46-56 Instagram.png.backup
+Created backup: /home/afsal/Project1/public/Images/images/Screenshot 2025-03-19 at 20-47-05 Instagram.png.backup
+Created backup: /home/afsal/Project1/public/Images/images/Screenshot 2025-03-19 at 20-47-14 Instagram.png.backup
+Created backup: /home/afsal/Project1/public/Images/images/Screenshot 2025-03-19 at 20-47-27 Instagram.png.backup
+Skipping /home/afsal/Project1/public/Images/images/Screenshot 2025-03-19 at 20-45-25 Instagram.png (already small enough: 1144px)
+Skipping /home/afsal/Project1/public/Images/images/Screenshot 2025-03-19 at 20-45-39 Instagram.png (already small enough: 1160px)
+Skipping /home/afsal/Project1/public/Images/images/Screenshot 2025-03-19 at 20-45-48 Instagram.png (already small enough: 1172px)
+Skipping /home/afsal/Project1/public/Images/images/Screenshot 2025-03-19 at 20-46-56 Instagram.png (already small enough: 1152px)
+Skipping /home/afsal/Project1/public/Images/images/Screenshot 2025-03-19 at 20-47-05 Instagram.png (already small enough: 1164px)
+Skipping /home/afsal/Project1/public/Images/images/Screenshot 2025-03-19 at 20-46-09 Instagram.png (already small enough: 1148px)
+Skipping /home/afsal/Project1/public/Images/images/Screenshot 2025-03-19 at 20-47-14 Instagram.png (already small enough: 1144px)
+Skipping /home/afsal/Project1/public/Images/images/Screenshot 2025-03-19 at 20-47-27 Instagram.png (already small enough: 1168px)
+Optimized: /home/afsal/Project1/public/Images/images/Screenshot 2025-03-19 at 20-45-58 Instagram.png
+  Original: 1536.22 KB
+  Optimized: 456.93 KB
+  Savings: 70.26%
+Optimized: /home/afsal/Project1/public/Images/images/Screenshot 2025-03-19 at 20-46-27 Instagram.png
+  Original: 1859.82 KB
+  Optimized: 623.75 KB
+  Savings: 66.46%
+Processed batch 15/37
+Created backup: /home/afsal/Project1/public/Images/images/Screenshot 2025-03-19 at 20-47-34 Instagram.png.backup
+Created backup: /home/afsal/Project1/public/Images/images/Screenshot 2025-03-19 at 20-47-44 Instagram.png.backup
+Created backup: /home/afsal/Project1/public/Images/images/Screenshot 2025-03-19 at 20-47-52 Instagram.png.backup
+Created backup: /home/afsal/Project1/public/Images/images/Screenshot 2025-03-19 at 20-48-00 Instagram.png.backup
+Created backup: /home/afsal/Project1/public/Images/images/Screenshot 2025-03-19 at 20-48-08 Instagram.png.backup
+Created backup: /home/afsal/Project1/public/Images/images/Screenshot 2025-03-19 at 20-48-17 Instagram.png.backup
+Created backup: /home/afsal/Project1/public/Images/images/Screenshot 2025-03-19 at 20-48-33 Instagram.png.backup
+Created backup: /home/afsal/Project1/public/Images/images/Screenshot 2025-03-19 at 20-48-46 Instagram.png.backup
+Created backup: /home/afsal/Project1/public/Images/images/Screenshot 2025-03-19 at 20-49-07 Instagram.png.backup
+Created backup: /home/afsal/Project1/public/Images/images/Screenshot 2025-03-19 at 20-49-17 Instagram.png.backup
+Skipping /home/afsal/Project1/public/Images/images/Screenshot 2025-03-19 at 20-47-34 Instagram.png (already small enough: 1160px)
+Skipping /home/afsal/Project1/public/Images/images/Screenshot 2025-03-19 at 20-47-52 Instagram.png (already small enough: 1160px)
+Skipping /home/afsal/Project1/public/Images/images/Screenshot 2025-03-19 at 20-47-44 Instagram.png (already small enough: 1164px)
+Skipping /home/afsal/Project1/public/Images/images/Screenshot 2025-03-19 at 20-48-00 Instagram.png (already small enough: 1184px)
+Skipping /home/afsal/Project1/public/Images/images/Screenshot 2025-03-19 at 20-48-33 Instagram.png (already small enough: 1144px)
+Skipping /home/afsal/Project1/public/Images/images/Screenshot 2025-03-19 at 20-48-46 Instagram.png (already small enough: 1144px)
+Skipping /home/afsal/Project1/public/Images/images/Screenshot 2025-03-19 at 20-49-07 Instagram.png (already small enough: 1144px)
+Skipping /home/afsal/Project1/public/Images/images/Screenshot 2025-03-19 at 20-49-17 Instagram.png (already small enough: 1144px)
+Skipping /home/afsal/Project1/public/Images/images/Screenshot 2025-03-19 at 20-48-17 Instagram.png (already small enough: 1144px)
+Optimized: /home/afsal/Project1/public/Images/images/Screenshot 2025-03-19 at 20-48-08 Instagram.png
+  Original: 1920.27 KB
+  Optimized: 606.76 KB
+  Savings: 68.40%
+Processed batch 16/37
+Created backup: /home/afsal/Project1/public/Images/images/Screenshot 2025-03-19 at 20-49-25 Instagram.png.backup
+Created backup: /home/afsal/Project1/public/Images/images/Screenshot 2025-03-19 at 20-49-36 Instagram.png.backup
+Created backup: /home/afsal/Project1/public/Images/images/Screenshot 2025-03-19 at 20-49-43 Instagram.png.backup
+Created backup: /home/afsal/Project1/public/Images/images/Screenshot 2025-03-19 at 20-49-50 Instagram.png.backup
+Created backup: /home/afsal/Project1/public/Images/images/Screenshot 2025-03-19 at 20-49-58 Instagram.png.backup
+Created backup: /home/afsal/Project1/public/Images/images/Screenshot 2025-03-19 at 20-50-08 Instagram.png.backup
+Created backup: /home/afsal/Project1/public/Images/images/Screenshot 2025-03-19 at 20-50-24 Instagram.png.backup
+Created backup: /home/afsal/Project1/public/Images/images/Screenshot 2025-03-19 at 20-50-33 Instagram.png.backup
+Created backup: /home/afsal/Project1/public/Images/images/Screenshot 2025-03-19 at 20-50-42 Instagram.png.backup
+Created backup: /home/afsal/Project1/public/Images/images/Screenshot 2025-03-19 at 20-50-52 Instagram.png.backup
+Skipping /home/afsal/Project1/public/Images/images/Screenshot 2025-03-19 at 20-49-36 Instagram.png (already small enough: 1172px)
+Skipping /home/afsal/Project1/public/Images/images/Screenshot 2025-03-19 at 20-49-50 Instagram.png (already small enough: 1180px)
+Skipping /home/afsal/Project1/public/Images/images/Screenshot 2025-03-19 at 20-49-25 Instagram.png (already small enough: 1144px)
+Skipping /home/afsal/Project1/public/Images/images/Screenshot 2025-03-19 at 20-50-08 Instagram.png (already small enough: 1176px)
+Skipping /home/afsal/Project1/public/Images/images/Screenshot 2025-03-19 at 20-50-24 Instagram.png (already small enough: 1160px)
+Skipping /home/afsal/Project1/public/Images/images/Screenshot 2025-03-19 at 20-50-33 Instagram.png (already small enough: 1144px)
+Skipping /home/afsal/Project1/public/Images/images/Screenshot 2025-03-19 at 20-50-42 Instagram.png (already small enough: 1144px)
+Skipping /home/afsal/Project1/public/Images/images/Screenshot 2025-03-19 at 20-50-52 Instagram.png (already small enough: 1144px)
+Optimized: /home/afsal/Project1/public/Images/images/Screenshot 2025-03-19 at 20-49-43 Instagram.png
+  Original: 2096.55 KB
+  Optimized: 727.88 KB
+  Savings: 65.28%
+Optimized: /home/afsal/Project1/public/Images/images/Screenshot 2025-03-19 at 20-49-58 Instagram.png
+  Original: 1754.89 KB
+  Optimized: 527.23 KB
+  Savings: 69.96%
+Processed batch 17/37
+Created backup: /home/afsal/Project1/public/Images/images/Screenshot 2025-03-19 at 20-51-00 Instagram.png.backup
+Created backup: /home/afsal/Project1/public/Images/images/Screenshot 2025-03-19 at 20-51-08 Instagram.png.backup
+Created backup: /home/afsal/Project1/public/Images/images/Screenshot 2025-03-19 at 20-51-18 Instagram.png.backup
+Created backup: /home/afsal/Project1/public/Images/images/Screenshot 2025-03-19 at 20-51-25 Instagram.png.backup
+Created backup: /home/afsal/Project1/public/Images/images/Screenshot 2025-03-19 at 20-51-33 Instagram.png.backup
+Created backup: /home/afsal/Project1/public/Images/images/Screenshot 2025-03-19 at 20-51-42 Instagram.png.backup
+Created backup: /home/afsal/Project1/public/Images/images/Screenshot 2025-03-19 at 20-51-52 Instagram.png.backup
+Created backup: /home/afsal/Project1/public/Images/images/Screenshot 2025-03-19 at 20-52-08 Instagram.png.backup
+Created backup: /home/afsal/Project1/public/Images/images/Screenshot 2025-03-19 at 20-52-16 Instagram.png.backup
+Created backup: /home/afsal/Project1/public/Images/images/Screenshot 2025-03-19 at 20-52-45 Instagram.png.backup
+Skipping /home/afsal/Project1/public/Images/images/Screenshot 2025-03-19 at 20-51-00 Instagram.png (already small enough: 1144px)
+Skipping /home/afsal/Project1/public/Images/images/Screenshot 2025-03-19 at 20-51-18 Instagram.png (already small enough: 1144px)
+Skipping /home/afsal/Project1/public/Images/images/Screenshot 2025-03-19 at 20-51-08 Instagram.png (already small enough: 1144px)
+Skipping /home/afsal/Project1/public/Images/images/Screenshot 2025-03-19 at 20-51-25 Instagram.png (already small enough: 1144px)
+Skipping /home/afsal/Project1/public/Images/images/Screenshot 2025-03-19 at 20-51-33 Instagram.png (already small enough: 1144px)
+Skipping /home/afsal/Project1/public/Images/images/Screenshot 2025-03-19 at 20-51-42 Instagram.png (already small enough: 1144px)
+Skipping /home/afsal/Project1/public/Images/images/Screenshot 2025-03-19 at 20-51-52 Instagram.png (already small enough: 1144px)
+Skipping /home/afsal/Project1/public/Images/images/Screenshot 2025-03-19 at 20-52-08 Instagram.png (already small enough: 1192px)
+Skipping /home/afsal/Project1/public/Images/images/Screenshot 2025-03-19 at 20-52-16 Instagram.png (already small enough: 1164px)
+Skipping /home/afsal/Project1/public/Images/images/Screenshot 2025-03-19 at 20-52-45 Instagram.png (already small enough: 1144px)
+Processed batch 18/37
+Created backup: /home/afsal/Project1/public/Images/images/Screenshot 2025-03-19 at 20-52-58 Instagram.png.backup
+Created backup: /home/afsal/Project1/public/Images/images/Screenshot 2025-03-19 at 20-53-25 Instagram.png.backup
+Created backup: /home/afsal/Project1/public/Images/images/Screenshot 2025-03-19 at 20-53-37 Instagram.png.backup
+Created backup: /home/afsal/Project1/public/Images/images/Screenshot 2025-03-19 at 20-53-45 Instagram.png.backup
+Created backup: /home/afsal/Project1/public/Images/images/Screenshot 2025-03-19 at 20-53-55 Instagram.png.backup
+Created backup: /home/afsal/Project1/public/Images/images/Screenshot 2025-03-19 at 20-54-10 Instagram.png.backup
+Created backup: /home/afsal/Project1/public/Images/images/Screenshot 2025-03-19 at 20-54-18 Instagram.png.backup
+Created backup: /home/afsal/Project1/public/Images/images/Screenshot 2025-03-19 at 20-54-33 Instagram.png.backup
+Created backup: /home/afsal/Project1/public/Images/images/Screenshot 2025-03-19 at 20-54-42 Instagram.png.backup
+Created backup: /home/afsal/Project1/public/Images/images/Screenshot 2025-03-19 at 20-54-50 Instagram.png.backup
+Skipping /home/afsal/Project1/public/Images/images/Screenshot 2025-03-19 at 20-52-58 Instagram.png (already small enough: 1144px)
+Skipping /home/afsal/Project1/public/Images/images/Screenshot 2025-03-19 at 20-53-37 Instagram.png (already small enough: 1144px)
+Skipping /home/afsal/Project1/public/Images/images/Screenshot 2025-03-19 at 20-53-25 Instagram.png (already small enough: 1144px)
+Skipping /home/afsal/Project1/public/Images/images/Screenshot 2025-03-19 at 20-53-45 Instagram.png (already small enough: 1180px)
+Skipping /home/afsal/Project1/public/Images/images/Screenshot 2025-03-19 at 20-54-33 Instagram.png (already small enough: 1148px)
+Skipping /home/afsal/Project1/public/Images/images/Screenshot 2025-03-19 at 20-54-42 Instagram.png (already small enough: 1144px)
+Skipping /home/afsal/Project1/public/Images/images/Screenshot 2025-03-19 at 20-54-50 Instagram.png (already small enough: 1144px)
+Optimized: /home/afsal/Project1/public/Images/images/Screenshot 2025-03-19 at 20-53-55 Instagram.png
+  Original: 1519.34 KB
+  Optimized: 444.81 KB
+  Savings: 70.72%
+Optimized: /home/afsal/Project1/public/Images/images/Screenshot 2025-03-19 at 20-54-10 Instagram.png
+  Original: 2619.70 KB
+  Optimized: 983.95 KB
+  Savings: 62.44%
+Optimized: /home/afsal/Project1/public/Images/images/Screenshot 2025-03-19 at 20-54-18 Instagram.png
+  Original: 3104.49 KB
+  Optimized: 1425.40 KB
+  Savings: 54.09%
+Processed batch 19/37
+Created backup: /home/afsal/Project1/public/Images/images/Screenshot 2025-03-19 at 20-55-01 Instagram.png.backup
+Created backup: /home/afsal/Project1/public/Images/images/Screenshot 2025-03-19 at 20-55-17 Instagram.png.backup
+Created backup: /home/afsal/Project1/public/Images/images/Screenshot 2025-03-19 at 20-56-18 Instagram.png.backup
+Created backup: /home/afsal/Project1/public/Images/images/Screenshot 2025-03-19 at 20-56-31 Instagram.png.backup
+Created backup: /home/afsal/Project1/public/Images/images/Screenshot 2025-03-19 at 20-56-39 Instagram.png.backup
+Created backup: /home/afsal/Project1/public/Images/images/Screenshot 2025-03-19 at 20-56-47 Instagram.png.backup
+Created backup: /home/afsal/Project1/public/Images/images/Screenshot 2025-03-19 at 20-57-02 Instagram.png.backup
+Created backup: /home/afsal/Project1/public/Images/images/Screenshot 2025-03-19 at 20-57-14 Instagram.png.backup
+Created backup: /home/afsal/Project1/public/Images/images/Screenshot 2025-03-19 at 20-57-27 Instagram.png.backup
+Created backup: /home/afsal/Project1/public/Images/images/Screenshot 2025-03-19 at 20-58-01 Instagram.png.backup
+Skipping /home/afsal/Project1/public/Images/images/Screenshot 2025-03-19 at 20-55-17 Instagram.png (already small enough: 1180px)
+Skipping /home/afsal/Project1/public/Images/images/Screenshot 2025-03-19 at 20-56-18 Instagram.png (already small enough: 1144px)
+Skipping /home/afsal/Project1/public/Images/images/Screenshot 2025-03-19 at 20-56-31 Instagram.png (already small enough: 1144px)
+Skipping /home/afsal/Project1/public/Images/images/Screenshot 2025-03-19 at 20-56-39 Instagram.png (already small enough: 1144px)
+Skipping /home/afsal/Project1/public/Images/images/Screenshot 2025-03-19 at 20-57-02 Instagram.png (already small enough: 1144px)
+Skipping /home/afsal/Project1/public/Images/images/Screenshot 2025-03-19 at 20-57-14 Instagram.png (already small enough: 1144px)
+Skipping /home/afsal/Project1/public/Images/images/Screenshot 2025-03-19 at 20-58-01 Instagram.png (already small enough: 1164px)
+Skipping /home/afsal/Project1/public/Images/images/Screenshot 2025-03-19 at 20-56-47 Instagram.png (already small enough: 1144px)
+Skipping /home/afsal/Project1/public/Images/images/Screenshot 2025-03-19 at 20-57-27 Instagram.png (already small enough: 1144px)
+Optimized: /home/afsal/Project1/public/Images/images/Screenshot 2025-03-19 at 20-55-01 Instagram.png
+  Original: 1732.67 KB
+  Optimized: 526.75 KB
+  Savings: 69.60%
+Processed batch 20/37
+Created backup: /home/afsal/Project1/public/Images/images/Screenshot 2025-03-19 at 20-58-11 Instagram.png.backup
+Created backup: /home/afsal/Project1/public/Images/images/Screenshot 2025-03-19 at 20-58-19 Instagram.png.backup
+Created backup: /home/afsal/Project1/public/Images/images/Screenshot 2025-03-19 at 20-58-26 Instagram.png.backup
+Created backup: /home/afsal/Project1/public/Images/images/Screenshot 2025-03-19 at 20-58-45 Instagram.png.backup
+Created backup: /home/afsal/Project1/public/Images/images/Screenshot 2025-03-19 at 20-58-56 Instagram.png.backup
+Created backup: /home/afsal/Project1/public/Images/images/Screenshot 2025-03-19 at 20-59-02 Instagram.png.backup
+Created backup: /home/afsal/Project1/public/Images/images/Screenshot 2025-03-21 at 15-16-13 THRIFT1 (@thriftifi.in) • Instagram photos and videos.png.backup
+Created backup: /home/afsal/Project1/public/Images/images/Stone and marble effect tiles, other marbles, black, 120x278.jpg.backup
+Created backup: /home/afsal/Project1/public/Images/images/Stripes and Sharp Contrast.jpg.backup
+Created backup: /home/afsal/Project1/public/Images/images/The Smiths music band, The Smiths 90s, Smiths Album graphic 2024 shirt, The Smiths graphic Gift for men, women Comfort color.jpg.backup
+Skipping /home/afsal/Project1/public/Images/images/Screenshot 2025-03-19 at 20-58-11 Instagram.png (already small enough: 1144px)
+Skipping /home/afsal/Project1/public/Images/images/Screenshot 2025-03-19 at 20-58-19 Instagram.png (already small enough: 1152px)
+Skipping /home/afsal/Project1/public/Images/images/Screenshot 2025-03-19 at 20-58-26 Instagram.png (already small enough: 1148px)
+Skipping /home/afsal/Project1/public/Images/images/Screenshot 2025-03-19 at 20-59-02 Instagram.png (already small enough: 1164px)
+Skipping /home/afsal/Project1/public/Images/images/Screenshot 2025-03-19 at 20-58-56 Instagram.png (already small enough: 1188px)
+Skipping /home/afsal/Project1/public/Images/images/Screenshot 2025-03-21 at 15-16-13 THRIFT1 (@thriftifi.in) • Instagram photos and videos.png (already small enough: 1144px)
+Skipping /home/afsal/Project1/public/Images/images/Stone and marble effect tiles, other marbles, black, 120x278.jpg (already small enough: 736px)
+Skipping /home/afsal/Project1/public/Images/images/Screenshot 2025-03-19 at 20-58-45 Instagram.png (already small enough: 1172px)
+Skipping /home/afsal/Project1/public/Images/images/Stripes and Sharp Contrast.jpg (already small enough: 736px)
+Skipping /home/afsal/Project1/public/Images/images/The Smiths music band, The Smiths 90s, Smiths Album graphic 2024 shirt, The Smiths graphic Gift for men, women Comfort color.jpg (already small enough: 736px)
+Processed batch 21/37
+Created backup: /home/afsal/Project1/public/Images/images/Wonderland Magazine via infinite-movement.jpg.backup
+Created backup: /home/afsal/Project1/public/Images/images/image.jpg.backup
+Created backup: /home/afsal/Project1/public/Images/images/tees.jpg.backup
+Created backup: /home/afsal/Project1/public/Images/images/tshirt2.webp.backup
+Created backup: /home/afsal/Project1/public/Images/images/tshirt3.webp.backup
+Created backup: /home/afsal/Project1/public/Images/images/tshirt4.webp.backup
+Skipping /home/afsal/Project1/public/Images/images/image.jpg (already small enough: 640px)
+Skipping /home/afsal/Project1/public/Images/images/Wonderland Magazine via infinite-movement.jpg (already small enough: 640px)
+Skipping /home/afsal/Project1/public/Images/images/tshirt2.webp (already small enough: 887px)
+Skipping /home/afsal/Project1/public/Images/images/tees.jpg (already small enough: 736px)
+Skipping /home/afsal/Project1/public/Images/images/tshirt3.webp (already small enough: 887px)
+Skipping /home/afsal/Project1/public/Images/images/tshirt4.webp (already small enough: 887px)
+Processed batch 22/37
+Created backup: /home/afsal/Project1/public/Images/images/vintage-grunge.jpg.backup
+Created backup: /home/afsal/Project1/public/Images/images/x9F2ccsm.jpg.backup
+Created backup: /home/afsal/Project1/public/Images/images/y2k fashion outfits.jpg.backup
+Created backup: /home/afsal/Project1/public/Images/images/𝙹𝚎𝚛𝚜𝚎𝚢 𝚂𝚣𝚗 ✨ Follow for more _ Save for later.jpg.backup
+Created backup: /home/afsal/Project1/public/Images/jersey and shorts/Screenshot 2025-03-22 at 16-48-38 THRIFT1 (@thriftifi.in) • Instagram photos and videos.png.backup
+Created backup: /home/afsal/Project1/public/Images/jersey and shorts/Screenshot 2025-03-22 at 16-48-58 THRIFT1 (@thriftifi.in) • Instagram photos and videos.png.backup
+Created backup: /home/afsal/Project1/public/Images/jersey and shorts/Screenshot 2025-03-22 at 16-49-03 THRIFT1 (@thriftifi.in) • Instagram photos and videos.png.backup
+Created backup: /home/afsal/Project1/public/Images/jersey and shorts/Screenshot_2025-03-22_at_16-49-54_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png.backup
+Skipping /home/afsal/Project1/public/Images/images/x9F2ccsm.jpg (already small enough: 736px)
+Skipping /home/afsal/Project1/public/Images/images/𝙹𝚎𝚛𝚜𝚎𝚢 𝚂𝚣𝚗 ✨ Follow for more _ Save for later.jpg (already small enough: 736px)
+Skipping /home/afsal/Project1/public/Images/images/y2k fashion outfits.jpg (already small enough: 730px)
+Skipping /home/afsal/Project1/public/Images/jersey and shorts/Screenshot 2025-03-22 at 16-48-38 THRIFT1 (@thriftifi.in) • Instagram photos and videos.png (already small enough: 478px)
+Skipping /home/afsal/Project1/public/Images/jersey and shorts/Screenshot 2025-03-22 at 16-48-58 THRIFT1 (@thriftifi.in) • Instagram photos and videos.png (already small enough: 478px)
+Skipping /home/afsal/Project1/public/Images/jersey and shorts/Screenshot 2025-03-22 at 16-49-03 THRIFT1 (@thriftifi.in) • Instagram photos and videos.png (already small enough: 478px)
+Skipping /home/afsal/Project1/public/Images/jersey and shorts/Screenshot_2025-03-22_at_16-49-54_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png (already small enough: 453px)
+Optimized: /home/afsal/Project1/public/Images/images/vintage-grunge.jpg
+  Original: 13264.19 KB
+  Optimized: 455.42 KB
+  Savings: 96.57%
+Processed batch 23/37
+Created backup: /home/afsal/Project1/public/Images/jersey and shorts/Screenshot_2025-03-22_at_16-50-41_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/jersey and shorts/Screenshot_2025-03-22_at_16-51-02_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/jersey and shorts/Screenshot_2025-03-22_at_16-51-23_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/jersey and shorts/Screenshot_2025-03-22_at_16-51-43_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/jersey and shorts/Screenshot_2025-03-22_at_16-51-59_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/jersey and shorts/Screenshot_2025-03-22_at_16-53-42_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/jersey and shorts/Screenshot_2025-03-22_at_16-53-57_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/jersey and shorts/Screenshot_2025-03-22_at_16-54-13_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/jersey and shorts/Screenshot_2025-03-22_at_16-54-35_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/jersey and shorts/Screenshot_2025-03-22_at_16-55-02_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png.backup
+Skipping /home/afsal/Project1/public/Images/jersey and shorts/Screenshot_2025-03-22_at_16-51-23_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png (already small enough: 447px)
+Skipping /home/afsal/Project1/public/Images/jersey and shorts/Screenshot_2025-03-22_at_16-50-41_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png (already small enough: 451px)
+Skipping /home/afsal/Project1/public/Images/jersey and shorts/Screenshot_2025-03-22_at_16-51-43_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png (already small enough: 448px)
+Skipping /home/afsal/Project1/public/Images/jersey and shorts/Screenshot_2025-03-22_at_16-51-02_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png (already small enough: 456px)
+Skipping /home/afsal/Project1/public/Images/jersey and shorts/Screenshot_2025-03-22_at_16-51-59_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png (already small enough: 447px)
+Skipping /home/afsal/Project1/public/Images/jersey and shorts/Screenshot_2025-03-22_at_16-53-57_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png (already small enough: 456px)
+Skipping /home/afsal/Project1/public/Images/jersey and shorts/Screenshot_2025-03-22_at_16-53-42_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png (already small enough: 454px)
+Skipping /home/afsal/Project1/public/Images/jersey and shorts/Screenshot_2025-03-22_at_16-54-13_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png (already small enough: 451px)
+Skipping /home/afsal/Project1/public/Images/jersey and shorts/Screenshot_2025-03-22_at_16-54-35_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png (already small enough: 451px)
+Skipping /home/afsal/Project1/public/Images/jersey and shorts/Screenshot_2025-03-22_at_16-55-02_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png (already small enough: 457px)
+Processed batch 24/37
+Created backup: /home/afsal/Project1/public/Images/jerseyCover.jpg.backup
+Created backup: /home/afsal/Project1/public/Images/logo.png.backup
+Created backup: /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-19_at_20-48-33_Instagram-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-19_at_20-49-36_Instagram-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-19_at_20-49-50_Instagram-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-19_at_20-54-33_Instagram-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-19_at_20-55-01_Instagram-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-19_at_20-58-19_Instagram-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_16-02-49_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png.backup
+Skipping /home/afsal/Project1/public/Images/jerseyCover.jpg (already small enough: 736px)
+Skipping /home/afsal/Project1/public/Images/logo.png (already small enough: 500px)
+Skipping /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-19_at_20-54-33_Instagram-removebg-preview.png (already small enough: 447px)
+Skipping /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-19_at_20-49-36_Instagram-removebg-preview.png (already small enough: 452px)
+Skipping /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-19_at_20-49-50_Instagram-removebg-preview.png (already small enough: 454px)
+Skipping /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-19_at_20-48-33_Instagram-removebg-preview.png (already small enough: 447px)
+Skipping /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_16-02-49_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png (already small enough: 447px)
+Skipping /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-19_at_20-55-01_Instagram-removebg-preview.png (already small enough: 458px)
+Skipping /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-19_at_20-58-19_Instagram-removebg-preview.png (already small enough: 448px)
+Processed batch 25/37
+Created backup: /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_16-03-43_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_16-04-21_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_16-04-56_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_16-05-12_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_16-06-24_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_16-06-57_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_16-07-44_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_16-08-25_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_16-08-53_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_16-09-19_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png.backup
+Skipping /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_16-03-43_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png (already small enough: 447px)
+Skipping /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_16-04-21_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png (already small enough: 447px)
+Skipping /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_16-05-12_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png (already small enough: 456px)
+Skipping /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_16-04-56_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png (already small enough: 456px)
+Skipping /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_16-06-57_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png (already small enough: 454px)
+Skipping /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_16-06-24_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png (already small enough: 447px)
+Skipping /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_16-07-44_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png (already small enough: 447px)
+Skipping /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_16-08-25_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png (already small enough: 457px)
+Skipping /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_16-08-53_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png (already small enough: 447px)
+Skipping /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_16-09-19_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png (already small enough: 447px)
+Processed batch 26/37
+Created backup: /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_16-10-07_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_16-10-34_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_16-11-06_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_16-12-10_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_16-12-32_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_16-13-21_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_16-14-11_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_16-14-38_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_16-15-12_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_16-15-38_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png.backup
+Skipping /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_16-10-34_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png (already small enough: 447px)
+Skipping /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_16-10-07_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png (already small enough: 447px)
+Skipping /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_16-12-10_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png (already small enough: 457px)
+Skipping /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_16-12-32_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png (already small enough: 450px)
+Skipping /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_16-11-06_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png (already small enough: 447px)
+Skipping /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_16-13-21_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png (already small enough: 447px)
+Skipping /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_16-14-38_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png (already small enough: 453px)
+Skipping /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_16-15-12_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png (already small enough: 447px)
+Skipping /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_16-14-11_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png (already small enough: 447px)
+Skipping /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_16-15-38_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png (already small enough: 464px)
+Processed batch 27/37
+Created backup: /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_16-16-15_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_16-16-43_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_16-17-10_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_16-17-36_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_16-18-24_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_16-19-37_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview(1).png.backup
+Created backup: /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_16-25-03_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview-removebg-preview(1).png.backup
+Created backup: /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_16-25-03_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_16-27-14_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_16-28-06_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png.backup
+Skipping /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_16-16-15_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png (already small enough: 454px)
+Skipping /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_16-16-43_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png (already small enough: 453px)
+Skipping /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_16-17-10_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png (already small enough: 459px)
+Skipping /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_16-18-24_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png (already small enough: 451px)
+Skipping /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_16-17-36_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png (already small enough: 461px)
+Skipping /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_16-19-37_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview(1).png (already small enough: 447px)
+Skipping /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_16-25-03_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview-removebg-preview(1).png (already small enough: 477px)
+Skipping /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_16-25-03_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview-removebg-preview.png (already small enough: 477px)
+Skipping /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_16-27-14_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png (already small enough: 456px)
+Skipping /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_16-28-06_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png (already small enough: 452px)
+Processed batch 28/37
+Created backup: /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_16-28-33_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_16-29-33_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_16-29-53_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_16-30-25_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_16-33-22_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_16-44-10_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_16-54-26_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_19-11-15_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_19-16-12_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_19-18-07_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png.backup
+Skipping /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_16-28-33_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png (already small enough: 454px)
+Skipping /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_16-29-33_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png (already small enough: 447px)
+Skipping /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_16-29-53_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png (already small enough: 458px)
+Skipping /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_16-30-25_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png (already small enough: 461px)
+Skipping /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_16-33-22_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png (already small enough: 452px)
+Skipping /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_16-44-10_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png (already small enough: 447px)
+Skipping /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_16-54-26_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png (already small enough: 446px)
+Skipping /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_19-11-15_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png (already small enough: 459px)
+Skipping /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_19-18-07_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png (already small enough: 450px)
+Skipping /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_19-16-12_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png (already small enough: 451px)
+Processed batch 29/37
+Created backup: /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_19-18-54_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_19-22-07_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_19-22-54_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview(1).png.backup
+Created backup: /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_19-22-54_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_19-24-33_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_19-25-16_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_19-25-57_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_19-26-23_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_19-26-51_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_19-27-16_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png.backup
+Skipping /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_19-18-54_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png (already small enough: 447px)
+Skipping /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_19-22-54_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview(1).png (already small enough: 447px)
+Skipping /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_19-22-07_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png (already small enough: 453px)
+Skipping /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_19-22-54_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png (already small enough: 447px)
+Skipping /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_19-24-33_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png (already small enough: 447px)
+Skipping /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_19-25-16_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png (already small enough: 456px)
+Skipping /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_19-26-23_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png (already small enough: 453px)
+Skipping /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_19-25-57_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png (already small enough: 466px)
+Skipping /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_19-27-16_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png (already small enough: 448px)
+Skipping /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_19-26-51_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png (already small enough: 453px)
+Processed batch 30/37
+Created backup: /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_19-36-36_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_19-39-54_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_19-40-14_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_19-40-44_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_19-41-20_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_19-47-13_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_19-48-14_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_19-51-28_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_19-52-33_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_19-53-08_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png.backup
+Skipping /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_19-36-36_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png (already small enough: 447px)
+Skipping /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_19-40-14_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png (already small enough: 451px)
+Skipping /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_19-39-54_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png (already small enough: 451px)
+Skipping /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_19-41-20_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png (already small enough: 456px)
+Skipping /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_19-40-44_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png (already small enough: 453px)
+Skipping /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_19-47-13_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png (already small enough: 450px)
+Skipping /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_19-48-14_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png (already small enough: 464px)
+Skipping /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_19-51-28_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png (already small enough: 447px)
+Skipping /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_19-52-33_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png (already small enough: 451px)
+Skipping /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_19-53-08_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png (already small enough: 447px)
+Processed batch 31/37
+Created backup: /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_20-06-28_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_20-07-04_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_20-07-36_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_20-11-27_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_20-11-50_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_20-12-38_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_20-13-12_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_20-13-45_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_20-26-26_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_20-29-14_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png.backup
+Skipping /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_20-06-28_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png (already small enough: 457px)
+Skipping /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_20-07-04_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png (already small enough: 466px)
+Skipping /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_20-07-36_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png (already small enough: 457px)
+Skipping /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_20-11-27_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png (already small enough: 456px)
+Skipping /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_20-12-38_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png (already small enough: 453px)
+Skipping /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_20-13-12_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png (already small enough: 448px)
+Skipping /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_20-13-45_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png (already small enough: 447px)
+Skipping /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_20-11-50_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png (already small enough: 454px)
+Skipping /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_20-29-14_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png (already small enough: 459px)
+Skipping /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_20-26-26_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png (already small enough: 451px)
+Processed batch 32/37
+Created backup: /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_20-29-35_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_20-30-05_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_20-30-42_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_20-31-20_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_20-31-56_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/noBgImag/Timeless-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/noBgImag/jerseyCover-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/noBgImag/y2k-essentials.png.backup
+Created backup: /home/afsal/Project1/public/Images/primelayers.jpg.backup
+Skipping /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_20-29-35_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png (already small enough: 447px)
+Skipping /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_20-30-42_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png (already small enough: 454px)
+Skipping /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_20-30-05_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png (already small enough: 451px)
+Skipping /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_20-31-20_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png (already small enough: 456px)
+Skipping /home/afsal/Project1/public/Images/noBgImag/Timeless-removebg-preview.png (already small enough: 408px)
+Skipping /home/afsal/Project1/public/Images/noBgImag/jerseyCover-removebg-preview.png (already small enough: 457px)
+Skipping /home/afsal/Project1/public/Images/noBgImag/y2k-essentials.png (already small enough: 447px)
+Skipping /home/afsal/Project1/public/Images/noBgImag/Screenshot_2025-03-21_at_20-31-56_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png (already small enough: 457px)
+Skipping /home/afsal/Project1/public/Images/primelayers.jpg (already small enough: 736px)
+Processed batch 33/37
+Created backup: /home/afsal/Project1/public/Images/shopAll/image1.png.backup
+Created backup: /home/afsal/Project1/public/Images/shopAll/image2.png.backup
+Created backup: /home/afsal/Project1/public/Images/shopAll/image3.png.backup
+Created backup: /home/afsal/Project1/public/Images/shopAll/image4.png.backup
+Created backup: /home/afsal/Project1/public/Images/shopAll/image5.png.backup
+Created backup: /home/afsal/Project1/public/Images/shopAll/image6.png.backup
+Created backup: /home/afsal/Project1/public/Images/tracks/Screenshot_2025-03-22_at_16-57-08_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/tracks/Screenshot_2025-03-22_at_16-57-22_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/tracks/Screenshot_2025-03-22_at_16-58-18_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/tracks/Screenshot_2025-03-22_at_16-59-03_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png.backup
+Skipping /home/afsal/Project1/public/Images/shopAll/image1.png (already small enough: 504px)
+Skipping /home/afsal/Project1/public/Images/shopAll/image2.png (already small enough: 500px)
+Skipping /home/afsal/Project1/public/Images/shopAll/image3.png (already small enough: 447px)
+Skipping /home/afsal/Project1/public/Images/shopAll/image4.png (already small enough: 500px)
+Skipping /home/afsal/Project1/public/Images/shopAll/image5.png (already small enough: 433px)
+Skipping /home/afsal/Project1/public/Images/tracks/Screenshot_2025-03-22_at_16-57-08_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png (already small enough: 459px)
+Skipping /home/afsal/Project1/public/Images/shopAll/image6.png (already small enough: 500px)
+Skipping /home/afsal/Project1/public/Images/tracks/Screenshot_2025-03-22_at_16-57-22_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png (already small enough: 454px)
+Skipping /home/afsal/Project1/public/Images/tracks/Screenshot_2025-03-22_at_16-58-18_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png (already small enough: 456px)
+Skipping /home/afsal/Project1/public/Images/tracks/Screenshot_2025-03-22_at_16-59-03_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png (already small enough: 455px)
+Processed batch 34/37
+Created backup: /home/afsal/Project1/public/Images/tracks/Screenshot_2025-03-22_at_16-59-22_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/tracks/Screenshot_2025-03-22_at_16-59-50_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/tracks/Screenshot_2025-03-22_at_17-00-04_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/tracks/Screenshot_2025-03-22_at_17-00-23_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/tracks/Screenshot_2025-03-22_at_17-01-05_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/tracks/Screenshot_2025-03-22_at_17-01-28_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/tshirts/Screenshot_2025-03-22_at_10-34-51_Instagram-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/tshirts/Screenshot_2025-03-22_at_10-35-21_Instagram-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/tshirts/Screenshot_2025-03-22_at_10-35-57_Instagram-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/tshirts/Screenshot_2025-03-22_at_10-36-37_Instagram-removebg-preview.png.backup
+Skipping /home/afsal/Project1/public/Images/tracks/Screenshot_2025-03-22_at_16-59-22_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png (already small enough: 447px)
+Skipping /home/afsal/Project1/public/Images/tracks/Screenshot_2025-03-22_at_16-59-50_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png (already small enough: 447px)
+Skipping /home/afsal/Project1/public/Images/tracks/Screenshot_2025-03-22_at_17-00-23_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png (already small enough: 447px)
+Skipping /home/afsal/Project1/public/Images/tracks/Screenshot_2025-03-22_at_17-01-05_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png (already small enough: 461px)
+Skipping /home/afsal/Project1/public/Images/tracks/Screenshot_2025-03-22_at_17-00-04_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png (already small enough: 447px)
+Skipping /home/afsal/Project1/public/Images/tshirts/Screenshot_2025-03-22_at_10-34-51_Instagram-removebg-preview.png (already small enough: 478px)
+Skipping /home/afsal/Project1/public/Images/tshirts/Screenshot_2025-03-22_at_10-35-21_Instagram-removebg-preview.png (already small enough: 478px)
+Skipping /home/afsal/Project1/public/Images/tracks/Screenshot_2025-03-22_at_17-01-28_THRIFT1___thriftifi.in____Instagram_photos_and_videos-removebg-preview.png (already small enough: 451px)
+Skipping /home/afsal/Project1/public/Images/tshirts/Screenshot_2025-03-22_at_10-35-57_Instagram-removebg-preview.png (already small enough: 478px)
+Skipping /home/afsal/Project1/public/Images/tshirts/Screenshot_2025-03-22_at_10-36-37_Instagram-removebg-preview.png (already small enough: 447px)
+Processed batch 35/37
+Created backup: /home/afsal/Project1/public/Images/tshirts/Screenshot_2025-03-22_at_10-36-59_Instagram-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/tshirts/Screenshot_2025-03-22_at_10-37-37_Instagram-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/tshirts/Screenshot_2025-03-22_at_10-38-20_Instagram-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/tshirts/Screenshot_2025-03-22_at_10-38-51_Instagram-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/tshirts/Screenshot_2025-03-22_at_10-39-56_Instagram-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/tshirts/Screenshot_2025-03-22_at_10-40-21_Instagram-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/tshirts/Screenshot_2025-03-22_at_10-40-46_Instagram-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/tshirts/Screenshot_2025-03-22_at_10-42-51_Instagram-removebg-preview-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/tshirts/Screenshot_2025-03-22_at_10-42-51_Instagram-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/y2k essentials/Screenshot_2025-03-23_at_13-18-29_Instagram-removebg-preview.png.backup
+Skipping /home/afsal/Project1/public/Images/tshirts/Screenshot_2025-03-22_at_10-36-59_Instagram-removebg-preview.png (already small enough: 447px)
+Skipping /home/afsal/Project1/public/Images/tshirts/Screenshot_2025-03-22_at_10-37-37_Instagram-removebg-preview.png (already small enough: 478px)
+Skipping /home/afsal/Project1/public/Images/tshirts/Screenshot_2025-03-22_at_10-38-20_Instagram-removebg-preview.png (already small enough: 478px)
+Skipping /home/afsal/Project1/public/Images/tshirts/Screenshot_2025-03-22_at_10-38-51_Instagram-removebg-preview.png (already small enough: 447px)
+Skipping /home/afsal/Project1/public/Images/tshirts/Screenshot_2025-03-22_at_10-39-56_Instagram-removebg-preview.png (already small enough: 447px)
+Skipping /home/afsal/Project1/public/Images/tshirts/Screenshot_2025-03-22_at_10-40-21_Instagram-removebg-preview.png (already small enough: 447px)
+Skipping /home/afsal/Project1/public/Images/tshirts/Screenshot_2025-03-22_at_10-42-51_Instagram-removebg-preview.png (already small enough: 447px)
+Skipping /home/afsal/Project1/public/Images/tshirts/Screenshot_2025-03-22_at_10-42-51_Instagram-removebg-preview-removebg-preview.png (already small enough: 447px)
+Skipping /home/afsal/Project1/public/Images/tshirts/Screenshot_2025-03-22_at_10-40-46_Instagram-removebg-preview.png (already small enough: 447px)
+Skipping /home/afsal/Project1/public/Images/y2k essentials/Screenshot_2025-03-23_at_13-18-29_Instagram-removebg-preview.png (already small enough: 447px)
+Processed batch 36/37
+Created backup: /home/afsal/Project1/public/Images/y2k essentials/Screenshot_2025-03-23_at_13-19-24_Instagram-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/y2k essentials/Screenshot_2025-03-23_at_13-19-36_Instagram-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/y2k essentials/Screenshot_2025-03-23_at_13-24-29_Instagram-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/y2k essentials/Screenshot_2025-03-23_at_13-25-12_Instagram-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/y2k essentials/Screenshot_2025-03-23_at_13-25-37_Instagram-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/y2k essentials/Screenshot_2025-03-23_at_13-26-19_Instagram-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/y2k essentials/Screenshot_2025-03-23_at_13-26-55_Instagram-removebg-preview.png.backup
+Created backup: /home/afsal/Project1/public/Images/y2k essentials/Screenshot_2025-03-23_at_13-27-33_Instagram-removebg-preview.png.backup
+Skipping /home/afsal/Project1/public/Images/y2k essentials/Screenshot_2025-03-23_at_13-19-24_Instagram-removebg-preview.png (already small enough: 447px)
+Skipping /home/afsal/Project1/public/Images/y2k essentials/Screenshot_2025-03-23_at_13-19-36_Instagram-removebg-preview.png (already small enough: 469px)
+Skipping /home/afsal/Project1/public/Images/y2k essentials/Screenshot_2025-03-23_at_13-24-29_Instagram-removebg-preview.png (already small enough: 478px)
+Skipping /home/afsal/Project1/public/Images/y2k essentials/Screenshot_2025-03-23_at_13-25-12_Instagram-removebg-preview.png (already small enough: 447px)
+Skipping /home/afsal/Project1/public/Images/y2k essentials/Screenshot_2025-03-23_at_13-26-55_Instagram-removebg-preview.png (already small enough: 478px)
+Skipping /home/afsal/Project1/public/Images/y2k essentials/Screenshot_2025-03-23_at_13-26-19_Instagram-removebg-preview.png (already small enough: 478px)
+Skipping /home/afsal/Project1/public/Images/y2k essentials/Screenshot_2025-03-23_at_13-27-33_Instagram-removebg-preview.png (already small enough: 478px)
+Skipping /home/afsal/Project1/public/Images/y2k essentials/Screenshot_2025-03-23_at_13-25-37_Instagram-removebg-preview.png (already small enough: 447px)
+Processed batch 37/37
+Image optimization complete!

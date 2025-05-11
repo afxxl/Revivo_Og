@@ -33,6 +33,13 @@
     "passport-local": "^1.0.0",
     "pdfkit": "^0.17.0",
     "razorpay": "^2.9.6",
-    "tailwindcss": "^4.0.17"
+    "sharp": "^0.34.1",
+    "tailwindcss": "^4.0.17",
+    "terser": "^5.39.0"
+  },
+  "devDependencies": {
+    "cheerio": "^1.0.0",
+    "clean-css": "^5.3.3",
+    "uglify-js": "^3.19.3"
   }
 }
