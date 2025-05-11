@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <defs>
+    <linearGradient id="bg-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f8c78d" />
+      <stop offset="100%" stop-color="#f8a05d" />
+    </linearGradient>
+  </defs>
+  <style>
+    .logo-text {
+      font: bold 50px 'Montserrat', sans-serif;
+      fill: #2C2C2C;
+    }
+    @media (prefers-color-scheme: dark) {
+      .logo-text {
+        fill: #ffffff;
+      }
+    }
+  </style>
+  <rect width="100" height="100" rx="15" fill="url(#bg-gradient)"/>
+  <circle cx="50" cy="50" r="40" fill="#2C2C2C" opacity="0.1"/>
+  <text x="50" y="65" text-anchor="middle" class="logo-text">R</text>
+</svg>
