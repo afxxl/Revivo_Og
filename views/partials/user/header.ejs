@@ -383,17 +383,27 @@
     /* Mobile Menu Styles */
     .mobile-menu-container {
         max-height: 0;
-        transition: max-height 0.3s ease-in-out;
+        transition: max-height 0.5s ease-in-out, opacity 0.3s ease-in-out;
         background-color: white;
         border-bottom: 1px solid rgba(44, 44, 44, 0.1);
+        opacity: 0;
+        visibility: hidden;
+        overflow: hidden;
     }
     
     .mobile-menu-container.open {
-        max-height: 500px; /* Adjust based on your menu's content */
+        max-height: 600px; /* Increased to accommodate all menu items */
+        opacity: 1;
+        visibility: visible;
     }
     
     .mobile-nav-link {
         border-bottom: 1px solid rgba(44, 44, 44, 0.05);
+        transition: background-color 0.2s ease;
+    }
+    
+    .mobile-nav-link:active {
+        background-color: rgba(44, 44, 44, 0.05);
     }
 </style>
 <script>
@@ -403,12 +413,36 @@ window.addEventListener('load', function() {
     if (burgerMenu) {
       burgerMenu.addEventListener('click', function(e) {
         e.preventDefault();
+        e.stopPropagation();
         const mobileMenu = document.getElementById('mobile-menu');
         if (mobileMenu) {
           mobileMenu.classList.toggle('open');
           // Toggle aria-expanded for accessibility
           const expanded = mobileMenu.classList.contains('open');
           burgerMenu.setAttribute('aria-expanded', expanded);
+          
+          // Update burger icon to X when menu is open
+          if (expanded) {
+            burgerMenu.innerHTML = `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>`;
+          } else {
+            burgerMenu.innerHTML = `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6h16M4 12h16M4 18h16"></path>
+            </svg>`;
+          }
+        }
+      });
+      
+      // Close mobile menu when clicking outside
+      document.addEventListener('click', function(e) {
+        const mobileMenu = document.getElementById('mobile-menu');
+        if (mobileMenu && mobileMenu.classList.contains('open') && !mobileMenu.contains(e.target) && e.target !== burgerMenu && !burgerMenu.contains(e.target)) {
+          mobileMenu.classList.remove('open');
+          burgerMenu.setAttribute('aria-expanded', 'false');
+          burgerMenu.innerHTML = `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6h16M4 12h16M4 18h16"></path>
+          </svg>`;
         }
       });
     }
