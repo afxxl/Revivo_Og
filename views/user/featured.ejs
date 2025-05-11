@@ -518,10 +518,10 @@
       /* Make filter button more tappable on mobile */
       @media (max-width: 480px) {
         .filter-button {
-          bottom: 1.25rem;
-          right: 1.25rem;
-          width: 56px;
-          height: 56px;
+          bottom: 1.5rem;
+          right: 1.5rem;
+          width: 50px;
+          height: 50px;
         }
       }
       
@@ -545,9 +545,25 @@
       
       .category-tags {
         display: flex;
-        flex-wrap: wrap;
+        overflow-x: auto;
+        flex-wrap: nowrap;
         gap: 0.5rem;
         margin-bottom: 2rem;
+        padding-bottom: 0.5rem;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none; /* Firefox */
+        -ms-overflow-style: none; /* IE and Edge */
+      }
+      
+      .category-tags::-webkit-scrollbar {
+        display: none; /* Chrome, Safari, Opera */
+      }
+      
+      @media (min-width: 768px) {
+        .category-tags {
+          flex-wrap: wrap;
+          overflow-x: visible;
+        }
       }
       
       .category-tag {
@@ -1168,6 +1184,14 @@
 
           if (data.success) {
             showToast('Added to cart successfully!', 'success');
+            
+            // Update cart count in both desktop and mobile views
+            if (data.cartCount) {
+              document.querySelectorAll('#cart-count, .mobile-cart-count').forEach(el => {
+                el.textContent = data.cartCount;
+                el.classList.remove('hidden');
+              });
+            }
           } else {
             throw new Error(data.message || 'Failed to add to cart');
           }

@@ -77,12 +77,25 @@
       
       @media (max-width: 480px) {
         .main-heading {
-          font-size: 2.75rem !important;
+          font-size: 2.5rem !important;
         }
         .main-heading::after {
           width: 50px;
           height: 2px;
           bottom: -8px;
+        }
+        .product-title {
+          font-size: 0.75rem;
+          line-height: 1.2;
+        }
+        .product-category {
+          font-size: 0.65rem;
+        }
+        .product-price .current-price {
+          font-size: 0.85rem;
+        }
+        .product-price .original-price {
+          font-size: 0.75rem;
         }
       }
 
@@ -556,6 +569,15 @@
       width: 100%;
       margin-bottom: 1rem;
     }
+    
+    .product-badge {
+      font-size: 0.65rem;
+      padding: 0.25rem 0.5rem;
+    }
+    
+    .cart-button {
+      padding: 0.35rem;
+    }
   }
     </style>
   </head>
@@ -573,7 +595,7 @@
       <div class="accent-element accent-2"></div>
       <div class="accent-element accent-3"></div>
       
-      <div class="container mx-auto px-4 md:px-8 min-h-screen flex flex-col justify-center relative z-10 py-16 md:py-0">
+      <div class="container mx-auto px-4 md:px-8 min-h-[90vh] flex flex-col justify-center relative z-10 py-12 md:py-0">
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
           
           <!-- Text Content -->
@@ -593,12 +615,12 @@
                 each piece telling its own unique story of style and sophistication.
               </p>
             
-            <div class="flex flex-col sm:flex-row items-center gap-4 sm:gap-6">
+            <div class="flex flex-col sm:flex-row items-center gap-3 sm:gap-6">
               <a href="/shop" class="cta-button py-2.5 sm:py-3 px-6 sm:px-8 text-white rounded-md text-xs sm:text-sm font-medium tracking-wider w-full sm:w-auto text-center">
                   Explore Collection
                 </a>
               
-              <div class="flex items-center gap-4 sm:gap-6 mt-4 sm:mt-0 justify-center sm:justify-start w-full">
+              <div class="flex items-center gap-3 sm:gap-6 mt-3 sm:mt-0 justify-center sm:justify-start w-full">
                 <div class="flex items-center gap-2 text-sm text-[#2C2C2C]/70 font-montserrat">
                   <svg class="w-5 h-5 text-[#f8c78d]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
@@ -628,12 +650,12 @@
               </div>
         
         <!-- Scroll Indicator -->
-        <div class="absolute bottom-4 sm:bottom-8 left-1/2 transform -translate-x-1/2 flex flex-col items-center animate-bounce opacity-60">
-          <span class="text-xs uppercase tracking-widest text-[#2C2C2C]/60 mb-2 font-montserrat">Scroll</span>
+        <div class="absolute bottom-4 sm:bottom-8 inset-x-0 mx-auto w-full flex flex-col items-center justify-center animate-bounce opacity-60" style="max-width: 100px;">
+          <span class="text-xs uppercase tracking-widest text-[#2C2C2C]/60 mb-2 font-montserrat text-center">Scroll</span>
           <svg class="w-6 h-6 text-[#2C2C2C]/60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
           </svg>
-            </div>
+        </div>
           </div>
     </section>
     <!-- Hero Section End -->
@@ -703,7 +725,7 @@
 
     <section class="relative py-10 sm:py-12 md:py-16 overflow-hidden bg-[#f8f7f5]">
       <div class="container mx-auto px-4 max-w-7xl relative">
-        <div class="flex flex-col sm:flex-row items-center justify-between gap-4 mb-8 md:mb-12">
+        <div class="flex flex-col sm:flex-row items-center justify-between gap-3 mb-6 md:mb-12">
           <div class="flex items-center gap-3 sm:gap-4">
             <img src="/Images/logo.svg" alt="REVIVO Logo" class="logo">
             <h2 class="text-2xl sm:text-3xl font-henny text-[#2C2C2C]">New Arrivals</h2>
@@ -716,7 +738,7 @@
           </a>
         </div>
 
-<div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-6">
+<div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-4 md:gap-6">
   <% if (products && products.length > 0) { %>
     <% products.forEach(product => { %>
               <div class="product-card">
@@ -755,7 +777,7 @@
         </div>
         
                 <!-- Content -->
-                <div class="product-content">
+                <div class="product-content px-1 sm:px-2">
                   <div class="product-category">
                     <%= product.category?.name || 'Vintage' %>
           </div>
@@ -764,7 +786,7 @@
                     <a href="/product/<%= product._id %>"><%= product.productName %></a>
           </h3>
           
-                  <div class="product-footer">
+                  <div class="product-footer flex-wrap">
                     <div class="product-price">
                       <% if (bestOfferPercentage > 0) { %>
                         <span class="current-price">₹<%= finalPrice.toFixed(2) %></span>
@@ -1493,7 +1515,7 @@
 
 <section class="newsletter-section py-10 sm:py-12 md:py-16">
   <div class="container mx-auto px-4 sm:px-6">
-    <div class="newsletter-container rounded-xl p-6 sm:p-8 md:p-12 text-center">
+    <div class="newsletter-container rounded-xl p-4 sm:p-8 md:p-12 text-center">
       <div class="inline-flex flex-col sm:flex-row items-center gap-2 sm:gap-3 mb-4 sm:mb-6">
         <img src="/Images/logo.svg" alt="Revivo Logo" class="logo mb-2 sm:mb-0">
         <h2 class="text-2xl sm:text-3xl font-henny text-[#2C2C2C]">Join Our Vintage Community</h2>
@@ -1585,6 +1607,14 @@
 
       if (data.success) {
         showToast('Added to cart successfully!', 'success');
+        
+        // Update cart count in both desktop and mobile views
+        if (data.cartCount) {
+          document.querySelectorAll('#cart-count, .mobile-cart-count').forEach(el => {
+            el.textContent = data.cartCount;
+            el.classList.remove('hidden');
+          });
+        }
       } else {
         throw new Error(data.message || 'Failed to add to cart');
       }

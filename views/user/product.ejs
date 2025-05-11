@@ -590,8 +590,8 @@
             showToast('Added to cart successfully!', 'success');
             
             if (data.cartCount) {
-              const cartCountElements = document.querySelectorAll('#cart-count');
-              cartCountElements.forEach(el => {
+              // Update both desktop and mobile cart counts
+              document.querySelectorAll('#cart-count, .mobile-cart-count').forEach(el => {
                 el.textContent = data.cartCount;
                 el.classList.remove('hidden');
               });
