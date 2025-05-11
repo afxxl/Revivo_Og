@@ -69,10 +69,11 @@
                     <div class="mb-4 sm:mb-6">
                         <h3 class="text-base sm:text-lg font-medium mb-3 sm:mb-4">Select Address</h3>
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4" id="addressContainer">
-                            <% user.addresses.forEach(address => { %>
-                                <div class="address-card p-3 sm:p-4 rounded-lg border bg-white relative"
-                                    data-address-id="<%= address._id %>"
-                                    onclick="selectAddress(this)">
+                            <% if (user && user.addresses && user.addresses.length > 0) { %>
+                                <% user.addresses.forEach(address => { %>
+                                    <div class="address-card p-3 sm:p-4 rounded-lg border bg-white relative"
+                                        data-address-id="<%= address._id %>"
+                                        onclick="selectAddress(this)">
                                     <% if (address.isDefault) { %>
                                         <span class="absolute top-2 right-2 bg-[#f8c78d] text-xs px-1.5 sm:px-2 py-0.5 sm:py-1 rounded">Default</span>
                                     <% } %>
@@ -87,7 +88,13 @@
                                     <p class="text-xs sm:text-sm"><%= address.city %>, <%= address.state %> - <%= address.pincode %></p>
                                     <p class="text-xs sm:text-sm">Phone: <%= address.phone %></p>
                                 </div>
-                            <% }); %>
+                                <% }); %>
+                            <% } else { %>
+                                <div class="col-span-1 sm:col-span-2 p-4 bg-gray-50 rounded-lg text-center">
+                                    <p class="mb-3">You don't have any saved addresses yet.</p>
+                                    <p class="text-sm text-gray-500">Please add a new address using the button below.</p>
+                                </div>
+                            <% } %>
                         </div>
                         <button 
                             onclick="openAddressModal()"
