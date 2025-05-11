@@ -4,15 +4,18 @@ const User = require("../models/userSchema.js");
 const referralHelper = require("../helpers/referralHelper");
 require("dotenv").config();
 
+// Log environment variables for debugging (without exposing secrets)
+console.log('NODE_ENV:', process.env.NODE_ENV);
+console.log('GOOGLE_CALLBACK_URL set:', !!process.env.GOOGLE_CALLBACK_URL);
+console.log('Using callback URL:', process.env.GOOGLE_CALLBACK_URL || 
+  (process.env.NODE_ENV === 'production' ? 'https://www.revivo.live/auth/google/callback' : '/auth/google/callback'));
+
 passport.use(
   new GoogleStrategy(
     {
       clientID: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      callbackURL: process.env.GOOGLE_CALLBACK_URL || 
-        (process.env.NODE_ENV === 'production' 
-          ? "https://www.revivo.live/auth/google/callback"
-          : "/auth/google/callback"),
+      callbackURL: "https://www.revivo.live/auth/google/callback", // Use the exact URL that's registered in Google Cloud Console
       passReqToCallback: true,
     },
     async (req, accessToken, refreshToken, profile, done) => {

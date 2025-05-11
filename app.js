@@ -42,24 +42,27 @@ const adminSessionStore = MongoStore.create({
   autoRemove: "native",
 });
 
+// Session middleware for user routes
 app.use(
   /^(?!\/admin).*/,
   session({
     name: "user.sid",
     secret: process.env.SESSION_SECRET + "_user",
-    resave: false,
-    saveUninitialized: false,
+    resave: true, // Changed to true to ensure session is saved back to store
+    saveUninitialized: true, // Changed to true to allow OAuth flows to work properly
     store: userSessionStore,
     cookie: {
-      secure: process.env.NODE_ENV === "production",
+      secure: process.env.NODE_ENV === "production" ? true : false, // Explicitly set based on environment
       httpOnly: true,
       maxAge: 72 * 60 * 60 * 1000,
       path: "/",
-      sameSite: "lax",
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax", // Use 'none' in production for cross-site cookies
     },
   }),
 );
 
+// Initialize Passport for user routes
+console.log('Initializing Passport.js for authentication');
 app.use(/^(?!\/admin).*/, passport.initialize());
 app.use(/^(?!\/admin).*/, passport.session());
 

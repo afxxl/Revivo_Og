@@ -29,9 +29,17 @@ router.get("/login", userController.loadLogin);
 router.post("/login", userController.login);
 router.post("/add-to-cart", userController.addToCart);
 
+// Google OAuth login route
 router.get(
   "/auth/google",
-  passport.authenticate("google", { scope: ["profile", "email"] }),
+  (req, res, next) => {
+    console.log('Google auth initiated');
+    next();
+  },
+  passport.authenticate("google", { 
+    scope: ["profile", "email"],
+    prompt: 'select_account' // Force Google to always show the account selection screen
+  }),
 );
 router.post("/store-referral-code", (req, res) => {
   try {
@@ -55,14 +63,21 @@ router.post("/store-referral-code", (req, res) => {
   }
 });
 
+// Google OAuth callback route
 router.get(
   "/auth/google/callback",
+  (req, res, next) => {
+    console.log('Google callback received');
+    next();
+  },
   passport.authenticate("google", {
     failureRedirect: "/login",
     failureMessage: true,
+    session: true,
   }),
   async (req, res) => {
     try {
+      console.log('Google authentication successful for user:', req.user.email);
       req.session.user = req.user._id;
 
       req.session.save((err) => {
@@ -70,11 +85,12 @@ router.get(
           console.error("Session save error:", err);
           return res.redirect("/login");
         }
+        console.log('Session saved successfully, redirecting to home page');
         res.redirect("/");
       });
     } catch (error) {
       console.error("Google callback error:", error);
-      res.redirect("/login");
+      res.redirect("/login?error=google_auth_failed");
     }
   },
 );
