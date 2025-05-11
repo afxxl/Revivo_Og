@@ -1611,12 +1611,10 @@ const subscribeNewsletter = async (req, res) => {
     });
 
     if (info.accepted.length > 0) {
-      return res
-        .status(200)
-        .json({
-          success: true,
-          message: "Successfully subscribed to newsletter!",
-        });
+      return res.status(200).json({
+        success: true,
+        message: "Successfully subscribed to newsletter!",
+      });
     } else {
       return res
         .status(500)
@@ -1624,12 +1622,10 @@ const subscribeNewsletter = async (req, res) => {
     }
   } catch (error) {
     console.error("Error subscribing to newsletter:", error);
-    return res
-      .status(500)
-      .json({
-        success: false,
-        message: "An error occurred while processing your request",
-      });
+    return res.status(500).json({
+      success: false,
+      message: "An error occurred while processing your request",
+    });
   }
 };
 
@@ -1711,28 +1707,22 @@ const handleContactForm = async (req, res) => {
     });
 
     if (adminInfo.accepted.length > 0 && userInfo.accepted.length > 0) {
-      return res
-        .status(200)
-        .json({
-          success: true,
-          message: "Your message has been sent successfully!",
-        });
+      return res.status(200).json({
+        success: true,
+        message: "Your message has been sent successfully!",
+      });
     } else {
-      return res
-        .status(500)
-        .json({
-          success: false,
-          message: "Failed to send message. Please try again later.",
-        });
+      return res.status(500).json({
+        success: false,
+        message: "Failed to send message. Please try again later.",
+      });
     }
   } catch (error) {
     console.error("Error handling contact form:", error);
-    return res
-      .status(500)
-      .json({
-        success: false,
-        message: "An error occurred while processing your request",
-      });
+    return res.status(500).json({
+      success: false,
+      message: "An error occurred while processing your request",
+    });
   }
 };
 

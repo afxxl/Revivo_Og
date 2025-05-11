@@ -361,6 +361,7 @@
                             <a href="/wishlist" class="mobile-nav-link nav-link block text-center py-3">WISHLIST</a>
                             <a href="/cart" class="mobile-nav-link nav-link block text-center py-3">CART</a>
                             <a href="/wallet" class="mobile-nav-link nav-link block text-center py-3">WALLET</a>
+                            <a href="#" id="mobilReferralMenuLink" class="mobile-nav-link nav-link block text-center py-3 relative">REFERRALS <span class="inline-block h-2 w-2 rounded-full bg-green-500 animate-pulse ml-1"></span></a>
                             <a href="/logout" class="mobile-nav-link nav-link block text-center py-3 text-red-600">LOGOUT</a>
                         <% } else { %>
                             <a href="/login" class="mobile-nav-link nav-link block text-center py-3">LOGIN</a>
@@ -776,7 +777,7 @@ window.addEventListener('load', function() {
   
   // Referral Modal Handling
   document.addEventListener('click', function(e) {
-    const referralMenuLink = e.target.closest('#referralMenuLink');
+    const referralMenuLink = e.target.closest('#referralMenuLink, #mobilReferralMenuLink');
     if (referralMenuLink) {
       e.preventDefault();
       
@@ -784,6 +785,12 @@ window.addEventListener('load', function() {
       document.querySelectorAll('.dropdown-content').forEach(content => {
         content.style.display = 'none';
       });
+      
+      // Close mobile menu if open
+      const mobileMenu = document.getElementById('mobile-menu');
+      if (mobileMenu && mobileMenu.classList.contains('open')) {
+        mobileMenu.classList.remove('open');
+      }
       
       // Show modal and fetch data
       referralModal.classList.remove('hidden');
