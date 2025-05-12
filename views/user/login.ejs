@@ -172,7 +172,7 @@
           </div>
         </div>
 
-        <a href="/auth/google" class="w-full flex items-center justify-center gap-2 sm:gap-3 border-2 border-[#2C2C2C] p-2.5 sm:p-3 rounded-md hover:bg-[#2C2C2C]/10 transition-colors login-social">
+        <a href="/auth/google" id="google-login-btn" class="w-full flex items-center justify-center gap-2 sm:gap-3 border-2 border-[#2C2C2C] p-2.5 sm:p-3 rounded-md hover:bg-[#2C2C2C]/10 transition-colors login-social">
           <img
             src="https://www.svgrepo.com/show/475656/google-color.svg"
             alt="Google logo"
@@ -189,6 +189,49 @@
     </div>
 
     <script>
+      // Check if we're on a mobile device
+      const isMobile = /Mobile|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+      
+      // Special handling for Google login on mobile devices
+      if (isMobile) {
+        const googleBtn = document.getElementById('google-login-btn');
+        const emailInput = document.getElementById('email');
+        
+        if (googleBtn && emailInput) {
+          googleBtn.addEventListener('click', function(e) {
+            // Only intercept if email is filled
+            if (emailInput.value && emailInput.value.includes('@')) {
+              e.preventDefault();
+              
+              // Store the email in session before redirecting to Google OAuth
+              fetch('/store-temp-email', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ email: emailInput.value }),
+              })
+              .then(response => response.json())
+              .then(data => {
+                if (data.success) {
+                  // Continue to Google OAuth after storing email
+                  window.location.href = '/auth/google';
+                } else {
+                  console.error('Failed to store email');
+                  // Continue to Google OAuth anyway
+                  window.location.href = '/auth/google';
+                }
+              })
+              .catch(error => {
+                console.error('Error:', error);
+                // Continue to Google OAuth despite error
+                window.location.href = '/auth/google';
+              });
+            }
+          });
+        }
+      }
+      
       document.querySelectorAll('input[type="password"]').forEach((input) => {
         const button = input.nextElementSibling;
         button.addEventListener("click", () => {

@@ -408,46 +408,62 @@
     }
 </style>
 <script>
-window.addEventListener('load', function() {
-    // Mobile menu toggle
-    const burgerMenu = document.getElementById('burger-menu');
-    if (burgerMenu) {
-      burgerMenu.addEventListener('click', function(e) {
-        e.preventDefault();
-        e.stopPropagation();
-        const mobileMenu = document.getElementById('mobile-menu');
-        if (mobileMenu) {
-          mobileMenu.classList.toggle('open');
-          // Toggle aria-expanded for accessibility
-          const expanded = mobileMenu.classList.contains('open');
-          burgerMenu.setAttribute('aria-expanded', expanded);
-          
-          // Update burger icon to X when menu is open
-          if (expanded) {
-            burgerMenu.innerHTML = `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6M6 6l12 12"></path>
-            </svg>`;
-          } else {
-            burgerMenu.innerHTML = `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6h16M4 12h16M4 18h16"></path>
-            </svg>`;
-          }
-        }
-      });
-      
-      // Close mobile menu when clicking outside
-      document.addEventListener('click', function(e) {
-        const mobileMenu = document.getElementById('mobile-menu');
-        if (mobileMenu && mobileMenu.classList.contains('open') && !mobileMenu.contains(e.target) && e.target !== burgerMenu && !burgerMenu.contains(e.target)) {
-          mobileMenu.classList.remove('open');
-          burgerMenu.setAttribute('aria-expanded', 'false');
+document.addEventListener('DOMContentLoaded', function() {
+  console.log('DOM loaded - initializing mobile menu');
+  initMobileMenu();
+});
+
+// Fallback - initialize immediately if DOMContentLoaded already fired
+if (document.readyState === 'loading') {
+  console.log('Document still loading - will wait for DOMContentLoaded');
+} else {
+  console.log('Document already loaded - initializing mobile menu immediately');
+  initMobileMenu();
+}
+
+// Mobile menu initialization function
+function initMobileMenu() {
+  const burgerMenu = document.getElementById('burger-menu');
+  if (burgerMenu) {
+    console.log('Burger menu found - attaching event listener');
+    burgerMenu.addEventListener('click', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      const mobileMenu = document.getElementById('mobile-menu');
+      if (mobileMenu) {
+        mobileMenu.classList.toggle('open');
+        // Toggle aria-expanded for accessibility
+        const expanded = mobileMenu.classList.contains('open');
+        burgerMenu.setAttribute('aria-expanded', expanded);
+        
+        // Update burger icon to X when menu is open
+        if (expanded) {
+          burgerMenu.innerHTML = `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6M6 6l12 12"></path>
+          </svg>`;
+        } else {
           burgerMenu.innerHTML = `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6h16M4 12h16M4 18h16"></path>
           </svg>`;
         }
-      });
-    }
+      }
+    });
+    
+    // Close mobile menu when clicking outside
+    document.addEventListener('click', function(e) {
+      const mobileMenu = document.getElementById('mobile-menu');
+      if (mobileMenu && mobileMenu.classList.contains('open') && !mobileMenu.contains(e.target) && e.target !== burgerMenu && !burgerMenu.contains(e.target)) {
+        mobileMenu.classList.remove('open');
+        burgerMenu.setAttribute('aria-expanded', 'false');
+        burgerMenu.innerHTML = `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6h16M4 12h16M4 18h16"></path>
+        </svg>`;
+      }
+    });
+  }
+}
 
+window.addEventListener('load', function() {
     // Desktop dropdown toggle
     document.addEventListener('click', function(event) {
       const dropdownBtn = event.target.closest('.dropdown > button');

@@ -65,7 +65,7 @@ app.use(
 );
 
 // Initialize Passport for user routes
-console.log('Initializing Passport.js for authentication');
+console.log("Initializing Passport.js for authentication");
 app.use(/^(?!\/admin).*/, passport.initialize());
 app.use(/^(?!\/admin).*/, passport.session());
 
@@ -166,13 +166,15 @@ app.set("views", [
   path.join(__dirname, "views/admin"),
 ]);
 // Serve static files with optimized cache control
-app.use(express.static(path.join(__dirname, "public"), {
-  maxAge: '7d', // Cache static assets for 7 days
-  etag: true,
-  lastModified: true,
-  immutable: true, // Tells browsers the resource never changes
-  index: false // Disable directory indexing for security
-}));
+app.use(
+  express.static(path.join(__dirname, "public"), {
+    maxAge: "7d", // Cache static assets for 7 days
+    etag: true,
+    lastModified: true,
+    immutable: true, // Tells browsers the resource never changes
+    index: false, // Disable directory indexing for security
+  }),
+);
 app.use("/Images", express.static(path.join(__dirname, "Images")));
 
 app.use("/", userRouter);
@@ -181,11 +183,12 @@ app.use("/admin", adminRouter);
 app.use("/uploads", express.static(path.join(__dirname, "public/uploads")));
 
 // Apply basic compression for performance
-app.use(compression({
-  level: 6, // Higher compression level
-  threshold: 0 // Compress all responses
-}));
-
+app.use(
+  compression({
+    level: 6, // Higher compression level
+    threshold: 0, // Compress all responses
+  }),
+);
 
 const uploadDir = path.join(__dirname, "public", "uploads", "re-image");
 if (!fs.existsSync(uploadDir)) {

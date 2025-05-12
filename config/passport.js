@@ -12,12 +12,25 @@ if (process.env.NODE_ENV === 'production') {
   callbackURL = "http://localhost:3000/auth/google/callback";
 }
 
+// Fix for mobile devices - ensure we're using the correct protocol
+const fixCallbackURL = (req) => {
+  // Check if we're on a mobile device (simplified check)
+  const userAgent = req.headers['user-agent'] || '';
+  const isMobile = /Mobile|Android|iPhone|iPad|iPod/i.test(userAgent);
+  
+  if (isMobile && process.env.NODE_ENV === 'production') {
+    // Force HTTPS for mobile in production
+    return "https://www.revivo.live/auth/google/callback";
+  }
+  return callbackURL;
+};
+
 passport.use(
   new GoogleStrategy(
     {
       clientID: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      callbackURL: callbackURL,
+      callbackURL: fixCallbackURL, // Use the dynamic callback URL function
       passReqToCallback: true,
       proxy: true, // Handle proxy issues in production
       userProfileURL: 'https://www.googleapis.com/oauth2/v3/userinfo', // Use v3 API
