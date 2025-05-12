@@ -51,16 +51,18 @@ app.use(
   session({
     name: "user.sid",
     secret: process.env.SESSION_SECRET + "_user",
-    resave: true, // Changed to true to ensure session is saved back to store
-    saveUninitialized: true, // Changed to true to allow OAuth flows to work properly
+    resave: true,
+    saveUninitialized: true,
     store: userSessionStore,
     cookie: {
-      secure: process.env.NODE_ENV === "production" ? true : false, // Explicitly set based on environment
+      secure: process.env.NODE_ENV === "production",
       httpOnly: true,
       maxAge: 72 * 60 * 60 * 1000,
       path: "/",
-      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax", // Use 'none' in production for cross-site cookies
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+      domain: process.env.NODE_ENV === "production" ? ".revivo.live" : undefined,
     },
+    proxy: process.env.NODE_ENV === "production", // Trust the reverse proxy
   }),
 );
 

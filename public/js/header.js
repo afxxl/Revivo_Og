@@ -222,20 +222,40 @@ window.addEventListener('load', function() {
 
     async function handleLogout() {
       try {
+        console.log('Logging out...');
         const response = await fetch('/logout', {
           method: 'GET',
-          credentials: 'include', // Ensure cookies are sent
+          credentials: 'include',
+          headers: {
+            'Cache-Control': 'no-cache, no-store, must-revalidate',
+            'Pragma': 'no-cache',
+            'Expires': '0'
+          }
         });
+
         if (!response.ok) throw new Error('Logout request failed');
 
+        // Clear any local storage items
         localStorage.clear();
+        sessionStorage.clear();
+
+        // Update UI immediately
         const authSection = document.getElementById('auth-state');
         if (authSection) {
           authSection.innerHTML = '<a href="/login" class="nav-link">LOGIN</a>';
         }
 
+        // Update cart count to 0
+        document.querySelectorAll('#cart-count, .mobile-cart-count').forEach(el => {
+          el.textContent = '0';
+          el.classList.add('hidden');
+        });
+
+        // Perform a final session check
         await checkSession();
-        window.location.assign('/');
+        
+        // Redirect to home page
+        window.location.href = '/';
       } catch (error) {
         console.error('Logout failed:', error);
         showToast('Failed to log out. Please try again.', 'error');
@@ -324,8 +344,9 @@ window.addEventListener('load', function() {
 
     checkSession();
     
-    // Check session more frequently (every 2 seconds) to detect blocked status faster
-    const sessionCheckInterval = setInterval(checkSession, 2000);
+    // Check session more frequently (every 5 seconds) to detect blocked status faster
+    // but not too frequently to avoid excessive requests
+    const sessionCheckInterval = setInterval(checkSession, 5000);
     
     // Clear interval when page is unloaded to prevent memory leaks
     window.addEventListener('beforeunload', () => {
