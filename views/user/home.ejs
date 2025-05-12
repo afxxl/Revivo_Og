@@ -906,12 +906,20 @@
                         
                         <!-- Image -->
                         <div class="h-full w-full overflow-hidden relative">
-                          <img 
-                            src="<%= product.productImage && product.productImage[0] ? product.productImage[0] : '/Images/placeholder.jpg' %>" 
+                          <% if (product.productImage && product.productImage[0]) { %>
+                            <img 
+                            src="<%= product.productImage[0].startsWith('/') ? product.productImage[0] : '/' + product.productImage[0] %>" 
                             alt="<%= product.productName %>" 
                             class="vintage-image h-full w-auto object-contain"
-                            onerror="this.src='/Images/placeholder.jpg'"
+                            onerror="this.src='/Images/placeholder.jpg';"
                           >
+                          <% } else { %>
+                            <img 
+                              src="/Images/placeholder.jpg" 
+                              alt="Placeholder" 
+                              class="vintage-image h-full w-auto object-contain"
+                            >
+                          <% } %>
                           
                           <!-- Overlay gradient -->
                           <div class="absolute inset-0 bg-gradient-to-b from-transparent to-[#2C2C2C]/10"></div>
@@ -942,9 +950,9 @@
                 <% }); %>
               <% } else { %>
                 <!-- Fallback to static images if no products are available -->
-                <img src="/Images/Models/image-removebg-preview.png" alt="Model 1" class="model model-1 h-[400px] w-auto -mr-10 z-10 object-contain">
-                <img src="/Images/Models/x9F2ccsm-removebg-preview.png" alt="Model 2" class="model model-2 h-[450px] w-auto -mr-16 z-20 object-contain">
-                <img src="/Images/Models/Richard_Gere_s_80s_fashion-removebg-preview.png" alt="Model 3" class="model model-3 h-[500px] w-auto z-30 object-contain">
+                <img src="/Images/Models/image-removebg-preview.png" alt="Model 1" class="model model-1 h-[400px] w-auto -mr-10 z-10 object-contain" onerror="this.src='/Images/placeholder.jpg';">
+                <img src="/Images/Models/x9F2ccsm-removebg-preview.png" alt="Model 2" class="model model-2 h-[450px] w-auto -mr-16 z-20 object-contain" onerror="this.src='/Images/placeholder.jpg';">
+                <img src="/Images/Models/Richard_Gere_s_80s_fashion-removebg-preview.png" alt="Model 3" class="model model-3 h-[500px] w-auto z-30 object-contain" onerror="this.src='/Images/placeholder.jpg';">
               <% } %>
             </div>
             
@@ -957,12 +965,20 @@
                       <div class="frame-border"></div>
                       <div class="texture-overlay"></div>
                       <div class="corner-marks"></div>
-                      <img 
-                        src="<%= product.productImage && product.productImage[0] ? product.productImage[0] : '/Images/placeholder.jpg' %>" 
-                        alt="<%= product.productName %>" 
-                        class="polaroid-image h-full w-auto object-contain"
-                        onerror="this.src='/Images/placeholder.jpg'"
-                      >
+                      <% if (product.productImage && product.productImage[0]) { %>
+                        <img 
+                          src="<%= product.productImage[0].startsWith('/') ? product.productImage[0] : '/' + product.productImage[0] %>" 
+                          alt="<%= product.productName %>" 
+                          class="polaroid-image h-full w-auto object-contain"
+                          onerror="this.src='/Images/placeholder.jpg';"
+                        >
+                      <% } else { %>
+                        <img 
+                          src="/Images/placeholder.jpg" 
+                          alt="Placeholder" 
+                          class="polaroid-image h-full w-auto object-contain"
+                        >
+                      <% } %>
                       <div class="vintage-year absolute top-2 right-2 text-xs font-bold text-[#2C2C2C]/60 bg-[#f8c78d]/30 px-2 py-1 rounded-sm"><%= new Date().getFullYear() %></div>
                       <% if (index === 1) { %>
                         <div class="vintage-tag mt-2 transform -rotate-3 text-xs py-1 px-3">VINTAGE</div>
