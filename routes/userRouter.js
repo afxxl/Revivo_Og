@@ -62,24 +62,50 @@ router.post("/store-referral-code", (req, res) => {
 // Google OAuth callback route
 router.get(
   "/auth/google/callback",
-  passport.authenticate("google", {
-    failureRedirect: "/login?error=auth_failed",
-  }),
-  (req, res) => {
-    // Set the user ID in the session
-    req.session.user = req.user._id;
-    
-    // Save the session explicitly to ensure it's stored before redirect
-    req.session.save((err) => {
+  function(req, res, next) {
+    // Custom error handler to catch OAuth errors but still allow login
+    passport.authenticate("google", function(err, user, info) {
       if (err) {
-        console.error('Error saving user session after OAuth:', err);
-        return res.redirect('/login?error=session_save');
+        console.error('Google OAuth error:', err);
+        // If it's a token error but we have a user, we can still proceed
+        if (err.name === 'TokenError' && user) {
+          console.log('Proceeding despite token error since user is authenticated');
+          req.logIn(user, function(loginErr) {
+            if (loginErr) {
+              console.error('Login error:', loginErr);
+              return res.redirect('/login?error=login_failed');
+            }
+            req.session.user = user._id;
+            return req.session.save(() => res.redirect('/'));
+          });
+        } else {
+          return res.redirect('/login?error=' + encodeURIComponent(err.message));
+        }
+      } else if (!user) {
+        return res.redirect('/login?error=auth_failed');
+      } else {
+        req.logIn(user, function(loginErr) {
+          if (loginErr) {
+            console.error('Login error:', loginErr);
+            return res.redirect('/login?error=login_failed');
+          }
+          // Set the user ID in the session
+          req.session.user = user._id;
+          
+          // Save the session explicitly to ensure it's stored before redirect
+          req.session.save((saveErr) => {
+            if (saveErr) {
+              console.error('Error saving user session after OAuth:', saveErr);
+              return res.redirect('/login?error=session_save');
+            }
+            
+            // Redirect to home page
+            res.redirect('/');
+          });
+        });
       }
-      
-      // Redirect to home page
-      res.redirect('/');
-    });
-  },
+    })(req, res, next);
+  }
 );
 
 router.get("/forgot-password", userController.loadResetPassword);

@@ -1,10 +1,12 @@
 
 // Initialize mobile menu immediately when DOM is ready
 (function initMobileMenu() {
-    // Mobile menu toggle
-    const burgerMenu = document.getElementById('burger-menu');
-    if (burgerMenu) {
-      burgerMenu.addEventListener('click', function(e) {
+    // Mobile menu toggle - add a small delay to ensure elements are fully rendered
+    setTimeout(() => {
+      const burgerMenu = document.getElementById('burger-menu');
+      if (burgerMenu) {
+        console.log('Burger menu initialized');
+        burgerMenu.addEventListener('click', function(e) {
         e.preventDefault();
         e.stopPropagation();
         const mobileMenu = document.getElementById('mobile-menu');
@@ -39,7 +41,11 @@
         }
       });
     }
+    }, 50); // Small delay to ensure DOM elements are fully accessible
 })();
+
+// Add a class to body when DOM is ready to indicate JS is loaded
+document.body.classList.add('js-loaded');
 
 // Wait for full page load for other functionality
 window.addEventListener('load', function() {
