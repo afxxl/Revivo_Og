@@ -40,6 +40,21 @@ const loadHomepage = async (req, res) => {
       })
       .lean();
 
+    const heroProducts = await Product.aggregate([
+      {
+        $match: {
+          isDeleted: { $ne: true },
+          status: "Available",
+          isListed: true,
+          category: { $in: listedCategoryIds },
+          brand: { $in: activeBrandIds },
+          productImage: { $exists: true, $ne: [] },
+        },
+      },
+      { $sample: { size: 3 } },
+      { $project: { _id: 1, productName: 1, productImage: 1 } },
+    ]);
+
     const brandsWithProducts = await Brand.aggregate([
       { $match: { isActive: true } },
       {
@@ -77,6 +92,7 @@ const loadHomepage = async (req, res) => {
       products,
       brands: brandsWithProducts,
       user: userData,
+      heroProducts,
     });
   } catch (error) {
     console.error("Error fetching products:", error);

@@ -116,7 +116,7 @@
       .cta-button {
         font-family: 'Montserrat', sans-serif;
         background-color: #2C2C2C;
-        transition: all 0.3s ease;
+        transition: all 0.4s ease-out;
         letter-spacing: 2px;
         text-transform: uppercase;
         position: relative;
@@ -160,6 +160,244 @@
           opacity: 1;
           transform: translateY(0);
         }
+      }
+      
+      /* Polaroid styles for hero products */
+      /* Vintage magazine cutout style */
+      /* Mobile polaroid container style */
+      .polaroid-container {
+        background: #f8f7f5;
+        padding: 0.5rem;
+        box-shadow: 0 15px 25px rgba(0,0,0,0.15);
+        position: relative;
+        transform: rotate(3deg);
+        transition: all 0.3s ease;
+        border: 1px solid #2C2C2C;
+        overflow: hidden;
+      }
+      
+      /* Desktop vintage container style */
+      .vintage-container {
+        position: relative;
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+      }
+      
+      .vintage-container:hover {
+        transform: translateY(-15px) rotate(0deg) !important;
+        box-shadow: 0 25px 45px rgba(0, 0, 0, 0.25);
+        transition: all 0.5s ease-out;
+      }
+      
+      .vintage-image {
+        transition: all 0.5s ease-out;
+        filter: contrast(1.1) brightness(1.05);
+      }
+      
+      .vintage-container:hover .vintage-image {
+        transform: scale(1.05);
+      }
+      
+      .polaroid-container .frame-border {
+        content: '';
+        position: absolute;
+        inset: 0;
+        border: 8px solid #f8f7f5;
+        z-index: 3;
+        pointer-events: none;
+      }
+      
+      .polaroid-container:hover {
+        transform: rotate(0deg) translateY(-10px);
+        box-shadow: 0 20px 30px rgba(0,0,0,0.2);
+      }
+      
+      .polaroid-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center;
+        transition: all 0.4s ease;
+        filter: contrast(1.05) brightness(1.05) sepia(0.25);
+        border: 1px dashed rgba(44, 44, 44, 0.3);
+        padding: 0.5rem;
+        background-color: white;
+      }
+      
+      .polaroid-container:hover .polaroid-image {
+        transform: scale(1.05);
+        filter: contrast(1.1) brightness(1.1) sepia(0.2);
+      }
+      
+      /* Paper texture effect */
+      .polaroid-container .texture-overlay {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(to right, rgba(0,0,0,0.02), rgba(0,0,0,0.04), rgba(0,0,0,0.02));
+        z-index: 1;
+        pointer-events: none;
+      }
+      
+      .polaroid-tape {
+        position: absolute;
+        width: 40px;
+        height: 15px;
+        background-color: rgba(255, 255, 255, 0.6);
+        transform: rotate(var(--rotation));
+        opacity: 0.7;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      }
+      
+      .polaroid-tape-top {
+        top: -5px;
+        left: calc(50% - 20px);
+        --rotation: -2deg;
+      }
+      
+      .polaroid-tape-corner {
+        bottom: 30px;
+        right: -10px;
+        --rotation: 45deg;
+      }
+      
+      .vintage-tag {
+        display: inline-block;
+        background: #2C2C2C;
+        color: #fff;
+        padding: 0.5rem 1.5rem;
+        position: relative;
+        font-family: 'Montserrat', sans-serif;
+        text-transform: uppercase;
+        font-size: 0.8rem;
+        letter-spacing: 0.15rem;
+        font-weight: 600;
+        clip-path: polygon(5% 0%, 100% 0%, 95% 100%, 0% 100%);
+        transform: rotate(-2deg);
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      }
+      
+      .price-tag {
+        position: absolute;
+        top: -15px;
+        right: -15px;
+        background: #f8c78d;
+        color: #2C2C2C;
+        width: 65px;
+        height: 65px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        font-weight: bold;
+        font-family: 'Montserrat', sans-serif;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        border: 2px dashed #2C2C2C;
+        transform: rotate(15deg);
+        z-index: 5;
+        font-size: 0.7rem;
+        letter-spacing: 0.05rem;
+      }
+      
+      .vintage-pattern {
+        background-image: 
+          linear-gradient(30deg, #f8c78d 12%, transparent 12.5%, transparent 87%, #f8c78d 87.5%, #f8c78d),
+          linear-gradient(150deg, #f8c78d 12%, transparent 12.5%, transparent 87%, #f8c78d 87.5%, #f8c78d),
+          linear-gradient(30deg, #f8c78d 12%, transparent 12.5%, transparent 87%, #f8c78d 87.5%, #f8c78d),
+          linear-gradient(150deg, #f8c78d 12%, transparent 12.5%, transparent 87%, #f8c78d 87.5%, #f8c78d),
+          linear-gradient(60deg, #f8c78d77 25%, transparent 25.5%, transparent 75%, #f8c78d77 75%, #f8c78d77),
+          linear-gradient(60deg, #f8c78d77 25%, transparent 25.5%, transparent 75%, #f8c78d77 75%, #f8c78d77);
+        background-position: 0 0, 0 0, 25px 50px, 25px 50px, 0 0, 25px 50px;
+        background-size: 50px 100px;
+      }
+      
+      .vintage-stamp {
+        width: 60px;
+        height: 60px;
+        background-color: #f8c78d;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px dashed #2C2C2C;
+        position: relative;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      }
+      
+      .vintage-stamp::before {
+        content: '';
+        position: absolute;
+        inset: 3px;
+        border-radius: 50%;
+        border: 1px solid rgba(44, 44, 44, 0.3);
+      }
+      
+      .vintage-scroll {
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+        scroll-behavior: smooth;
+        scroll-snap-type: x mandatory;
+        padding-bottom: 20px;
+      }
+      
+      .vintage-scroll::-webkit-scrollbar {
+        display: none;
+      }
+      
+      .vintage-scroll > a {
+        scroll-snap-align: center;
+      }
+      
+      .polaroid-caption {
+        font-family: 'Montserrat', sans-serif;
+        font-size: 0.7rem;
+        color: rgba(44, 44, 44, 0.7);
+        text-align: center;
+        margin-top: 0.5rem;
+        letter-spacing: 0.05rem;
+        line-height: 1.2;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        /* Using standard truncation approach instead of line-clamp */
+        white-space: nowrap;
+        max-width: 90%;
+        margin-left: auto;
+        margin-right: auto;
+      }
+      
+      /* Enhanced polaroid effect with vintage texture */
+      .polaroid-container::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.07'/%3E%3C/svg%3E");
+        opacity: 0.3;
+        pointer-events: none;
+        z-index: 2;
+      }
+      
+      /* Vintage photo corner marks */
+      .polaroid-container .corner-marks::before,
+      .polaroid-container .corner-marks::after {
+        content: '';
+        position: absolute;
+        width: 10px;
+        height: 10px;
+        border: 1px solid rgba(0,0,0,0.2);
+        z-index: 3;
+      }
+      
+      .polaroid-container .corner-marks::before {
+        top: 5px;
+        left: 5px;
+        border-right: none;
+        border-bottom: none;
+      }
+      
+      .polaroid-container .corner-marks::after {
+        bottom: 5px;
+        right: 5px;
+        border-left: none;
+        border-top: none;
       }
 
       .content-wrapper {
@@ -595,7 +833,7 @@
       <div class="accent-element accent-2"></div>
       <div class="accent-element accent-3"></div>
       
-      <div class="container mx-auto px-4 md:px-8 min-h-[90vh] flex flex-col justify-center relative z-10 py-12 md:py-0">
+      <div class="container mx-auto px-4 md:px-8 min-h-[90vh] flex flex-col justify-center relative z-10 py-12 md:py-0 transition-all duration-500 ease-out">
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
           
           <!-- Text Content -->
@@ -638,12 +876,119 @@
               </div>
             </div>
           
-          <!-- Hero Images -->
-          <div class="hidden lg:block relative h-[500px]">
-            <div class="absolute right-0 h-full flex items-end">
-              <img src="/Images/Models/image-removebg-preview.png" alt="Model 1" class="model model-1 h-[400px] w-auto -mr-10 z-10 object-contain">
-              <img src="/Images/Models/x9F2ccsm-removebg-preview.png" alt="Model 2" class="model model-2 h-[450px] w-auto -mr-16 z-20 object-contain">
-              <img src="/Images/Models/Richard_Gere_s_80s_fashion-removebg-preview.png" alt="Model 3" class="model model-3 h-[500px] w-auto z-30 object-contain">
+          <!-- Hero Images - Random Products -->
+          <div class="relative h-[300px] md:h-[400px] lg:h-[500px] overflow-hidden">
+            <!-- Decorative vintage elements -->
+            <div class="absolute top-0 left-0 w-full h-full pointer-events-none opacity-10 vintage-pattern"></div>
+            <div class="absolute top-10 left-10 w-20 h-20 rounded-full border-2 border-[#f8c78d] hidden lg:block"></div>
+            <div class="absolute bottom-20 right-20 w-16 h-16 rounded-full border border-[#2C2C2C] hidden lg:block"></div>
+            
+            <!-- Vintage stamp -->
+            <div class="absolute top-5 right-5 vintage-stamp rotate-12 hidden md:block">
+              <div class="text-xs font-bold text-[#2C2C2C] uppercase tracking-wider">Authentic</div>
+            </div>
+            
+            <!-- Desktop layout -->
+            <div class="absolute right-0 h-full items-end hidden lg:flex">
+              <% if (heroProducts && heroProducts.length > 0) { %>
+                <% heroProducts.forEach((product, index) => { %>
+                  <a href="/product/<%= product._id %>" class="relative">
+                    <div class="vintage-container model model-<%= index+1 %> h-[<%= 400 + (index * 50) %>px] w-auto <%= index > 0 ? '-mr-' + (10 + (index * 6)) : '-mr-10' %> z-<%= 10 + (index * 10) %> <%= index === 0 ? 'rotate-[-5deg]' : index === 1 ? 'rotate-[3deg]' : 'rotate-[8deg]' %> transition-all duration-500 ease-out hover:shadow-xl hover:-translate-y-2">
+                      <!-- Decorative elements -->
+                      <div class="absolute inset-0 bg-[#2C2C2C] rounded-md"></div>
+                      <div class="absolute inset-[3px] bg-white rounded-sm"></div>
+                      
+                      <!-- Image container -->
+                      <div class="relative p-3 h-full">
+                        <!-- Decorative corner elements -->
+                        <div class="absolute top-0 left-0 w-8 h-8 border-t-2 border-l-2 border-[#f8c78d]"></div>
+                        <div class="absolute bottom-0 right-0 w-8 h-8 border-b-2 border-r-2 border-[#f8c78d]"></div>
+                        
+                        <!-- Image -->
+                        <div class="h-full w-full overflow-hidden relative">
+                          <img 
+                            src="<%= product.productImage && product.productImage[0] ? product.productImage[0] : '/Images/placeholder.jpg' %>" 
+                            alt="<%= product.productName %>" 
+                            class="vintage-image h-full w-auto object-contain"
+                            onerror="this.src='/Images/placeholder.jpg'"
+                          >
+                          
+                          <!-- Overlay gradient -->
+                          <div class="absolute inset-0 bg-gradient-to-b from-transparent to-[#2C2C2C]/10"></div>
+                          
+                          <!-- Product info -->
+                          <div class="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-white via-white/90 to-transparent">
+                            <div class="font-playfair text-sm text-[#2C2C2C] uppercase tracking-wider font-medium"><%= product.productName.substring(0, 18) %><%= product.productName.length > 18 ? '...' : '' %></div>
+                            <div class="flex justify-between items-center mt-1">
+                              <div class="text-xs font-montserrat text-[#2C2C2C]/70">VINTAGE</div>
+                              <div class="bg-[#f8c78d] text-[#2C2C2C] text-xs font-bold px-2 py-0.5 rounded">View</div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <!-- Decorative elements -->
+                      <% if (index === 1) { %>
+                        <div class="absolute -top-3 -right-3 w-12 h-12 rounded-full bg-[#f8c78d] flex items-center justify-center transform rotate-12 border-2 border-white shadow-lg">
+                          <span class="text-xs font-bold text-[#2C2C2C] uppercase tracking-wider">Revivo</span>
+                        </div>
+                      <% } else if (index === 0) { %>
+                        <div class="absolute -top-2 -left-2 bg-[#2C2C2C] text-white text-xs px-3 py-1 rounded-full transform -rotate-12 shadow-md">Featured</div>
+                      <% } else { %>
+                        <div class="absolute -bottom-2 -right-2 bg-[#2C2C2C] text-white text-xs px-3 py-1 rounded-full transform rotate-12 shadow-md">Vintage</div>
+                      <% } %>
+                    </div>
+                  </a>
+                <% }); %>
+              <% } else { %>
+                <!-- Fallback to static images if no products are available -->
+                <img src="/Images/Models/image-removebg-preview.png" alt="Model 1" class="model model-1 h-[400px] w-auto -mr-10 z-10 object-contain">
+                <img src="/Images/Models/x9F2ccsm-removebg-preview.png" alt="Model 2" class="model model-2 h-[450px] w-auto -mr-16 z-20 object-contain">
+                <img src="/Images/Models/Richard_Gere_s_80s_fashion-removebg-preview.png" alt="Model 3" class="model model-3 h-[500px] w-auto z-30 object-contain">
+              <% } %>
+            </div>
+            
+            <!-- Mobile layout - Horizontal scrolling gallery -->
+            <div class="lg:hidden absolute bottom-0 left-0 right-0 overflow-x-auto pb-4 flex items-center gap-4 px-4 vintage-scroll">
+              <% if (heroProducts && heroProducts.length > 0) { %>
+                <% heroProducts.forEach((product, index) => { %>
+                  <a href="/product/<%= product._id %>" class="flex-shrink-0 relative">
+                    <div class="polaroid-container model model-<%= index+1 %> w-[200px] h-[250px] <%= index === 0 ? 'rotate-[-5deg]' : index === 1 ? 'rotate-[3deg]' : 'rotate-[8deg]' %> transition-all duration-500 ease-out hover:shadow-xl hover:-translate-y-2">
+                      <div class="frame-border"></div>
+                      <div class="texture-overlay"></div>
+                      <div class="corner-marks"></div>
+                      <img 
+                        src="<%= product.productImage && product.productImage[0] ? product.productImage[0] : '/Images/placeholder.jpg' %>" 
+                        alt="<%= product.productName %>" 
+                        class="polaroid-image h-full w-auto object-contain"
+                        onerror="this.src='/Images/placeholder.jpg'"
+                      >
+                      <div class="vintage-year absolute top-2 right-2 text-xs font-bold text-[#2C2C2C]/60 bg-[#f8c78d]/30 px-2 py-1 rounded-sm"><%= new Date().getFullYear() %></div>
+                      <% if (index === 1) { %>
+                        <div class="vintage-tag mt-2 transform -rotate-3 text-xs py-1 px-3">VINTAGE</div>
+                      <% } %>
+                      <div class="polaroid-caption font-montserrat text-xs text-center mt-1 text-[#2C2C2C]/70 uppercase tracking-wider"><%= product.productName.substring(0, 15) %><%= product.productName.length > 15 ? '...' : '' %></div>
+                    </div>
+                  </a>
+                <% }); %>
+              <% } %>
+              <!-- Add a 'View All' card at the end -->
+              <a href="/shop" class="flex-shrink-0 relative">
+                <div class="polaroid-container w-[180px] h-[220px] rotate-[5deg] flex items-center justify-center bg-[#f8f7f5] border-2 border-[#2C2C2C] transition-all duration-500 ease-out hover:shadow-xl hover:-translate-y-2">
+                  <div class="frame-border"></div>
+                  <div class="texture-overlay"></div>
+                  <div class="text-center z-10 relative p-4">
+                    <div class="text-lg font-playfair mb-2 text-[#2C2C2C]">View All</div>
+                    <div class="text-xs font-montserrat uppercase tracking-wider text-[#2C2C2C]/80">Our Collection</div>
+                    <div class="mt-4 bg-[#2C2C2C] text-white rounded-full p-2 inline-block">
+                      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                      </svg>
+                    </div>
+                  </div>
+                </div>
+              </a>
+            </div>
           </div>
         </div>
 

@@ -543,17 +543,35 @@
       function changeMainImage(src, element) {
         const mainImage = document.getElementById('mainProductImage');
         
+        // Clean up the source URL to ensure it works with the new Nginx configuration
+        let cleanSrc = src;
+        
         // Force image reload by adding a timestamp query parameter
         // This helps with mobile browsers that might cache the image
         const timestamp = new Date().getTime();
-        const newSrc = src.includes('?') ? 
-          src.split('?')[0] + '?t=' + timestamp : 
-          src + '?t=' + timestamp;
+        const newSrc = cleanSrc.includes('?') ? 
+          cleanSrc.split('?')[0] + '?t=' + timestamp : 
+          cleanSrc + '?t=' + timestamp;
         
+        console.log('Changing main image to:', newSrc);
         mainImage.src = newSrc;
         
-        // Reset any zoom or transform that might be applied
-        mainImage.style.transform = 'scale(1)';
+        // Set a loading indicator
+        mainImage.style.opacity = '0.6';
+        
+        // When the image loads, restore opacity
+        mainImage.onload = function() {
+          mainImage.style.opacity = '1';
+          // Reset any zoom or transform that might be applied
+          mainImage.style.transform = 'scale(1)';
+        };
+        
+        // If image fails to load, use placeholder
+        mainImage.onerror = function() {
+          console.error('Failed to load image:', newSrc);
+          mainImage.src = '/Images/placeholder.jpg';
+          mainImage.style.opacity = '1';
+        };
         
         // Remove active class from all thumbnails
         document.querySelectorAll('.product-gallery-thumbnail').forEach(thumb => {
