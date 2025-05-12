@@ -375,7 +375,16 @@ const login = async (req, res) => {
 
     req.session.user = findUser._id;
     req.user = findUser;
-    res.redirect("/");
+    
+    // Explicitly save the session before redirecting
+    req.session.save((err) => {
+      if (err) {
+        console.error('Session save error:', err);
+        return res.render("login", { message: "Login failed. Please try again." });
+      }
+      console.log('[LOGIN SUCCESS] User authenticated:', findUser._id);
+      res.redirect("/");
+    });
   } catch (err) {
     console.log("login error", err);
     res.render("login", { message: "Login failed. Please try again later" });
