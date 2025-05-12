@@ -1,5 +1,6 @@
 
-window.addEventListener('load', function() {
+// Initialize mobile menu immediately when DOM is ready
+(function initMobileMenu() {
     // Mobile menu toggle
     const burgerMenu = document.getElementById('burger-menu');
     if (burgerMenu) {
@@ -38,6 +39,11 @@ window.addEventListener('load', function() {
         }
       });
     }
+})();
+
+// Wait for full page load for other functionality
+window.addEventListener('load', function() {
+    // Mobile menu functionality is now initialized immediately when DOM is ready
 
     // Desktop dropdown toggle
     document.addEventListener('click', function(event) {

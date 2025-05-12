@@ -34,6 +34,7 @@ router.get(
   "/auth/google",
   passport.authenticate("google", {
     scope: ["profile", "email"],
+    prompt: 'select_account' // Always show account selector
   }),
 );
 router.post("/store-referral-code", (req, res) => {
@@ -62,11 +63,22 @@ router.post("/store-referral-code", (req, res) => {
 router.get(
   "/auth/google/callback",
   passport.authenticate("google", {
-    failureRedirect: "/login",
+    failureRedirect: "/login?error=auth_failed",
   }),
   (req, res) => {
+    // Set the user ID in the session
     req.session.user = req.user._id;
-    res.redirect("/");
+    
+    // Save the session explicitly to ensure it's stored before redirect
+    req.session.save((err) => {
+      if (err) {
+        console.error('Error saving user session after OAuth:', err);
+        return res.redirect('/login?error=session_save');
+      }
+      
+      // Redirect to home page
+      res.redirect('/');
+    });
   },
 );
 
