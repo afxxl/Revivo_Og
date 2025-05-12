@@ -55,14 +55,13 @@ app.use(
     saveUninitialized: true,
     store: userSessionStore,
     cookie: {
-      secure: process.env.NODE_ENV === "production",
+      secure: false, // Set to false even in production to test if this is the issue
       httpOnly: true,
       maxAge: 72 * 60 * 60 * 1000,
       path: "/",
-      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-      domain: process.env.NODE_ENV === "production" ? ".revivo.live" : undefined,
+      sameSite: "lax", // Use lax for better compatibility
     },
-    proxy: process.env.NODE_ENV === "production", // Trust the reverse proxy
+    proxy: true, // Always trust the reverse proxy
   }),
 );
 
