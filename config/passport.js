@@ -7,30 +7,20 @@ require("dotenv").config();
 // Determine which callback URL to use based on environment
 let callbackURL;
 if (process.env.NODE_ENV === 'production') {
+  // In production, use the www subdomain which is registered in Google console
   callbackURL = "https://www.revivo.live/auth/google/callback";
+  console.log('Using production callback URL:', callbackURL);
 } else {
   callbackURL = "http://localhost:3000/auth/google/callback";
+  console.log('Using development callback URL:', callbackURL);
 }
-
-// Fix for mobile devices - ensure we're using the correct protocol
-const fixCallbackURL = (req) => {
-  // Check if we're on a mobile device (simplified check)
-  const userAgent = req.headers['user-agent'] || '';
-  const isMobile = /Mobile|Android|iPhone|iPad|iPod/i.test(userAgent);
-  
-  if (isMobile && process.env.NODE_ENV === 'production') {
-    // Force HTTPS for mobile in production
-    return "https://www.revivo.live/auth/google/callback";
-  }
-  return callbackURL;
-};
 
 passport.use(
   new GoogleStrategy(
     {
       clientID: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      callbackURL: fixCallbackURL, // Use the dynamic callback URL function
+      callbackURL: callbackURL, // Use the static callback URL
       passReqToCallback: true,
       proxy: true, // Handle proxy issues in production
       userProfileURL: 'https://www.googleapis.com/oauth2/v3/userinfo', // Use v3 API

@@ -49,9 +49,22 @@ router.post('/store-temp-email', (req, res) => {
 // Google OAuth login route
 router.get(
   "/auth/google",
+  (req, res, next) => {
+    // Log the user agent for debugging
+    const userAgent = req.headers['user-agent'] || '';
+    console.log(`Google OAuth login initiated from: ${req.headers.host}, User-Agent: ${userAgent.substring(0, 50)}...`);
+    
+    // Store the email from the session if it exists (for mobile fallback)
+    if (req.session.email && !req.session.tempEmail) {
+      req.session.tempEmail = req.session.email;
+    }
+    
+    next();
+  },
   passport.authenticate("google", {
     scope: ["profile", "email"],
-    prompt: 'select_account' // Always show account selector
+    prompt: 'select_account', // Always show account selector
+    accessType: 'online' // Don't request refresh tokens to simplify the flow
   }),
 );
 router.post("/store-referral-code", (req, res) => {
@@ -80,90 +93,96 @@ router.post("/store-referral-code", (req, res) => {
 router.get(
   "/auth/google/callback",
   function(req, res, next) {
-    // Check if we're on a mobile device
-    const userAgent = req.headers['user-agent'] || '';
-    const isMobile = /Mobile|Android|iPhone|iPad|iPod/i.test(userAgent);
+    // Log the callback request details for debugging
+    console.log('Google OAuth callback received:', {
+      code: req.query.code ? 'present' : 'missing',
+      state: req.query.state,
+      error: req.query.error,
+      host: req.headers.host,
+      protocol: req.headers['x-forwarded-proto'] || req.protocol,
+      userAgent: req.headers['user-agent']?.substring(0, 50) + '...' // Truncate for log readability
+    });
     
-    // For mobile devices, try to find the user by email in the code parameter
-    if (isMobile && req.query.code) {
-      // Try to find user by email from the token
-      const User = require('../models/userSchema');
-      
-      // Custom authentication that catches and handles token errors
-      passport.authenticate('google', { session: false }, async function(err, user, info) {
-        // If there's an error but we have the code, we can try to proceed anyway
-        if (err) {
-          console.error('Google OAuth error on mobile:', err);
-          
-          try {
-            // Check if we can find an existing Google user
-            // This is a fallback mechanism when the token exchange fails but we have a valid code
-            const existingUser = await User.findOne({ email: req.session.tempEmail || '' });
-            
-            if (existingUser) {
-              console.log('Found existing user despite token error');
-              // Log the user in manually
-              req.session.user = existingUser._id;
-              return req.session.save(() => {
-                // Redirect with success parameter
-                return res.redirect('/?login=success');
-              });
-            } else {
-              // No existing user found, redirect to login
-              return res.redirect('/login?error=user_not_found');
-            }
-          } catch (findErr) {
-            console.error('Error finding user:', findErr);
-            return res.redirect('/login?error=db_error');
-          }
-        } else if (!user) {
-          // No user returned from authentication
-          return res.redirect('/login?error=auth_failed');
-        } else {
-          // Authentication succeeded
-          req.session.user = user._id;
-          
-          // Save the session and redirect
-          return req.session.save((saveErr) => {
-            if (saveErr) {
-              console.error('Error saving session:', saveErr);
-              return res.redirect('/login?error=session_error');
-            }
+    // Log all request headers for detailed debugging
+    console.log('OAuth callback headers:', JSON.stringify(req.headers, null, 2));
+    console.log('OAuth callback query:', JSON.stringify(req.query, null, 2));
+    console.log('OAuth callback session:', req.session ? 'Session exists' : 'No session');
+    
+    // Special handling for token errors
+    passport.authenticate('google', { failWithError: true }, function(err, user, info) {
+      if (err) {
+        console.error('Google OAuth error details:', err.name, err.message);
+        
+        // Special handling for TokenError - try to proceed if we have a user
+        if (err.name === 'TokenError') {
+          // Check if we already have a session - the user might already be logged in
+          if (req.session.user) {
+            console.log('User already has a session, redirecting to home');
             return res.redirect('/');
-          });
-        }
-      })(req, res, next);
-    } else {
-      // Standard flow for non-mobile devices
-      passport.authenticate("google", function(err, user, info) {
-        if (err) {
-          console.error('Google OAuth error:', err);
-          return res.redirect('/login?error=' + encodeURIComponent(err.message));
-        } else if (!user) {
-          return res.redirect('/login?error=auth_failed');
-        } else {
-          req.logIn(user, function(loginErr) {
-            if (loginErr) {
-              console.error('Login error:', loginErr);
-              return res.redirect('/login?error=login_failed');
-            }
-            // Set the user ID in the session
-            req.session.user = user._id;
+          }
+          
+          // Try to find user by email if we stored it in the session
+          if (req.session.tempEmail) {
+            console.log('Attempting to find user by stored email:', req.session.tempEmail);
+            const User = require('../models/userSchema');
             
-            // Save the session explicitly to ensure it's stored before redirect
-            req.session.save((saveErr) => {
-              if (saveErr) {
-                console.error('Error saving user session after OAuth:', saveErr);
-                return res.redirect('/login?error=session_save');
-              }
-              
-              // Redirect to home page
-              res.redirect('/');
-            });
-          });
+            User.findOne({ email: req.session.tempEmail })
+              .then(existingUser => {
+                if (existingUser) {
+                  console.log('Found user by email, logging in despite token error');
+                  req.session.user = existingUser._id;
+                  req.session.save(() => res.redirect('/'));
+                } else {
+                  console.log('No user found with stored email');
+                  res.redirect('/login?error=token_error');
+                }
+              })
+              .catch(findErr => {
+                console.error('Error finding user by email:', findErr);
+                res.redirect('/login?error=db_error');
+              });
+            return;
+          }
+          
+          // If we get here, we couldn't recover from the token error
+          return res.redirect('/login?error=token_error&msg=' + encodeURIComponent('Please try again or use email login'));
         }
-      })(req, res, next);
-    }
+        
+        // For other errors, redirect to login with error message
+        return res.redirect('/login?error=' + encodeURIComponent(err.message || 'Authentication failed'));
+      }
+      
+      if (!user) {
+        return res.redirect('/login?error=auth_failed');
+      }
+      
+      // Authentication succeeded - log the user in
+      req.logIn(user, function(loginErr) {
+        if (loginErr) {
+          console.error('Login error:', loginErr);
+          return res.redirect('/login?error=login_failed');
+        }
+        
+        // Set the user ID in the session
+        req.session.user = user._id;
+        
+        // Clear any temporary email we stored
+        if (req.session.tempEmail) {
+          delete req.session.tempEmail;
+        }
+        
+        // Save the session explicitly to ensure it's stored before redirect
+        req.session.save((saveErr) => {
+          if (saveErr) {
+            console.error('Error saving user session after OAuth:', saveErr);
+            return res.redirect('/login?error=session_save');
+          }
+          
+          // Redirect to home page
+          res.redirect('/');
+        });
+      });
+    })(req, res, next);
   }
 );
 
