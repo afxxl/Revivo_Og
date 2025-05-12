@@ -93,27 +93,15 @@ window.addEventListener('load', function() {
 
     async function checkSession() {
       try {
-        console.log('Checking session status...');
-        const response = await fetch('/api/check-session', {
-          method: 'GET',
-          credentials: 'include', // Important for cookies/session
-          headers: {
-            'Cache-Control': 'no-cache, no-store, must-revalidate',
-            'Pragma': 'no-cache',
-            'Expires': '0'
-          }
-        });
-        
-        if (!response.ok) throw new Error('Network response was not ok: ' + response.status);
+        const response = await fetch('/api/check-session');
+        if (!response.ok) throw new Error('Network response was not ok');
         
         const data = await response.json();
-        console.log('Session check response:', data);
         
         const { loggedIn, user, isBlocked } = data;
         const authSection = document.getElementById('auth-state');
         
         if (isBlocked) {
-          console.log('User is blocked');
           showBlockedMessage();
           setTimeout(() => {
             window.location.href = '/login';
@@ -124,12 +112,9 @@ window.addEventListener('load', function() {
         if (authSection) {
           const serverLoggedIn = loggedIn;
           const clientLoggedIn = !!authSection.querySelector('.dropdown');
-          console.log('Server says logged in:', serverLoggedIn, 'Client shows logged in:', clientLoggedIn);
           
           if (serverLoggedIn !== clientLoggedIn) {
-            console.log('Updating auth section to match server state');
             if (serverLoggedIn) {
-              console.log('Updating to logged in state with user:', user.name);
               authSection.innerHTML = `
                 <div class="dropdown"> 
                   <button class="nav-link flex items-center gap-1">
@@ -183,79 +168,36 @@ window.addEventListener('load', function() {
                   </div>
                 </div>
               `;
-              
-              // Force a check for add-to-cart functionality
-              document.querySelectorAll('.add-to-cart-btn').forEach(btn => {
-                if (btn.hasAttribute('data-login-required')) {
-                  btn.removeAttribute('data-login-required');
-                  btn.onclick = function(e) {
-                    e.preventDefault();
-                    const productId = this.getAttribute('data-product-id');
-                    if (productId) {
-                      addToCart(productId);
-                    }
-                  };
-                }
-              });
-              
             } else {
-              console.log('Updating to logged out state');
               authSection.innerHTML = '<a href="/login" class="nav-link">LOGIN</a>';
               if (window.location.pathname !== '/login') {
                 window.location.reload();
               }
             }
-          } else {
-            console.log('Auth section already matches server state');
           }
-        } else {
-          console.warn('Auth section element not found');
         }
-        
-        return { loggedIn, user };
       } catch (error) {
         console.error('Session check failed:', error);
         // showToast('Failed to verify session. Please refresh the page.', 'error');
-        return { loggedIn: false, user: null };
       }
     }
 
     async function handleLogout() {
       try {
-        console.log('Logging out...');
         const response = await fetch('/logout', {
           method: 'GET',
-          credentials: 'include',
-          headers: {
-            'Cache-Control': 'no-cache, no-store, must-revalidate',
-            'Pragma': 'no-cache',
-            'Expires': '0'
-          }
+          credentials: 'include', // Ensure cookies are sent
         });
-
         if (!response.ok) throw new Error('Logout request failed');
 
-        // Clear any local storage items
         localStorage.clear();
-        sessionStorage.clear();
-
-        // Update UI immediately
         const authSection = document.getElementById('auth-state');
         if (authSection) {
           authSection.innerHTML = '<a href="/login" class="nav-link">LOGIN</a>';
         }
 
-        // Update cart count to 0
-        document.querySelectorAll('#cart-count, .mobile-cart-count').forEach(el => {
-          el.textContent = '0';
-          el.classList.add('hidden');
-        });
-
-        // Perform a final session check
         await checkSession();
-        
-        // Redirect to home page
-        window.location.href = '/';
+        window.location.assign('/');
       } catch (error) {
         console.error('Logout failed:', error);
         showToast('Failed to log out. Please try again.', 'error');
@@ -344,9 +286,8 @@ window.addEventListener('load', function() {
 
     checkSession();
     
-    // Check session more frequently (every 5 seconds) to detect blocked status faster
-    // but not too frequently to avoid excessive requests
-    const sessionCheckInterval = setInterval(checkSession, 5000);
+    // Check session more frequently (every 2 seconds) to detect blocked status faster
+    const sessionCheckInterval = setInterval(checkSession, 2000);
     
     // Clear interval when page is unloaded to prevent memory leaks
     window.addEventListener('beforeunload', () => {
