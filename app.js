@@ -47,57 +47,26 @@ const adminSessionStore = MongoStore.create({
   autoRemove: "native",
 });
 
-// Debug session handling - Added after session stores are initialized
-const originalSessionMiddleware = session({
-  name: "user.sid",
-  secret: process.env.SESSION_SECRET + "_user",
-  resave: true,
-  saveUninitialized: true,
-  store: userSessionStore,
-  cookie: {
-    secure: false,
-    httpOnly: true,
-    maxAge: 72 * 60 * 60 * 1000,
-    path: "/",
-    sameSite: "lax",
-  },
-});
 
-// Wrap the session middleware to add debugging
-const debugSessionMiddleware = (req, res, next) => {
-  console.log("\n[SESSION DEBUG] Request URL:", req.url);
-  console.log("[SESSION DEBUG] Cookies received:", req.headers.cookie);
-  
-  // Call the original session middleware
-  originalSessionMiddleware(req, res, () => {
-    console.log("[SESSION DEBUG] Session after middleware:", req.session.id, req.session.user ? "User authenticated" : "No user");
-    
-    // Add a hook to track when the session is saved
-    const originalSave = req.session.save;
-    req.session.save = function(cb) {
-      console.log("[SESSION DEBUG] Session being saved:", req.session.id);
-      return originalSave.call(this, function(err) {
-        console.log("[SESSION DEBUG] Session save result:", err ? "Error: " + err.message : "Success");
-        if (cb) cb(err);
-      });
-    };
-    
-    next();
-  });
-};
 
-// Session middleware for user routes - Using debug middleware instead of regular session
-app.use(/^(?!\/admin).*/, debugSessionMiddleware);
-
-// Add middleware to debug response cookies
-app.use((req, res, next) => {
-  const originalEnd = res.end;
-  res.end = function() {
-    console.log('[SESSION DEBUG] Response cookies:', res.getHeader('set-cookie'));
-    return originalEnd.apply(this, arguments);
-  };
-  next();
-});
+// Session middleware for user routes
+app.use(
+  /^(?!\/admin).*/,
+  session({
+    name: "user.sid",
+    secret: process.env.SESSION_SECRET + "_user",
+    resave: true,
+    saveUninitialized: true,
+    store: userSessionStore,
+    cookie: {
+      secure: false, // Set to false to ensure cookies work without proper proxy headers
+      httpOnly: true,
+      maxAge: 72 * 60 * 60 * 1000,
+      path: "/",
+      sameSite: "lax", // Use lax to ensure cookies work across domains
+    },
+  }),
+);
 
 // Initialize Passport for user routes
 console.log("Initializing Passport.js for authentication");
@@ -122,9 +91,6 @@ app.use(
   }),
 );
 
-app.use((req, res, next) => {
-  next();
-});
 
 app.use(async (req, res, next) => {
   try {

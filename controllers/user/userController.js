@@ -382,7 +382,6 @@ const login = async (req, res) => {
         console.error('Session save error:', err);
         return res.render("login", { message: "Login failed. Please try again." });
       }
-      console.log('[LOGIN SUCCESS] User authenticated:', findUser._id);
       res.redirect("/");
     });
   } catch (err) {
