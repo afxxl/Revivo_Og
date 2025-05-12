@@ -100,6 +100,8 @@ const loadHomepage = async (req, res) => {
       products: [],
       brands: [],
       user: null,
+      heroProducts: [],
+      categories: [],
     });
   }
 };

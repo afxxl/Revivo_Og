@@ -890,7 +890,7 @@
             
             <!-- Desktop layout -->
             <div class="absolute right-0 h-full items-end hidden lg:flex">
-              <% if (heroProducts && heroProducts.length > 0) { %>
+              <% if (typeof heroProducts !== 'undefined' && heroProducts && heroProducts.length > 0) { %>
                 <% heroProducts.forEach((product, index) => { %>
                   <a href="/product/<%= product._id %>" class="relative">
                     <div class="vintage-container model model-<%= index+1 %> h-[<%= 400 + (index * 50) %>px] w-auto <%= index > 0 ? '-mr-' + (10 + (index * 6)) : '-mr-10' %> z-<%= 10 + (index * 10) %> <%= index === 0 ? 'rotate-[-5deg]' : index === 1 ? 'rotate-[3deg]' : 'rotate-[8deg]' %> transition-all duration-500 ease-out hover:shadow-xl hover:-translate-y-2">
@@ -950,7 +950,7 @@
             
             <!-- Mobile layout - Horizontal scrolling gallery -->
             <div class="lg:hidden absolute bottom-0 left-0 right-0 overflow-x-auto pb-4 flex items-center gap-4 px-4 vintage-scroll">
-              <% if (heroProducts && heroProducts.length > 0) { %>
+              <% if (typeof heroProducts !== 'undefined' && heroProducts && heroProducts.length > 0) { %>
                 <% heroProducts.forEach((product, index) => { %>
                   <a href="/product/<%= product._id %>" class="flex-shrink-0 relative">
                     <div class="polaroid-container model model-<%= index+1 %> w-[200px] h-[250px] <%= index === 0 ? 'rotate-[-5deg]' : index === 1 ? 'rotate-[3deg]' : 'rotate-[8deg]' %> transition-all duration-500 ease-out hover:shadow-xl hover:-translate-y-2">
