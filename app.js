@@ -15,10 +15,6 @@ const compression = require("compression");
 
 db();
 
-
-
-// Apply performance optimizations
-
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(nocache());
@@ -47,9 +43,6 @@ const adminSessionStore = MongoStore.create({
   autoRemove: "native",
 });
 
-
-
-// Session middleware for user routes
 app.use(
   /^(?!\/admin).*/,
   session({
@@ -59,17 +52,15 @@ app.use(
     saveUninitialized: true,
     store: userSessionStore,
     cookie: {
-      secure: false, // Set to false to ensure cookies work without proper proxy headers
+      secure: false,
       httpOnly: true,
       maxAge: 72 * 60 * 60 * 1000,
       path: "/",
-      sameSite: "lax", // Use lax to ensure cookies work across domains
+      sameSite: "lax",
     },
   }),
 );
 
-// Initialize Passport for user routes
-console.log("Initializing Passport.js for authentication");
 app.use(/^(?!\/admin).*/, passport.initialize());
 app.use(/^(?!\/admin).*/, passport.session());
 
@@ -82,7 +73,7 @@ app.use(
     saveUninitialized: true,
     store: adminSessionStore,
     cookie: {
-      secure: false, // Set to false to ensure cookies work without proper proxy headers
+      secure: false,
       httpOnly: true,
       maxAge: 72 * 60 * 60 * 1000,
       path: "/admin",
@@ -90,7 +81,6 @@ app.use(
     },
   }),
 );
-
 
 app.use(async (req, res, next) => {
   try {
@@ -166,14 +156,13 @@ app.set("views", [
   path.join(__dirname, "views/user"),
   path.join(__dirname, "views/admin"),
 ]);
-// Serve static files with optimized cache control
 app.use(
   express.static(path.join(__dirname, "public"), {
-    maxAge: "7d", // Cache static assets for 7 days
+    maxAge: "7d",
     etag: true,
     lastModified: true,
-    immutable: true, // Tells browsers the resource never changes
-    index: false, // Disable directory indexing for security
+    immutable: true,
+    index: false,
   }),
 );
 app.use("/Images", express.static(path.join(__dirname, "Images")));
@@ -183,11 +172,10 @@ app.use("/admin", adminRouter);
 
 app.use("/uploads", express.static(path.join(__dirname, "public/uploads")));
 
-// Apply basic compression for performance
 app.use(
   compression({
-    level: 6, // Higher compression level
-    threshold: 0, // Compress all responses
+    level: 6,
+    threshold: 0,
   }),
 );
 
