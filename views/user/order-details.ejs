@@ -185,6 +185,7 @@
         flex-direction: column;
         align-items: center;
         flex: 1;
+        min-width: 80px; /* Prevent steps from getting too narrow */
       }
       
       .status-step::before {
@@ -317,6 +318,12 @@
         color: #744210;
       }
       
+      .alert-danger {
+        background-color: #fff5f5;
+        border-left: 4px solid #e53e3e;
+        color: #c53030;
+      }
+      
       .alert-success {
         background-color: #f0fff4;
         border-left: 4px solid #68d391;
@@ -406,20 +413,33 @@
 
       <div class="mb-6 sm:mb-8 md:mb-10">
         <h2 class="section-title">Order Status</h2>
-        <div class="flex items-center justify-between py-2 sm:py-3 md:py-4 overflow-x-auto">
-          <div class="flex items-center justify-between min-w-full sm:min-w-0">
+        <!-- Order status tracker with improved responsiveness for all devices -->
+        <div class="py-2 sm:py-3 md:py-4">
+          <!-- Desktop tracker (hidden on small screens) -->
+          <div class="hidden sm:block">
+            <div class="flex items-center justify-between px-2">
           <% 
-          const statuses = ['Pending', 'Confirmed', 'Shipped', 'Out for Delivery', 'Delivered', 'Return Requested'];
+          // Include all possible statuses including Cancelled
+const statuses = ['Pending', 'Confirmed', 'Shipped', 'Out for Delivery', 'Delivered', 'Return Requested', 'Cancelled'];
           const currentStatusIndex = statuses.indexOf(order.status);
+
+// Special handling for cancelled orders - make sure it's shown in the tracker
+let showCancelled = order.status === 'Cancelled';
           
           statuses.forEach((status, index) => {
             const statusClass = status.toLowerCase().replace(/ /g, '-');
             const isActive = index <= currentStatusIndex;
             const isLast = index === statuses.length - 1;
             
-            if (status === 'Return Requested' && order.status !== 'Return Requested') {
-              return;
-            }
+            // Skip Return Requested status if order is not in that state
+if (status === 'Return Requested' && order.status !== 'Return Requested') {
+  return;
+}
+
+// Skip Cancelled status if order is not cancelled
+if (status === 'Cancelled' && !showCancelled) {
+  return;
+}
           %>
             <div class="status-step <%= statusClass %> <%= isActive ? 'active' : '' %> px-1 sm:px-2">
               <% if (!isLast) { %>
@@ -432,6 +452,7 @@
                   status === 'Shipped' ? 'fas fa-box' : 
                   status === 'Out for Delivery' ? 'fas fa-truck' : 
                   status === 'Delivered' ? 'fas fa-home' : 
+                  status === 'Cancelled' ? 'fas fa-ban' : 
                   'fas fa-exchange-alt'
                 %>"></i>
               </div>
@@ -442,8 +463,9 @@
           <% }) %>
         </div>
         
+        <!-- Return request message in its own container for better responsiveness -->
         <% if (order.status === 'Return Requested') { %>
-          <div class="alert alert-warning">
+          <div class="alert alert-warning mt-4">
             <div class="flex items-start">
               <i class="fas fa-exclamation-circle mt-1 mr-2 sm:mr-3 flex-shrink-0"></i>
               <div class="text-sm sm:text-base">
@@ -452,12 +474,14 @@
               </div>
             </div>
           </div>
+        </div>
         <% } %>
         
+        <!-- Returned status message -->
         <% if (order.status === 'Returned') { %>
-          <div class="alert alert-success">
+          <div class="alert alert-success mt-4">
             <div class="flex items-start">
-              <i class="fas fa-check-circle mt-1 mr-3"></i>
+              <i class="fas fa-check-circle mt-1 mr-3 flex-shrink-0"></i>
               <div>
                 <p class="font-medium">
                 <% if (order.return?.processedAt) { %>
@@ -474,6 +498,22 @@
             </div>
           </div>
         <% } %>
+        
+        <!-- Cancelled order message -->
+        <% if (order.status === 'Cancelled') { %>
+          <div class="alert alert-danger mt-4">
+            <div class="flex items-start">
+              <i class="fas fa-ban mt-1 mr-2 sm:mr-3 flex-shrink-0"></i>
+              <div class="text-sm sm:text-base">
+                <p class="font-medium">This order has been cancelled.</p>
+                <% if (order.cancelReason) { %>
+                  <p class="mt-1 text-sm">Reason: <%= order.cancelReason %></p>
+                <% } %>
+              </div>
+            </div>
+          </div>
+        <% } %>
+      </div>
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 md:gap-8 mb-6 sm:mb-8 md:mb-10">
@@ -566,7 +606,99 @@
               </div>
             </div>
           <% }) %>
+            </div>
+          </div>
+          
+          <!-- Mobile tracker (visible only on small screens) -->
+          <div class="sm:hidden">
+            <div class="space-y-3 px-2">
+            <% 
+            // Reset and reuse the same variables for mobile view
+            statuses.forEach((status, index) => {
+              const statusClass = status.toLowerCase().replace(/ /g, '-');
+              const isActive = index <= currentStatusIndex;
+              
+              // Skip Return Requested status if order is not in that state
+              if (status === 'Return Requested' && order.status !== 'Return Requested') {
+                return;
+              }
+              
+              // Skip Cancelled status if order is not cancelled
+              if (status === 'Cancelled' && !showCancelled) {
+                return;
+              }
+            %>
+              <div class="flex items-center <%= isActive ? 'text-[#2C2C2C]' : 'text-gray-400' %>">
+                <div class="status-icon <%= statusClass %> mr-3" style="margin-top: 0;">
+                  <i class="<%= 
+                    status === 'Pending' ? 'fas fa-clock' : 
+                    status === 'Confirmed' ? 'fas fa-check' : 
+                    status === 'Shipped' ? 'fas fa-box' : 
+                    status === 'Out for Delivery' ? 'fas fa-truck' : 
+                    status === 'Delivered' ? 'fas fa-home' : 
+                    status === 'Cancelled' ? 'fas fa-ban' : 
+                    'fas fa-exchange-alt'
+                  %>"></i>
+                </div>
+                <span class="text-sm font-medium"><%= status %></span>
+                <% if (isActive && status === order.status) { %>
+                  <span class="ml-2 text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full">Current</span>
+                <% } %>
+              </div>
+            <% }) %>
+            </div>
+          </div>
         </div>
+
+        <!-- Return request message in its own container for better responsiveness -->
+        <% if (order.status === 'Return Requested') { %>
+          <div class="alert alert-warning mt-4">
+            <div class="flex items-start">
+              <i class="fas fa-exclamation-circle mt-1 mr-2 sm:mr-3 flex-shrink-0"></i>
+              <div class="text-sm sm:text-base">
+                <p class="font-medium">Your return request is pending admin approval.</p>
+                <p class="mt-1 text-sm">Reason: <%= order.return.reason %></p>
+              </div>
+            </div>
+          </div>
+        <% } %>
+        
+        <!-- Returned status message -->
+        <% if (order.status === 'Returned') { %>
+          <div class="alert alert-success mt-4">
+            <div class="flex items-start">
+              <i class="fas fa-check-circle mt-1 mr-3 flex-shrink-0"></i>
+              <div>
+                <p class="font-medium">
+                <% if (order.return?.processedAt) { %>
+                  Your return was approved on <%= new Date(order.return.processedAt).toLocaleDateString() %>.
+                <% } else { %>
+                  Your return was approved.
+                <% } %>
+                </p>
+                <p class="mt-1 text-sm">
+                  The amount of ₹<%= order.finalAmount.toFixed(2) %> has been added to your wallet.
+                  <a href="/wallet" class="text-blue-600 underline">View your wallet</a>
+                </p>
+              </div>
+            </div>
+          </div>
+        <% } %>
+        
+        <!-- Cancelled order message -->
+        <% if (order.status === 'Cancelled') { %>
+          <div class="alert alert-danger mt-4">
+            <div class="flex items-start">
+              <i class="fas fa-ban mt-1 mr-2 sm:mr-3 flex-shrink-0"></i>
+              <div class="text-sm sm:text-base">
+                <p class="font-medium">This order has been cancelled.</p>
+                <% if (order.cancelReason) { %>
+                  <p class="mt-1 text-sm">Reason: <%= order.cancelReason %></p>
+                <% } %>
+              </div>
+            </div>
+          </div>
+        <% } %>
       </div>
 
       <div class="pt-4 sm:pt-6 border-t border-gray-200">

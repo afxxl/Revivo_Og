@@ -61,15 +61,22 @@
           left: 0;
           height: 100vh;
           width: 85%;
-          max-width: 320px;
-          z-index: 40;
+          max-width: 300px;
+          z-index: 50;
           transform: translateX(-100%);
           overflow-y: auto;
           padding-bottom: 6rem;
+          transition: transform 0.3s ease;
+          box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
         }
         
         .profile-sidebar.active {
           transform: translateX(0);
+        }
+        
+        /* Prevent body scrolling when sidebar is open */
+        body.sidebar-open {
+          overflow: hidden;
         }
       }
       
@@ -85,13 +92,15 @@
       
       @media (max-width: 768px) {
         .profile-content {
-          padding: 1rem !important;
+          padding: 1.25rem !important;
+          margin-top: 0.5rem;
         }
       }
       
       @media (max-width: 480px) {
         .profile-content {
-          padding: 0.75rem !important;
+          padding: 1rem !important;
+          margin-top: 0.25rem;
         }
       }
       
@@ -148,21 +157,35 @@
         align-items: center;
         padding: 0.875rem 1.25rem;
         border-radius: 8px;
-        margin: 0.25rem 0;
-        color: var(--primary-color);
         transition: all 0.3s ease;
         font-weight: 500;
+        color: var(--primary-color);
+        text-decoration: none;
+        position: relative;
+        overflow: hidden;
       }
       
       .profile-tab:hover {
         background-color: rgba(44, 44, 44, 0.05);
-        transform: translateX(4px);
+        transform: translateY(-2px);
       }
       
       .profile-tab.active {
         background-color: rgba(44, 44, 44, 0.1);
         border-left: 3px solid var(--primary-color);
         font-weight: 600;
+      }
+      
+      @media (max-width: 768px) {
+        .profile-tab {
+          padding: 1rem 1.25rem;
+          margin-bottom: 0.25rem;
+        }
+        
+        .profile-tab:active {
+          background-color: rgba(44, 44, 44, 0.1);
+          transform: scale(0.98);
+        }
       }
       
       .profile-tab i {
@@ -508,6 +531,19 @@
       .cropper-container {
         max-width: 100%;
         height: auto;
+        touch-action: none; /* Prevent scrolling when interacting with cropper on mobile */
+      }
+      
+      @media (max-width: 480px) {
+        .cropper-container {
+          width: 100% !important;
+        }
+        
+        /* Improve cropper controls for touch devices */
+        .cropper-point {
+          width: 12px !important;
+          height: 12px !important;
+        }
       }
       
       .tab-content {
@@ -584,10 +620,11 @@
         position: fixed;
         inset: 0;
         background-color: rgba(0, 0, 0, 0.5);
-        z-index: 30;
+        z-index: 40;
         opacity: 0;
         pointer-events: none;
         transition: opacity 0.3s ease;
+        backdrop-filter: blur(2px);
       }
       
       .sidebar-overlay.active {
@@ -673,98 +710,59 @@
         margin-left: -0.75rem;
       }
       
+      .burger-menu {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        width: 30px;
+        height: 20px;
+        cursor: pointer;
+        z-index: 60;
+        position: relative;
+      }
+      
       @media (max-width: 768px) {
-        .profile-sidebar {
-          position: fixed;
-          top: 0;
-          left: -100%;
-          height: 100vh;
-          width: 280px;
-          z-index: 50;
-          overflow-y: auto;
-          transition: left 0.3s ease;
-          box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
-          padding-top: 3rem;
-        }
-
-        .profile-sidebar.active {
-          left: 0;
-        }
-
-        .content-container {
-          transition: transform 0.3s ease;
-        }
-
-        .content-container.sidebar-active {
-          transform: translateX(280px);
-        }
-
-        .sidebar-overlay {
-          position: fixed;
-          top: 0;
-          left: 0;
-          right: 0;
-          bottom: 0;
-          background-color: rgba(0, 0, 0, 0.5);
-          z-index: 40;
-          display: none;
-          opacity: 0;
-          transition: opacity 0.3s ease;
-        }
-
-        .sidebar-overlay.active {
-          display: block;
-          opacity: 1;
-        }
-
+        /* Mobile-specific burger menu styles */
         .burger-menu {
-          display: flex;
-          flex-direction: column;
-          justify-content: space-between;
-          width: 30px;
-          height: 20px;
-          cursor: pointer;
-          z-index: 60;
-          position: relative;
+          margin-left: 0.25rem;
         }
+      }
 
-        .burger-menu span {
-          display: block;
-          height: 2px;
-          width: 100%;
-          background-color: var(--primary-color);
-          border-radius: 2px;
-          transition: all 0.3s ease;
-        }
+      .burger-menu span {
+        display: block;
+        height: 2px;
+        width: 100%;
+        background-color: var(--primary-color);
+        border-radius: 2px;
+        transition: all 0.3s ease;
+      }
 
-        .burger-menu.active span:nth-child(1) {
-          transform: translateY(9px) rotate(45deg);
-        }
+      .burger-menu.active span:nth-child(1) {
+        transform: translateY(9px) rotate(45deg);
+      }
 
-        .burger-menu.active span:nth-child(2) {
-          opacity: 0;
-        }
+      .burger-menu.active span:nth-child(2) {
+        opacity: 0;
+      }
 
-        .burger-menu.active span:nth-child(3) {
-          transform: translateY(-9px) rotate(-45deg);
-        }
+      .burger-menu.active span:nth-child(3) {
+        transform: translateY(-9px) rotate(-45deg);
+      }
 
-        .close-sidebar {
-          position: absolute;
-          top: 1rem;
-          right: 1rem;
-          width: 30px;
-          height: 30px;
-          cursor: pointer;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          color: var(--primary-color);
-          background: rgba(255, 255, 255, 0.7);
-          border-radius: 50%;
-          box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        }
+      .close-sidebar {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        background: none;
+        border: none;
+        cursor: pointer;
+        color: #2C2C2C;
+        padding: 0.5rem;
+        border-radius: 50%;
+        transition: all 0.3s ease;
+      }
 
+      @media (max-width: 480px) {
         .modal-content {
           width: 95%;
           max-width: 95%;
@@ -830,7 +828,7 @@
     <div class="container mx-auto px-4 py-6 sm:py-12 profile-container">
       <div class="mb-4 md:hidden">
         <div class="flex items-center justify-between">
-          <div class="burger-menu" id="burgerMenu">
+          <div class="burger-menu transition-all" id="burgerMenu">
             <span></span>
             <span></span>
             <span></span>
@@ -844,9 +842,9 @@
       <div class="flex flex-col md:flex-row gap-8">
         <!-- Sidebar -->
         <div class="w-full md:w-80 profile-sidebar p-6" id="profileSidebar">
-          <div class="md:hidden">
-            <button class="close-sidebar" id="closeSidebar">
-              <i class="fas fa-times text-lg"></i>
+          <div class="md:hidden flex justify-end mb-4">
+            <button class="close-sidebar bg-white rounded-full w-8 h-8 flex items-center justify-center shadow-md hover:shadow-lg transition-all" id="closeSidebar" aria-label="Close sidebar">
+              <i class="fas fa-times text-lg text-gray-700"></i>
             </button>
           </div>
           <div class="flex flex-col items-center py-6 border-b border-[#2C2C2C]/10">
@@ -869,7 +867,7 @@
             <p class="text-sm text-[#2C2C2C]/70 profile-email"><%= user.email %></p>
           </div>
 
-          <nav class="mt-6 space-y-2">
+          <nav class="mt-6 space-y-3">
             <a href="#profile" class="profile-tab active" onclick="switchTab('profile')">
               <i class="fas fa-user text-[#2C2C2C]/80"></i> Profile Details
             </a>
@@ -1655,11 +1653,11 @@
             </button>
           </div>
           
-          <div id="imageCropperContainer" class="hidden w-full my-4">
-            <img id="imageToCrop" class="max-w-full max-h-[400px] mx-auto">
+          <div id="imageCropperContainer" class="hidden w-full my-4 overflow-hidden">
+            <img id="imageToCrop" class="max-w-full max-h-[350px] sm:max-h-[400px] mx-auto">
           </div>
           
-          <div class="modal-footer w-full mt-auto">
+          <div class="modal-footer w-full mt-auto flex-wrap gap-2">
             <button 
               onclick="closeImageUploadModal()"
               class="btn-secondary"
@@ -1691,14 +1689,14 @@
           profileSidebar.classList.add('active');
           sidebarOverlay.classList.add('active');
           burgerMenu.classList.add('active');
-          document.body.style.overflow = 'hidden';
+          document.body.classList.add('sidebar-open');
         }
         
         function closeSidebarFunc() {
           profileSidebar.classList.remove('active');
           sidebarOverlay.classList.remove('active');
           burgerMenu.classList.remove('active');
-          document.body.style.overflow = '';
+          document.body.classList.remove('sidebar-open');
         }
         
         burgerMenu.addEventListener('click', function() {
@@ -1962,11 +1960,17 @@
         reader.readAsDataURL(file);
       });
       
-      async function uploadCroppedImage() {
+      function uploadCroppedImage() {
         if (!cropper) {
-          showToast('Please select and crop an image first', 'error');
+          showToast('Please select an image first', 'error');
           return;
         }
+        
+        // Show loading state
+        const uploadBtn = document.getElementById('uploadButton');
+        const originalText = uploadBtn.innerHTML;
+        uploadBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+        uploadBtn.disabled = true;
         
         try {
           const canvas = cropper.getCroppedCanvas({
@@ -2006,9 +2010,15 @@
                 document.getElementById('profileImagePreview').src = data.imageUrl;
                 showToast('Profile image updated successfully!', 'success');
                 closeImageUploadModal();
+                // Reset button state
+                document.getElementById('uploadButton').innerHTML = originalText;
+                document.getElementById('uploadButton').disabled = false;
               } else {
                 throw new Error(data.message || 'Failed to update profile image');
               }
+              // Reset button state in case of error
+              document.getElementById('uploadButton').innerHTML = originalText;
+              document.getElementById('uploadButton').disabled = false;
             } catch (error) {
               console.error('Upload error:', error);
               showToast(error.message || 'An error occurred while uploading', 'error');

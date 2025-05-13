@@ -341,9 +341,18 @@ const loadLogin = async (req, res) => {
     if (!req.session.user) {
       let message = null;
 
-      if (req.session.messages && req.session.messages.length > 0) {
+      // Check for error messages in query parameters (from Google OAuth)
+      if (req.query.error === 'blocked_user' && req.query.message) {
+        message = decodeURIComponent(req.query.message);
+      }
+      // Check for session messages (from regular login)
+      else if (req.session.messages && req.session.messages.length > 0) {
         message = req.session.messages[req.session.messages.length - 1];
         req.session.messages = [];
+      }
+      // Check for other error messages in query parameters
+      else if (req.query.error && req.query.message) {
+        message = decodeURIComponent(req.query.message);
       }
 
       return res.render("login", { message: message });
@@ -351,6 +360,7 @@ const loadLogin = async (req, res) => {
       res.redirect("/");
     }
   } catch (err) {
+    console.error('Error in loadLogin:', err);
     res.redirect("/pageNotFound");
   }
 };

@@ -153,6 +153,14 @@ router.get(
       }
       
       if (!user) {
+        // Check if there's a specific message from the strategy
+        if (info && info.message) {
+          // Handle blocked user message specifically
+          if (info.message === "User is blocked by admin") {
+            return res.redirect('/login?error=blocked_user&message=' + encodeURIComponent("User is blocked by admin"));
+          }
+          return res.redirect('/login?error=auth_failed&message=' + encodeURIComponent(info.message));
+        }
         return res.redirect('/login?error=auth_failed');
       }
       

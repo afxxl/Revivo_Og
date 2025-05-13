@@ -1693,130 +1693,130 @@ const generateInvoice = async (req, res) => {
       align: "right",
     });
 
-    doc.movedown(0.3);
+    doc.moveDown(0.3);
 
     doc.text("support@revivo.com | +91 9876543210", {
-      width: colwidth,
+      width: colWidth,
       align: "right",
     });
 
-    doc.movedown(2);
+    doc.moveDown(2);
 
     doc
-      .strokecolor(lightgray)
-      .linewidth(1)
+      .strokeColor(lightGray)
+      .lineWidth(1)
       .rect(50, doc.y, doc.page.width - 100, 120)
       .stroke();
 
     doc
-      .fontsize(12)
-      .fillcolor(primarycolor)
-      .font("helvetica-bold")
+      .fontSize(12)
+      .fillColor(primaryColor)
+      .font('Helvetica-Bold')
       .text("customer", 70, doc.y + 15);
 
-    doc.movedown(0.5);
+    doc.moveDown(0.5);
 
     doc
-      .fontsize(10)
-      .fillcolor(textcolor)
-      .font("helvetica-bold")
+      .fontSize(10)
+      .fillColor(textColor)
+      .font('Helvetica-Bold')
       .text(`${order.user.name || "customer"}`, 70);
 
-    doc.movedown(0.3);
+    doc.moveDown(0.3);
 
     doc
-      .font("helvetica")
+      .font('Helvetica')
       .text(`email: ${order.user.email || "not available"}`, 70);
 
-    doc.movedown(0.3);
+    doc.moveDown(0.3);
 
     doc.text(`phone: ${order.user.phone || "not available"}`, 70);
 
     doc
-      .fontsize(12)
-      .fillcolor(primarycolor)
-      .font("helvetica-bold")
+      .fontSize(12)
+      .fillColor(primaryColor)
+      .font('Helvetica-Bold')
       .text("shipping address", doc.page.width / 2, doc.y - 65);
 
-    doc.movedown(0.5);
+    doc.moveDown(0.5);
 
     if (order.addressdetails) {
       doc
-        .fontsize(10)
-        .fillcolor(textcolor)
-        .font("helvetica-bold")
+        .fontSize(10)
+        .fillColor(textColor)
+        .font('Helvetica-Bold')
         .text(`${order.addressdetails.name}`, doc.page.width / 2);
 
-      doc.movedown(0.3);
+      doc.moveDown(0.3);
 
       doc
-        .font("helvetica")
+        .font('Helvetica')
         .text(`${order.addressdetails.address}`, doc.page.width / 2);
 
-      doc.movedown(0.3);
+      doc.moveDown(0.3);
 
       doc.text(
         `${order.addressdetails.city}, ${order.addressdetails.state} - ${order.addressdetails.pincode}`,
         doc.page.width / 2,
       );
 
-      doc.movedown(0.3);
+      doc.moveDown(0.3);
 
       doc.text(`phone: ${order.addressdetails.phone}`, doc.page.width / 2);
     } else if (order.address) {
       doc
-        .fontsize(10)
-        .fillcolor(textcolor)
-        .font("helvetica-bold")
+        .fontSize(10)
+        .fillColor(textColor)
+        .font('Helvetica-Bold')
         .text(`${order.address.name}`, doc.page.width / 2);
 
-      doc.movedown(0.3);
+      doc.moveDown(0.3);
 
       doc
-        .font("helvetica")
+        .font('Helvetica')
         .text(`${order.address.address}`, doc.page.width / 2);
 
-      doc.movedown(0.3);
+      doc.moveDown(0.3);
 
       doc.text(
         `${order.address.city}, ${order.address.state} - ${order.address.pincode}`,
         doc.page.width / 2,
       );
 
-      doc.movedown(0.3);
+      doc.moveDown(0.3);
 
       doc.text(`phone: ${order.address.phone}`, doc.page.width / 2);
     } else {
       doc
-        .fontsize(10)
-        .fillcolor(textcolor)
-        .font("helvetica-bold")
+        .fontSize(10)
+        .fillColor(textColor)
+        .font('Helvetica-Bold')
         .text(`${order.user.name || "customer"}`, doc.page.width / 2);
 
-      doc.movedown(0.3);
+      doc.moveDown(0.3);
 
       doc
-        .font("helvetica")
+        .font('Helvetica')
         .text(`address information not available`, doc.page.width / 2);
     }
 
-    doc.movedown(3);
+    doc.moveDown(3);
 
     doc
-      .fontsize(14)
-      .fillcolor(primarycolor)
-      .font("helvetica-bold")
+      .fontSize(14)
+      .fillColor(primaryColor)
+      .font('Helvetica-Bold')
       .text("order items", 50);
 
-    doc.movedown(1);
+    doc.moveDown(1);
 
     const tabletop = doc.y;
-    doc.rect(50, tabletop, doc.page.width - 100, 25).fill(primarycolor);
+    doc.rect(50, tabletop, doc.page.width - 100, 25).fill(primaryColor);
 
     doc
-      .fillcolor("#ffffff")
-      .fontsize(10)
-      .font("helvetica-bold")
+      .fillColor("#ffffff")
+      .fontSize(10)
+      .font('Helvetica-Bold')
       .text("product", 70, tabletop + 8)
       .text("qty", 300, tabletop + 8, { width: 40, align: "center" })
       .text("price", 370, tabletop + 8, { width: 70, align: "right" })
@@ -1825,152 +1825,170 @@ const generateInvoice = async (req, res) => {
     let tablerowy = tabletop + 30;
     let alternaterow = false;
 
-    order.orderitems.foreach((item, i) => {
+    // Check if orderItems exists and use forEach (correct case) instead of foreach
+    if (order.orderItems && Array.isArray(order.orderItems)) {
+      order.orderItems.forEach((item, i) => {
       if (alternaterow) {
         doc.rect(50, tablerowy - 5, doc.page.width - 100, 30).fill("#f9f9f9");
       }
       alternaterow = !alternaterow;
 
       doc
-        .fillcolor(textcolor)
-        .fontsize(10)
-        .font("helvetica")
+        .fillColor(textColor)
+        .fontSize(10)
+        .font('Helvetica')
         .text(item.product.productname, 70, tablerowy, { width: 220 });
 
-      doc.text(item.quantity.tostring(), 300, tablerowy, {
+      doc.text(item.quantity.toString(), 300, tablerowy, {
         width: 40,
         align: "center",
       });
-      doc.text(`₹${item.price.tofixed(2)}`, 370, tablerowy, {
+      doc.text(`₹${item.price.toFixed(2)}`, 370, tablerowy, {
         width: 70,
         align: "right",
       });
-      doc.text(`₹${(item.price * item.quantity).tofixed(2)}`, 470, tablerowy, {
+      doc.text(`₹${(item.price * item.quantity).toFixed(2)}`, 470, tablerowy, {
         width: 70,
         align: "right",
       });
 
       tablerowy += 30;
-    });
+      });
+    } else {
+      // If no order items, add a message
+      doc.fontSize(10)
+         .fillColor(textColor)
+         .font('Helvetica')
+         .text('No items in this order', 70, tablerowy, { width: 400 });
+    }
 
     doc
-      .strokecolor(lightgray)
-      .linewidth(1)
-      .moveto(50, tablerowy + 5)
-      .lineto(doc.page.width - 50, tablerowy + 5)
+      .strokeColor(lightGray)
+      .lineWidth(1)
+      .moveTo(50, tablerowy + 5)
+      .lineTo(doc.page.width - 50, tablerowy + 5)
       .stroke();
 
-    doc.movedown(1.5);
+    doc.moveDown(1.5);
 
     const summaryx = 350;
-    const summarywidth = 170;
+    const summaryWidth = 170;
 
     doc
-      .strokecolor(lightgray)
-      .linewidth(1)
-      .rect(summaryx - 10, doc.y - 5, summarywidth + 20, 140)
+      .strokeColor(lightGray)
+      .lineWidth(1)
+      .rect(summaryx - 10, doc.y - 5, summaryWidth + 20, 140)
       .stroke();
 
     const summarystarty = doc.y + 10;
 
     doc
-      .fillcolor(primarycolor)
-      .font("helvetica-bold")
-      .fontsize(12)
+      .fillColor(primaryColor)
+      .font('Helvetica-Bold')
+      .fontSize(12)
       .text("order summary", summaryx + 10, summarystarty, {
-        width: summarywidth,
+        width: summaryWidth,
       });
 
-    doc.movedown(1);
+    doc.moveDown(1);
 
-    doc
-      .fontsize(10)
-      .fillcolor(textcolor)
-      .font("helvetica")
-      .text("subtotal:", summaryx + 10, doc.y, { width: 80 })
-      .text(`₹${order.totalprice.tofixed(2)}`, summaryx + 90, doc.y - 12, {
-        width: 70,
-        align: "right",
-      });
-
-    doc.movedown(0.7);
-
-    doc
-      .text("shipping:", summaryx + 10, doc.y, { width: 80 })
-      .text(`₹${order.shipping.tofixed(2)}`, summaryx + 90, doc.y - 12, {
-        width: 70,
-        align: "right",
-      });
-
-    if (order.discount > 0) {
-      doc.movedown(0.7);
+    // Check if totalPrice exists and use correct property name
+    if (order.totalPrice) {
       doc
-        .fillcolor("#48bb78")
-        .text("discount:", summaryx + 10, doc.y, { width: 80 })
-        .text(`-₹${order.discount.tofixed(2)}`, summaryx + 90, doc.y - 12, {
+        .fontSize(10)
+        .fillColor(textColor)
+        .font('Helvetica')
+        .text("subtotal:", summaryx + 10, doc.y, { width: 80 })
+        .text(`₹${order.totalPrice.toFixed(2)}`, summaryx + 90, doc.y - 12, {
           width: 70,
           align: "right",
         });
     }
 
-    doc.movedown(0.7);
+    doc.moveDown(0.7);
+
+    // Check if shippingCost exists and use correct property name
+    if (order.shippingCost) {
+      doc
+        .text("shipping:", summaryx + 10, doc.y, { width: 80 })
+        .text(`₹${order.shippingCost.toFixed(2)}`, summaryx + 90, doc.y - 12, {
+          width: 70,
+          align: "right",
+        });
+    }
+
+    if (order.discount > 0) {
+      doc.moveDown(0.7);
+      doc
+        .fillColor("#48bb78")
+        .text("discount:", summaryx + 10, doc.y, { width: 80 })
+        .text(`-₹${order.discount.toFixed(2)}`, summaryx + 90, doc.y - 12, {
+          width: 70,
+          align: "right",
+        });
+    }
+
+    doc.moveDown(0.7);
     doc
-      .strokecolor(lightgray)
-      .linewidth(1)
-      .moveto(summaryx, doc.y)
-      .lineto(summaryx + summarywidth, doc.y)
+      .strokeColor(lightGray)
+      .lineWidth(1)
+      .moveTo(summaryx, doc.y)
+      .lineTo(summaryx + summaryWidth, doc.y)
       .stroke();
 
-    doc.movedown(0.7);
+    doc.moveDown(0.7);
 
     doc
-      .strokecolor(primarycolor)
-      .linewidth(1)
-      .rect(summaryx, doc.y - 5, summarywidth, 30)
-      .fill(primarycolor);
+      .strokeColor(primaryColor)
+      .lineWidth(1)
+      .rect(summaryx, doc.y - 5, summaryWidth, 30)
+      .fill(primaryColor);
 
     const totaltexty = doc.y + 7;
 
-    doc.fillcolor("#ffffff").font("helvetica-bold").fontsize(12);
+    doc.fillColor("#ffffff").font('Helvetica-Bold').fontSize(12);
 
     doc.text("total:", summaryx + 10, totaltexty, { continued: true });
 
-    doc.text(`₹${order.finalamount.tofixed(2)}`, {
-      align: "right",
-      width: summarywidth - 20,
-    });
+    // Check if finalAmount exists and use correct property name
+    if (order.finalAmount) {
+      doc.text(`₹${order.finalAmount.toFixed(2)}`, {
+        align: "right",
+        width: summaryWidth - 20,
+      });
+    }
 
-    doc.movedown(3);
+    doc.moveDown(3);
 
     const footery = doc.page.height - 80;
 
     doc
-      .strokecolor(secondarycolor)
-      .linewidth(2)
-      .moveto(50, footery)
-      .lineto(doc.page.width - 50, footery)
+      .strokeColor(secondaryColor)
+      .lineWidth(2)
+      .moveTo(50, footery)
+      .lineTo(doc.page.width - 50, footery)
       .stroke();
 
     doc
-      .fontsize(10)
-      .fillcolor(primarycolor)
-      .font("helvetica-bold")
+      .fontSize(10)
+      .fillColor(primaryColor)
+      .font('Helvetica-Bold')
       .text("thank you for shopping with revivo!", 50, footery + 15, {
         align: "center",
       });
 
     doc
-      .fontsize(8)
-      .fillcolor(textcolor)
-      .font("helvetica")
+      .fontSize(8)
+      .fillColor(textColor)
+      .font('Helvetica')
       .text(
         "for any questions or concerns regarding this order, please contact our customer support.",
         { align: "center" },
       );
 
     doc
-      .fontsize(8)
-      .fillcolor(primarycolor)
+      .fontSize(8)
+      .fillColor(primaryColor)
       .text("www.revivo.com | support@revivo.com | +91 9876543210", {
         align: "center",
       });
