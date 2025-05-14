@@ -86,4 +86,3 @@ module.exports = {
   REFERRER_REWARD,
   REFEREE_REWARD,
 };
-

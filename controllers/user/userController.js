@@ -342,7 +342,7 @@ const loadLogin = async (req, res) => {
       let message = null;
 
       // Check for error messages in query parameters (from Google OAuth)
-      if (req.query.error === 'blocked_user' && req.query.message) {
+      if (req.query.error === "blocked_user" && req.query.message) {
         message = decodeURIComponent(req.query.message);
       }
       // Check for session messages (from regular login)
@@ -360,7 +360,7 @@ const loadLogin = async (req, res) => {
       res.redirect("/");
     }
   } catch (err) {
-    console.error('Error in loadLogin:', err);
+    console.error("Error in loadLogin:", err);
     res.redirect("/pageNotFound");
   }
 };
@@ -385,12 +385,14 @@ const login = async (req, res) => {
 
     req.session.user = findUser._id;
     req.user = findUser;
-    
+
     // Explicitly save the session before redirecting
     req.session.save((err) => {
       if (err) {
-        console.error('Session save error:', err);
-        return res.render("login", { message: "Login failed. Please try again." });
+        console.error("Session save error:", err);
+        return res.render("login", {
+          message: "Login failed. Please try again.",
+        });
       }
       res.redirect("/");
     });
@@ -974,6 +976,20 @@ const verifyEmailOtp = async (req, res) => {
 
     const user = await User.findById(req.session.user);
     const { name, email, phone } = req.session.pendingProfileUpdate;
+
+    if (email !== user.email) {
+      const existingUser = await User.findOne({
+        email: email,
+        _id: { $ne: user._id },
+      });
+      if (existingUser) {
+        return res.status(400).json({
+          success: false,
+          message: "This email is already registered with another account",
+        });
+      }
+    }
+
     user.name = name;
     user.email = email;
     user.phone = phone;

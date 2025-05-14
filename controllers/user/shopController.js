@@ -1711,7 +1711,7 @@ const generateInvoice = async (req, res) => {
     doc
       .fontSize(12)
       .fillColor(primaryColor)
-      .font('Helvetica-Bold')
+      .font("Helvetica-Bold")
       .text("customer", 70, doc.y + 15);
 
     doc.moveDown(0.5);
@@ -1719,13 +1719,13 @@ const generateInvoice = async (req, res) => {
     doc
       .fontSize(10)
       .fillColor(textColor)
-      .font('Helvetica-Bold')
+      .font("Helvetica-Bold")
       .text(`${order.user.name || "customer"}`, 70);
 
     doc.moveDown(0.3);
 
     doc
-      .font('Helvetica')
+      .font("Helvetica")
       .text(`email: ${order.user.email || "not available"}`, 70);
 
     doc.moveDown(0.3);
@@ -1735,7 +1735,7 @@ const generateInvoice = async (req, res) => {
     doc
       .fontSize(12)
       .fillColor(primaryColor)
-      .font('Helvetica-Bold')
+      .font("Helvetica-Bold")
       .text("shipping address", doc.page.width / 2, doc.y - 65);
 
     doc.moveDown(0.5);
@@ -1744,13 +1744,13 @@ const generateInvoice = async (req, res) => {
       doc
         .fontSize(10)
         .fillColor(textColor)
-        .font('Helvetica-Bold')
+        .font("Helvetica-Bold")
         .text(`${order.addressdetails.name}`, doc.page.width / 2);
 
       doc.moveDown(0.3);
 
       doc
-        .font('Helvetica')
+        .font("Helvetica")
         .text(`${order.addressdetails.address}`, doc.page.width / 2);
 
       doc.moveDown(0.3);
@@ -1767,13 +1767,13 @@ const generateInvoice = async (req, res) => {
       doc
         .fontSize(10)
         .fillColor(textColor)
-        .font('Helvetica-Bold')
+        .font("Helvetica-Bold")
         .text(`${order.address.name}`, doc.page.width / 2);
 
       doc.moveDown(0.3);
 
       doc
-        .font('Helvetica')
+        .font("Helvetica")
         .text(`${order.address.address}`, doc.page.width / 2);
 
       doc.moveDown(0.3);
@@ -1790,13 +1790,13 @@ const generateInvoice = async (req, res) => {
       doc
         .fontSize(10)
         .fillColor(textColor)
-        .font('Helvetica-Bold')
+        .font("Helvetica-Bold")
         .text(`${order.user.name || "customer"}`, doc.page.width / 2);
 
       doc.moveDown(0.3);
 
       doc
-        .font('Helvetica')
+        .font("Helvetica")
         .text(`address information not available`, doc.page.width / 2);
     }
 
@@ -1805,7 +1805,7 @@ const generateInvoice = async (req, res) => {
     doc
       .fontSize(14)
       .fillColor(primaryColor)
-      .font('Helvetica-Bold')
+      .font("Helvetica-Bold")
       .text("order items", 50);
 
     doc.moveDown(1);
@@ -1816,7 +1816,7 @@ const generateInvoice = async (req, res) => {
     doc
       .fillColor("#ffffff")
       .fontSize(10)
-      .font('Helvetica-Bold')
+      .font("Helvetica-Bold")
       .text("product", 70, tabletop + 8)
       .text("qty", 300, tabletop + 8, { width: 40, align: "center" })
       .text("price", 370, tabletop + 8, { width: 70, align: "right" })
@@ -1825,41 +1825,45 @@ const generateInvoice = async (req, res) => {
     let tablerowy = tabletop + 30;
     let alternaterow = false;
 
-    // Check if orderItems exists and use forEach (correct case) instead of foreach
     if (order.orderItems && Array.isArray(order.orderItems)) {
       order.orderItems.forEach((item, i) => {
-      if (alternaterow) {
-        doc.rect(50, tablerowy - 5, doc.page.width - 100, 30).fill("#f9f9f9");
-      }
-      alternaterow = !alternaterow;
+        if (alternaterow) {
+          doc.rect(50, tablerowy - 5, doc.page.width - 100, 30).fill("#f9f9f9");
+        }
+        alternaterow = !alternaterow;
 
-      doc
-        .fillColor(textColor)
-        .fontSize(10)
-        .font('Helvetica')
-        .text(item.product.productname, 70, tablerowy, { width: 220 });
+        doc
+          .fillColor(textColor)
+          .fontSize(10)
+          .font("Helvetica")
+          .text(item.product.productname, 70, tablerowy, { width: 220 });
 
-      doc.text(item.quantity.toString(), 300, tablerowy, {
-        width: 40,
-        align: "center",
-      });
-      doc.text(`₹${item.price.toFixed(2)}`, 370, tablerowy, {
-        width: 70,
-        align: "right",
-      });
-      doc.text(`₹${(item.price * item.quantity).toFixed(2)}`, 470, tablerowy, {
-        width: 70,
-        align: "right",
-      });
+        doc.text(item.quantity.toString(), 300, tablerowy, {
+          width: 40,
+          align: "center",
+        });
+        doc.text(`₹${item.price.toFixed(2)}`, 370, tablerowy, {
+          width: 70,
+          align: "right",
+        });
+        doc.text(
+          `₹${(item.price * item.quantity).toFixed(2)}`,
+          470,
+          tablerowy,
+          {
+            width: 70,
+            align: "right",
+          },
+        );
 
-      tablerowy += 30;
+        tablerowy += 30;
       });
     } else {
-      // If no order items, add a message
-      doc.fontSize(10)
-         .fillColor(textColor)
-         .font('Helvetica')
-         .text('No items in this order', 70, tablerowy, { width: 400 });
+      doc
+        .fontSize(10)
+        .fillColor(textColor)
+        .font("Helvetica")
+        .text("No items in this order", 70, tablerowy, { width: 400 });
     }
 
     doc
@@ -1884,7 +1888,7 @@ const generateInvoice = async (req, res) => {
 
     doc
       .fillColor(primaryColor)
-      .font('Helvetica-Bold')
+      .font("Helvetica-Bold")
       .fontSize(12)
       .text("order summary", summaryx + 10, summarystarty, {
         width: summaryWidth,
@@ -1892,12 +1896,11 @@ const generateInvoice = async (req, res) => {
 
     doc.moveDown(1);
 
-    // Check if totalPrice exists and use correct property name
     if (order.totalPrice) {
       doc
         .fontSize(10)
         .fillColor(textColor)
-        .font('Helvetica')
+        .font("Helvetica")
         .text("subtotal:", summaryx + 10, doc.y, { width: 80 })
         .text(`₹${order.totalPrice.toFixed(2)}`, summaryx + 90, doc.y - 12, {
           width: 70,
@@ -1907,7 +1910,6 @@ const generateInvoice = async (req, res) => {
 
     doc.moveDown(0.7);
 
-    // Check if shippingCost exists and use correct property name
     if (order.shippingCost) {
       doc
         .text("shipping:", summaryx + 10, doc.y, { width: 80 })
@@ -1946,11 +1948,10 @@ const generateInvoice = async (req, res) => {
 
     const totaltexty = doc.y + 7;
 
-    doc.fillColor("#ffffff").font('Helvetica-Bold').fontSize(12);
+    doc.fillColor("#ffffff").font("Helvetica-Bold").fontSize(12);
 
     doc.text("total:", summaryx + 10, totaltexty, { continued: true });
 
-    // Check if finalAmount exists and use correct property name
     if (order.finalAmount) {
       doc.text(`₹${order.finalAmount.toFixed(2)}`, {
         align: "right",
@@ -1972,7 +1973,7 @@ const generateInvoice = async (req, res) => {
     doc
       .fontSize(10)
       .fillColor(primaryColor)
-      .font('Helvetica-Bold')
+      .font("Helvetica-Bold")
       .text("thank you for shopping with revivo!", 50, footery + 15, {
         align: "center",
       });
@@ -1980,7 +1981,7 @@ const generateInvoice = async (req, res) => {
     doc
       .fontSize(8)
       .fillColor(textColor)
-      .font('Helvetica')
+      .font("Helvetica")
       .text(
         "for any questions or concerns regarding this order, please contact our customer support.",
         { align: "center" },

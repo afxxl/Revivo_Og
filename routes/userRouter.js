@@ -29,42 +29,40 @@ router.get("/login", userController.loadLogin);
 router.post("/login", userController.login);
 router.post("/add-to-cart", userController.addToCart);
 
-// Store email before Google OAuth (for mobile fallback)
-router.post('/store-temp-email', (req, res) => {
+router.post("/store-temp-email", (req, res) => {
   const { email } = req.body;
   if (email) {
     req.session.tempEmail = email;
     req.session.save((err) => {
       if (err) {
-        console.error('Error saving email to session:', err);
+        console.error("Error saving email to session:", err);
         return res.status(500).json({ success: false });
       }
       return res.json({ success: true });
     });
   } else {
-    res.json({ success: false, message: 'No email provided' });
+    res.json({ success: false, message: "No email provided" });
   }
 });
 
-// Google OAuth login route
 router.get(
   "/auth/google",
   (req, res, next) => {
-    // Log the user agent for debugging
-    const userAgent = req.headers['user-agent'] || '';
-    console.log(`Google OAuth login initiated from: ${req.headers.host}, User-Agent: ${userAgent.substring(0, 50)}...`);
-    
-    // Store the email from the session if it exists (for mobile fallback)
+    const userAgent = req.headers["user-agent"] || "";
+    console.log(
+      `Google OAuth login initiated from: ${req.headers.host}, User-Agent: ${userAgent.substring(0, 50)}...`,
+    );
+
     if (req.session.email && !req.session.tempEmail) {
       req.session.tempEmail = req.session.email;
     }
-    
+
     next();
   },
   passport.authenticate("google", {
     scope: ["profile", "email"],
-    prompt: 'select_account', // Always show account selector
-    accessType: 'online' // Don't request refresh tokens to simplify the flow
+    prompt: "select_account",
+    accessType: "online",
   }),
 );
 router.post("/store-referral-code", (req, res) => {
@@ -89,110 +87,115 @@ router.post("/store-referral-code", (req, res) => {
   }
 });
 
-// Google OAuth callback route
-router.get(
-  "/auth/google/callback",
-  function(req, res, next) {
-    // Log the callback request details for debugging
-    console.log('Google OAuth callback received:', {
-      code: req.query.code ? 'present' : 'missing',
-      state: req.query.state,
-      error: req.query.error,
-      host: req.headers.host,
-      protocol: req.headers['x-forwarded-proto'] || req.protocol,
-      userAgent: req.headers['user-agent']?.substring(0, 50) + '...' // Truncate for log readability
-    });
-    
-    // Log all request headers for detailed debugging
-    console.log('OAuth callback headers:', JSON.stringify(req.headers, null, 2));
-    console.log('OAuth callback query:', JSON.stringify(req.query, null, 2));
-    console.log('OAuth callback session:', req.session ? 'Session exists' : 'No session');
-    
-    // Special handling for token errors
-    passport.authenticate('google', { failWithError: true }, function(err, user, info) {
+router.get("/auth/google/callback", function (req, res, next) {
+  console.log("Google OAuth callback received:", {
+    code: req.query.code ? "present" : "missing",
+    state: req.query.state,
+    error: req.query.error,
+    host: req.headers.host,
+    protocol: req.headers["x-forwarded-proto"] || req.protocol,
+    userAgent: req.headers["user-agent"]?.substring(0, 50) + "...",
+  });
+
+  console.log("OAuth callback headers:", JSON.stringify(req.headers, null, 2));
+  console.log("OAuth callback query:", JSON.stringify(req.query, null, 2));
+  console.log(
+    "OAuth callback session:",
+    req.session ? "Session exists" : "No session",
+  );
+
+  passport.authenticate(
+    "google",
+    { failWithError: true },
+    function (err, user, info) {
       if (err) {
-        console.error('Google OAuth error details:', err.name, err.message);
-        
-        // Special handling for TokenError - try to proceed if we have a user
-        if (err.name === 'TokenError') {
-          // Check if we already have a session - the user might already be logged in
+        console.error("Google OAuth error details:", err.name, err.message);
+
+        if (err.name === "TokenError") {
           if (req.session.user) {
-            console.log('User already has a session, redirecting to home');
-            return res.redirect('/');
+            console.log("User already has a session, redirecting to home");
+            return res.redirect("/");
           }
-          
-          // Try to find user by email if we stored it in the session
+
           if (req.session.tempEmail) {
-            console.log('Attempting to find user by stored email:', req.session.tempEmail);
-            const User = require('../models/userSchema');
-            
+            console.log(
+              "Attempting to find user by stored email:",
+              req.session.tempEmail,
+            );
+            const User = require("../models/userSchema");
+
             User.findOne({ email: req.session.tempEmail })
-              .then(existingUser => {
+              .then((existingUser) => {
                 if (existingUser) {
-                  console.log('Found user by email, logging in despite token error');
+                  console.log(
+                    "Found user by email, logging in despite token error",
+                  );
                   req.session.user = existingUser._id;
-                  req.session.save(() => res.redirect('/'));
+                  req.session.save(() => res.redirect("/"));
                 } else {
-                  console.log('No user found with stored email');
-                  res.redirect('/login?error=token_error');
+                  console.log("No user found with stored email");
+                  res.redirect("/login?error=token_error");
                 }
               })
-              .catch(findErr => {
-                console.error('Error finding user by email:', findErr);
-                res.redirect('/login?error=db_error');
+              .catch((findErr) => {
+                console.error("Error finding user by email:", findErr);
+                res.redirect("/login?error=db_error");
               });
             return;
           }
-          
-          // If we get here, we couldn't recover from the token error
-          return res.redirect('/login?error=token_error&msg=' + encodeURIComponent('Please try again or use email login'));
+
+          return res.redirect(
+            "/login?error=token_error&msg=" +
+              encodeURIComponent("Please try again or use email login"),
+          );
         }
-        
-        // For other errors, redirect to login with error message
-        return res.redirect('/login?error=' + encodeURIComponent(err.message || 'Authentication failed'));
+
+        return res.redirect(
+          "/login?error=" +
+            encodeURIComponent(err.message || "Authentication failed"),
+        );
       }
-      
+
       if (!user) {
-        // Check if there's a specific message from the strategy
         if (info && info.message) {
-          // Handle blocked user message specifically
           if (info.message === "User is blocked by admin") {
-            return res.redirect('/login?error=blocked_user&message=' + encodeURIComponent("User is blocked by admin"));
+            return res.redirect(
+              "/login?error=blocked_user&message=" +
+                encodeURIComponent("User is blocked by admin"),
+            );
           }
-          return res.redirect('/login?error=auth_failed&message=' + encodeURIComponent(info.message));
+          return res.redirect(
+            "/login?error=auth_failed&message=" +
+              encodeURIComponent(info.message),
+          );
         }
-        return res.redirect('/login?error=auth_failed');
+        return res.redirect("/login?error=auth_failed");
       }
-      
-      // Authentication succeeded - log the user in
-      req.logIn(user, function(loginErr) {
+
+      req.logIn(user, function (loginErr) {
         if (loginErr) {
-          console.error('Login error:', loginErr);
-          return res.redirect('/login?error=login_failed');
+          console.error("Login error:", loginErr);
+          return res.redirect("/login?error=login_failed");
         }
-        
-        // Set the user ID in the session
+
         req.session.user = user._id;
-        
-        // Clear any temporary email we stored
+
         if (req.session.tempEmail) {
           delete req.session.tempEmail;
         }
-        
-        // Save the session explicitly to ensure it's stored before redirect
+
         req.session.save((saveErr) => {
           if (saveErr) {
-            console.error('Error saving user session after OAuth:', saveErr);
-            return res.redirect('/login?error=session_save');
+            console.error("Error saving user session after OAuth:", saveErr);
+            return res.redirect("/login?error=session_save");
           }
-          
-          // Redirect to home page
-          res.redirect('/');
+
+          res.redirect("/");
         });
       });
-    })(req, res, next);
-  }
-);
+    },
+  )(req, res, next);
+});
 
 router.get("/forgot-password", userController.loadResetPassword);
 router.post("/sendResetOtp", userController.sendResetOtp);
@@ -367,13 +370,12 @@ router.get("/api/referral-stats", userAuth, userController.getReferralStats);
 // Newsletter subscription
 router.post("/subscribe-newsletter", userController.subscribeNewsletter);
 
-// Footer pages - About section
+// Footer pages
 router.get("/about", footerController.loadAboutPage);
 router.get("/sustainability", footerController.loadSustainabilityPage);
 router.get("/careers", footerController.loadCareersPage);
 router.get("/press", footerController.loadPressPage);
 
-// Footer pages - Help section
 router.get("/contact", footerController.loadContactPage);
 router.post("/submit-contact", userController.handleContactForm);
 router.get("/shipping", footerController.loadShippingPage);
