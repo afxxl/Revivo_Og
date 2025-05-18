@@ -1,6 +1,9 @@
 <%- include('../partials/admin/admin-header.ejs') %> 
 <%- include('../partials/admin/admin-sidebar', {currentPage: 'users'}) %>
 
+<!-- Font Awesome CSS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
 <style>
     :root {
         --mobile: 480px;
@@ -493,34 +496,66 @@
             <ul class="pagination">
                 <% if (currentPage > 1) { %>
                 <li class="page-item">
-                    <a
-                        class="pagination-btn"
-                        href="?page=<%= currentPage - 1 %><% if (searchQuery) { %>&search=<%= searchQuery %><% } %>"
-                    >
-                        Previous
+                    <a class="pagination-btn" href="?page=<%= currentPage - 1 %><% if (searchQuery) { %>&search=<%= searchQuery %><% } %>">
+                        <i class="fas fa-chevron-left"></i>
+                    </a>
+                </li>
+                <% } else { %>
+                <li class="page-item">
+                    <span class="pagination-btn disabled">
+                        <i class="fas fa-chevron-left"></i>
+                    </span>
+                </li>
+                <% } %>
+                
+                <% 
+                let startPage = Math.max(1, currentPage - 1);
+                let endPage = Math.min(totalPages, currentPage + 1);
+                
+                // Show first page if not in range
+                if (startPage > 1) { %>
+                <li class="page-item">
+                    <a class="pagination-btn" href="?page=1<% if (searchQuery) { %>&search=<%= searchQuery %><% } %>">1</a>
+                </li>
+                <% if (startPage > 2) { %>
+                <li class="page-item">
+                    <span class="pagination-btn disabled">...</span>
+                </li>
+                <% } %>
+                <% } %>
+                
+                <% for (let i = startPage; i <= endPage; i++) { %>
+                <li class="page-item">
+                    <a class="pagination-btn <%= currentPage === i ? 'active' : '' %>" href="?page=<%= i %><% if (searchQuery) { %>&search=<%= searchQuery %><% } %>">
+                        <%= i %>
                     </a>
                 </li>
                 <% } %>
                 
-                <% for(let i = 1; i <= totalPages; i++) { %>
+                <% if (endPage < totalPages) { %>
+                <% if (endPage < totalPages - 1) { %>
                 <li class="page-item">
-                    <a
-                        class="pagination-btn <%= (i === currentPage) ? 'active' : '' %>"
-                        href="?page=<%= i %><% if (searchQuery) { %>&search=<%= searchQuery %><% } %>"
-                    >
-                        <%= i %>
+                    <span class="pagination-btn disabled">...</span>
+                </li>
+                <% } %>
+                <li class="page-item">
+                    <a class="pagination-btn" href="?page=<%= totalPages %><% if (searchQuery) { %>&search=<%= searchQuery %><% } %>">
+                        <%= totalPages %>
                     </a>
                 </li>
                 <% } %>
                 
                 <% if (currentPage < totalPages) { %>
                 <li class="page-item">
-                    <a
-                        class="pagination-btn"
-                        href="?page=<%= currentPage + 1 %><% if (searchQuery) { %>&search=<%= searchQuery %><% } %>"
-                    >
-                        Next
+                    <a class="pagination-btn" href="?page=<%= currentPage + 1 %><% if (searchQuery) { %>&search=<%= searchQuery %><% } %>">
+                        <i class="fas fa-chevron-right"></i>
                     </a>
+                </li>
+                <% } else { %>
+                <li class="page-item">
+                    <span class="pagination-btn disabled">
+                        <i class="fas fa-chevron-right"></i>
+                    </span>
                 </li>
                 <% } %>
             </ul>

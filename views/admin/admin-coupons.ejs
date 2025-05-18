@@ -262,11 +262,11 @@
                             <div class="flex justify-between text-xs text-gray-500 mb-3 sm:mb-4">
                                 <div>
                                     <p>Valid from</p>
-                                    <p class="font-medium date-format"><%= coupon.startDate %></p>
+                                    <p class="font-medium"><%= new Date(coupon.startDate).toLocaleDateString('en-IN', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true }) %></p>
                                 </div>
                                 <div class="text-right">
                                     <p>Valid until</p>
-                                    <p class="font-medium date-format"><%= coupon.endDate %></p>
+                                    <p class="font-medium"><%= new Date(coupon.endDate).toLocaleDateString('en-IN', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true }) %></p>
                                 </div>
                             </div>
                             
@@ -568,12 +568,7 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        document.querySelectorAll('.date-format').forEach(el => {
-            const date = luxon.DateTime.fromISO(el.innerText.trim());
-            if (date.isValid) {
-                el.innerText = date.toFormat('dd MMM yyyy, hh:mm a');
-            }
-        });
+        // Date formatting is now handled server-side
 
         const couponModal = document.getElementById('couponModal');
         const closeModal = document.getElementById('closeModal');
@@ -849,8 +844,8 @@
                         `;
                         
                         data.usedBy.forEach(usage => {
-                            const usedDate = luxon.DateTime.fromISO(usage.usedAt);
-                            const formattedDate = usedDate.isValid ? usedDate.toFormat('dd MMM yyyy, hh:mm a') : 'Unknown';
+                            const usedDate = new Date(usage.usedAt);
+                            const formattedDate = !isNaN(usedDate) ? usedDate.toLocaleDateString('en-IN', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true }) : 'Unknown';
                             
                             tableHtml += `
                                 <tr class="hover:bg-gray-50">

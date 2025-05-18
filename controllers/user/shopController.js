@@ -2445,9 +2445,15 @@ const verifyRazorpayPayment = async (req, res) => {
 const loadOrderFailure = async (req, res) => {
   try {
     const { errorMessage, orderId, errorCode } = req.query;
+    let order = null;
+
+    if (orderId) {
+      order = await Order.findOne({ orderId }).lean();
+    }
 
     res.render("order-failure", {
       orderId,
+      order,
       errorMessage: errorMessage || "Payment could not be processed",
       errorCode: errorCode || "",
     });

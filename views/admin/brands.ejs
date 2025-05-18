@@ -843,14 +843,77 @@ include('../partials/admin/admin-sidebar', {currentPage: 'brands'}) %>
 
   <% if (totalPages > 1) { %>
   <div class="pagination-container">
-    <% for(let i = 1; i <= totalPages; i++) { %>
-    <a
-      href="?page=<%= i %>"
-      class="pagination-btn <%= currentPage === i ? 'active' : '' %>"
-    >
-      <%= i %>
-    </a>
-    <% } %>
+    <p class="pagination-info">
+      Showing <%= data.length %> of <%= totalBrands %> brands
+    </p>
+    <nav aria-label="Page navigation">
+      <ul class="pagination">
+        <% if (currentPage > 1) { %>
+        <li class="page-item">
+          <a class="pagination-btn" href="?page=<%= currentPage - 1 %>">
+            <i class="fas fa-chevron-left"></i>
+          </a>
+        </li>
+        <% } else { %>
+        <li class="page-item">
+          <span class="pagination-btn disabled">
+            <i class="fas fa-chevron-left"></i>
+          </span>
+        </li>
+        <% } %>
+        
+        <% 
+        let startPage = Math.max(1, currentPage - 1);
+        let endPage = Math.min(totalPages, currentPage + 1);
+        
+        // Show first page if not in range
+        if (startPage > 1) { %>
+        <li class="page-item">
+          <a class="pagination-btn" href="?page=1">1</a>
+        </li>
+        <% if (startPage > 2) { %>
+        <li class="page-item">
+          <span class="pagination-btn disabled">...</span>
+        </li>
+        <% } %>
+        <% } %>
+        
+        <% for (let i = startPage; i <= endPage; i++) { %>
+        <li class="page-item">
+          <a class="pagination-btn <%= currentPage === i ? 'active' : '' %>" href="?page=<%= i %>">
+            <%= i %>
+          </a>
+        </li>
+        <% } %>
+        
+        <% if (endPage < totalPages) { %>
+        <% if (endPage < totalPages - 1) { %>
+        <li class="page-item">
+          <span class="pagination-btn disabled">...</span>
+        </li>
+        <% } %>
+        <li class="page-item">
+          <a class="pagination-btn" href="?page=<%= totalPages %>">
+            <%= totalPages %>
+          </a>
+        </li>
+        <% } %>
+        
+        <% if (currentPage < totalPages) { %>
+        <li class="page-item">
+          <a class="pagination-btn" href="?page=<%= currentPage + 1 %>">
+            <i class="fas fa-chevron-right"></i>
+          </a>
+        </li>
+        <% } else { %>
+        <li class="page-item">
+          <span class="pagination-btn disabled">
+            <i class="fas fa-chevron-right"></i>
+          </span>
+        </li>
+        <% } %>
+      </ul>
+    </nav>
   </div>
   <% } %>
 </div>

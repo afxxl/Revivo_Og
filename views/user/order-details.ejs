@@ -474,7 +474,6 @@ if (status === 'Cancelled' && !showCancelled) {
               </div>
             </div>
           </div>
-        </div>
         <% } %>
         
         <!-- Returned status message -->
@@ -498,22 +497,20 @@ if (status === 'Cancelled' && !showCancelled) {
             </div>
           </div>
         <% } %>
-        
+
         <!-- Cancelled order message -->
-        <% if (order.status === 'Cancelled') { %>
-          <div class="alert alert-danger mt-4">
+        <% if (order.status === 'Cancelled' && order.cancelReason) { %>
+          <div class="alert alert-warning mt-4">
             <div class="flex items-start">
-              <i class="fas fa-ban mt-1 mr-2 sm:mr-3 flex-shrink-0"></i>
-              <div class="text-sm sm:text-base">
+              <i class="fas fa-ban mt-1 mr-3 flex-shrink-0"></i>
+              <div>
                 <p class="font-medium">This order has been cancelled.</p>
-                <% if (order.cancelReason) { %>
-                  <p class="mt-1 text-sm">Reason: <%= order.cancelReason %></p>
-                <% } %>
+                <p class="mt-1 text-sm">Reason: <%= order.cancelReason %></p>
               </div>
             </div>
           </div>
         <% } %>
-      </div>
+
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 md:gap-8 mb-6 sm:mb-8 md:mb-10">
@@ -648,57 +645,60 @@ if (status === 'Cancelled' && !showCancelled) {
             <% }) %>
             </div>
           </div>
+          
+          <!-- Mobile alerts (visible only on small screens) -->
+          <div class="sm:hidden mt-4">
+            <!-- Mobile Return request message -->
+            <% if (order.status === 'Return Requested') { %>
+              <div class="alert alert-warning">
+                <div class="flex items-start">
+                  <i class="fas fa-exclamation-circle mt-1 mr-2 flex-shrink-0"></i>
+                  <div class="text-sm">
+                    <p class="font-medium">Your return request is pending admin approval.</p>
+                    <p class="mt-1 text-xs">Reason: <%= order.return.reason %></p>
+                  </div>
+                </div>
+              </div>
+            <% } %>
+            
+            <!-- Mobile Returned status message -->
+            <% if (order.status === 'Returned') { %>
+              <div class="alert alert-success">
+                <div class="flex items-start">
+                  <i class="fas fa-check-circle mt-1 mr-2 flex-shrink-0"></i>
+                  <div>
+                    <p class="font-medium text-sm">
+                    <% if (order.return?.processedAt) { %>
+                      Your return was approved on <%= new Date(order.return.processedAt).toLocaleDateString() %>.
+                    <% } else { %>
+                      Your return was approved.
+                    <% } %>
+                    </p>
+                    <p class="mt-1 text-xs">
+                      The amount of ₹<%= order.finalAmount.toFixed(2) %> has been added to your wallet.
+                      <a href="/wallet" class="text-blue-600 underline">View your wallet</a>
+                    </p>
+                  </div>
+                </div>
+              </div>
+            <% } %>
+
+            <!-- Mobile Cancelled order message -->
+            <% if (order.status === 'Cancelled' && order.cancelReason) { %>
+              <div class="alert alert-warning">
+                <div class="flex items-start">
+                  <i class="fas fa-ban mt-1 mr-2 flex-shrink-0"></i>
+                  <div>
+                    <p class="font-medium text-sm">This order has been cancelled.</p>
+                    <p class="mt-1 text-xs">Reason: <%= order.cancelReason %></p>
+                  </div>
+                </div>
+              </div>
+            <% } %>
+          </div>
         </div>
 
-        <!-- Return request message in its own container for better responsiveness -->
-        <% if (order.status === 'Return Requested') { %>
-          <div class="alert alert-warning mt-4">
-            <div class="flex items-start">
-              <i class="fas fa-exclamation-circle mt-1 mr-2 sm:mr-3 flex-shrink-0"></i>
-              <div class="text-sm sm:text-base">
-                <p class="font-medium">Your return request is pending admin approval.</p>
-                <p class="mt-1 text-sm">Reason: <%= order.return.reason %></p>
-              </div>
-            </div>
-          </div>
-        <% } %>
-        
-        <!-- Returned status message -->
-        <% if (order.status === 'Returned') { %>
-          <div class="alert alert-success mt-4">
-            <div class="flex items-start">
-              <i class="fas fa-check-circle mt-1 mr-3 flex-shrink-0"></i>
-              <div>
-                <p class="font-medium">
-                <% if (order.return?.processedAt) { %>
-                  Your return was approved on <%= new Date(order.return.processedAt).toLocaleDateString() %>.
-                <% } else { %>
-                  Your return was approved.
-                <% } %>
-                </p>
-                <p class="mt-1 text-sm">
-                  The amount of ₹<%= order.finalAmount.toFixed(2) %> has been added to your wallet.
-                  <a href="/wallet" class="text-blue-600 underline">View your wallet</a>
-                </p>
-              </div>
-            </div>
-          </div>
-        <% } %>
-        
-        <!-- Cancelled order message -->
-        <% if (order.status === 'Cancelled') { %>
-          <div class="alert alert-danger mt-4">
-            <div class="flex items-start">
-              <i class="fas fa-ban mt-1 mr-2 sm:mr-3 flex-shrink-0"></i>
-              <div class="text-sm sm:text-base">
-                <p class="font-medium">This order has been cancelled.</p>
-                <% if (order.cancelReason) { %>
-                  <p class="mt-1 text-sm">Reason: <%= order.cancelReason %></p>
-                <% } %>
-              </div>
-            </div>
-          </div>
-        <% } %>
+
       </div>
 
       <div class="pt-4 sm:pt-6 border-t border-gray-200">
@@ -709,7 +709,7 @@ if (status === 'Cancelled' && !showCancelled) {
           </div>
           <div class="flex justify-between items-center mb-2 text-[#2C2C2C]/70 text-sm sm:text-base">
             <span>Shipping</span>
-            <span>₹5.00</span>
+            <span>₹<%= order.shipping.toFixed(2) %></span>
           </div>
           
           <% if (order.couponCode && order.discount > 0) { %>

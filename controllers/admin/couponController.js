@@ -56,6 +56,21 @@ const addCoupon = async (req, res) => {
       });
     }
 
+    // Validate discount amount based on discount type and minimum purchase
+    if (discountType === "fixed" && parseFloat(discountAmount) > parseFloat(minPurchase)) {
+      return res.status(400).json({
+        success: false,
+        message: "Discount amount cannot be greater than minimum purchase amount for fixed discounts",
+      });
+    }
+
+    if (discountType === "percentage" && parseFloat(discountAmount) > 100) {
+      return res.status(400).json({
+        success: false,
+        message: "Percentage discount cannot exceed 100%",
+      });
+    }
+
     const newCoupon = new Coupon({
       code: code.trim().toUpperCase(),
       description,
@@ -118,6 +133,21 @@ const updateCoupon = async (req, res) => {
       endDate,
       usageLimit,
     } = req.body;
+
+    // Validate discount amount based on discount type and minimum purchase
+    if (discountType === "fixed" && parseFloat(discountAmount) > parseFloat(minPurchase)) {
+      return res.status(400).json({
+        success: false,
+        message: "Discount amount cannot be greater than minimum purchase amount for fixed discounts",
+      });
+    }
+
+    if (discountType === "percentage" && parseFloat(discountAmount) > 100) {
+      return res.status(400).json({
+        success: false,
+        message: "Percentage discount cannot exceed 100%",
+      });
+    }
 
     const updatedCoupon = await Coupon.findByIdAndUpdate(
       couponId,

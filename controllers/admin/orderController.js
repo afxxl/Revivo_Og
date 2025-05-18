@@ -63,6 +63,10 @@ const orderDetails = async (req, res) => {
       .populate({
         path: "orderItems.product",
         model: "Product",
+        populate: [
+          { path: "brand", model: "Brand" },
+          { path: "category", model: "Category" },
+        ],
       })
       .lean();
 

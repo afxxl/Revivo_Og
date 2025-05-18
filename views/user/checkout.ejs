@@ -372,6 +372,9 @@
                 btn.innerHTML = 'Place Order';
                 razorpayInstance.on('payment.failed', function (response) {
                     showToast('Payment failed: ' + response.error.description, 'error');
+                    setTimeout(() => {
+                        window.location.href = `/order-failure?errorMessage=${encodeURIComponent(response.error.description)}&errorCode=${response.error.code}`;
+                    }, 1000);
                 });
             } else {
                 const response = await fetch('/create-order', {

@@ -497,6 +497,11 @@
                 <div>
                     <h2 class="text-lg sm:text-xl font-semibold mb-2 sm:mb-3 md:mb-4 text-[#2C2C2C]">Order Summary</h2>
                     <div class="space-y-3 overflow-hidden">
+                        <!-- Order Details -->
+                        <div class="flex justify-between flex-wrap gap-1 sm:gap-2">
+                            <span class="text-[#2C2C2C] opacity-75">Order Date</span>
+                            <span class="font-medium text-[#2C2C2C]"><%= new Date(order.createdAt).toLocaleDateString('en-IN', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true }) %></span>
+                        </div>
                         <div class="flex justify-between flex-wrap gap-1 sm:gap-2">
                             <span class="text-[#2C2C2C] opacity-75">Payment Method</span>
                             <span class="font-medium text-[#2C2C2C]"><%= order.paymentMethod %></span>
@@ -507,8 +512,24 @@
                                 <%= order.status %>
                             </span>
                         </div>
-                        <div class="pt-3 sm:pt-4 border-t border-[#e0dcd4]">
-                            <div class="flex justify-between text-base sm:text-lg font-semibold text-[#2C2C2C]">
+                        
+                        <!-- Price Breakdown -->
+                        <div class="pt-3 sm:pt-4 border-t border-[#e0dcd4] space-y-2">
+                            <div class="flex justify-between text-[#2C2C2C]">
+                                <span>Subtotal</span>
+                                <span>₹<%= order.totalPrice.toFixed(2) %></span>
+                            </div>
+                            <div class="flex justify-between text-[#2C2C2C]">
+                                <span>Shipping</span>
+                                <span>₹<%= order.shipping.toFixed(2) %></span>
+                            </div>
+                            <% if (order.couponApplied) { %>
+                            <div class="flex justify-between text-[#2C2C2C]">
+                                <span>Discount (<%= order.couponCode %>)</span>
+                                <span class="text-green-600">-₹<%= order.discount.toFixed(2) %></span>
+                            </div>
+                            <% } %>
+                            <div class="flex justify-between text-base sm:text-lg font-semibold text-[#2C2C2C] pt-2 border-t border-dashed border-[#e0dcd4]">
                                 <span>Total Amount</span>
                                 <span>₹<%= order.finalAmount.toFixed(2) %></span>
                             </div>
@@ -518,6 +539,87 @@
             </div>
         </div>
 
+        <!-- Order Timeline -->
+        <div class="order-card">
+            <h2 class="text-lg sm:text-xl font-semibold mb-3 sm:mb-4 md:mb-6 text-[#2C2C2C]">Order Timeline</h2>
+            <div class="relative pl-6 border-l-2 border-[#e0dcd4] space-y-4">
+                <div class="relative">
+                    <div class="absolute -left-[25px] w-4 h-4 rounded-full bg-green-500"></div>
+                    <p class="font-medium text-[#2C2C2C]">Order Placed</p>
+                    <p class="text-sm text-[#2C2C2C] opacity-75"><%= new Date(order.createdAt).toLocaleDateString('en-IN', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true }) %></p>
+                </div>
+                
+                <% if (order.status === 'Confirmed' || order.status === 'Shipped' || order.status === 'Delivered' || order.status === 'Return Requested' || order.status === 'Returned') { %>
+                <div class="relative">
+                    <div class="absolute -left-[25px] w-4 h-4 rounded-full bg-blue-500"></div>
+                    <p class="font-medium text-[#2C2C2C]">Order Confirmed</p>
+                    <p class="text-sm text-[#2C2C2C] opacity-75">Order has been confirmed</p>
+                </div>
+                <% } %>
+                
+                <% if (order.status === 'Shipped' || order.status === 'Delivered' || order.status === 'Return Requested' || order.status === 'Returned') { %>
+                <div class="relative">
+                    <div class="absolute -left-[25px] w-4 h-4 rounded-full bg-blue-500"></div>
+                    <p class="font-medium text-[#2C2C2C]">Order Shipped</p>
+                    <p class="text-sm text-[#2C2C2C] opacity-75">Your order is on the way</p>
+                </div>
+                <% } %>
+                
+                <% if (order.status === 'Delivered' || order.status === 'Return Requested' || order.status === 'Returned') { %>
+                <div class="relative">
+                    <div class="absolute -left-[25px] w-4 h-4 rounded-full bg-blue-500"></div>
+                    <p class="font-medium text-[#2C2C2C]">Order Delivered</p>
+                    <p class="text-sm text-[#2C2C2C] opacity-75">Order has been delivered</p>
+                </div>
+                <% } %>
+                
+                <% if (order.status === 'Return Requested') { %>
+                <div class="relative">
+                    <div class="absolute -left-[25px] w-4 h-4 rounded-full bg-yellow-500"></div>
+                    <p class="font-medium text-[#2C2C2C]">Return Requested</p>
+                    <p class="text-sm text-[#2C2C2C] opacity-75">Customer has requested a return</p>
+                    <% if (order.return && order.return.reason) { %>
+                    <p class="text-sm text-red-500 mt-1">Reason: <%= order.return.reason %></p>
+                    <% } %>
+                </div>
+                <% } %>
+                
+                <% if (order.status === 'Returned') { %>
+                <div class="relative">
+                    <div class="absolute -left-[25px] w-4 h-4 rounded-full bg-green-500"></div>
+                    <p class="font-medium text-[#2C2C2C]">Return Completed</p>
+                    <p class="text-sm text-[#2C2C2C] opacity-75">Return has been processed</p>
+                </div>
+                <% } %>
+                
+                <% if (order.status === 'Cancelled') { %>
+                <div class="relative">
+                    <div class="absolute -left-[25px] w-4 h-4 rounded-full bg-red-500"></div>
+                    <p class="font-medium text-[#2C2C2C]">Order Cancelled</p>
+                    <p class="text-sm text-[#2C2C2C] opacity-75">Order has been cancelled</p>
+                    <% if (order.cancelReason) { %>
+                    <p class="text-sm text-red-500 mt-1">Reason: <%= order.cancelReason %></p>
+                    <% } %>
+                </div>
+                <% } %>
+            </div>
+        </div>
+
+        <!-- Coupon Information -->
+        <% if (order.couponApplied && order.couponCode) { %>
+        <div class="order-card">
+            <h2 class="text-lg sm:text-xl font-semibold mb-3 sm:mb-4 md:mb-6 text-[#2C2C2C]">Coupon Information</h2>
+            <div class="bg-green-50 p-4 rounded-lg border border-green-200">
+                <div class="flex items-center justify-between mb-2">
+                    <span class="font-bold text-green-700"><%= order.couponCode %></span>
+                    <span class="text-green-700 font-semibold">-₹<%= order.discount.toFixed(2) %></span>
+                </div>
+                <p class="text-sm text-green-700">This coupon was applied to this order</p>
+            </div>
+        </div>
+        <% } %>
+
+        <!-- Order Items -->
         <div class="order-card">
             <h2 class="text-lg sm:text-xl font-semibold mb-3 sm:mb-4 md:mb-6 text-[#2C2C2C]">Order Items</h2>
             <div class="space-y-4 overflow-x-auto w-full">
@@ -528,8 +630,29 @@
                          class="order-item-image">
                     <div class="overflow-hidden">
                         <h3 class="text-lg font-medium text-[#2C2C2C] text-sm-xs truncate"><%= item.product.productName %></h3>
-                        <p class="text-[#2C2C2C] opacity-75 text-sm">Size: <%= item.size || 'N/A' %></p>
-                        <p class="text-[#2C2C2C] opacity-75 text-sm">Condition: <%= item.condition %></p>
+                        <% if (item.size) { %>
+                        <p class="text-sm text-[#2C2C2C] opacity-75">Size: <%= item.size %></p>
+                        <% } %>
+                        <% if (item.product.brand && typeof item.product.brand === 'object' && item.product.brand.brandName) { %>
+                        <p class="text-sm text-[#2C2C2C] opacity-75">Brand: <%= item.product.brand.brandName %></p>
+                        <% } else if (item.product.brand) { %>
+                        <p class="text-sm text-[#2C2C2C] opacity-75">Brand ID: <%= item.product.brand %></p>
+                        <% } else { %>
+                        <p class="text-sm text-[#2C2C2C] opacity-75">Brand: Not available</p>
+                        <% } %>
+                        <% if (item.product.category && typeof item.product.category === 'object') { %>
+                            <% if (item.product.category.categoryName) { %>
+                            <p class="text-sm text-[#2C2C2C] opacity-75">Category: <%= item.product.category.categoryName %></p>
+                            <% } else if (item.product.category.name) { %>
+                            <p class="text-sm text-[#2C2C2C] opacity-75">Category: <%= item.product.category.name %></p>
+                            <% } else { %>
+                            <p class="text-sm text-[#2C2C2C] opacity-75">Category ID: <%= item.product.category._id %></p>
+                            <% } %>
+                        <% } else if (item.product.category) { %>
+                        <p class="text-sm text-[#2C2C2C] opacity-75">Category ID: <%= item.product.category %></p>
+                        <% } else { %>
+                        <p class="text-sm text-[#2C2C2C] opacity-75">Category: Not available</p>
+                        <% } %>
                     </div>
                     <div class="text-left sm:text-right">
                         <p class="text-lg font-semibold text-[#2C2C2C] text-sm-xs">₹<%= (item.price * item.quantity).toFixed(2) %></p>
