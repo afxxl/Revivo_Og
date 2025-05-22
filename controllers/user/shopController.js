@@ -1200,6 +1200,18 @@ const createOrder = async (req, res) => {
             "/order-failure?errorMessage=Payment%20verification%20failed.%20Please%20try%20again.",
         });
       }
+      
+      // Update payment record with payment ID immediately
+      await Payment.findOneAndUpdate(
+        { 'razorpay.orderId': razorpay_order_id },
+        {
+          status: "Completed",
+          transactionId: razorpay_payment_id,
+          'razorpay.paymentId': razorpay_payment_id,
+          'razorpay.signature': razorpay_signature
+        },
+        { session }
+      );
     }
 
     if (paymentMethod === "WALLET") {
@@ -1268,7 +1280,7 @@ const createOrder = async (req, res) => {
       finalAmount,
       shipping,
       paymentMethod: paymentMethod,
-      status: paymentMethod === "RAZORPAY" ? "Confirmed" : "Pending",
+      status: paymentMethod === "RAZORPAY" ? OrderStatus.CONFIRMED : OrderStatus.PENDING,
     });
     for (const item of cart.items) {
       await Product.updateOne(
@@ -1278,6 +1290,24 @@ const createOrder = async (req, res) => {
     }
 
     await order.save({ session });
+    
+    // Link payment record to order if using Razorpay
+    if (paymentMethod === "RAZORPAY") {
+      await Payment.findOneAndUpdate(
+        { 'razorpay.orderId': razorpay_order_id },
+        { 
+          $set: { 
+            orderId: order._id,
+            status: "Completed",
+            transactionId: razorpay_payment_id,
+            'razorpay.paymentId': razorpay_payment_id,
+            'razorpay.signature': razorpay_signature
+          } 
+        },
+        { session }
+      );
+    }
+    
     await User.findByIdAndUpdate(userId, { $set: { cart: [] } });
     await Cart.deleteOne({ userId });
     delete req.session.appliedCoupon;
@@ -1387,7 +1417,7 @@ const cancelOrder = async (req, res) => {
       });
     }
 
-    if (order.status !== "Pending" && order.status !== "Confirmed") {
+    if (order.status !== OrderStatus.PENDING && order.status !== OrderStatus.CONFIRMED) {
       return res.status(400).json({
         success: false,
         message: "This order cannot be cancelled",
@@ -1490,7 +1520,7 @@ const cancelOrder = async (req, res) => {
       });
     }
 
-    order.status = "Cancelled";
+    order.status = OrderStatus.CANCELLED;
     order.cancelReason = reason;
     await order.save();
 
@@ -1532,7 +1562,7 @@ const requestReturn = async (req, res) => {
       });
     }
 
-    order.status = "Return Requested";
+    order.status = OrderStatus.RETURN_REQUESTED;
     order.return = {
       requested: true,
       reason,
@@ -2346,6 +2376,20 @@ const createRazorpayOrder = async (req, res) => {
         userId: userId.toString(),
       },
     });
+    
+    // Create a payment record for this Razorpay order
+    const payment = new Payment({
+      status: "Pending",
+      userId: userId,
+      method: "RAZORPAY",
+      amount: finalAmount,
+      paymentGateway: "Razorpay",
+      razorpay: {
+        orderId: razorpayOrder.id
+      }
+    });
+    
+    await payment.save();
 
     res.json({
       success: true,
@@ -2422,7 +2466,7 @@ const verifyRazorpayPayment = async (req, res) => {
 
     const order = await Order.findOne({ orderId });
     if (order) {
-      order.status = "Confirmed";
+      order.status = OrderStatus.CONFIRMED;
       await order.save();
     }
 

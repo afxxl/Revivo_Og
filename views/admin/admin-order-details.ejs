@@ -539,6 +539,120 @@
             </div>
         </div>
 
+        <!-- Payment Details Section (for Razorpay) -->
+        <% if (order.paymentMethod === 'RAZORPAY') { %>
+        <div class="order-card">
+            <h2 class="text-lg sm:text-xl font-semibold mb-3 sm:mb-4 text-[#2C2C2C]">Payment Details</h2>
+            <div class="bg-blue-50 rounded-lg p-3 sm:p-4 mb-4">
+                <div class="flex items-center mb-2">
+                    <i class="fas fa-credit-card text-blue-600 mr-2"></i>
+                    <span class="font-medium">Razorpay Payment</span>
+                </div>
+                
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
+                    <div>
+                        <p class="text-[#2C2C2C] opacity-75">Payment Status:</p>
+                        <p class="font-medium">
+                            <% if (paymentDetails && paymentDetails.status) { %>
+                                <span class="<%= 
+                                    paymentDetails.status === 'Completed' ? 'text-green-600' : 
+                                    paymentDetails.status === 'Refunded' ? 'text-orange-600' : 
+                                    paymentDetails.status === 'Failed' ? 'text-red-600' : 
+                                    'text-blue-600' %>">
+                                    <%= paymentDetails.status %>
+                                </span>
+                            <% } else { %>
+                                <span class="text-gray-500">Not available</span>
+                            <% } %>
+                        </p>
+                    </div>
+                    
+                    <div>
+                        <p class="text-[#2C2C2C] opacity-75">Payment Date:</p>
+                        <p class="font-medium">
+                            <% if (paymentDetails && paymentDetails.createdAt) { %>
+                                <%= new Date(paymentDetails.createdAt).toLocaleString('en-IN', { 
+                                    day: '2-digit', 
+                                    month: '2-digit', 
+                                    year: 'numeric', 
+                                    hour: '2-digit', 
+                                    minute: '2-digit', 
+                                    hour12: true 
+                                }) %>
+                            <% } else { %>
+                                <span class="text-gray-500">Not available</span>
+                            <% } %>
+                        </p>
+                    </div>
+                    
+                    <div>
+                        <p class="text-[#2C2C2C] opacity-75">Razorpay Payment ID:</p>
+                        <p class="font-medium font-mono break-all">
+                            <% if (paymentDetails && paymentDetails.razorpay && paymentDetails.razorpay.paymentId) { %>
+                                <%= paymentDetails.razorpay.paymentId %>
+                            <% } else if (paymentDetails && paymentDetails.transactionId) { %>
+                                <%= paymentDetails.transactionId %>
+                            <% } else { %>
+                                <span class="text-gray-500">Not available</span>
+                            <% } %>
+                        </p>
+                    </div>
+                    
+                    <div>
+                        <p class="text-[#2C2C2C] opacity-75">Razorpay Order ID:</p>
+                        <p class="font-medium font-mono break-all">
+                            <% if (paymentDetails && paymentDetails.razorpay && paymentDetails.razorpay.orderId) { %>
+                                <%= paymentDetails.razorpay.orderId %>
+                            <% } else { %>
+                                <span class="text-gray-500">Not available</span>
+                            <% } %>
+                        </p>
+                    </div>
+                </div>
+                
+                <% if (paymentDetails && paymentDetails.refund && paymentDetails.refund.refundId) { %>
+                <div class="mt-4 pt-3 border-t border-blue-200">
+                    <div class="flex items-center mb-2">
+                        <i class="fas fa-exchange-alt text-orange-600 mr-2"></i>
+                        <span class="font-medium">Refund Details</span>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
+                        <div>
+                            <p class="text-[#2C2C2C] opacity-75">Refund ID:</p>
+                            <p class="font-medium font-mono break-all"><%= paymentDetails.refund.refundId %></p>
+                        </div>
+                        
+                        <div>
+                            <p class="text-[#2C2C2C] opacity-75">Refund Amount:</p>
+                            <p class="font-medium">₹<%= paymentDetails.refund.amount.toFixed(2) %></p>
+                        </div>
+                        
+                        <div>
+                            <p class="text-[#2C2C2C] opacity-75">Refund Date:</p>
+                            <p class="font-medium">
+                                <%= new Date(paymentDetails.refund.createdAt).toLocaleString('en-IN', { 
+                                    day: '2-digit', 
+                                    month: '2-digit', 
+                                    year: 'numeric', 
+                                    hour: '2-digit', 
+                                    minute: '2-digit', 
+                                    hour12: true 
+                                }) %>
+                            </p>
+                        </div>
+                        
+                        <div>
+                            <p class="text-[#2C2C2C] opacity-75">Refund Reason:</p>
+                            <p class="font-medium"><%= paymentDetails.refund.reason || 'Not specified' %></p>
+                        </div>
+                    </div>
+                </div>
+                <% } %>
+            </div>
+        </div>
+        <% } %>
+
         <!-- Order Timeline -->
         <div class="order-card">
             <h2 class="text-lg sm:text-xl font-semibold mb-3 sm:mb-4 md:mb-6 text-[#2C2C2C]">Order Timeline</h2>

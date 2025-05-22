@@ -74,8 +74,118 @@ const orderDetails = async (req, res) => {
       return res.status(404).send("Order not found");
     }
 
+    let paymentDetails = null;
+    if (order.paymentMethod === "RAZORPAY") {
+      const Payment = require("../../models/paymentSchema.js");
+
+      const paymentQueries = [
+        { orderId: order._id },
+        { orderId: order._id.toString() },
+        { "razorpay.orderId": { $regex: new RegExp(order.orderId, "i") } },
+        { transactionId: { $regex: new RegExp(order.orderId, "i") } },
+        { method: "RAZORPAY", userId: order.user._id },
+      ];
+
+      for (const query of paymentQueries) {
+        paymentDetails = await Payment.findOne(query).lean();
+        if (paymentDetails) break;
+      }
+
+      if (!paymentDetails) {
+        paymentDetails = await Payment.findOne({
+          userId: order.user._id,
+          method: "RAZORPAY",
+        })
+          .sort({ createdAt: -1 })
+          .lean();
+      }
+
+      if (paymentDetails) {
+        const updateData = {};
+        let needsUpdate = false;
+
+        if (!paymentDetails.orderId) {
+          updateData.orderId = order._id;
+          needsUpdate = true;
+        }
+
+        if (
+          paymentDetails.transactionId &&
+          !paymentDetails.razorpay?.paymentId
+        ) {
+          updateData["razorpay.paymentId"] = paymentDetails.transactionId;
+          needsUpdate = true;
+        } else if (
+          !paymentDetails.transactionId &&
+          paymentDetails.razorpay?.paymentId
+        ) {
+          updateData.transactionId = paymentDetails.razorpay.paymentId;
+          needsUpdate = true;
+        }
+
+        if (
+          (!paymentDetails.transactionId ||
+            !paymentDetails.razorpay?.paymentId) &&
+          paymentDetails.razorpay?.orderId
+        ) {
+          const syntheticPaymentId = `pay_${paymentDetails.razorpay.orderId.substring(6)}`;
+
+          if (!paymentDetails.transactionId) {
+            updateData.transactionId = syntheticPaymentId;
+            needsUpdate = true;
+          }
+
+          if (!paymentDetails.razorpay?.paymentId) {
+            updateData["razorpay.paymentId"] = syntheticPaymentId;
+            needsUpdate = true;
+          }
+        }
+
+        if (needsUpdate) {
+          await Payment.findByIdAndUpdate(paymentDetails._id, {
+            $set: updateData,
+          });
+
+          paymentDetails = await Payment.findById(paymentDetails._id).lean();
+        }
+
+        if (
+          order.status === "Cancelled" &&
+          paymentDetails.status !== "Refunded"
+        ) {
+          await Payment.findByIdAndUpdate(paymentDetails._id, {
+            $set: { status: "Refunded" },
+          });
+          paymentDetails.status = "Refunded";
+        } else if (
+          order.status === "Returned" &&
+          paymentDetails.status !== "Refunded"
+        ) {
+          await Payment.findByIdAndUpdate(paymentDetails._id, {
+            $set: { status: "Refunded" },
+          });
+          paymentDetails.status = "Refunded";
+        } else if (
+          [
+            "Pending",
+            "Confirmed",
+            "Shipped",
+            "Out for Delivery",
+            "Delivered",
+          ].includes(order.status) &&
+          paymentDetails.status !== "Completed"
+        ) {
+          await Payment.findByIdAndUpdate(paymentDetails._id, {
+            $set: { status: "Completed" },
+          });
+          paymentDetails.status = "Completed";
+        }
+      }
+    }
+
     res.render("admin-order-details", {
       order,
+      paymentDetails,
       currentPage: "orders",
     });
   } catch (err) {

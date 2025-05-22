@@ -21,8 +21,54 @@
       <div class="bg-gray-50 p-6 rounded-lg shadow-sm mb-8">
         <h2 class="text-xl font-semibold mb-4 text-[#2C2C2C]">How to Measure</h2>
         <div class="grid md:grid-cols-2 gap-6">
-          <div>
-            <img src="/Images/size-guide-measuring.jpg" alt="How to measure" class="w-full h-auto rounded-lg mb-4">
+          <div class="relative">
+            <div class="bg-gradient-to-br from-gray-100 to-gray-200 rounded-lg p-6 h-full flex items-center justify-center">
+              <div class="relative w-full max-w-[250px] mx-auto">
+                <!-- Stylized human figure silhouette -->
+                <div class="relative mx-auto" style="height: 300px;">
+                  <!-- Head -->
+                  <div class="absolute w-16 h-16 bg-[#2C2C2C] rounded-full left-1/2 transform -translate-x-1/2" style="top: 0;"></div>
+                  
+                  <!-- Body -->
+                  <div class="absolute w-32 h-40 bg-[#2C2C2C] rounded-2xl left-1/2 transform -translate-x-1/2" style="top: 20px;"></div>
+                  
+                  <!-- Arms -->
+                  <div class="absolute w-10 h-32 bg-[#2C2C2C] rounded-full" style="top: 30px; left: 25%;"></div>
+                  <div class="absolute w-10 h-32 bg-[#2C2C2C] rounded-full" style="top: 30px; right: 25%;"></div>
+                  
+                  <!-- Legs -->
+                  <div class="absolute w-12 h-40 bg-[#2C2C2C] rounded-full" style="top: 65px; left: 35%;"></div>
+                  <div class="absolute w-12 h-40 bg-[#2C2C2C] rounded-full" style="top: 65px; right: 35%;"></div>
+                  
+                  <!-- Measurement Lines -->
+                  <!-- Chest measurement -->
+                  <div class="absolute left-0 right-0 flex items-center justify-between" style="top: 40px;">
+                    <div class="w-full border-t-2 border-dashed border-red-500 relative">
+                      <span class="absolute -top-6 left-0 text-xs font-medium bg-white px-1 rounded text-red-500">1</span>
+                    </div>
+                  </div>
+                  
+                  <!-- Waist measurement -->
+                  <div class="absolute left-0 right-0 flex items-center justify-between" style="top: 80px;">
+                    <div class="w-full border-t-2 border-dashed border-blue-500 relative">
+                      <span class="absolute -top-6 left-0 text-xs font-medium bg-white px-1 rounded text-blue-500">2</span>
+                    </div>
+                  </div>
+                  
+                  <!-- Hip measurement -->
+                  <div class="absolute left-0 right-0 flex items-center justify-between" style="top: 120px;">
+                    <div class="w-full border-t-2 border-dashed border-green-500 relative">
+                      <span class="absolute -top-6 left-0 text-xs font-medium bg-white px-1 rounded text-green-500">3</span>
+                    </div>
+                  </div>
+                  
+                  <!-- Inseam measurement -->
+                  <div class="absolute left-[45%] w-0 border-l-2 border-dashed border-purple-500 h-32" style="top: 140px;">
+                    <span class="absolute -left-6 top-1/2 text-xs font-medium bg-white px-1 rounded text-purple-500">4</span>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
           <div>
             <ul class="space-y-3">
@@ -258,19 +304,75 @@
       <div class="bg-gray-50 p-6 rounded-lg shadow-sm">
         <h2 class="text-xl font-semibold mb-4 text-[#2C2C2C]">Fit Guide</h2>
         <div class="grid md:grid-cols-3 gap-6">
-          <div class="text-center">
-            <h3 class="font-medium text-[#2C2C2C] mb-2">Slim Fit</h3>
-            <img src="/Images/size-guide-slim.jpg" alt="Slim Fit" class="w-full h-auto rounded-lg mb-2">
+          <div class="text-center bg-white rounded-lg p-4 shadow-sm transition-all duration-300 hover:shadow-md">
+            <h3 class="font-medium text-[#2C2C2C] mb-3">Slim Fit</h3>
+            <div class="relative h-64 mb-3 bg-gradient-to-b from-gray-50 to-gray-100 rounded-lg flex items-center justify-center">
+              <!-- Slim fit silhouette -->
+              <div class="relative" style="height: 220px; width: 100px;">
+                <!-- Shoulders -->
+                <div class="absolute top-0 left-1/2 transform -translate-x-1/2 w-[70px] h-6 bg-[#2C2C2C] rounded-t-lg"></div>
+                
+                <!-- Torso - slim -->
+                <div class="absolute top-6 left-1/2 transform -translate-x-1/2 w-[60px] h-[100px] bg-[#2C2C2C] rounded-b-lg"></div>
+                
+                <!-- Arms - slim -->
+                <div class="absolute top-6 left-[calc(50%-35px)] w-5 h-[80px] bg-[#2C2C2C] rounded-l-lg"></div>
+                <div class="absolute top-6 right-[calc(50%-35px)] w-5 h-[80px] bg-[#2C2C2C] rounded-r-lg"></div>
+                
+                <!-- Label -->
+                <div class="absolute -bottom-8 left-1/2 transform -translate-x-1/2 text-xs font-medium text-[#2C2C2C] bg-white px-2 py-1 rounded-full shadow-sm">
+                  Slim
+                </div>
+              </div>
+            </div>
             <p class="text-gray-700 text-sm">Close-fitting through chest, waist, and arms for a modern silhouette.</p>
           </div>
-          <div class="text-center">
-            <h3 class="font-medium text-[#2C2C2C] mb-2">Regular Fit</h3>
-            <img src="/Images/size-guide-regular.jpg" alt="Regular Fit" class="w-full h-auto rounded-lg mb-2">
+          
+          <div class="text-center bg-white rounded-lg p-4 shadow-sm transition-all duration-300 hover:shadow-md">
+            <h3 class="font-medium text-[#2C2C2C] mb-3">Regular Fit</h3>
+            <div class="relative h-64 mb-3 bg-gradient-to-b from-gray-50 to-gray-100 rounded-lg flex items-center justify-center">
+              <!-- Regular fit silhouette -->
+              <div class="relative" style="height: 220px; width: 120px;">
+                <!-- Shoulders -->
+                <div class="absolute top-0 left-1/2 transform -translate-x-1/2 w-[80px] h-6 bg-[#2C2C2C] rounded-t-lg"></div>
+                
+                <!-- Torso - regular -->
+                <div class="absolute top-6 left-1/2 transform -translate-x-1/2 w-[70px] h-[100px] bg-[#2C2C2C] rounded-b-lg"></div>
+                
+                <!-- Arms - regular -->
+                <div class="absolute top-6 left-[calc(50%-40px)] w-6 h-[80px] bg-[#2C2C2C] rounded-l-lg"></div>
+                <div class="absolute top-6 right-[calc(50%-40px)] w-6 h-[80px] bg-[#2C2C2C] rounded-r-lg"></div>
+                
+                <!-- Label -->
+                <div class="absolute -bottom-8 left-1/2 transform -translate-x-1/2 text-xs font-medium text-[#2C2C2C] bg-white px-2 py-1 rounded-full shadow-sm">
+                  Regular
+                </div>
+              </div>
+            </div>
             <p class="text-gray-700 text-sm">Balanced fit that's neither too tight nor too loose for everyday comfort.</p>
           </div>
-          <div class="text-center">
-            <h3 class="font-medium text-[#2C2C2C] mb-2">Relaxed Fit</h3>
-            <img src="/Images/size-guide-relaxed.jpg" alt="Relaxed Fit" class="w-full h-auto rounded-lg mb-2">
+          
+          <div class="text-center bg-white rounded-lg p-4 shadow-sm transition-all duration-300 hover:shadow-md">
+            <h3 class="font-medium text-[#2C2C2C] mb-3">Relaxed Fit</h3>
+            <div class="relative h-64 mb-3 bg-gradient-to-b from-gray-50 to-gray-100 rounded-lg flex items-center justify-center">
+              <!-- Relaxed fit silhouette -->
+              <div class="relative" style="height: 220px; width: 140px;">
+                <!-- Shoulders -->
+                <div class="absolute top-0 left-1/2 transform -translate-x-1/2 w-[90px] h-6 bg-[#2C2C2C] rounded-t-lg"></div>
+                
+                <!-- Torso - relaxed -->
+                <div class="absolute top-6 left-1/2 transform -translate-x-1/2 w-[85px] h-[100px] bg-[#2C2C2C] rounded-b-lg"></div>
+                
+                <!-- Arms - relaxed -->
+                <div class="absolute top-6 left-[calc(50%-45px)] w-8 h-[80px] bg-[#2C2C2C] rounded-l-lg"></div>
+                <div class="absolute top-6 right-[calc(50%-45px)] w-8 h-[80px] bg-[#2C2C2C] rounded-r-lg"></div>
+                
+                <!-- Label -->
+                <div class="absolute -bottom-8 left-1/2 transform -translate-x-1/2 text-xs font-medium text-[#2C2C2C] bg-white px-2 py-1 rounded-full shadow-sm">
+                  Relaxed
+                </div>
+              </div>
+            </div>
             <p class="text-gray-700 text-sm">Looser fit throughout for maximum comfort and a casual look.</p>
           </div>
         </div>

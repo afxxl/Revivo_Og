@@ -186,6 +186,7 @@
         align-items: center;
         flex: 1;
         min-width: 80px; /* Prevent steps from getting too narrow */
+        transition: all 0.3s ease; /* Add transition for smoother state changes */
       }
       
       .status-step::before {
@@ -217,43 +218,66 @@
         margin-bottom: 0.75rem;
         z-index: 1;
         background-color: #e2e8f0;
-        color: #a0aec0;
+        color: white; /* Changed to white for better contrast */
         border: 2px solid white;
         box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
         transition: all 0.3s ease;
+        font-size: 1rem; /* Consistent font size */
+      }
+      
+      /* Mobile status icon styles */
+      @media (max-width: 640px) {
+        .status-icon {
+          width: 36px !important;
+          height: 36px !important;
+          font-size: 0.875rem;
+          margin-top: 0 !important;
+          margin-bottom: 0;
+        }
       }
       
       .status-step.active .status-icon {
-        background-color: var(--primary-color);
         color: white;
         box-shadow: 0 4px 10px rgba(44, 44, 44, 0.2);
       }
       
-      /* Status-specific colors */
+      /* Status-specific colors - applied to both desktop and mobile views */
+      .status-step.active .status-icon,
       .status-icon.pending {
         background-color: var(--pending-color);
       }
       
+      .status-step.active .status-icon.confirmed,
       .status-icon.confirmed {
         background-color: var(--confirmed-color);
       }
       
+      .status-step.active .status-icon.shipped,
       .status-icon.shipped {
         background-color: var(--shipped-color);
       }
       
+      .status-step.active .status-icon.out-for-delivery,
       .status-icon.out-for-delivery {
         background-color: var(--out-for-delivery-color);
       }
       
+      .status-step.active .status-icon.delivered,
       .status-icon.delivered {
         background-color: var(--delivered-color);
       }
       
+      .status-step.active .status-icon.return-requested,
       .status-icon.return-requested {
         background-color: var(--return-color);
       }
       
+      .status-step.active .status-icon.returned,
+      .status-icon.returned {
+        background-color: var(--return-color);
+      }
+      
+      .status-step.active .status-icon.cancelled,
       .status-icon.cancelled {
         background-color: var(--cancelled-color);
       }
@@ -419,27 +443,60 @@
           <div class="hidden sm:block">
             <div class="flex items-center justify-between px-2">
           <% 
-          // Include all possible statuses including Cancelled
-const statuses = ['Pending', 'Confirmed', 'Shipped', 'Out for Delivery', 'Delivered', 'Return Requested', 'Cancelled'];
-          const currentStatusIndex = statuses.indexOf(order.status);
-
-// Special handling for cancelled orders - make sure it's shown in the tracker
-let showCancelled = order.status === 'Cancelled';
+          // Include all possible statuses including Cancelled and Returned
+const statuses = ['Pending', 'Confirmed', 'Shipped', 'Out for Delivery', 'Delivered', 'Return Requested', 'Returned', 'Cancelled'];
           
-          statuses.forEach((status, index) => {
-            const statusClass = status.toLowerCase().replace(/ /g, '-');
-            const isActive = index <= currentStatusIndex;
-            const isLast = index === statuses.length - 1;
-            
-            // Skip Return Requested status if order is not in that state
-if (status === 'Return Requested' && order.status !== 'Return Requested') {
-  return;
+// Determine which statuses to show based on order status
+let statusesToShow = [];
+let showCancelled = order.status === 'Cancelled';
+let showReturned = order.status === 'Returned';
+
+// For returned orders, show the complete path ending with Returned
+if (showReturned) {
+  // For returned orders, the path is: Pending -> Confirmed -> Shipped -> Out for Delivery -> Delivered -> Return Requested -> Returned
+  statusesToShow = ['Pending', 'Confirmed', 'Shipped', 'Out for Delivery', 'Delivered', 'Return Requested', 'Returned'];
+}
+// For cancelled orders, we need to show the path: original status -> cancelled
+else if (showCancelled) {
+  // Since cancelledFromStatus is not stored in the database, we need to infer it
+  // Based on the order controller logic, orders can only be cancelled from Pending or Confirmed status
+  // We can check if the order has a payment record to determine if it reached Confirmed status
+  
+  // Assume the order was at least Pending before cancellation
+  let cancelledFromStatus = 'Pending';
+  
+  // If the order has a payment record or was paid online, it likely reached Confirmed status
+  if (order.paymentMethod !== 'COD' || order.isPaid) {
+    cancelledFromStatus = 'Confirmed';
+  }
+  
+  // Create a custom array with only the statuses up to cancellation point + Cancelled
+  statusesToShow = [];
+  
+  // Start with Pending
+  statusesToShow.push('Pending');
+  
+  // If the order reached Confirmed status, add it
+  if (cancelledFromStatus === 'Confirmed') {
+    statusesToShow.push('Confirmed');
+  }
+  
+  // Add Cancelled as the final status
+  statusesToShow.push('Cancelled');
+} else {
+  // For regular orders, show all relevant statuses except Returned
+  statusesToShow = statuses.filter(status => status !== 'Returned');
 }
 
-// Skip Cancelled status if order is not cancelled
-if (status === 'Cancelled' && !showCancelled) {
-  return;
-}
+// Get the index of the current status
+const currentStatusIndex = statuses.indexOf(order.status);
+          
+          statusesToShow.forEach((status, index) => {
+            const statusClass = status.toLowerCase().replace(/ /g, '-');
+            const statusIndex = statuses.indexOf(status);
+            // For cancelled or returned orders, all statuses in the statusesToShow array should be active
+            const isActive = (showCancelled || showReturned) ? true : statusIndex <= currentStatusIndex;
+            const isLast = index === statusesToShow.length - 1;
           %>
             <div class="status-step <%= statusClass %> <%= isActive ? 'active' : '' %> px-1 sm:px-2">
               <% if (!isLast) { %>
@@ -453,10 +510,11 @@ if (status === 'Cancelled' && !showCancelled) {
                   status === 'Out for Delivery' ? 'fas fa-truck' : 
                   status === 'Delivered' ? 'fas fa-home' : 
                   status === 'Cancelled' ? 'fas fa-ban' : 
+                  status === 'Returned' ? 'fas fa-box-open' : 
                   'fas fa-exchange-alt'
                 %>"></i>
               </div>
-              <span class="text-xs sm:text-sm font-medium text-center <%= index <= currentStatusIndex ? 'text-[#2C2C2C]' : 'text-gray-400' %>">
+              <span class="text-xs sm:text-sm font-medium text-center <%= isActive ? 'text-[#2C2C2C]' : 'text-gray-400' %>">
                 <%= status %>
               </span>
             </div>
@@ -608,25 +666,19 @@ if (status === 'Cancelled' && !showCancelled) {
           
           <!-- Mobile tracker (visible only on small screens) -->
           <div class="sm:hidden">
-            <div class="space-y-3 px-2">
+            <div class="space-y-4 px-2 py-2">
             <% 
             // Reset and reuse the same variables for mobile view
-            statuses.forEach((status, index) => {
+            statusesToShow.forEach((status, index) => {
               const statusClass = status.toLowerCase().replace(/ /g, '-');
-              const isActive = index <= currentStatusIndex;
-              
-              // Skip Return Requested status if order is not in that state
-              if (status === 'Return Requested' && order.status !== 'Return Requested') {
-                return;
-              }
-              
-              // Skip Cancelled status if order is not cancelled
-              if (status === 'Cancelled' && !showCancelled) {
-                return;
-              }
+              const statusIndex = statuses.indexOf(status);
+              // For cancelled or returned orders, all statuses in the statusesToShow array should be active
+              // Use the exact same logic as desktop view for consistency
+              const isActive = (showCancelled || showReturned) ? true : statusIndex <= currentStatusIndex;
+              const isLast = index === statusesToShow.length - 1;
             %>
               <div class="flex items-center <%= isActive ? 'text-[#2C2C2C]' : 'text-gray-400' %>">
-                <div class="status-icon <%= statusClass %> mr-3" style="margin-top: 0;">
+                <div class="status-icon <%= statusClass %> mr-3">
                   <i class="<%= 
                     status === 'Pending' ? 'fas fa-clock' : 
                     status === 'Confirmed' ? 'fas fa-check' : 
@@ -634,11 +686,12 @@ if (status === 'Cancelled' && !showCancelled) {
                     status === 'Out for Delivery' ? 'fas fa-truck' : 
                     status === 'Delivered' ? 'fas fa-home' : 
                     status === 'Cancelled' ? 'fas fa-ban' : 
+                    status === 'Returned' ? 'fas fa-box-open' : 
                     'fas fa-exchange-alt'
                   %>"></i>
                 </div>
                 <span class="text-sm font-medium"><%= status %></span>
-                <% if (isActive && status === order.status) { %>
+                <% if (status === order.status && !showCancelled && !showReturned) { %>
                   <span class="ml-2 text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full">Current</span>
                 <% } %>
               </div>

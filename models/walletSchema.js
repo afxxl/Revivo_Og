@@ -24,8 +24,8 @@ const walletSchema = new mongoose.Schema(
         transactionAmount: Number,
         description: {
           type: String,
-          default: ""
-        }
+          default: "",
+        },
       },
     ],
   },

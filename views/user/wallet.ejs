@@ -210,11 +210,12 @@
             padding: 0.75rem 1rem;
             font-size: 0.8rem;
             font-weight: 500;
-            color: #6b7280;
+            color: rgba(44, 44, 44, 0.7);
             border-bottom: 2px solid transparent;
             cursor: pointer;
             transition: all 0.3s ease;
             white-space: nowrap;
+            text-decoration: none;
         }
         
         @media (min-width: 768px) {
@@ -239,13 +240,12 @@
         }
         
         .transaction-list {
-            max-height: 350px;
-            overflow-y: auto;
+            /* Removed max-height and overflow-y to eliminate scrolling */
         }
         
         @media (min-width: 768px) {
             .transaction-list {
-                max-height: 500px;
+                /* Removed max-height */
             }
         }
         
@@ -338,23 +338,42 @@
             opacity: 0.3;
         }
         
-        /* Custom scrollbar */
-        .transaction-list::-webkit-scrollbar {
-            width: 6px;
+        /* Removed custom scrollbar styles as scrolling is no longer needed */
+        
+        /* Pagination styles */
+        .pagination-container {
+            padding: 1rem 0;
+            border-top: 1px solid rgba(0, 0, 0, 0.05);
         }
         
-        .transaction-list::-webkit-scrollbar-track {
-            background: rgba(0, 0, 0, 0.05);
-            border-radius: 10px;
+        .pagination-btn {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.5rem 1rem;
+            background: white;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            border-radius: 4px;
+            font-size: 0.85rem;
+            color: var(--primary-color);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
         }
         
-        .transaction-list::-webkit-scrollbar-thumb {
-            background: rgba(0, 0, 0, 0.2);
-            border-radius: 10px;
+        .pagination-btn:hover {
+            background: rgba(0, 0, 0, 0.02);
+            border-color: rgba(0, 0, 0, 0.15);
         }
         
-        .transaction-list::-webkit-scrollbar-thumb:hover {
-            background: rgba(0, 0, 0, 0.3);
+        .pagination-btn.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            background: rgba(0, 0, 0, 0.02);
+        }
+        
+        .pagination-info {
+            font-size: 0.85rem;
+            color: rgba(0, 0, 0, 0.6);
         }
         
         @media (max-width: 480px) {
@@ -487,15 +506,15 @@
             <div class="transaction-header">
                 <h3 class="font-medium">Transaction History</h3>
                 <div class="transaction-tabs">
-                    <div class="transaction-tab active" data-filter="all">All</div>
-                    <div class="transaction-tab" data-filter="credit">Credits</div>
-                    <div class="transaction-tab" data-filter="debit">Debits</div>
+                    <a href="/wallet?filter=all<%= pagination ? '&page=' + pagination.currentPage : '' %>" class="transaction-tab <%= !pagination || pagination.filter === 'all' ? 'active' : '' %>" data-filter="all">All</a>
+                    <a href="/wallet?filter=credit<%= pagination ? '&page=' + pagination.currentPage : '' %>" class="transaction-tab <%= pagination && pagination.filter === 'credit' ? 'active' : '' %>" data-filter="credit">Credits</a>
+                    <a href="/wallet?filter=debit<%= pagination ? '&page=' + pagination.currentPage : '' %>" class="transaction-tab <%= pagination && pagination.filter === 'debit' ? 'active' : '' %>" data-filter="debit">Debits</a>
                 </div>
             </div>
             
             <div class="transaction-list">
                 <% if (wallet.transactions && wallet.transactions.length > 0) { %>
-                    <% wallet.transactions.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)).forEach(transaction => { %>
+                    <% wallet.transactions.forEach(transaction => { %>
                         <div class="transaction-item" data-type="<%= transaction.transactionType %>">
                             <div class="flex items-start justify-between">
                                 <div>
@@ -523,6 +542,30 @@
                             </div>
                         </div>
                     <% }) %>
+                    
+                    <% if (pagination && pagination.totalPages > 1) { %>
+                        <div class="pagination-container mt-6 flex justify-center items-center space-x-2">
+                            <% if (pagination.currentPage > 1) { %>
+                                <a href="/wallet?page=<%= pagination.currentPage - 1 %>&filter=<%= pagination.filter %>" class="pagination-btn prev">
+                                    <i class="fas fa-chevron-left"></i> Prev
+                                </a>
+                            <% } else { %>
+                                <span class="pagination-btn disabled"><i class="fas fa-chevron-left"></i> Prev</span>
+                            <% } %>
+                            
+                            <div class="pagination-info">
+                                Page <%= pagination.currentPage %> of <%= pagination.totalPages %>
+                            </div>
+                            
+                            <% if (pagination.currentPage < pagination.totalPages) { %>
+                                <a href="/wallet?page=<%= pagination.currentPage + 1 %>&filter=<%= pagination.filter %>" class="pagination-btn next">
+                                    Next <i class="fas fa-chevron-right"></i>
+                                </a>
+                            <% } else { %>
+                                <span class="pagination-btn disabled">Next <i class="fas fa-chevron-right"></i></span>
+                            <% } %>
+                        </div>
+                    <% } %>
                 <% } else { %>
                     <div class="empty-transactions">
                         <div class="empty-icon">
@@ -542,33 +585,23 @@
     
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const tabs = document.querySelectorAll('.transaction-tab');
-            const transactionItems = document.querySelectorAll('.transaction-item');
+            // Client-side filtering is no longer needed as we're using server-side filtering
+            // with the pagination system. The tabs now use direct links instead of JS filtering.
             
-            tabs.forEach(tab => {
-                tab.addEventListener('click', function() {
-                    tabs.forEach(t => t.classList.remove('active'));
-                    this.classList.add('active');
-                    
-                    const filter = this.dataset.filter;
-                    
-                    transactionItems.forEach(item => {
-                        if (filter === 'all' || item.dataset.type === filter) {
-                            item.style.display = 'block';
-                        } else {
-                            item.style.display = 'none';
-                        }
-                    });
-                });
-            });
-        });
-        
-        function closeRefundAlert() {
-            const alert = document.getElementById('refundAlert');
-            if (alert) {
-                alert.style.display = 'none';
+            // We'll keep this function for the alert
+            function closeRefundAlert() {
+                const alert = document.getElementById('refundAlert');
+                if (alert) {
+                    alert.style.display = 'none';
+                }
             }
-        }
+            
+            // Add event listener to the close button
+            const closeButton = document.getElementById('closeRefundAlert');
+            if (closeButton) {
+                closeButton.addEventListener('click', closeRefundAlert);
+            }
+        });
     </script>
 </body>
 </html>

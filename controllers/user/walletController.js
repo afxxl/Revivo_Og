@@ -5,6 +5,9 @@ const Order = require("../../models/orderSchema");
 const getWalletPage = async (req, res) => {
   try {
     const userId = req.session.user;
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const filter = req.query.filter || "all";
 
     const user = await User.findById(userId);
 
@@ -24,9 +27,40 @@ const getWalletPage = async (req, res) => {
       });
     }
 
+    const walletData = JSON.parse(JSON.stringify(wallet));
+
+    let filteredTransactions = walletData.transactions.sort(
+      (a, b) => new Date(b.createdAt) - new Date(a.createdAt),
+    );
+
+    if (filter !== "all") {
+      filteredTransactions = filteredTransactions.filter(
+        (t) => t.transactionType === filter,
+      );
+    }
+
+    const totalTransactions = filteredTransactions.length;
+    const totalPages = Math.ceil(totalTransactions / limit);
+    const startIndex = (page - 1) * limit;
+    const endIndex = Math.min(startIndex + limit, totalTransactions);
+
+    const paginatedTransactions = filteredTransactions.slice(
+      startIndex,
+      endIndex,
+    );
+
+    walletData.transactions = paginatedTransactions;
+
     res.render("wallet", {
-      wallet,
+      wallet: walletData,
       user,
+      pagination: {
+        currentPage: page,
+        totalPages,
+        totalItems: totalTransactions,
+        limit,
+        filter,
+      },
     });
   } catch (error) {
     console.error("Error fetching wallet:", error);

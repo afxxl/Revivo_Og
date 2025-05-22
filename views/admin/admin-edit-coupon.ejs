@@ -263,9 +263,12 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             document.querySelectorAll('.date-format').forEach(el => {
-                const date = luxon.DateTime.fromISO(el.innerText.trim());
-                if (date.isValid) {
-                    el.innerText = date.toFormat('dd MMM yyyy, hh:mm a');
+                const date = new Date(el.innerText.trim());
+                if (!isNaN(date.getTime())) {
+                    // Format as requested: Day Month Date Year HH:MM:SS without timezone
+                    const options = { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: false };
+                    const formattedDate = date.toLocaleString('en-US', options).replace(/,/g, '');
+                    el.innerText = formattedDate;
                 }
             });
 
