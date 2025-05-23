@@ -23,6 +23,18 @@ if (process.env.RAZORPAY_KEY_ID && process.env.RAZORPAY_KEY_SECRET) {
   });
 }
 
+// Define OrderStatus enum for use in order creation and management
+const OrderStatus = {
+  PENDING: "Pending",
+  CONFIRMED: "Confirmed",
+  SHIPPED: "Shipped",
+  DELIVERED: "Delivered",
+  CANCELLED: "Cancelled",
+  RETURN_REQUESTED: "Return Requested",
+  RETURNED: "Returned",
+  RETURN_REJECTED: "Return Rejected"
+};
+
 const shopPage = async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
