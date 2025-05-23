@@ -12,8 +12,22 @@ const MongoStore = require("connect-mongo");
 const User = require("./models/userSchema.js");
 const nocache = require("nocache");
 const compression = require("compression");
+const cacheControl = require("./middlewares/cacheControlMiddleware");
 
 db();
+
+app.use(
+  compression({
+    level: 6,
+    threshold: 0,
+    filter: (req, res) => {
+      if (req.headers["x-no-compression"]) {
+        return false;
+      }
+      return compression.filter(req, res);
+    },
+  }),
+);
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -163,21 +177,38 @@ app.use(
     lastModified: true,
     immutable: true,
     index: false,
+    setHeaders: (res, path) => {
+      if (path.endsWith(".css") || path.endsWith(".js")) {
+        res.setHeader("Cache-Control", "public, max-age=86400");
+      } else if (path.match(/\.(jpg|jpeg|png|gif|webp|svg)$/i)) {
+        res.setHeader("Cache-Control", "public, max-age=604800, immutable");
+      } else if (path.match(/\.(woff|woff2|ttf|eot)$/i)) {
+        res.setHeader("Cache-Control", "public, max-age=2592000, immutable");
+      }
+    },
   }),
 );
-app.use("/Images", express.static(path.join(__dirname, "Images")));
+app.use(
+  "/Images",
+  express.static(path.join(__dirname, "Images"), {
+    maxAge: "7d",
+    etag: true,
+    lastModified: true,
+    immutable: true,
+    setHeaders: (res, path) => {
+      if (path.match(/\.(jpg|jpeg|png|gif|webp|svg)$/i)) {
+        res.setHeader("Cache-Control", "public, max-age=604800, immutable");
+      }
+    },
+  }),
+);
+
+app.use(cacheControl());
 
 app.use("/", userRouter);
 app.use("/admin", adminRouter);
 
 app.use("/uploads", express.static(path.join(__dirname, "public/uploads")));
-
-app.use(
-  compression({
-    level: 6,
-    threshold: 0,
-  }),
-);
 
 const uploadDir = path.join(__dirname, "public", "uploads", "re-image");
 if (!fs.existsSync(uploadDir)) {
