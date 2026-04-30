@@ -909,7 +909,7 @@
                         <div class="h-full w-full overflow-hidden relative">
                           <% if (product.productImage && product.productImage[0]) { %>
                             <img 
-                            src="<%= product.productImage[0].startsWith('/') ? product.productImage[0] : '/' + product.productImage[0] %>" 
+                            src="<%= product.productImage[0] %>" 
                             alt="<%= product.productName %>" 
                             class="vintage-image h-full w-auto object-contain"
                             onerror="this.src='/Images/placeholder.jpg';"
@@ -968,7 +968,7 @@
                       <div class="corner-marks"></div>
                       <% if (product.productImage && product.productImage[0]) { %>
                         <img 
-                          src="<%= product.productImage[0].startsWith('/') ? product.productImage[0] : '/' + product.productImage[0] %>" 
+                          src="<%= product.productImage[0] %>" 
                           alt="<%= product.productName %>" 
                           class="polaroid-image h-full w-auto object-contain"
                           onerror="this.src='/Images/placeholder.jpg';"
