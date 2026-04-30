@@ -66,7 +66,7 @@ app.use(
     saveUninitialized: true,
     store: userSessionStore,
     cookie: {
-      secure: false,
+      secure: process.env.NODE_ENV === "production",
       httpOnly: true,
       maxAge: 72 * 60 * 60 * 1000,
       path: "/",
@@ -87,7 +87,7 @@ app.use(
     saveUninitialized: true,
     store: adminSessionStore,
     cookie: {
-      secure: false,
+      secure: process.env.NODE_ENV === "production",
       httpOnly: true,
       maxAge: 72 * 60 * 60 * 1000,
       path: "/admin",

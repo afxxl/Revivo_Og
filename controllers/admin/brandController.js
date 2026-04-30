@@ -1,6 +1,4 @@
 const Brand = require("../../models/brandSchema");
-const path = require("path");
-const fs = require("fs");
 
 const Product = require("../../models/productSchema");
 
@@ -81,7 +79,8 @@ const addBrand = async (req, res) => {
       return res.status(400).json({ error: "Brand image is required" });
     }
 
-    const imagePath = "/uploads/brand-images/" + req.file.filename;
+    // Cloudinary returns the hosted URL in req.file.path
+    const imagePath = req.file.path;
 
     const existingBrand = await Brand.findOne({
       brandName: { $regex: new RegExp(`^${name.trim()}$`, "i") },
@@ -162,8 +161,8 @@ const updateBrand = async (req, res) => {
     };
 
     if (req.file) {
-      const imagePath = "/uploads/brand-images/" + req.file.filename;
-      updateData.brandImage = [imagePath];
+      // Cloudinary returns the hosted URL in req.file.path
+      updateData.brandImage = [req.file.path];
     }
 
     const updatedBrand = await Brand.findByIdAndUpdate(brandId, updateData, {

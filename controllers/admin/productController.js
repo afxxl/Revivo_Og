@@ -2,8 +2,6 @@ const mongoose = require("mongoose");
 const Product = require("../../models/productSchema");
 const Brand = require("../../models/brandSchema");
 const Category = require("../../models/categorySchema");
-const fs = require("fs");
-const path = require("path");
 
 const productInfo = async (req, res) => {
   try {
@@ -132,9 +130,8 @@ const addProduct = async (req, res) => {
       });
     }
 
-    const productImages = req.files.map((file) => {
-      return `/uploads/product-images/${file.filename}`;
-    });
+    // Cloudinary returns the hosted URL in file.path
+    const productImages = req.files.map((file) => file.path);
 
     const newProduct = new Product({
       productName,
@@ -168,12 +165,6 @@ const addProduct = async (req, res) => {
   } catch (err) {
     console.error("Product creation error:", err);
 
-    if (req.files && req.files.length > 0) {
-      req.files.forEach((file) => {
-        fs.unlink(file.path, () => {});
-      });
-    }
-
     let errorMessage = "Failed to add product";
     if (err.name === "ValidationError") {
       errorMessage = Object.values(err.errors)
@@ -202,15 +193,6 @@ const deleteProduct = async (req, res) => {
     }
 
     await Product.findByIdAndDelete(productId);
-
-    if (product.productImage && product.productImage.length > 0) {
-      product.productImage.forEach((imagePath) => {
-        const fullPath = path.join(__dirname, "../../public", imagePath);
-        if (fs.existsSync(fullPath)) {
-          fs.unlinkSync(fullPath);
-        }
-      });
-    }
 
     return res.status(200).json({
       success: true,
@@ -326,32 +308,19 @@ const updateProduct = async (req, res) => {
       console.error("Error parsing deletedImages:", error);
     }
 
-    deletedImages.forEach((imagePath) => {
-      const fullPath = path.join(__dirname, "../../public", imagePath);
-      if (fs.existsSync(fullPath)) {
-        fs.unlinkSync(fullPath);
-      }
-    });
-
     const remainingImages = existingProduct.productImage.filter(
       (image) => !deletedImages.includes(image),
     );
 
     let newImages = [];
     if (req.files && req.files.length > 0) {
-      newImages = req.files.map(
-        (file) => `/uploads/product-images/${file.filename}`,
-      );
+      // Cloudinary returns the hosted URL in file.path
+      newImages = req.files.map((file) => file.path);
     }
 
     const updatedImages = [...remainingImages, ...newImages];
 
     if (updatedImages.length < 3) {
-      if (req.files && req.files.length > 0) {
-        req.files.forEach((file) => {
-          fs.unlink(file.path, () => {});
-        });
-      }
       return res.status(400).json({
         success: false,
         error: "At least 3 images are required",
@@ -389,12 +358,6 @@ const updateProduct = async (req, res) => {
     });
   } catch (error) {
     console.error("Update Product Error:", error);
-
-    if (req.files && req.files.length > 0) {
-      req.files.forEach((file) => {
-        fs.unlink(file.path, () => {});
-      });
-    }
 
     let errorMessage = "Failed to update product";
     if (error.name === "ValidationError") {

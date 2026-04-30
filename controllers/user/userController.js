@@ -1034,7 +1034,6 @@ const updateProfileImage = async (req, res) => {
 
     const allowedTypes = ["image/jpeg", "image/png", "image/gif", "image/webp"];
     if (!allowedTypes.includes(req.file.mimetype)) {
-      fs.unlinkSync(req.file.path);
       return res.status(400).json({
         success: false,
         message: "Invalid file type. Only JPG, PNG, GIF, or WEBP are allowed.",
@@ -1042,7 +1041,6 @@ const updateProfileImage = async (req, res) => {
     }
 
     if (req.file.size > 5 * 1024 * 1024) {
-      fs.unlinkSync(req.file.path);
       return res.status(400).json({
         success: false,
         message: "File size exceeds 5MB limit",
@@ -1050,10 +1048,8 @@ const updateProfileImage = async (req, res) => {
     }
 
     const userId = req.session.user;
-    const imagePath = `/uploads/profile-images/${req.file.filename}`;
-
-    const user = await User.findById(userId);
-    const oldImagePath = user.profileImage;
+    // Cloudinary returns the hosted URL in req.file.path
+    const imagePath = req.file.path;
 
     const updatedUser = await User.findByIdAndUpdate(
       userId,
@@ -1061,23 +1057,12 @@ const updateProfileImage = async (req, res) => {
       { new: true },
     );
 
-    if (oldImagePath && !oldImagePath.includes("default-profile.jpg")) {
-      const oldImageFullPath = path.join(__dirname, "../public", oldImagePath);
-      if (fs.existsSync(oldImageFullPath)) {
-        fs.unlinkSync(oldImageFullPath);
-      }
-    }
-
     res.json({
       success: true,
       imageUrl: imagePath,
       message: "Profile image updated successfully",
     });
   } catch (err) {
-    if (req.file && req.file.path) {
-      fs.unlinkSync(req.file.path);
-    }
-
     console.error("Error updating profile image:", err);
     res.status(500).json({
       success: false,

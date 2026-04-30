@@ -1,115 +1,60 @@
 const multer = require("multer");
-const path = require("path");
-const fs = require("fs");
+const { CloudinaryStorage } = require("multer-storage-cloudinary");
+const cloudinary = require("cloudinary").v2;
 
-const ensureDirectoryExists = (directory) => {
-  if (!fs.existsSync(directory)) {
-    fs.mkdirSync(directory, { recursive: true });
-  }
-};
-
-const brandStorage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    const dir = path.join(__dirname, "../public/uploads/brand-images");
-    ensureDirectoryExists(dir);
-    cb(null, dir);
-  },
-  filename: function (req, file, cb) {
-    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-    const ext = path.extname(file.originalname);
-    cb(null, "brand-" + uniqueSuffix + ext);
-  },
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-const productStorage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    const dir = path.join(__dirname, "../public/uploads/product-images");
-    ensureDirectoryExists(dir);
-    cb(null, dir);
-  },
-  filename: function (req, file, cb) {
-    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-    const ext = path.extname(file.originalname);
-    cb(null, "product-" + uniqueSuffix + ext);
-  },
-});
+const makeStorage = (folder) =>
+  new CloudinaryStorage({
+    cloudinary,
+    params: {
+      folder: `revivo/${folder}`,
+      allowed_formats: ["jpg", "jpeg", "png", "gif", "webp"],
+      resource_type: "image",
+    },
+  });
 
-const fileFilter = function (req, file, cb) {
-  const filetypes = /jpeg|jpg|png|gif|webp/;
-  const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
-  const mimetype = filetypes.test(file.mimetype);
-
-  if (!mimetype || !extname) {
+const fileFilter = (req, file, cb) => {
+  const allowed = /jpeg|jpg|png|gif|webp/;
+  const extOk = allowed.test(file.originalname.split(".").pop().toLowerCase());
+  const mimeOk = allowed.test(file.mimetype.split("/")[1]);
+  if (extOk && mimeOk) {
+    cb(null, true);
+  } else {
     req.fileValidationError =
       "Only image files (JPEG, JPG, PNG, GIF, WEBP) are allowed!";
-    return cb(new Error("Only image files are allowed!"), false);
+    cb(new Error("Only image files are allowed!"), false);
   }
-
-  if (file.size > 5 * 1024 * 1024) {
-    req.fileValidationError = "File size exceeds 5MB limit";
-    return cb(new Error("File size exceeds 5MB limit"), false);
-  }
-
-  cb(null, true);
 };
 
-const limits = {
-  fileSize: 1024 * 1024 * 5,
-  files: 10,
-};
-
-const uploadBrand = multer({
-  storage: brandStorage,
-  fileFilter: fileFilter,
-  limits: { fileSize: limits.fileSize },
-});
-
-const uploadProduct = multer({
-  storage: productStorage,
-  fileFilter: fileFilter,
-  limits: limits,
-});
-
-const categoryStorage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    const dir = path.join(__dirname, "../public/uploads/category-images");
-    ensureDirectoryExists(dir);
-    cb(null, dir);
-  },
-  filename: function (req, file, cb) {
-    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-    const ext = path.extname(file.originalname);
-    cb(null, "category-" + uniqueSuffix + ext);
-  },
-});
-
-const profileStorage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    const dir = path.join(__dirname, "../public/uploads/profile-images");
-    ensureDirectoryExists(dir);
-    cb(null, dir);
-  },
-  filename: function (req, file, cb) {
-    const uniqueSuffix = Date.now() + "_" + Math.round(Math.random() * 1e9);
-    const ext = path.extname(file.originalname) || ".jpg";
-
-    cb(null, "profile-" + uniqueSuffix + ext);
-  },
-});
+const limits = { fileSize: 5 * 1024 * 1024 };
 
 module.exports = {
-  uploadBrand: uploadBrand.single("image"),
-  uploadProduct: uploadProduct.array("images", 10),
+  uploadBrand: multer({
+    storage: makeStorage("brand-images"),
+    fileFilter,
+    limits,
+  }).single("image"),
+
+  uploadProduct: multer({
+    storage: makeStorage("product-images"),
+    fileFilter,
+    limits,
+  }).array("images", 10),
+
   uploadCategory: multer({
-    storage: categoryStorage,
-    fileFilter: fileFilter,
-    limits: { fileSize: limits.fileSize },
+    storage: makeStorage("category-images"),
+    fileFilter,
+    limits,
   }).single("categoryImage"),
 
   uploadProfile: multer({
-    storage: profileStorage,
-    fileFilter: fileFilter,
-    limits: { fileSize: 1024 * 1024 * 5 },
-    files: 1,
+    storage: makeStorage("profile-images"),
+    fileFilter,
+    limits,
   }).single("profileImage"),
 };

@@ -35,9 +35,8 @@ const categoryInfo = async (req, res) => {
 const addCategory = async (req, res) => {
   try {
     const { name, description, categoryOffer } = req.body;
-    const image = req.file
-      ? `/uploads/category-images/${req.file.filename}`
-      : "";
+    // Cloudinary returns the hosted URL in req.file.path
+    const image = req.file ? req.file.path : "";
 
     if (!name || !description) {
       return res
@@ -112,9 +111,8 @@ const updateCategory = async (req, res) => {
   try {
     const categoryId = req.params.id;
     const { name, description, categoryOffer } = req.body;
-    const image = req.file
-      ? `/uploads/category-images/${req.file.filename}`
-      : req.body.existingImage;
+    // Cloudinary returns the hosted URL in req.file.path; fallback to existing image
+    const image = req.file ? req.file.path : req.body.existingImage;
 
     if (!name || !description) {
       return res
